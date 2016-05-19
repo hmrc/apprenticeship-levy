@@ -1,3 +1,4 @@
 # microservice specific routes
 
-GET        /hello-world             uk.gov.hmrc.apprenticeshiplevy.controllers.MicroserviceHelloWorld.hello
+GET        /hello-world                        uk.gov.hmrc.apprenticeshiplevy.controllers.MicroserviceHelloWorld.hello
+GET        /empref/:empref/declarations        uk.gov.hmrc.apprenticeshiplevy.controllers.LevyDeclarationController.declarations(empref:String, months:Option[Int])

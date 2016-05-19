@@ -17,19 +17,18 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.play.microservice.controller.BaseController
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import play.api.mvc._
+import play.api.mvc.Action
 import uk.gov.hmrc.apprenticeshiplevy.data.LevyData
+import uk.gov.hmrc.play.microservice.controller.BaseController
 
-import scala.concurrent.Future
+object LevyDeclarationController extends LevyDeclarationController
 
-object MicroserviceHelloWorld extends MicroserviceHelloWorld
+trait LevyDeclarationController extends BaseController {
 
-trait MicroserviceHelloWorld extends BaseController {
-
-  def hello() = Action.async { implicit request =>
-    Future.successful(Ok("Hello world"))
+  def declarations(empref: String, months: Option[Int]) = Action { implicit request =>
+    LevyData.data.get(empref) match {
+      case Some(ds) => Ok(Json.toJson(ds))
+      case None => NotFound
+    }
   }
-
 }
