@@ -1,0 +1,36 @@
+{
+  "scopes": [
+    {
+      "key": "read:apprenticeship-levy",
+      "name": "access levy data",
+      "description": "Access apprenticeship levy data"
+    }
+  ],
+  "api": {
+    "name": "Apprenticeship Levy",
+    "description": "Levy declarations for employers",
+    "context": "apprenticeship-levy",
+    "versions": [
+      {
+        "version": "1.0",
+        "status": "PUBLISHED",
+        "endpoints": [
+          {
+            "uriPattern": "/empref/{empref}/declarations",
+            "endpointName": "Levy Declarations",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": [
+              {
+                "name": "months",
+                "required": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
