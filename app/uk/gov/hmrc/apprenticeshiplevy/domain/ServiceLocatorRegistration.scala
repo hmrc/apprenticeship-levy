@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package uk.gov.hmrc.apprenticeshiplevy.domain
 
-import controllers.AssetsBuilder
-import uk.gov.hmrc.play.microservice.controller.BaseController
+import play.api.libs.json.Json
 
-trait DocumentationController extends AssetsBuilder with BaseController {
+case class ServiceLocatorRegistration(serviceName: String,
+                                      serviceUrl: String,
+                                      metadata: Option[Map[String, String]] = None)
 
-  def documentation(version: String, endpoint: String) =
-    super.at(s"/public/documentation/$version", s"${endpoint.replaceAll(" ", "-")}.xml")
+object ServiceLocatorRegistration {
+  implicit val format = Json.format[ServiceLocatorRegistration]
 }
-
-object DocumentationController extends DocumentationController
