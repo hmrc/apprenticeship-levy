@@ -1,0 +1,209 @@
+<endpoint>
+    <name>Levy Declarations</name>
+    <description>Returns a list of levy declarations for a given employer reference.</description>
+    <section id="resource">
+        <title>Resource</title>
+        <resource>GET /apprenticeship-levy/empref/{empref}/declarations?month={month}</resource>
+    </section>
+    <section id="path-parameters">
+        <title>Path Parameters</title>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>empref</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>123/AB12345</code></cell>
+                    <cell>A valid (URL encoded) employer reference for the PAYE scheme.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="query-parameters">
+        <title>Query Parameters</title>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>months</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code><nowrap>12</nowrap></code></cell>
+                    <cell>Restrict the number of months of data returned. If the value is greater than 48 then it will be ignored.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="authorisation">
+        <title>Authorisation</title>
+        <authorisation>
+            <type>USER</type>
+            <scope>read:individual-employment</scope>
+        </authorisation>
+    </section>
+    <section id="content-types">
+        <title>Accepted Media Types</title>
+        <list>
+            <item>
+                <code>application/vnd.hmrc.1.0+json</code>
+            </item>
+        </list>
+    </section>
+    <section id="response">
+        <title>Response</title>
+        <httpStatus>200 (OK)</httpStatus>
+        <json><![CDATA[
+    "empref": "123/AB12345",
+    "schemeCessationDate": "2016-03-17",
+    "declarations": [
+        {
+            "submissionType": "amended",
+            "submissionDate": "2016-03-15",
+            "payrollMonth": {
+                "year": 2016,
+                "month": 2
+            },
+            "amount": -200,
+            "englishFraction": {
+                "fraction": 0.79,
+                "calculatedAt": "2016-02-05"
+            }
+        },
+        {
+            "submissionType": "original",
+            "submissionDate": "2016-02-21",
+            "payrollMonth": {
+                "year": 2016,
+                "month": 2
+            },
+            "amount": 1000,
+            "englishFraction": {
+              "fraction": 0.83,
+              "calculatedAt": "2015-04-05"
+            }
+        },
+        {
+            "submissionType": "original",
+            "submissionDate": "2016-01-21",
+            "payrollMonth": {
+                "year": 2016,
+                "month": 1
+            },
+            "amount": 500,
+            "englishFraction": {
+              "fraction": 0.83,
+              "calculatedAt": "2015-04-05"
+            }
+        },
+        {
+            "submissionType": "original",
+            "submissionDate": "2015-12-21",
+            "payrollMonth": {
+                "year": 2015,
+                "month": 12
+            },
+            "amount": 600,
+            "englishFraction": {
+              "fraction": 0.83,
+              "calculatedAt": "2015-04-05"
+            }
+        }
+    ]
+}]]></json>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>empref</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>123/AB12345</code></cell>
+                    <cell>The PAYE Reference for the employer. This will be the same as provided in the URL</cell>
+                </row>
+                <row>
+                    <cell><code>schemeCessationDate</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2016-03-17</code></cell>
+                    <cell>If present, indicates the date that the payroll scheme was ceased</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].submissionType</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>original</code></cell>
+                    <cell>original or amended to indicate if the declaration was made as part of an original or an amended RTI submission. If amended then the declarations[].amount figure (documented below) is taken to be the amount of the adjustment, so it could be positive or negative.</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].submissionDate</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2016-03-21</code></cell>
+                    <cell>The date that the RTI submission that this declaration relates to was received by HMRC</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].payrollMonth.year</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>2016</code></cell>
+                    <cell>The calendar year of the payroll month against which the declaration was made</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].payrollMonth.month</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>1</code></cell>
+                    <cell>The tax month of the payroll month against which the declaration was made. Month 1 is April.</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].amount</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>600.20</code></cell>
+                    <cell>The amount of apprenticeship levy that was declared in the payroll month.</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].englishFraction.fraction</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>0.83</code></cell>
+                    <cell>The value of the ‘English Fraction’ as calculated by HMRC for the scheme</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].englishFraction.calculatedAt</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2016-04-01</code></cell>
+                    <cell>The date that HMRC last calculated the English Fraction value</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="error-scenarios">
+        <title>Error Scenarios</title>
+        <table>
+            <headings>
+                <cell>Error Scenario</cell>
+                <cell>HTTP Status</cell>
+                <cell>Code</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell>Invalid EMPREF</cell>
+                    <cell><code>400 (Bad Request)</code></cell>
+                    <cell><code>EPAYE_EMPREF_INVALID</code></cell>
+                </row>
+                <row>
+                    <cell>Unknown EMPREF</cell>
+                    <cell><code>404 (Not Found)</code></cell>
+                    <cell><code>EPAYE_EMPREF_UNKNOWN</code></cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+</endpoint>
