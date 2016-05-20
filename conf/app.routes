@@ -1,5 +1,6 @@
 # microservice specific routes
 
-GET        /hello-world                        uk.gov.hmrc.apprenticeshiplevy.controllers.MicroserviceHelloWorld.hello
-GET        /empref/:empref/declarations        uk.gov.hmrc.apprenticeshiplevy.controllers.LevyDeclarationController.declarations(empref:String, months:Option[Int])
-GET        /api/definition                     controllers.Assets.at(path="/public/api", file = "definition.json")
+GET        /hello-world                                 uk.gov.hmrc.apprenticeshiplevy.controllers.MicroserviceHelloWorld.hello
+GET        /empref/:empref/declarations                 uk.gov.hmrc.apprenticeshiplevy.controllers.LevyDeclarationController.declarations(empref:String, months:Option[Int])
+GET        /api/definition                              controllers.Assets.at(path="/public/api", file = "definition.json")
+GET        /api/documentation/:version/:endpoint        uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.documentation(version, endpoint)
