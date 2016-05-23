@@ -30,10 +30,24 @@ class ServiceLocatorRegistrationISpec
     val request = FakeRequest()
   }
 
-  "the microservice" should {
+  "microservice" should {
 
-    "register to service locator and provide definition endpoint and documentation endpoints for each api" in
-      new MicroserviceLocalRunSupport with Setup {
+    "register itelf to service-locator" in new MicroserviceLocalRunSupport with Setup {
+      override val additionalConfiguration = Map(
+        "appName" -> "application-name",
+        "appUrl" -> "http://microservice-name.service",
+        "microservice.services.service-locator.host" -> stubHost,
+        "microservice.services.service-locator.port" -> stubPort,
+        "microservice.services.service-locator.enabled" -> true)
+      run { () => {
+          verify(1, postRequestedFor(urlMatching("/registration")).
+            withHeader("content-type", equalTo("application/json")).
+            withRequestBody(equalTo(regPayloadStringFor("application-name", "http://microservice-name.service"))))
+        }
+      }
+    }
+
+    "provide definition endpoint and documentation endpoints for each api" in new MicroserviceLocalRunSupport with Setup {
       override val additionalConfiguration = Map(
         "appName" -> "application-name",
         "appUrl" -> "http://microservice-name.service",
@@ -49,14 +63,10 @@ class ServiceLocatorRegistrationISpec
           }
         }
 
-        verify(1, postRequestedFor(urlMatching("/registration")).
-          withHeader("content-type", equalTo("application/json")).
-          withRequestBody(equalTo(regPayloadStringFor("application-name", "http://microservice-name.service"))))
+        val result = documentationController.at("/api", "definition.json")(request)
+        status(result) shouldBe 200
 
-        val getDefinitionResult = documentationController.at("/api", "definition.json")(request)
-        status(getDefinitionResult) shouldBe 200
-
-        val jsonResponse = jsonBodyOf(getDefinitionResult).futureValue
+        val jsonResponse = jsonBodyOf(result).futureValue
 
         val versions = (jsonResponse \\ "version") map (_.as[String])
         val endpointNames = (jsonResponse \\ "endpoints").map(_ \\ "endpointName").map(_.map(_.as[String]))
