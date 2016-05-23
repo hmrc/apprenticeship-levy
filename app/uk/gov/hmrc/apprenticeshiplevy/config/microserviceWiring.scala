@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.config
 
 import config.ApplicationConfig
-import connectors.ETMPConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
 import uk.gov.hmrc.apprenticeshiplevy.data.LevyDeclarations
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector

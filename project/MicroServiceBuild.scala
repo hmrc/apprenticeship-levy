@@ -12,6 +12,7 @@ object MicroServiceBuild extends Build with MicroService {
   )
 
   override lazy val appDependencies: Seq[ModuleID] = AppDependencies()
+  override val defaultPort: Int = 9470
 }
 
 private object AppDependencies {

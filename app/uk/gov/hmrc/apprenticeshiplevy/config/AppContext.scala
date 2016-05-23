@@ -31,4 +31,6 @@ object AppContext extends ServicesConfig {
       Logger.warn("A configuration value has not been provided for service-locator.enabled, defaulting to true")
       true
     }
+
+  lazy val etmpUrl = baseUrl("etmp")
 }
