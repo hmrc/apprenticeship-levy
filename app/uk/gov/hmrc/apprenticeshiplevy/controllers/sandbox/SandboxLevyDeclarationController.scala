@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxLevyDeclarationController
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.Json
+import play.api.mvc.Action
+import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
-object LevyDeclarationController extends LevyDeclarationController
+object SandboxLevyDeclarationController extends SandboxLevyDeclarationController
 
-trait LevyDeclarationController extends BaseController {
+trait SandboxLevyDeclarationController extends BaseController {
 
-  def declarations(empref: String, months: Option[Int]) = SandboxLevyDeclarationController.declarations(empref, months)
+  def declarations(empref: String, months: Option[Int]) = Action.async { implicit request =>
+    ETMPConnector.declarations(empref, months).map { decls =>
+      Ok(Json.toJson(decls))
+    }
+  }
 }
