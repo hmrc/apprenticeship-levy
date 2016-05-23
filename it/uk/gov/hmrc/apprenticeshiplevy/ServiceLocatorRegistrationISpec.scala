@@ -69,7 +69,7 @@ class ServiceLocatorRegistrationISpec
         val jsonResponse = jsonBodyOf(result).futureValue
 
         val versions = (jsonResponse \\ "version") map (_.as[String])
-        val endpointNames = (jsonResponse \\ "endpoints").map(_ \\ "endpointName").map(_.map(_.as[String]))
+        val endpointNames = (jsonResponse \\ "endpoints").map(_ \\ "endpointName").map(_.map(_.as[String].toLowerCase))
 
         versions.zip(endpointNames).flatMap { case (version, endpoint) =>
           endpoint.map(endpointName => (version, endpointName))
