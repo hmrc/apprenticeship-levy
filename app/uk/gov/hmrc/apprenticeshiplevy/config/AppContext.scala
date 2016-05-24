@@ -30,7 +30,7 @@ object AppContext extends ServicesConfig {
   lazy val serviceLocatorUrl = baseUrl("service-locator")
   lazy val registrationEnabled =
     current.configuration.getString("microservice.services.service-locator.enabled")
-      .flatMap { flag => Try(flag.toBoolean).toOption }
+      .flatMap(flag => Try(flag.toBoolean).toOption)
       .getOrElse {
         Logger.warn("A configuration value has not been provided for service-locator.enabled, defaulting to true")
         true
