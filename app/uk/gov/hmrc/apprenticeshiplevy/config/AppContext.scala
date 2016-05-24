@@ -20,6 +20,8 @@ import play.api.Logger
 import play.api.Play._
 import uk.gov.hmrc.play.config.ServicesConfig
 
+import scala.util.Try
+
 object AppContext extends ServicesConfig {
   lazy val appName =
     current.configuration.getString("appName").getOrElse(throw new RuntimeException("appName is not configured"))
@@ -27,10 +29,12 @@ object AppContext extends ServicesConfig {
     current.configuration.getString("appUrl").getOrElse(throw new RuntimeException("appUrl is not configured"))
   lazy val serviceLocatorUrl = baseUrl("service-locator")
   lazy val registrationEnabled =
-    current.configuration.getBoolean("microservice.services.service-locator.enabled").getOrElse {
-      Logger.warn("A configuration value has not been provided for service-locator.enabled, defaulting to true")
-      true
-    }
+    current.configuration.getString("microservice.services.service-locator.enabled")
+      .flatMap { flag => Try(flag.toBoolean).toOption }
+      .getOrElse {
+        Logger.warn("A configuration value has not been provided for service-locator.enabled, defaulting to true")
+        true
+      }
 
   lazy val etmpUrl = baseUrl("etmp")
 }

@@ -38,7 +38,7 @@ class ServiceLocatorRegistrationISpec
         "appUrl" -> "http://microservice-name.service",
         "microservice.services.service-locator.host" -> stubHost,
         "microservice.services.service-locator.port" -> stubPort,
-        "microservice.services.service-locator.enabled" -> true)
+        "microservice.services.service-locator.enabled" -> "true")
       run { () => {
           verify(1, postRequestedFor(urlMatching("/registration")).
             withHeader("content-type", equalTo("application/json")).
@@ -53,7 +53,7 @@ class ServiceLocatorRegistrationISpec
         "appUrl" -> "http://microservice-name.service",
         "microservice.services.service-locator.host" -> stubHost,
         "microservice.services.service-locator.port" -> stubPort,
-        "microservice.services.service-locator.enabled" -> true)
+        "microservice.services.service-locator.enabled" -> "true")
 
       run { () => {
         def verifyDocumentationPresent(version: String, endpointName: String) {
