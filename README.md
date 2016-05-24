@@ -1,7 +1,7 @@
 # apprenticeship-levy
 
 [![Build Status](https://travis-ci.org/hmrc/apprenticeship-levy.svg?branch=master)](https://travis-ci.org/hmrc/apprenticeship-levy) 
-[ ![Download](https://api.bintray.com/packages/hmrc/releases/apprenticeship-levy/images/download.svg) ](https://bintray.com/hmrc/releases/apprenticeship-levy/_latestVersion)
+[![Download](https://api.bintray.com/packages/hmrc/releases/apprenticeship-levy/images/download.svg) ](https://bintray.com/hmrc/releases/apprenticeship-levy/_latestVersion)
 
 ### License
 
