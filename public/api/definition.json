@@ -17,7 +17,7 @@
         "endpoints": [
           {
             "uriPattern": "/empref/{empref}/declarations",
-            "endpointName": "Levy Declarations",
+            "endpointName": "levy-declarations",
             "method": "GET",
             "authType": "USER",
             "throttlingTier": "UNLIMITED",
