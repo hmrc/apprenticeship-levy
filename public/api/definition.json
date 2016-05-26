@@ -19,7 +19,7 @@
             "uriPattern": "/empref/{empref}/declarations",
             "endpointName": "levy-declarations",
             "method": "GET",
-            "authType": "USER",
+            "authType": "NONE",
             "throttlingTier": "UNLIMITED",
             "scope": "read:apprenticeship-levy",
             "queryParameters": [
