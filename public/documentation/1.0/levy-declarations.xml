@@ -47,7 +47,7 @@
         <title>Authorisation</title>
         <authorisation>
             <type>USER</type>
-            <scope>read:individual-employment</scope>
+            <scope>read:levy-declarations</scope>
         </authorisation>
     </section>
     <section id="content-types">
