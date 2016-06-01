@@ -24,12 +24,6 @@ import views.html.helper
 
 import scala.concurrent.Future
 
-object ETMPConnector extends ETMPConnector {
-  override def etmpBaseUrl: String = AppContext.etmpUrl
-
-  override def httpGet: HttpGet = WSHttp
-}
-
 trait ETMPConnector {
 
   def etmpBaseUrl: String
@@ -42,10 +36,16 @@ trait ETMPConnector {
       case (u, None) => u
     }
 
-    Logger.debug(s"ETMP url is $url")
+    Logger.debug(s"Calling ETMP at $url")
 
     httpGet.GET[LevyDeclarations](url)
   }
 
 
+}
+
+object ETMPConnector extends ETMPConnector {
+  override def etmpBaseUrl = AppContext.etmpUrl
+
+  override def httpGet = WSHttp
 }

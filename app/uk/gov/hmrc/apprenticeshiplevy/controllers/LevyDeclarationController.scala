@@ -19,9 +19,9 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxLevyDeclarationController
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
-object LevyDeclarationController extends LevyDeclarationController
-
 trait LevyDeclarationController extends BaseController {
 
   def declarations(empref: String, months: Option[Int]) = SandboxLevyDeclarationController.declarations(empref, months)
 }
+
+object LevyDeclarationController extends LevyDeclarationController
