@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package uk.gov.hmrc.apprenticeshiplevy.config
 
-import play.api.mvc.Action
-import uk.gov.hmrc.play.microservice.controller.BaseController
+import org.scalatest.concurrent.ScalaFutures
+import play.api.http.Status
+import play.api.test.FakeRequest
+import uk.gov.hmrc.apprenticeshiplevy.controllers.LevyDeclarationController
+import uk.gov.hmrc.play.test.UnitSpec
 
-trait LevyDeclarationController extends BaseController {
+class LevyDeclarationController extends UnitSpec with ScalaFutures {
 
-  def declarations(empref: String, months: Option[Int]) = Action { implicit request => NotImplemented }
+  "getting the levy declarations" should {
+    "return an HTTP Not Implemented response" in {
+      val response = LevyDeclarationController.declarations("empref", None)(FakeRequest()).futureValue
+      response.header.status shouldBe Status.NOT_IMPLEMENTED
+    }
+  }
 }
-
-object LevyDeclarationController extends LevyDeclarationController
