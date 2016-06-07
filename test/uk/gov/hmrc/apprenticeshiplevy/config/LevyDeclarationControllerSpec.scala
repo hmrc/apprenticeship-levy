@@ -22,7 +22,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.apprenticeshiplevy.controllers.LevyDeclarationController
 import uk.gov.hmrc.play.test.UnitSpec
 
-class LevyDeclarationController extends UnitSpec with ScalaFutures {
+class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
 
   "getting the levy declarations" should {
     "return an HTTP Not Implemented response" in {
