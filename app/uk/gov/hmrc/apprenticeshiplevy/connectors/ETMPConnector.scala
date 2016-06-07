@@ -31,7 +31,7 @@ trait ETMPConnector {
   def httpGet: HttpGet
 
   def declarations(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[LevyDeclarations] = {
-    val url = (s"$etmpBaseUrl/apprenticeship-levy-stub/empref/${helper.urlEncode(empref)}/declarations", months) match {
+    val url = (s"$etmpBaseUrl/empref/${helper.urlEncode(empref)}/declarations", months) match {
       case (u, Some(n)) => s"$u/?months=$n"
       case (u, None) => u
     }
