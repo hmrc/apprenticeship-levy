@@ -17,40 +17,33 @@
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import play.api.Logger
-import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
-import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclarations, PayrollMonth}
+import uk.gov.hmrc.apprenticeshiplevy.data.EnglishFraction
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import views.html.helper
 
 import scala.concurrent.Future
 
-case class ETMPLevyDeclaration(payrollMonth: PayrollMonth, amount: BigDecimal, submissionType: String, submissionDate: String)
+trait ITMPConnector {
 
-object ETMPLevyDeclaration {
-  implicit val formats = Json.format[ETMPLevyDeclaration]
-}
-
-trait ETMPConnector {
-
-  def etmpBaseUrl: String
+  def itmpBaseUrl: String
 
   def httpGet: HttpGet
 
-  def declarations(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[List[ETMPLevyDeclaration]] = {
-    val url = (s"$etmpBaseUrl/empref/${helper.urlEncode(empref)}/declarations", months) match {
+  def fractions(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[List[EnglishFraction]] = {
+    val url = (s"$itmpBaseUrl/empref/${helper.urlEncode(empref)}/fractions", months) match {
       case (u, Some(n)) => s"$u/?months=$n"
       case (u, None) => u
     }
 
-    Logger.debug(s"Calling ETMP at $url")
+    Logger.debug(s"Calling ITMP at $url")
 
-    httpGet.GET[List[ETMPLevyDeclaration]](url)
+    httpGet.GET[List[EnglishFraction]](url)
   }
 }
 
-object ETMPConnector extends ETMPConnector {
-  override def etmpBaseUrl = AppContext.etmpUrl
+object ITMPConnector extends ITMPConnector {
+  override def itmpBaseUrl = AppContext.etmpUrl
 
   override def httpGet = WSHttp
 }

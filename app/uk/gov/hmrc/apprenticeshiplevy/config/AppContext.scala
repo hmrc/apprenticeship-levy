@@ -37,4 +37,6 @@ object AppContext extends ServicesConfig {
       }
 
   lazy val etmpUrl = baseUrl("etmp")
+
+  lazy val itmpUrl = baseUrl("itmp")
 }

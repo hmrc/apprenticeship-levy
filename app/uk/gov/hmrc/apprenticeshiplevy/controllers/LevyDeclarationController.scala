@@ -20,7 +20,6 @@ import play.api.mvc.Action
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
 trait LevyDeclarationController extends BaseController {
-
   def declarations(empref: String, months: Option[Int]) = Action { NotImplemented }
 }
 
