@@ -45,7 +45,7 @@ trait SandboxLevyDeclarationController extends BaseController {
   }
 
   def mergeFraction(decl: ETMPLevyDeclaration, fractions: List[EnglishFraction]): LevyDeclaration = {
-    val fraction = fractions.sortBy(_.calculatedAt).reverse.find(_.calculatedAt <= decl.payrollMonth.startDate)
+    val fraction = fractions.sortBy(_.calculatedAt).reverse.find(_.calculatedAt <= decl.payrollMonth.endDate)
 
     LevyDeclaration(decl.payrollMonth, decl.amount, decl.submissionType, decl.submissionDate, fraction)
   }
