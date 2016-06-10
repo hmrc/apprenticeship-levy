@@ -16,7 +16,7 @@
         "status": "PROTOTYPED",
         "endpoints": [
           {
-            "uriPattern": "/epaye/empref/{empref}/declarations",
+            "uriPattern": "/epaye/{empref}/declarations",
             "endpointName": "levy-declarations",
             "method": "GET",
             "authType": "USER",
