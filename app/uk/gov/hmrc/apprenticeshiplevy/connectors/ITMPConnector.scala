@@ -37,7 +37,6 @@ trait ITMPConnector {
     }
 
     Logger.debug(s"Calling ITMP at $url")
-
     httpGet.GET[List[EnglishFraction]](url)
   }
 }

@@ -29,13 +29,7 @@ object PayrollMonth {
   implicit val formats = Json.format[PayrollMonth]
 }
 
-case class EnglishFraction(fraction: BigDecimal, calculatedAt: LocalDate)
-
-object EnglishFraction {
-  implicit val formats = Json.format[EnglishFraction]
-}
-
-case class LevyDeclaration(payrollMonth: PayrollMonth, amount: BigDecimal, submissionType: String, submissionDate: String, englishFraction: Option[EnglishFraction])
+case class LevyDeclaration(payrollMonth: PayrollMonth, amount: BigDecimal, submissionType: String, submissionDate: String)
 
 object LevyDeclaration {
   implicit val formats = Json.format[LevyDeclaration]
@@ -45,4 +39,22 @@ case class LevyDeclarations(empref: String, declarations: Seq[LevyDeclaration])
 
 object LevyDeclarations {
   implicit val formats = Json.format[LevyDeclarations]
+}
+
+case class Fraction(region: String, value: BigDecimal)
+
+object Fraction {
+  implicit val formats = Json.format[Fraction]
+}
+
+case class FractionCalculation(calculatedAt: LocalDate, fractions: List[Fraction])
+
+object FractionCalculation {
+  implicit val formats = Json.format[FractionCalculation]
+}
+
+case class Fractions(empref: String, fractionCalculations: List[FractionCalculation])
+
+object Fractions {
+  implicit val formats = Json.format[Fractions]
 }

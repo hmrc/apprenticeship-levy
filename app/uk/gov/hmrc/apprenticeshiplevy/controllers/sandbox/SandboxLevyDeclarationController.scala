@@ -32,21 +32,22 @@ trait SandboxLevyDeclarationController extends BaseController {
 
   def declarations(empref: String, months: Option[Int]) = Action.async { implicit request =>
 
-    // Kick these off concurrently
-    val edeclF = ETMPConnector.declarations(empref, months)
-    val fractionsF: Future[List[EnglishFraction]] = ITMPConnector.fractions(empref, months)
-
-    val decls = for {
-      edecls <- edeclF
-      fractions <- fractionsF
-    } yield LevyDeclarations(empref, edecls.map(mergeFraction(_, fractions)))
-
-    decls.map(ds => Ok(Json.toJson(ds)))
+    ETMPConnector.declarations(empref, months)
+      .map { declarations =>
+        declarations.map { declaration =>
+          LevyDeclaration(declaration.payrollMonth, declaration.amount, declaration.submissionType, declaration.submissionDate)
+        }
+      }
+      .map(ds => Ok(Json.toJson(ds)))
   }
 
   def mergeFraction(decl: ETMPLevyDeclaration, fractions: List[EnglishFraction]): LevyDeclaration = {
     val fraction = fractions.sortBy(_.calculatedAt).reverse.find(_.calculatedAt <= decl.payrollMonth.endDate)
 
-    LevyDeclaration(decl.payrollMonth, decl.amount, decl.submissionType, decl.submissionDate, fraction)
+    LevyDeclaration(decl.payrollMonth, decl.amount, decl.submissionType, decl.submissionDate)
+  }
+
+  def fractions(empref: String, months: Option[Int]) = Action.async { implicit request =>
+    ITMPConnector.fractions(empref,months).
   }
 }
