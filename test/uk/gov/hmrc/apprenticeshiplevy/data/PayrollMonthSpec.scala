@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.data
 import org.joda.time.LocalDate
 import org.scalatest.{FlatSpec, Matchers}
 
-class PayrollMonthTest extends FlatSpec with Matchers {
+class PayrollMonthSpec extends FlatSpec with Matchers {
 
   "Payroll month" should "calculate correct start date" in {
     val data = Seq(

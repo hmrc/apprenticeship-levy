@@ -17,17 +17,25 @@
 package uk.gov.hmrc.apprenticeshiplevy.config
 
 import org.scalatest.concurrent.ScalaFutures
-import play.api.http.Status
+import play.api.http.Status.NOT_IMPLEMENTED
 import play.api.test.FakeRequest
 import uk.gov.hmrc.apprenticeshiplevy.controllers.LevyDeclarationController
 import uk.gov.hmrc.play.test.UnitSpec
+
 
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
 
   "getting the levy declarations" should {
     "return an HTTP Not Implemented response" in {
       val response = LevyDeclarationController.declarations("empref", None)(FakeRequest()).futureValue
-      response.header.status shouldBe Status.NOT_IMPLEMENTED
+      response.header.status shouldBe NOT_IMPLEMENTED
+    }
+  }
+
+  "getting the fractions" should {
+    "return an HTTP Not Implemented response" in {
+      val response = LevyDeclarationController.fractions("empref", None)(FakeRequest()).futureValue
+      response.header.status shouldBe NOT_IMPLEMENTED
     }
   }
 }

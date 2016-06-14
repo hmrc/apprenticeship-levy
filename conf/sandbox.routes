@@ -1,2 +1,2 @@
 GET        /epaye/:empref/declarations        uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxLevyDeclarationController.declarations(empref:String, months:Option[Int])
-GET        /epaye/:empref/fractions        uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxLevyDeclarationController.fractions(empref:String, months:Option[Int])
+GET        /epaye/:empref/fractions           uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxLevyDeclarationController.fractions(empref:String, months:Option[Int])

@@ -20,9 +20,9 @@ import org.joda.time.{LocalDate, Months}
 import play.api.libs.json.Json
 
 case class PayrollMonth(year: Int, month: Int) {
+  // TODO: this should be removed
   def startDate = new LocalDate(year, month, 6)
-
-  def endDate = new LocalDate(year, month, 5).withPeriodAdded(Months.ONE, 1)
+  def endDate = new LocalDate(year, month, 5).plusMonths(1)
 }
 
 object PayrollMonth {
@@ -35,7 +35,7 @@ object LevyDeclaration {
   implicit val formats = Json.format[LevyDeclaration]
 }
 
-case class LevyDeclarations(empref: String, declarations: Seq[LevyDeclaration])
+case class LevyDeclarations(empref: String, schemeCessationDate: Option[LocalDate], declarations: Seq[LevyDeclaration])
 
 object LevyDeclarations {
   implicit val formats = Json.format[LevyDeclarations]
@@ -47,13 +47,13 @@ object Fraction {
   implicit val formats = Json.format[Fraction]
 }
 
-case class FractionCalculation(calculatedAt: LocalDate, fractions: List[Fraction])
+case class FractionCalculation(calculatedAt: LocalDate, fractions: Seq[Fraction])
 
 object FractionCalculation {
   implicit val formats = Json.format[FractionCalculation]
 }
 
-case class Fractions(empref: String, fractionCalculations: List[FractionCalculation])
+case class Fractions(empref: String, fractionCalculations: Seq[FractionCalculation])
 
 object Fractions {
   implicit val formats = Json.format[Fractions]
