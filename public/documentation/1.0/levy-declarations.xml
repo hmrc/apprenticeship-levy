@@ -3,7 +3,7 @@
     <description>Returns a list of levy declarations for a given employer reference.</description>
     <section id="resource">
         <title>Resource</title>
-        <resource>GET /apprenticeship-levy/empref/{empref}/declarations?month={month}</resource>
+        <resource>GET /apprenticeship-levy/epaye/{empref}/declarations?month={month}</resource>
     </section>
     <section id="path-parameters">
         <title>Path Parameters</title>
