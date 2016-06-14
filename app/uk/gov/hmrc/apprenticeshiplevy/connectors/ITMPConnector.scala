@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
-import uk.gov.hmrc.apprenticeshiplevy.data.EnglishFraction
+import uk.gov.hmrc.apprenticeshiplevy.data.Fractions
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import views.html.helper
 
@@ -30,15 +30,14 @@ trait ITMPConnector {
 
   def httpGet: HttpGet
 
-  def fractions(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[List[EnglishFraction]] = {
+  def fractions(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[Fractions] = {
     val url = (s"$itmpBaseUrl/empref/${helper.urlEncode(empref)}/fractions", months) match {
       case (u, Some(n)) => s"$u/?months=$n"
       case (u, None) => u
     }
 
     Logger.debug(s"Calling ITMP at $url")
-
-    httpGet.GET[List[EnglishFraction]](url)
+    httpGet.GET[Fractions](url)
   }
 }
 

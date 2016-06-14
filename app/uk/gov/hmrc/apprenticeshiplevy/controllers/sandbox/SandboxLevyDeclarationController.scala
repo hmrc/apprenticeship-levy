@@ -16,37 +16,28 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import com.github.nscala_time.time.Imports._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.Action
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, ETMPLevyDeclaration, ITMPConnector}
-import uk.gov.hmrc.apprenticeshiplevy.data.{EnglishFraction, LevyDeclaration, LevyDeclarations}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, ITMPConnector}
+import uk.gov.hmrc.apprenticeshiplevy.data.LevyDeclaration
 import uk.gov.hmrc.play.microservice.controller.BaseController
-
-import scala.concurrent.Future
 
 object SandboxLevyDeclarationController extends SandboxLevyDeclarationController
 
 trait SandboxLevyDeclarationController extends BaseController {
 
   def declarations(empref: String, months: Option[Int]) = Action.async { implicit request =>
-
-    // Kick these off concurrently
-    val edeclF = ETMPConnector.declarations(empref, months)
-    val fractionsF: Future[List[EnglishFraction]] = ITMPConnector.fractions(empref, months)
-
-    val decls = for {
-      edecls <- edeclF
-      fractions <- fractionsF
-    } yield LevyDeclarations(empref, edecls.map(mergeFraction(_, fractions)))
-
-    decls.map(ds => Ok(Json.toJson(ds)))
+    ETMPConnector.declarations(empref, months)
+      .map { declarations =>
+        declarations.map { declaration =>
+          LevyDeclaration(declaration.payrollMonth, declaration.amount, declaration.submissionType, declaration.submissionDate)
+        }
+      }
+      .map(ds => Ok(Json.toJson(ds)))
   }
 
-  def mergeFraction(decl: ETMPLevyDeclaration, fractions: List[EnglishFraction]): LevyDeclaration = {
-    val fraction = fractions.sortBy(_.calculatedAt).reverse.find(_.calculatedAt <= decl.payrollMonth.endDate)
-
-    LevyDeclaration(decl.payrollMonth, decl.amount, decl.submissionType, decl.submissionDate, fraction)
+  def fractions(empref: String, months: Option[Int]) = Action.async { implicit request =>
+    ITMPConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
   }
 }

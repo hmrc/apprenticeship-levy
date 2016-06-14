@@ -1,0 +1,170 @@
+<endpoint>
+    <name>Fraction Calculations</name>
+    <description>Returns a list of fraction calculations for a given employer reference.</description>
+    <section id="resource">
+        <title>Resource</title>
+        <resource>GET /apprenticeship-levy/epaye/{empref}/fractions?month={month}</resource>
+    </section>
+    <section id="path-parameters">
+        <title>Path Parameters</title>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>empref</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>123/AB12345</code></cell>
+                    <cell>A valid (URL encoded) employer reference for the PAYE scheme.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="query-parameters">
+        <title>Query Parameters</title>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>months</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code><nowrap>12</nowrap></code></cell>
+                    <cell>Restrict the number of months of data returned. If the value is greater than 48 then it will be ignored.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="authorisation">
+        <title>Authorisation</title>
+        <authorisation>
+            <type>USER</type>
+            <scope>read:levy-declarations</scope>
+        </authorisation>
+    </section>
+    <section id="content-types">
+        <title>Accepted Media Types</title>
+        <list>
+            <item>
+                <code>application/vnd.hmrc.1.0+json</code>
+            </item>
+        </list>
+    </section>
+    <section id="response">
+        <title>Response</title>
+        <httpStatus>200 (OK)</httpStatus>
+        <json><![CDATA[
+    {
+        “empref”: “123/AB12345”,
+        “fractionCalculations”: [
+            {
+                “calculatedAt”: “2016-03-15”,
+                “fractions”: [
+                    {
+                        “region”: “England”,
+                        “value”: “0.83”
+                    },
+                    {
+                        “region”: “Scotland”,
+                        “value”: “0.11”
+                    },
+                    {
+                        “region”: “Wales”,
+                        “value”: “0.06”
+                    },
+                    {
+                        “region”: “Northern Ireland”,
+                        “value”: “0”
+                    }
+                ]
+            },
+            {
+                “calculatedAt”: “2015-11-18”,
+                “fractions”: [
+                    {
+                        “region”: “England”,
+                        “value”: “0.78”
+                    },
+                    {
+                        “region”: “Scotland”,
+                        “value”: “0.16”
+                    },
+                    {
+                        “region”: “Wales”,
+                        “value”: “0.06”
+                    },
+                    {
+                        “region”: “Northern Ireland”,
+                        “value”: “0”
+                    }
+                ]
+            }
+        ]
+    }
+]]></json>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>empref</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>123/AB12345</code></cell>
+                    <cell>The PAYE Reference for the employer. This will be the same as provided in the URL</cell>
+                </row>
+                <row>
+                    <cell><code>fractionCalculations[].calculatedAt</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2015–11–18</code></cell>
+                    <cell>The date that the fractions were calculated</cell>
+                </row>
+                <row>
+                    <cell><code>fractionCalculations[].fractions[].region</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>England</code></cell>
+                    <cell>The region the specific fraction applies to. Will be England, Wales, Scotland or Northern Ireland</cell>
+                </row>
+                <row>
+                    <cell><code>fractionCalculations[].fractions[].value</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>0.83</code></cell>
+                    <cell>The fraction calculated for the region. Will be a decimal in the range 0 to 1. The values for all regions in the calculation will sum to 1. If the value for a region is 0 it may be omitted from the list.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="error-scenarios">
+        <title>Error Scenarios</title>
+        <table>
+            <headings>
+                <cell>Error Scenario</cell>
+                <cell>HTTP Status</cell>
+                <cell>Code</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell>Invalid EMPREF</cell>
+                    <cell><code>400 (Bad Request)</code></cell>
+                    <cell><code>EPAYE_EMPREF_INVALID</code></cell>
+                </row>
+                <row>
+                    <cell>Unknown EMPREF</cell>
+                    <cell><code>404 (Not Found)</code></cell>
+                    <cell><code>EPAYE_EMPREF_UNKNOWN</code></cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+</endpoint>

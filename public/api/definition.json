@@ -28,6 +28,20 @@
                 "required": false
               }
             ]
+          },
+          {
+            "uriPattern": "/epaye/{empref}/fractions",
+            "endpointName": "fraction-calculations",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": [
+              {
+                "name": "months",
+                "required": false
+              }
+            ]
           }
         ]
       }
