@@ -23,8 +23,6 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, ITMPConnector}
 import uk.gov.hmrc.apprenticeshiplevy.data.LevyDeclaration
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
-object SandboxLevyDeclarationController extends SandboxLevyDeclarationController
-
 trait SandboxLevyDeclarationController extends BaseController {
 
   def declarations(empref: String, months: Option[Int]) = Action.async { implicit request =>
@@ -41,3 +39,5 @@ trait SandboxLevyDeclarationController extends BaseController {
     ITMPConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
   }
 }
+
+object SandboxLevyDeclarationController extends SandboxLevyDeclarationController

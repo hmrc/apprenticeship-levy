@@ -34,5 +34,4 @@ trait UserInfoController extends BaseController {
   }
 }
 
-
 object UserInfoController extends UserInfoController
