@@ -47,7 +47,7 @@
         <title>Authorisation</title>
         <authorisation>
             <type>USER</type>
-            <scope>read:levy-declarations</scope>
+            <scope>read:apprenticeship-levy</scope>
         </authorisation>
     </section>
     <section id="content-types">
