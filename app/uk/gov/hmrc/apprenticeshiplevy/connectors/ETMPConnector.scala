@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
+import org.joda.time.LocalDate
 import play.api.Logger
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
-import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclarations, PayrollMonth}
+import uk.gov.hmrc.apprenticeshiplevy.data.PayrollMonth
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import views.html.helper
 
@@ -31,13 +32,20 @@ object ETMPLevyDeclaration {
   implicit val formats = Json.format[ETMPLevyDeclaration]
 }
 
+case class ETMPLevyDeclarations(empref: String, schemeCessationDate: Option[LocalDate], declarations: Seq[ETMPLevyDeclaration])
+
+object ETMPLevyDeclarations {
+  implicit val formats = Json.format[ETMPLevyDeclarations]
+}
+
+
 trait ETMPConnector {
 
   def etmpBaseUrl: String
 
   def httpGet: HttpGet
 
-  def declarations(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[List[ETMPLevyDeclaration]] = {
+  def declarations(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[ETMPLevyDeclarations] = {
     val url = (s"$etmpBaseUrl/empref/${helper.urlEncode(empref)}/declarations", months) match {
       case (u, Some(n)) => s"$u/?months=$n"
       case (u, None) => u
@@ -45,7 +53,7 @@ trait ETMPConnector {
 
     Logger.debug(s"Calling ETMP at $url")
 
-    httpGet.GET[List[ETMPLevyDeclaration]](url)
+    httpGet.GET[ETMPLevyDeclarations](url)
   }
 }
 

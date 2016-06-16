@@ -27,11 +27,6 @@ trait SandboxLevyDeclarationController extends BaseController {
 
   def declarations(empref: String, months: Option[Int]) = Action.async { implicit request =>
     ETMPConnector.declarations(empref, months)
-      .map { declarations =>
-        declarations.map { declaration =>
-          LevyDeclaration(declaration.payrollMonth, declaration.amount, declaration.submissionType, declaration.submissionDate)
-        }
-      }
       .map(ds => Ok(Json.toJson(ds)))
   }
 

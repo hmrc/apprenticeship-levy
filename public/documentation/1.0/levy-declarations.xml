@@ -72,11 +72,7 @@
                 "year": 2016,
                 "month": 2
             },
-            "amount": -200,
-            "englishFraction": {
-                "fraction": 0.79,
-                "calculatedAt": "2016-02-05"
-            }
+            "amount": -200
         },
         {
             "submissionType": "original",
@@ -85,11 +81,7 @@
                 "year": 2016,
                 "month": 2
             },
-            "amount": 1000,
-            "englishFraction": {
-              "fraction": 0.83,
-              "calculatedAt": "2015-04-05"
-            }
+            "amount": 1000
         },
         {
             "submissionType": "original",
@@ -98,11 +90,7 @@
                 "year": 2016,
                 "month": 1
             },
-            "amount": 500,
-            "englishFraction": {
-              "fraction": 0.83,
-              "calculatedAt": "2015-04-05"
-            }
+            "amount": 500
         },
         {
             "submissionType": "original",
@@ -111,11 +99,7 @@
                 "year": 2015,
                 "month": 12
             },
-            "amount": 600,
-            "englishFraction": {
-              "fraction": 0.83,
-              "calculatedAt": "2015-04-05"
-            }
+            "amount": 600
         }
     ]
 }]]></json>
@@ -168,18 +152,6 @@
                     <cell><code>Number</code></cell>
                     <cell><code>600.20</code></cell>
                     <cell>The amount of apprenticeship levy that was declared in the payroll month.</cell>
-                </row>
-                <row>
-                    <cell><code>declarations[].englishFraction.fraction</code></cell>
-                    <cell><code>Number</code></cell>
-                    <cell><code>0.83</code></cell>
-                    <cell>The value of the ‘English Fraction’ as calculated by HMRC for the scheme</cell>
-                </row>
-                <row>
-                    <cell><code>declarations[].englishFraction.calculatedAt</code></cell>
-                    <cell><code>Date</code></cell>
-                    <cell><code>2016-04-01</code></cell>
-                    <cell>The date that HMRC last calculated the English Fraction value</cell>
                 </row>
             </rows>
         </table>
