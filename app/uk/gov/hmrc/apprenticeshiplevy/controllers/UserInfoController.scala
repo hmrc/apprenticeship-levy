@@ -20,15 +20,18 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.Action
 import uk.gov.hmrc.apprenticeshiplevy.config.MicroserviceAuthConnector
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.EpayeAccount
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
 trait UserInfoController extends BaseController {
 
   def authConnector = MicroserviceAuthConnector
 
+  implicit val epayeAccountWrites = Json.writes[EpayeAccount]
+
   def userAccounts = Action.async {
     implicit request => authConnector.currentAuthority.map {
-      case Some(authority) => Ok(Json.toJson(authority.accounts))
+      case Some(authority) => Ok(Json.toJson(authority.accounts.epaye))
       case None => NotFound
     }
   }
