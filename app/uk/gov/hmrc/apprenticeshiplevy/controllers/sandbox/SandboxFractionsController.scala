@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json.Json
 import play.api.mvc.Action
-import uk.gov.hmrc.play.microservice.controller.BaseController
+import uk.gov.hmrc.apprenticeshiplevy.connectors.ITMPConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.FractionsController
 
-trait LevyDeclarationController extends BaseController {
-  def declarations(empref: String, months: Option[Int]) = Action { NotImplemented }
+trait SandboxFractionsController extends FractionsController {
+  override def fractions(empref: String, months: Option[Int]) = Action.async { implicit request =>
+    ITMPConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
+  }
 }
 
-object LevyDeclarationController extends LevyDeclarationController
+object SandboxFractionsController extends SandboxFractionsController

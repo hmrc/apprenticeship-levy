@@ -19,20 +19,16 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import play.api.mvc.Action
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, ITMPConnector}
-import uk.gov.hmrc.apprenticeshiplevy.data.LevyDeclaration
-import uk.gov.hmrc.play.microservice.controller.BaseController
+import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.LevyDeclarationController
 
-trait SandboxLevyDeclarationController extends BaseController {
+trait SandboxLevyDeclarationController extends LevyDeclarationController {
 
-  def declarations(empref: String, months: Option[Int]) = Action.async { implicit request =>
+  override def declarations(empref: String, months: Option[Int]) = Action.async { implicit request =>
     ETMPConnector.declarations(empref, months)
       .map(ds => Ok(Json.toJson(ds)))
   }
 
-  def fractions(empref: String, months: Option[Int]) = Action.async { implicit request =>
-    ITMPConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
-  }
 }
 
 object SandboxLevyDeclarationController extends SandboxLevyDeclarationController
