@@ -18,9 +18,13 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import play.api.mvc.Action
 import uk.gov.hmrc.play.microservice.controller.BaseController
+import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponse.ErrorNotImplemented
+import uk.gov.hmrc.apprenticeshiplevy.controllers.actions.HeaderValidatorAction
 
 trait FractionsController extends BaseController {
-  def fractions(empref: String, months: Option[Int]) = Action { NotImplemented }
+  def fractions(empref: String, months: Option[Int]) = HeaderValidatorAction {
+    ErrorNotImplemented.Result
+  }
 }
 
 object FractionsController extends FractionsController
