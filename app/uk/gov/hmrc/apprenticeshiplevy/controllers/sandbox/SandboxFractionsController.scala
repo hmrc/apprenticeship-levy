@@ -21,9 +21,10 @@ import play.api.libs.json.Json
 import play.api.mvc.Action
 import uk.gov.hmrc.apprenticeshiplevy.connectors.ITMPConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.FractionsController
+import uk.gov.hmrc.apprenticeshiplevy.controllers.actions.HeaderValidatorAction
 
 trait SandboxFractionsController extends FractionsController {
-  override def fractions(empref: String, months: Option[Int]) = Action.async { implicit request =>
+  override def fractions(empref: String, months: Option[Int]) = HeaderValidatorAction.async { implicit request =>
     ITMPConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
   }
 }

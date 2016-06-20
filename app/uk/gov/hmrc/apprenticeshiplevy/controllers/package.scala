@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package uk.gov.hmrc.apprenticeshiplevy
 
-import org.scalatest.concurrent.ScalaFutures
-import play.api.http.Status.NOT_IMPLEMENTED
-import play.api.test.FakeRequest
-import uk.gov.hmrc.play.test.UnitSpec
-
-class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
-
-  "getting the levy declarations" should {
-    "return an HTTP Not Implemented response" in {
-      val response = LevyDeclarationController.declarations("empref", None)(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
-      response.header.status shouldBe NOT_IMPLEMENTED
-    }
-  }
+package object controllers {
+  val CODE_UNAUTHORIZED = "UNAUTHORIZED"
+  val CODE_INVALID_TAX_YEAR = "ERROR_TAX_YEAR_INVALID"
+  val CODE_INVALID_EMP_REF = "ERROR_EMP_REF_INVALID"
+  val CODE_BAD_REQUEST = "BAD_REQUEST"
+  val CODE_NOT_FOUND = "NOT_FOUND"
+  val CODE_INVALID_HEADER = "ACCEPT_HEADER_INVALID"
+  val CODE_INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
+  val CODE_NOT_IMPLEMENTED = "NOT_IMPLEMENTED"
+  val CODE_SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
 }
-
-

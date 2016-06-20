@@ -24,7 +24,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 class FractionsControllerSpec extends UnitSpec with ScalaFutures {
   "getting the fractions" should {
     "return an HTTP Not Implemented response" in {
-      val response = FractionsController.fractions("empref", None)(FakeRequest()).futureValue
+      val response = FractionsController.fractions("empref", None)(FakeRequest().withHeaders(("Accept" -> "application/vnd.hmrc.1.0+json"))).futureValue
       response.header.status shouldBe NOT_IMPLEMENTED
     }
   }
