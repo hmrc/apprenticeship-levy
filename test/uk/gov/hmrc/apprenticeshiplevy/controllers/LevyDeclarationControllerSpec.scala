@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.config
+package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.NOT_IMPLEMENTED
 import play.api.test.FakeRequest
-import uk.gov.hmrc.apprenticeshiplevy.controllers.LevyDeclarationController
 import uk.gov.hmrc.play.test.UnitSpec
 
 
@@ -31,11 +30,6 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
       response.header.status shouldBe NOT_IMPLEMENTED
     }
   }
-
-  "getting the fractions" should {
-    "return an HTTP Not Implemented response" in {
-      val response = LevyDeclarationController.fractions("empref", None)(FakeRequest()).futureValue
-      response.header.status shouldBe NOT_IMPLEMENTED
-    }
-  }
 }
+
+

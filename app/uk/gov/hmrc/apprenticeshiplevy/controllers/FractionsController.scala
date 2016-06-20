@@ -19,8 +19,8 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import play.api.mvc.Action
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
-trait LevyDeclarationController extends BaseController {
-  def declarations(empref: String, months: Option[Int]) = Action { NotImplemented }
+trait FractionsController extends BaseController {
+  def fractions(empref: String, months: Option[Int]) = Action { NotImplemented }
 }
 
-object LevyDeclarationController extends LevyDeclarationController
+object FractionsController extends FractionsController
