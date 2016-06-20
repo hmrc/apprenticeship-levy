@@ -21,12 +21,11 @@ import play.api.http.Status.NOT_IMPLEMENTED
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.test.UnitSpec
 
-
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
 
   "getting the levy declarations" should {
     "return an HTTP Not Implemented response" in {
-      val response = LevyDeclarationController.declarations("empref", None)(FakeRequest()).futureValue
+      val response = LevyDeclarationController.declarations("empref", None)(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
       response.header.status shouldBe NOT_IMPLEMENTED
     }
   }

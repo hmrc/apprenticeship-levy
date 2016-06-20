@@ -26,7 +26,7 @@ object HeaderValidatorAction extends ActionBuilder[Request] {
 
   private val ExpectedAcceptHeader = "application/vnd.hmrc.1.0+json"
 
-  def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
+  override def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
     request.headers.get(ACCEPT).contains(ExpectedAcceptHeader) match {
       case true => block(request)
       case false => Future.successful(ErrorAcceptHeaderInvalid.Result)
