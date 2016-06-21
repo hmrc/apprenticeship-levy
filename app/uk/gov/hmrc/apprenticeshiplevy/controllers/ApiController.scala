@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy
+package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-package object controllers {
-  val CODE_UNAUTHORIZED = "UNAUTHORIZED"
-  val CODE_INVALID_TAX_YEAR = "ERROR_TAX_YEAR_INVALID"
-  val CODE_INVALID_EMP_REF = "ERROR_EMP_REF_INVALID"
-  val CODE_BAD_REQUEST = "BAD_REQUEST"
-  val CODE_NOT_FOUND = "NOT_FOUND"
-  val CODE_INVALID_HEADER = "ACCEPT_HEADER_INVALID"
-  val CODE_INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
-  val CODE_NOT_IMPLEMENTED = "NOT_IMPLEMENTED"
-  val CODE_SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
+import play.api.libs.json.Json
+import play.api.mvc.Result
+import play.api.mvc.Results._
+import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
+import uk.gov.hmrc.play.microservice.controller.BaseController
+
+trait ApiController extends BaseController with HeaderValidator {
+
+  implicit class ErrorResponseSyntax(er: ErrorResponse) {
+    def result: Result = Status(er.httpStatusCode)(Json.toJson(er))
+  }
+
+  def withValidAcceptHeader = validateAccept(acceptHeaderValidationRules)
 }

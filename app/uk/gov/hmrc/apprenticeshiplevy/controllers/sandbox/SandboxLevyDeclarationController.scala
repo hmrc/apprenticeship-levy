@@ -16,16 +16,14 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
-import play.api.mvc.Action
 import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.LevyDeclarationController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.actions.HeaderValidatorAction
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 trait SandboxLevyDeclarationController extends LevyDeclarationController {
 
-  override def declarations(empref: String, months: Option[Int]) = HeaderValidatorAction.async { implicit request =>
+  override def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
     ETMPConnector.declarations(empref, months)
       .map(ds => Ok(Json.toJson(ds)))
   }

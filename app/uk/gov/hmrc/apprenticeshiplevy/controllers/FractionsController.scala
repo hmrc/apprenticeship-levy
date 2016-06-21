@@ -16,13 +16,11 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponse.ErrorNotImplemented
-import uk.gov.hmrc.apprenticeshiplevy.controllers.actions.HeaderValidatorAction
-import uk.gov.hmrc.play.microservice.controller.BaseController
+import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
 
-trait FractionsController extends BaseController {
-  def fractions(empref: String, months: Option[Int]) = HeaderValidatorAction {
-    ErrorNotImplemented.Result
+trait FractionsController extends ApiController {
+  def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader {
+    ErrorNotImplemented.result
   }
 }
 

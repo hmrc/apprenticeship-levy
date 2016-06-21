@@ -16,14 +16,11 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import play.api.mvc.Action
-import uk.gov.hmrc.play.microservice.controller.BaseController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponse.ErrorNotImplemented
-import uk.gov.hmrc.apprenticeshiplevy.controllers.actions.HeaderValidatorAction
+import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
 
-trait LevyDeclarationController extends BaseController {
-  def declarations(empref: String, months: Option[Int]) = HeaderValidatorAction {
-    ErrorNotImplemented.Result
+trait LevyDeclarationController extends  ApiController {
+  def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader {
+    ErrorNotImplemented.result
   }
 }
 
