@@ -41,7 +41,7 @@ trait ITMPConnector {
   }
 }
 
-object ITMPConnector extends ITMPConnector {
+object LiveITMPConnector extends ITMPConnector {
   override def itmpBaseUrl = AppContext.etmpUrl
 
   override def httpGet = WSHttp

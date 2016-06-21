@@ -57,7 +57,7 @@ trait ETMPConnector {
   }
 }
 
-object ETMPConnector extends ETMPConnector {
+object LiveETMPConnector extends ETMPConnector {
   override def etmpBaseUrl = AppContext.etmpUrl
 
   override def httpGet = WSHttp
