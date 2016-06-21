@@ -25,6 +25,6 @@ trait FractionsController {
   def itmpConnector: ITMPConnector
 
   def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
-    ITMPConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
+    itmpConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
   }
 }

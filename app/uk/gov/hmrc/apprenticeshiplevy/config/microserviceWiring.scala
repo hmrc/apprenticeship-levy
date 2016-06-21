@@ -47,9 +47,3 @@ object MicroserviceAuthConnector extends AuthConnector with ServicesConfig {
   }
 }
 
-object MicroserviceETMPConnector extends ETMPConnector with ServicesConfig {
-
-  override def httpGet: HttpGet = WSHttp
-
-  override val etmpBaseUrl = AppContext.etmpUrl
-}

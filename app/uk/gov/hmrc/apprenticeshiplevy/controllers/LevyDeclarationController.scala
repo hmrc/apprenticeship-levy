@@ -25,7 +25,7 @@ trait LevyDeclarationController {
   def etmpConnector: ETMPConnector
 
   def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
-    ETMPConnector.declarations(empref, months)
+    etmpConnector.declarations(empref, months)
       .map(ds => Ok(Json.toJson(ds)))
   }
 }

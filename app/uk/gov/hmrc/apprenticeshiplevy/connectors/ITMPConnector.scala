@@ -48,7 +48,7 @@ object ITMPConnector extends ITMPConnector {
 }
 
 object StubITMPConnector extends ITMPConnector {
-  override def itmpBaseUrl = AppContext.stubEtmpUrl
+  override def itmpBaseUrl = AppContext.stubItmpUrl
 
   override def httpGet = WSHttp
 }
