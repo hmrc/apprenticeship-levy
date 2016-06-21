@@ -18,7 +18,6 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.mvc.Results._
 import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
@@ -28,5 +27,5 @@ trait ApiController extends BaseController with HeaderValidator {
     def result: Result = Status(er.httpStatusCode)(Json.toJson(er))
   }
 
-  def withValidAcceptHeader = validateAccept(acceptHeaderValidationRules)
+  val withValidAcceptHeader = validateAccept(acceptHeaderValidationRules)
 }

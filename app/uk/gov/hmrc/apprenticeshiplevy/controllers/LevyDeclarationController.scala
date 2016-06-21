@@ -16,12 +16,18 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
+import play.api.libs.json.Json
+import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-trait LevyDeclarationController extends  ApiController {
-  def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader {
-    ErrorNotImplemented.result
+trait LevyDeclarationController {
+  self: ApiController =>
+  def etmpConnector: ETMPConnector
+
+  def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
+    ETMPConnector.declarations(empref, months)
+      .map(ds => Ok(Json.toJson(ds)))
   }
 }
 
-object LevyDeclarationController extends LevyDeclarationController
+
