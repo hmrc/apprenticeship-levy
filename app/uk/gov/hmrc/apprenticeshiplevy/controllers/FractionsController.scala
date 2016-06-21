@@ -16,12 +16,15 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
+import play.api.libs.json.Json
+import uk.gov.hmrc.apprenticeshiplevy.connectors.ITMPConnector
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-trait FractionsController extends ApiController {
-  def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader {
-    ErrorNotImplemented.result
+trait FractionsController {
+  self: ApiController =>
+  def itmpConnector: ITMPConnector
+
+  def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
+    ITMPConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
   }
 }
-
-object FractionsController extends FractionsController

@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
+package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-import uk.gov.hmrc.apprenticeshiplevy.connectors.StubETMPConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, LevyDeclarationController}
+import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, FractionsController}
 
-object SandboxLevyDeclarationController extends ApiController with LevyDeclarationController {
-  override def etmpConnector = StubETMPConnector
+
+object LiveFractionsController extends ApiController with FractionsController {
+  override def itmpConnector = ???
+
+  /**
+    * TODO: Remove this overridden method to enable the main implementation from the trait
+    */
+  override def fractions(empref: String, months: Option[Int]): Action[AnyContent] = withValidAcceptHeader {
+    NotImplemented
+  }
 }

@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
+package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-import uk.gov.hmrc.apprenticeshiplevy.connectors.StubETMPConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, LevyDeclarationController}
 
-object SandboxLevyDeclarationController extends ApiController with LevyDeclarationController {
-  override def etmpConnector = StubETMPConnector
+object LiveLevyDeclarationController extends ApiController with LevyDeclarationController {
+  override def etmpConnector: ETMPConnector = ???
+
+  /**
+    * TODO: Remove this overridden method to enable the main implementation from the trait
+    */
+  override def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader {
+    NotImplemented
+  }
 }

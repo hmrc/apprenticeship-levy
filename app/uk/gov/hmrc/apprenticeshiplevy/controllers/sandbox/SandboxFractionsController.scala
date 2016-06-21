@@ -16,15 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import play.api.libs.json.Json
-import uk.gov.hmrc.apprenticeshiplevy.connectors.ITMPConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.FractionsController
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import uk.gov.hmrc.apprenticeshiplevy.connectors.StubITMPConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, FractionsController}
 
-trait SandboxFractionsController extends FractionsController {
-  override def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
-    ITMPConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
-  }
+object SandboxFractionsController extends ApiController with FractionsController {
+  override def itmpConnector = StubITMPConnector
 }
-
-object SandboxFractionsController extends SandboxFractionsController
