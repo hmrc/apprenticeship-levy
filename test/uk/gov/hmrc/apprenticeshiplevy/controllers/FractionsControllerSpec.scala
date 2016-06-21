@@ -17,14 +17,20 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.scalatest.concurrent.ScalaFutures
-import play.api.http.Status.NOT_IMPLEMENTED
+import play.api.http.Status._
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.test.UnitSpec
 
 class FractionsControllerSpec extends UnitSpec with ScalaFutures {
   "getting the fractions" should {
+
+    "return a Not Acceptable response if the Accept header is not correctly set" in {
+      val response = FractionsController.fractions("empref", None)(FakeRequest()).futureValue
+      response.header.status shouldBe NOT_ACCEPTABLE
+    }
+
     "return an HTTP Not Implemented response" in {
-      val response = FractionsController.fractions("empref", None)(FakeRequest().withHeaders(("Accept" -> "application/vnd.hmrc.1.0+json"))).futureValue
+      val response = FractionsController.fractions("empref", None)(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
       response.header.status shouldBe NOT_IMPLEMENTED
     }
   }

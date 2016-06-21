@@ -16,61 +16,36 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import ErrorResponse.ErrorContentFormat
-import play.api.libs.json.Json.format
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Results
-import play.api.mvc.Results._
 import play.mvc.Http.Status._
+import uk.gov.hmrc.api.controllers.ErrorResponse
 
-case class ResponseContents(code: String, message: String) {
 
-  def getStatus: Results.Status = code match {
-    case CODE_UNAUTHORIZED => Unauthorized
-    case CODE_INVALID_TAX_YEAR => BadRequest
-    case CODE_INVALID_EMP_REF => BadRequest
-    case CODE_BAD_REQUEST => BadRequest
-    case CODE_NOT_FOUND => NotFound
-    case CODE_INVALID_HEADER => NotAcceptable
-    case CODE_INTERNAL_SERVER_ERROR => InternalServerError
-    case CODE_NOT_IMPLEMENTED => NotImplemented
-    case CODE_SERVICE_UNAVAILABLE => ServiceUnavailable
-  }
-}
+object ErrorResponses {
 
-case class ErrorResponse(httpStatusCode: Int, content: ResponseContents) extends Error {
-  lazy val JSON: JsValue = Json.toJson(content)(ErrorContentFormat)
-  lazy val ResponseContents = Json.stringify(JSON)
-  lazy val Result = Status(httpStatusCode)(JSON)
-}
+  val CODE_UNAUTHORIZED = "UNAUTHORIZED"
+  val CODE_INVALID_TAX_YEAR = "ERROR_TAX_YEAR_INVALID"
+  val CODE_INVALID_EMP_REF = "ERROR_EMP_REF_INVALID"
+  val CODE_BAD_REQUEST = "BAD_REQUEST"
+  val CODE_NOT_FOUND = "NOT_FOUND"
+  val CODE_INVALID_HEADER = "ACCEPT_HEADER_INVALID"
+  val CODE_INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
+  val CODE_NOT_IMPLEMENTED = "NOT_IMPLEMENTED"
+  val CODE_SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE"
 
-object ErrorResponse {
-  implicit val ErrorContentFormat = format[ResponseContents]
+  object ErrorUnauthorized extends ErrorResponse(UNAUTHORIZED, CODE_UNAUTHORIZED, "Invalid Authentication information provided")
 
-  val ErrorUnauthorized = ErrorResponse(UNAUTHORIZED,
-    ResponseContents(CODE_UNAUTHORIZED, "Invalid Authentication information provided"))
+  object ErrorTaxYearInvalid extends ErrorResponse(BAD_REQUEST, CODE_INVALID_TAX_YEAR, "Tax Year must be of the form yyyy-yy and the year values must be consecutive. ex. 2012-13")
 
-  val ErrorTaxYearInvalid = ErrorResponse(BAD_REQUEST,
-    ResponseContents(CODE_INVALID_TAX_YEAR,
-      "Tax Year must be of the form yyyy-yy and the year values must be consecutive. ex. 2012-13"))
+  object ErrorEmpRefInvalid extends ErrorResponse(BAD_REQUEST, CODE_INVALID_EMP_REF, "EmpRef requires two identifiers separated by a slash")
 
-  val ErrorEmpRefInvalid = ErrorResponse(BAD_REQUEST,
-    ResponseContents(CODE_INVALID_EMP_REF, "EmpRef requires two identifiers separated by a slash"))
+  object ErrorGenericBadRequest extends ErrorResponse(BAD_REQUEST, CODE_BAD_REQUEST, "Bad Request")
 
-  val ErrorGenericBadRequest = ErrorResponse(BAD_REQUEST,
-    ResponseContents(CODE_BAD_REQUEST, "Bad Request"))
+  object ErrorNotFound extends ErrorResponse(NOT_FOUND, "NOT_FOUND", "Resource was not found")
 
-  val ErrorNotFound = ErrorResponse(NOT_FOUND, ResponseContents("NOT_FOUND", "Resource was not found"))
+  object ErrorInternalServerError extends ErrorResponse(INTERNAL_SERVER_ERROR, CODE_INTERNAL_SERVER_ERROR, "Internal server error")
 
-  val ErrorAcceptHeaderInvalid = ErrorResponse(NOT_ACCEPTABLE,
-    ResponseContents(CODE_INVALID_HEADER, "The accept header is missing or invalid"))
+  object ErrorServiceUnavailable extends ErrorResponse(SERVICE_UNAVAILABLE, CODE_SERVICE_UNAVAILABLE, "Could not connect to DES endpoint")
 
-  val ErrorInternalServerError = ErrorResponse(INTERNAL_SERVER_ERROR,
-    ResponseContents(CODE_INTERNAL_SERVER_ERROR, "Internal server error"))
+  object ErrorNotImplemented extends ErrorResponse(NOT_IMPLEMENTED, CODE_SERVICE_UNAVAILABLE, "Service endpoint is not implemented")
 
-  val ErrorServiceUnavailable = ErrorResponse(SERVICE_UNAVAILABLE,
-    ResponseContents(CODE_SERVICE_UNAVAILABLE, "Could not connect to DES endpoint"))
-
-  val ErrorNotImplemented = ErrorResponse(NOT_IMPLEMENTED,
-    ResponseContents(CODE_SERVICE_UNAVAILABLE, "Service endpoint is not implemented"))
 }
