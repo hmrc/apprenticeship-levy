@@ -47,7 +47,7 @@ object LiveITMPConnector extends ITMPConnector {
   override def httpGet = WSHttp
 }
 
-object StubITMPConnector extends ITMPConnector {
+object SandboxITMPConnector extends ITMPConnector {
   override def itmpBaseUrl = AppContext.stubItmpUrl
 
   override def httpGet = WSHttp

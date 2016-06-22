@@ -63,7 +63,7 @@ object LiveETMPConnector extends ETMPConnector {
   override def httpGet = WSHttp
 }
 
-object StubETMPConnector extends ETMPConnector {
+object SandboxETMPConnector extends ETMPConnector {
   override def etmpBaseUrl = AppContext.stubEtmpUrl
 
   override def httpGet = WSHttp
