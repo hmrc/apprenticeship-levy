@@ -16,10 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import java.net.URLEncoder
-
-import play.api.hal.{Hal, HalLink}
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.hal.{Hal, HalLink, HalResource}
+import play.api.libs.json.JsObject
 import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxAuthConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ApiController
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
@@ -30,17 +28,18 @@ object SandboxController extends ApiController {
     SandboxAuthConnector.getEmprefs.map(es => Ok(transformEmpRefs(es)))
   }
 
-  private def transformEmpRefs(empRefs: Seq[String]): JsValue = {
-    val url = uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxController.root().url
+  private def transformEmpRefs(empRefs: Seq[String]): HalResource = {
+    import SandboxLinkHelper._
 
-    val links = empRefs.map(empref => {
-      val encoded_er = URLEncoder.encode(empref, "UTF-8")
-      HalLink(empref, s"$url/$encoded_er")
-    })
+    val self = selfLink(uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxController.root().url)
 
-    val self = selfLink(url)
-    Json.toJson(Hal.hal(Json.toJson(JsObject(Seq())), (self +: links).toVector))
+    val links = self +: empRefs.map { empref =>
+      val emprefUrl = uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxEmprefRoutesController.routes(empref).url
+      HalLink(empref, emprefUrl)
+    }
+    Hal.hal(JsObject(Seq()), links.map(stripSandboxForDev).toVector)
   }
 
-  private def selfLink(url: String) = HalLink("self", url)
+
 }
+

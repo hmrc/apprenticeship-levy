@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import play.api.hal.HalResource
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
@@ -28,4 +29,6 @@ trait ApiController extends BaseController with HeaderValidator {
   }
 
   val withValidAcceptHeader = validateAccept(acceptHeaderValidationRules)
+
+  def Ok(hal:HalResource) : Result = Ok(Json.toJson(hal)).withHeaders("Content-Type" -> "application/hal+json")
 }

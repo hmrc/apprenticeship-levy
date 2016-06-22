@@ -16,32 +16,21 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import play.api.hal.{HalLink, HalLinks}
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.json.Json
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import play.api.hal.{Hal, HalLinks}
+import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ApiController
 import uk.gov.hmrc.apprenticeshiplevy.data.Links
 
-import scala.concurrent.Future
-
 trait SandboxEmprefRoutesController extends ApiController {
 
-  val SandboxRegex = "^\\/?sandbox".r
+  import SandboxLinkHelper._
 
-  def routes(empref: String) = withValidAcceptHeader.async { implicit request =>
-    Future {
-      Links.data.get(empref).map { links =>
-        val selfLink = HalLink("self", uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxEmprefRoutesController.routes(empref).url)
-        val halLinks = Vector(selfLink) ++ links
-        val transformedLinks = HalLinks(halLinks.map(stripSandboxForDev))
-        Ok(Json.toJson(transformedLinks))
-      }.getOrElse(NotFound)
-    }
+  def routes(empref: String) = withValidAcceptHeader { implicit request =>
+    Links.data.get(empref).map { links =>
+      val self = selfLink(uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxEmprefRoutesController.routes(empref).url)
+      Ok(Hal.hal(JsObject(Seq.empty), (self +: links).map(stripSandboxForDev).toVector))
+    }.getOrElse(NotFound)
   }
-
-  private def stripSandboxForDev(halLink: HalLink) =
-    if (AppContext.env != "Dev") halLink.copy(href = SandboxRegex.replaceFirstIn(halLink.href, "")) else halLink
 }
 
 object SandboxEmprefRoutesController extends SandboxEmprefRoutesController
