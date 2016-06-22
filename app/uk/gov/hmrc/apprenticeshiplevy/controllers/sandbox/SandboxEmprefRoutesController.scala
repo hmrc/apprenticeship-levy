@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import java.net.URLEncoder
-
 import play.api.hal.{HalLink, HalLinks}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ApiController
 import uk.gov.hmrc.apprenticeshiplevy.data.Links
 
@@ -28,17 +27,21 @@ import scala.concurrent.Future
 
 trait SandboxEmprefRoutesController extends ApiController {
 
-  def routes(empref: String) = withValidAcceptHeader.async { implicit request =>
+  val SandboxRegex = "^\\/?sandbox".r
 
+  def routes(empref: String) = withValidAcceptHeader.async { implicit request =>
     Future {
       Links.data.get(empref).map { links =>
-        val urlEncodedEmpref = URLEncoder.encode(empref, "UTF-8")
-        val selfLink = HalLink("self", s"/sandbox/epaye/$urlEncodedEmpref")
+        val selfLink = HalLink("self", uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxEmprefRoutesController.routes(empref).url)
         val halLinks = Vector(selfLink) ++ links
-        Ok(Json.toJson(HalLinks(halLinks)))
+        val transformedLinks = HalLinks(halLinks.map(stripSandboxForDev))
+        Ok(Json.toJson(transformedLinks))
       }.getOrElse(NotFound)
     }
   }
+
+  private def stripSandboxForDev(halLink: HalLink) =
+    if (AppContext.env == "Dev") halLink.copy(href = SandboxRegex.replaceFirstIn(halLink.href, "")) else halLink
 }
 
 object SandboxEmprefRoutesController extends SandboxEmprefRoutesController

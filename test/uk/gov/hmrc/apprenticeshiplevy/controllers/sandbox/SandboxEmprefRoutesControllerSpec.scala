@@ -17,8 +17,8 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.test.{FakeApplication, FakeRequest}
 import uk.gov.hmrc.play.test.UnitSpec
 
 class SandboxEmprefRoutesControllerSpec extends UnitSpec with ScalaFutures with IntegrationPatience {
@@ -26,14 +26,18 @@ class SandboxEmprefRoutesControllerSpec extends UnitSpec with ScalaFutures with 
   "getting the routes for a given empref" should {
 
     "return links for a known empref" in {
-      val result = SandboxEmprefRoutesController.routes("123/AB12345")(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
 
-      result.header.status shouldBe OK
-      val json = contentAsJson(result)
+      running(FakeApplication()) {
 
-      (json \ "_links" \ "self" \ "href").as[String] shouldBe "/sandbox/epaye/123%2FAB12345"
-      (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/sandbox/epaye/123%2FAB12345/fractions"
-      (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/sandbox/epaye/123%2FAB12345/declarations"
+        val result = SandboxEmprefRoutesController.routes("123/AB12345")(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
+
+        result.header.status shouldBe OK
+        val json = contentAsJson(result)
+
+        (json \ "_links" \ "self" \ "href").as[String] shouldBe "/sandbox/epaye/123%2FAB12345"
+        (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/sandbox/epaye/123%2FAB12345/fractions"
+        (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/sandbox/epaye/123%2FAB12345/declarations"
+      }
     }
 
     "return NOT FOUND for a non known empref" in {
