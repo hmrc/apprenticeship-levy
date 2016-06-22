@@ -43,7 +43,7 @@ trait ETMPConnector {
 
   def etmpBaseUrl: String
 
-  def httpGet: HttpGet = WSHttp
+  def httpGet: HttpGet
 
   def declarations(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[ETMPLevyDeclarations] = {
     val url = (s"$etmpBaseUrl/empref/${helper.urlEncode(empref)}/declarations", months) match {
@@ -60,11 +60,11 @@ trait ETMPConnector {
 object LiveETMPConnector extends ETMPConnector {
   override def etmpBaseUrl = AppContext.etmpUrl
 
-//  override def httpGet = WSHttp
+  override def httpGet = WSHttp
 }
 
 object SandboxETMPConnector extends ETMPConnector {
   override def etmpBaseUrl = AppContext.stubEtmpUrl
 
-//  override def httpGet = WSHttp
+  override def httpGet = WSHttp
 }
