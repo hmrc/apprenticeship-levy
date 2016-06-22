@@ -41,7 +41,7 @@ trait SandboxEmprefRoutesController extends ApiController {
   }
 
   private def stripSandboxForDev(halLink: HalLink) =
-    if (AppContext.env == "Dev") halLink.copy(href = SandboxRegex.replaceFirstIn(halLink.href, "")) else halLink
+    if (AppContext.env != "Dev") halLink.copy(href = SandboxRegex.replaceFirstIn(halLink.href, "")) else halLink
 }
 
 object SandboxEmprefRoutesController extends SandboxEmprefRoutesController
