@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
+package uk.gov.hmrc.apprenticeshiplevy.sandbox
 
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import play.api.test.{FakeApplication, FakeRequest}
 import play.api.test.Helpers._
+import play.api.test.{FakeApplication, FakeRequest}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxController
 import uk.gov.hmrc.play.test.UnitSpec
 
 class SandboxControllerSpec extends UnitSpec with ScalaFutures with IntegrationPatience {
