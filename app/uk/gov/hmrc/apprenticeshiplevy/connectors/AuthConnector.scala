@@ -40,3 +40,9 @@ object SandboxAuthConnector extends AuthConnector with ServicesConfig {
   override val authBaseUrl: String = baseUrl("stub-auth")
   override val http: HttpGet = WSHttp
 }
+
+object LiveAuthConnector extends AuthConnector with ServicesConfig {
+  override def authBaseUrl: String = baseUrl("auth")
+
+  override def http: HttpGet = WSHttp
+}

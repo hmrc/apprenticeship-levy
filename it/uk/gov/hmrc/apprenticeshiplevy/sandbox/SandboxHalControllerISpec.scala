@@ -39,6 +39,24 @@ class SandboxHalControllerISpec extends UnitSpec with ScalaFutures with Integrat
     }
   }
 
+  "getting the routes" should {
+    "return the declarations and fractions link for each empref" in {
+      val result = testController.emprefLinks("123/AB12345")(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
+      result.header.status shouldBe OK
+      val json = contentAsJson(result)
+
+      (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/123%2FAB12345"
+      (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/123%2FAB12345/fractions"
+      (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/123%2FAB12345/declarations"
+    }
+
+    "return NOT FOUND for a non known empref" in {
+      val result = testController.emprefLinks("UNKNOWN")(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
+
+      result.header.status shouldBe NOT_FOUND
+    }
+  }
+
   lazy val dummyAuthConnector = new AuthConnector {
     override def authBaseUrl: String = ???
 

@@ -25,6 +25,10 @@ trait HalController extends ApiController {
 
   def rootUrl: String
 
+  def declarationsUrl(empref: String): String
+
+  def fractionsUrl(empref: String): String
+
   def emprefUrl(empref: String): String
 
   // Hook to allow post-processing of the links, specifically for sandbox handling
@@ -36,6 +40,23 @@ trait HalController extends ApiController {
 
   private[controllers] def transformEmpRefs(empRefs: Seq[String]): HalResource = {
     val links = selfLink(rootUrl) +: empRefs.map(empref => HalLink(empref, emprefUrl(empref)))
+
+    Hal.linksSeq(links.map(processLink))
+  }
+
+  def emprefLinks(empref: String) = withValidAcceptHeader.async { implicit request =>
+    authConnector.getEmprefs.map { emprefs =>
+      if (emprefs.contains(empref)) Ok(prepareLinks(empref))
+      else NotFound
+    }
+  }
+
+  private[controllers] def prepareLinks(empref: String): HalResource = {
+    val links = Seq(
+      selfLink(emprefUrl(empref)),
+      HalLink("declarations", declarationsUrl(empref)),
+      HalLink("fractions", fractionsUrl(empref))
+    )
 
     Hal.linksSeq(links.map(processLink))
   }
