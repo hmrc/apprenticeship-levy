@@ -16,21 +16,20 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import play.api.hal.{Hal, HalLinks}
-import play.api.libs.json.{JsObject, Json}
+import play.api.hal.Hal
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ApiController
 import uk.gov.hmrc.apprenticeshiplevy.data.Links
 
-trait SandboxEmprefRoutesController extends ApiController {
-
-  import SandboxLinkHelper._
-
+trait SandboxEmprefRoutesController extends ApiController with SandboxLinkHelper {
   def routes(empref: String) = withValidAcceptHeader { implicit request =>
     Links.data.get(empref).map { links =>
       val self = selfLink(uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxEmprefRoutesController.routes(empref).url)
-      Ok(Hal.hal(JsObject(Seq.empty), (self +: links).map(stripSandboxForDev).toVector))
+      Ok(Hal.linksSeq((self +: links).map(stripSandboxForNonDev)))
     }.getOrElse(NotFound)
   }
 }
 
-object SandboxEmprefRoutesController extends SandboxEmprefRoutesController
+object SandboxEmprefRoutesController extends SandboxEmprefRoutesController {
+  override def env: String = AppContext.env
+}

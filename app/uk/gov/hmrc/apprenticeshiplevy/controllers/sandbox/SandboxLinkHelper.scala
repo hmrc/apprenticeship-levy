@@ -17,14 +17,13 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import play.api.hal.HalLink
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 
-object SandboxLinkHelper {
-  val SandboxRegex = "/sandbox\\/?".r
+trait SandboxLinkHelper {
+  def env: String
 
-  def stripSandboxForDev(halLink: HalLink): HalLink = {
-    if (AppContext.env != "Dev") halLink.copy(href = SandboxRegex.replaceFirstIn(halLink.href, "/")) else halLink
-  }
+  val SandboxRegex = "^/sandbox\\/?".r
 
-  def selfLink(url: String): HalLink = HalLink("self", url)
+  def stripSandboxForNonDev(halLink: HalLink): HalLink = halLink.copy(href = stripSandboxForNonDev(halLink.href))
+
+  def stripSandboxForNonDev(s: String): String = if (env != "Dev") SandboxRegex.replaceFirstIn(s, "/") else s
 }

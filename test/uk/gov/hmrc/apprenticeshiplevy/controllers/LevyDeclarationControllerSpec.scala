@@ -36,5 +36,3 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
     }
   }
 }
-
-
