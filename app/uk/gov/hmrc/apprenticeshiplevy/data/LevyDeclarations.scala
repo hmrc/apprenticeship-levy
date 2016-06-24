@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data
 
-import org.joda.time.{LocalDate, Months}
+import org.joda.time.LocalDate
 import play.api.libs.json.Json
 
 case class PayrollMonth(year: Int, month: Int) {

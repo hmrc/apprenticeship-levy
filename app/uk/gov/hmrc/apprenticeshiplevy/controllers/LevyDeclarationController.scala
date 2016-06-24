@@ -16,17 +16,26 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollMonth}
 
 trait LevyDeclarationController {
   self: ApiController =>
   def etmpConnector: ETMPConnector
 
   def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
-    etmpConnector.declarations(empref, months)
-      .map(ds => Ok(Json.toJson(ds)))
+
+    etmpConnector.charges(empref.replace("/", ""), "2017_18").map { charges =>
+      val ds = charges.charges.filter(_.chargeType.contains("APPRENTICESHIP LEVY")).flatMap { charge =>
+        charge.period.map { period =>
+          LevyDeclaration(PayrollMonth(2017, 3), period.value, "original", period.endDate.getOrElse("2017-03-03"))
+        }
+      }
+
+      Ok(Json.toJson(LevyDeclarations(empref, None, ds)))
+    }
   }
 }
 

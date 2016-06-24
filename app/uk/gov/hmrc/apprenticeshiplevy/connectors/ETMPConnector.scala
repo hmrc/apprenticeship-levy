@@ -21,6 +21,7 @@ import play.api.Logger
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.PayrollMonth
+import uk.gov.hmrc.apprenticeshiplevy.data.charges.Charges
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import views.html.helper
 
@@ -38,7 +39,6 @@ object ETMPLevyDeclarations {
   implicit val formats = Json.format[ETMPLevyDeclarations]
 }
 
-
 trait ETMPConnector {
 
   def etmpBaseUrl: String
@@ -54,6 +54,12 @@ trait ETMPConnector {
     Logger.debug(s"Calling ETMP at $url")
 
     httpGet.GET[ETMPLevyDeclarations](url)
+  }
+
+  def charges(empref: String, taxYear: String)(implicit hc: HeaderCarrier): Future[Charges] = {
+    val url = s"$etmpBaseUrl/pay-as-you-earn/employers/$empref/charges/taxyear/$taxYear"
+
+    httpGet.GET[Charges](url)
   }
 }
 
