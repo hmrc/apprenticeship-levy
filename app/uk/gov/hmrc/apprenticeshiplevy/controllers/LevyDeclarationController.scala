@@ -16,10 +16,15 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import org.joda.time.LocalDate
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
-import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, TaxYear}
+import uk.gov.hmrc.apprenticeshiplevy.data.charges.Charge
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollMonth}
+import uk.gov.hmrc.play.http.NotFoundException
+
+import scala.concurrent.Future
 
 trait LevyDeclarationController {
   self: ApiController =>
@@ -27,15 +32,24 @@ trait LevyDeclarationController {
 
   def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
 
-    etmpConnector.charges(empref.replace("/", ""), "2017_18").map { charges =>
-      val ds = charges.charges.filter(_.chargeType.contains("APPRENTICESHIP LEVY")).flatMap { charge =>
-        charge.period.map { period =>
-          val originalOrAmended = if (charge.mainType == "EYU") "amended" else "original"
-          LevyDeclaration(PayrollMonth(2017, 3), period.value, originalOrAmended, period.endDate.getOrElse("2017-03-03"))
+    val fs: Seq[Future[Seq[LevyDeclaration]]] =
+      taxYears(LocalDate.now, months.getOrElse(48)).map { taxYear =>
+        etmpConnector.charges(empref.replace("/", ""), taxYear).map { charges =>
+          charges.charges.filter(_.chargeType.contains("APPRENTICESHIP LEVY")).flatMap(convertCharge)
+        }.recover {
+          case t: NotFoundException => Seq()
         }
       }
 
-      Ok(Json.toJson(LevyDeclarations(empref, None, ds)))
+    Future.sequence(fs).map { ds => Ok(Json.toJson(LevyDeclarations(empref, None, ds.flatten))) }
+  }
+
+  def taxYears(now: LocalDate, months: Int): Seq[TaxYear] = TaxYear.yearsInRange(now.minusMonths(months), now)
+
+  def convertCharge(charge: Charge): Seq[LevyDeclaration] = {
+    charge.period.map { period =>
+      val originalOrAmended = if (charge.mainType == "EYU") "amended" else "original"
+      LevyDeclaration(PayrollMonth(2017, 3), period.value, originalOrAmended, period.endDate.getOrElse("2017-03-03"))
     }
   }
 }

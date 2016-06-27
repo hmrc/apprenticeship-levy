@@ -24,6 +24,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.PayrollMonth
 import uk.gov.hmrc.apprenticeshiplevy.data.charges.Charges
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import views.html.helper
+import com.github.nscala_time.time.Imports._
 
 import scala.concurrent.Future
 
@@ -37,6 +38,26 @@ case class ETMPLevyDeclarations(empref: String, schemeCessationDate: Option[Loca
 
 object ETMPLevyDeclarations {
   implicit val formats = Json.format[ETMPLevyDeclarations]
+}
+
+// Starting year must be 2xxx - at some point we'll enforce this
+case class TaxYear(startingYear: Int) extends AnyVal {
+  def stringForETMP = s"${startingYear}_${startingYear - 1999}"
+
+  def next: TaxYear = TaxYear(startingYear + 1)
+}
+
+object TaxYear {
+  def yearsInRange(startDate: LocalDate, endDate: LocalDate): Seq[TaxYear] = {
+    if (startDate > endDate) Seq()
+    else forDate(startDate) +: yearsInRange(startDate.plusYears(1), endDate)
+  }
+
+  def forDate(date: LocalDate): TaxYear = {
+    val refDate = new LocalDate(date.getYear, 4, 6)
+    if (date < refDate) TaxYear(date.getYear - 1)
+    else TaxYear(date.getYear)
+  }
 }
 
 trait ETMPConnector {
@@ -56,8 +77,8 @@ trait ETMPConnector {
     httpGet.GET[ETMPLevyDeclarations](url)
   }
 
-  def charges(empref: String, taxYear: String)(implicit hc: HeaderCarrier): Future[Charges] = {
-    val url = s"$etmpBaseUrl/pay-as-you-earn/employers/$empref/charges/taxyear/$taxYear"
+  def charges(empref: String, taxYear: TaxYear)(implicit hc: HeaderCarrier): Future[Charges] = {
+    val url = s"$etmpBaseUrl/pay-as-you-earn/employers/$empref/charges/taxyear/${taxYear.stringForETMP}"
 
     httpGet.GET[Charges](url)
   }
