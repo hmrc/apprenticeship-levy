@@ -30,7 +30,8 @@ trait LevyDeclarationController {
     etmpConnector.charges(empref.replace("/", ""), "2017_18").map { charges =>
       val ds = charges.charges.filter(_.chargeType.contains("APPRENTICESHIP LEVY")).flatMap { charge =>
         charge.period.map { period =>
-          LevyDeclaration(PayrollMonth(2017, 3), period.value, "original", period.endDate.getOrElse("2017-03-03"))
+          val originalOrAmended = if (charge.mainType == "EYU") "amended" else "original"
+          LevyDeclaration(PayrollMonth(2017, 3), period.value, originalOrAmended, period.endDate.getOrElse("2017-03-03"))
         }
       }
 
