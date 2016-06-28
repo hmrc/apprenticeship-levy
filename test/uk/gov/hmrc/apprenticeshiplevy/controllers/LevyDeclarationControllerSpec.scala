@@ -106,5 +106,5 @@ object TestETMPConnector extends ETMPConnector {
 }
 
 object TestLevyDeclarationController extends LevyDeclarationController with ApiController {
-  override def etmpConnector: ETMPConnector = ???
+  override def etmpConnector: ETMPConnector = TestETMPConnector
 }
