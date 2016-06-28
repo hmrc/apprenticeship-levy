@@ -16,12 +16,14 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import org.joda.time.LocalDate
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, ETMPLevyDeclarations, TaxYear}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
-import uk.gov.hmrc.apprenticeshiplevy.data.charges.{Charge, Charges}
+import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, PayrollMonth}
+import uk.gov.hmrc.apprenticeshiplevy.data.charges.{Charge, Charges, Period}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -40,6 +42,10 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
     }
   }
 
+  /*
+  * The implementations of these are a wild guess at the moment. These tests will evolve with our
+  * understanding and experience of the DES API
+   */
   "isLevyCharge" should {
     "return true if chargeType contains 'APPRENTICESHIP LEVY'" in {
       val charge = Charge("RTI Spec Charge-APPRENTICESHIP LEVY", "FPS", Seq())
@@ -53,6 +59,10 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
     }
   }
 
+  /*
+ * The implementations of these are a wild guess at the moment. These tests will evolve with our
+ * understanding and experience of the DES API
+  */
   "originalOrAmended" should {
     "return 'original'" in {
       val charge = Charge("", "FPS", Seq())
@@ -62,6 +72,27 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
     "return 'amended'" in {
       val charge = Charge("", "EYU", Seq())
       TestLevyDeclarationController.originalOrAmended(charge) shouldBe "amended"
+    }
+  }
+
+  "convertToDeclaration" should {
+    "convert fields as expected" in {
+      val data = Seq(
+        (Charge("RTI Spec Charge-APPRENTICESHIP LEVY", "FPS", Seq(Period(None, None, 1000.00, 0, 0))),
+          TaxYear(2016),
+          Seq(
+            LevyDeclaration(PayrollMonth(2016, 12), 1000.00, "original", new LocalDate(2017, 4, 5))
+          )),
+        (Charge("RTI Spec Charge-APPRENTICESHIP LEVY", "EYU", Seq(Period(Some(new LocalDate(2016, 4, 6)), Some(new LocalDate(2016, 5, 5)), 1000.00, 0, 0))),
+          TaxYear(2016),
+          Seq(
+            LevyDeclaration(PayrollMonth(2016, 1), 1000.00, "amended", new LocalDate(2016, 5, 5))
+          ))
+      )
+
+      data.foreach {
+        case (c, y, ds) => TestLevyDeclarationController.convertToDeclaration(c, y) shouldBe ds
+      }
     }
   }
 }
