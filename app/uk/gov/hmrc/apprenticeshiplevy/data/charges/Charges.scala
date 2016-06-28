@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.charges
 
-import org.joda.time.LocalDateTime
+import org.joda.time.{LocalDate, LocalDateTime}
 
 case class Charges(chargeResponseType: String, responseTimestamp: LocalDateTime, requestTaxYear: String, requestEmpref: String, charges: Seq[Charge])
 
 case class Charge(chargeType: String, mainType: String, period: Seq[Period])
 
-case class Period(startDate: Option[String], endDate: Option[String], value: BigDecimal, outstanding: BigDecimal, cleared: BigDecimal)
+case class Period(startDate: Option[LocalDate], endDate: Option[LocalDate], value: BigDecimal, outstanding: BigDecimal, cleared: BigDecimal)

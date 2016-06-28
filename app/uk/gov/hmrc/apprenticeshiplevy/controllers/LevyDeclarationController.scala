@@ -25,6 +25,8 @@ import uk.gov.hmrc.apprenticeshiplevy.data.charges.Charge
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollMonth}
 import uk.gov.hmrc.play.http.NotFoundException
 
+import com.github.nscala_time.time.Imports._
+
 import scala.concurrent.Future
 
 trait LevyDeclarationController {
@@ -32,10 +34,16 @@ trait LevyDeclarationController {
   def etmpConnector: ETMPConnector
 
   def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
+    val now = LocalDate.now
+    val earliest = now.minusMonths(months.getOrElse(48))
+
     val fs: Seq[Future[Seq[LevyDeclaration]]] =
-      taxYears(LocalDate.now, months.getOrElse(48)).map { taxYear =>
+      TaxYear.yearsInRange(earliest, now).map { taxYear =>
         etmpConnector.charges(empref.replace("/", ""), taxYear).map { charges =>
-          charges.charges.filter(_.chargeType.contains("APPRENTICESHIP LEVY")).flatMap(convertCharge)
+          charges.charges
+            .filter(_.chargeType.contains("APPRENTICESHIP LEVY"))
+            .flatMap(convertCharge)
+            .filter(_.submissionDate >= earliest)
         }.recover {
           case t: NotFoundException => Seq()
         }
@@ -47,12 +55,10 @@ trait LevyDeclarationController {
     }
   }
 
-  def taxYears(now: LocalDate, months: Int): Seq[TaxYear] = TaxYear.yearsInRange(now.minusMonths(months), now)
-
   def convertCharge(charge: Charge): Seq[LevyDeclaration] = {
     charge.period.map { period =>
       val originalOrAmended = if (charge.mainType == "EYU") "amended" else "original"
-      LevyDeclaration(PayrollMonth(2017, 3), period.value, originalOrAmended, period.endDate.getOrElse("2017-03-03"))
+      LevyDeclaration(PayrollMonth(2017, 3), period.value, originalOrAmended, period.endDate.getOrElse(new LocalDate(2017, 3, 3)))
     }
   }
 }
