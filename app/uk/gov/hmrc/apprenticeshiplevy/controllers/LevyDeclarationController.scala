@@ -19,6 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import org.joda.time.LocalDate
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
+import uk.gov.hmrc.api.controllers.ErrorNotFound
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, TaxYear}
 import uk.gov.hmrc.apprenticeshiplevy.data.charges.Charge
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollMonth}
@@ -31,7 +32,6 @@ trait LevyDeclarationController {
   def etmpConnector: ETMPConnector
 
   def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
-
     val fs: Seq[Future[Seq[LevyDeclaration]]] =
       taxYears(LocalDate.now, months.getOrElse(48)).map { taxYear =>
         etmpConnector.charges(empref.replace("/", ""), taxYear).map { charges =>
@@ -41,7 +41,10 @@ trait LevyDeclarationController {
         }
       }
 
-    Future.sequence(fs).map { ds => Ok(Json.toJson(LevyDeclarations(empref, None, ds.flatten))) }
+    Future.reduce(fs)(_ ++ _).map {
+      case Seq() => ErrorNotFound.result
+      case ds => Ok(Json.toJson(LevyDeclarations(empref, None, ds)))
+    }
   }
 
   def taxYears(now: LocalDate, months: Int): Seq[TaxYear] = TaxYear.yearsInRange(now.minusMonths(months), now)
