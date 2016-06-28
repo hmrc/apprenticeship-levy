@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import com.github.nscala_time.time.Imports._
 import org.joda.time.LocalDate
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.Json
+import play.api.mvc.Result
 import uk.gov.hmrc.api.controllers.ErrorNotFound
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, TaxYear}
 import uk.gov.hmrc.apprenticeshiplevy.data.charges.Charge
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollMonth}
 import uk.gov.hmrc.play.http.NotFoundException
-
-import com.github.nscala_time.time.Imports._
 
 import scala.concurrent.Future
 
@@ -34,28 +34,40 @@ trait LevyDeclarationController {
   def etmpConnector: ETMPConnector
 
   def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
-    val now = LocalDate.now
-    val earliest = now.minusMonths(months.getOrElse(48))
+    retrieveDeclarations(empref, months.getOrElse(48), LocalDate.now)
+  }
 
-    val fs: Seq[Future[Seq[LevyDeclaration]]] =
-      TaxYear.yearsInRange(earliest, now).map { taxYear =>
-        etmpConnector.charges(empref.replace("/", ""), taxYear).map { charges =>
-          charges.charges
-            .filter(_.chargeType.contains("APPRENTICESHIP LEVY"))
-            .flatMap(convertCharge)
-            .filter(_.submissionDate >= earliest)
-        }.recover {
-          case t: NotFoundException => Seq()
-        }
-      }
+  private[controllers] def retrieveDeclarations(empref: String, months: Int, now: LocalDate): Future[Result] = {
+    val earliest = now.minusMonths(months)
+    val taxYears = TaxYear.yearsInRange(earliest, now)
 
-    Future.reduce(fs)(_ ++ _).map {
-      case Seq() => ErrorNotFound.result
-      case ds => Ok(Json.toJson(LevyDeclarations(empref, None, ds)))
+    Future
+      .traverse(taxYears)(ty => declarationsForTaxYear(empref, ty))
+      .map(ds => buildResult(ds.flatten, empref, earliest))
+  }
+
+  private[controllers] def buildResult(ds: Seq[LevyDeclaration], empref: String, earliest: LocalDate): Result = {
+    case Seq() => ErrorNotFound.result
+    case _ => Ok(Json.toJson(buildDeclarations(ds, empref, earliest)))
+  }
+
+  private[controllers] def buildDeclarations(ds: Seq[LevyDeclaration], empref: String, earliest: LocalDate): LevyDeclarations =
+    LevyDeclarations(empref, None, ds.filter(_.submissionDate >= earliest))
+
+
+  private[controllers] def declarationsForTaxYear(empref: String, taxYear: TaxYear): Future[Seq[LevyDeclaration]] = {
+    etmpConnector.charges(empref.replace("/", ""), taxYear).map { charges =>
+      charges.charges
+        .filter(isLevyCharge)
+        .flatMap(convertToDeclaration)
+    }.recover {
+      case t: NotFoundException => Seq()
     }
   }
 
-  def convertCharge(charge: Charge): Seq[LevyDeclaration] = {
+  private[controllers] def isLevyCharge(charge: Charge): Boolean = charge.chargeType.contains("APPRENTICESHIP LEVY")
+
+  private[controllers] def convertToDeclaration(charge: Charge): Seq[LevyDeclaration] = {
     charge.period.map { period =>
       val originalOrAmended = if (charge.mainType == "EYU") "amended" else "original"
       LevyDeclaration(PayrollMonth(2017, 3), period.value, originalOrAmended, period.endDate.getOrElse(new LocalDate(2017, 3, 3)))
