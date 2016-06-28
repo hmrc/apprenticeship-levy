@@ -17,7 +17,8 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import play.api.hal.{HalLink, HalResource}
-import play.api.libs.json.Json
+import play.api.http.Writeable
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
 import uk.gov.hmrc.play.microservice.controller.BaseController
@@ -32,5 +33,8 @@ trait ApiController extends BaseController with HeaderValidator {
 
   def selfLink(url: String): HalLink = HalLink("self", url)
 
-  def Ok(hal: HalResource): Result = Ok(Json.toJson(hal)).withHeaders("Content-Type" -> "application/hal+json")
+  def transformHal(hal: HalResource): (Array[Byte]) =
+    implicitly[Writeable[JsValue]].transform(Json.toJson(hal))
+
+  implicit val haLWriteable = new Writeable[HalResource](transformHal, Some("application/hal+json"))
 }
