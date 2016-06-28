@@ -27,6 +27,12 @@ case class PayrollMonth(year: Int, month: Int) {
 
 object PayrollMonth {
   implicit val formats = Json.format[PayrollMonth]
+
+  def forDate(ld: LocalDate): PayrollMonth = {
+    val adjustedDate = ld.minusMonths(3)
+    if (adjustedDate.getDayOfMonth >= 6) PayrollMonth(adjustedDate.getYear, adjustedDate.getMonthOfYear)
+    else PayrollMonth(adjustedDate.minusMonths(1).getYear, adjustedDate.minusMonths(1).getMonthOfYear)
+  }
 }
 
 case class LevyDeclaration(payrollMonth: PayrollMonth, amount: BigDecimal, submissionType: String, submissionDate: LocalDate)

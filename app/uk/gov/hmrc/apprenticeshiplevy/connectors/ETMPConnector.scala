@@ -45,6 +45,8 @@ case class TaxYear(startingYear: Int) extends AnyVal {
   def stringForETMP = s"${startingYear}_${startingYear - 1999}"
 
   def next: TaxYear = TaxYear(startingYear + 1)
+
+  def endDate: LocalDate = new LocalDate(startingYear + 1, 4, 5)
 }
 
 object TaxYear {

@@ -19,11 +19,15 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, ETMPLevyDeclarations, TaxYear}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
+import uk.gov.hmrc.apprenticeshiplevy.data.charges.{Charge, Charges}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.test.UnitSpec
 
-class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
+import scala.concurrent.Future
 
+class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
   "getting the levy declarations" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {
       val response = LiveLevyDeclarationController.declarations("empref", None)(FakeRequest()).futureValue
@@ -35,4 +39,41 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
       response.header.status shouldBe NOT_IMPLEMENTED
     }
   }
+
+  "isLevyCharge" should {
+    "return true if chargeType contains 'APPRENTICESHIP LEVY'" in {
+      val charge = Charge("RTI Spec Charge-APPRENTICESHIP LEVY", "FPS", Seq())
+
+      TestLevyDeclarationController.isLevyCharge(charge) shouldBe true
+    }
+    "return false if chargeType does not contain 'APPRENTICESHIP LEVY'" in {
+      val charge = Charge("RTI Spec Charge-TAX", "FPS", Seq())
+
+      TestLevyDeclarationController.isLevyCharge(charge) shouldBe false
+    }
+  }
+
+  "originalOrAmended" should {
+    "return 'original'" in {
+      val charge = Charge("", "FPS", Seq())
+      TestLevyDeclarationController.originalOrAmended(charge) shouldBe "original"
+    }
+
+    "return 'amended'" in {
+      val charge = Charge("", "EYU", Seq())
+      TestLevyDeclarationController.originalOrAmended(charge) shouldBe "amended"
+    }
+  }
+}
+
+object TestETMPConnector extends ETMPConnector {
+  override def etmpBaseUrl: String = ???
+
+  override def httpGet: HttpGet = ???
+
+  override def charges(empref: String, taxYear: TaxYear)(implicit hc: HeaderCarrier): Future[Charges] = ???
+}
+
+object TestLevyDeclarationController extends LevyDeclarationController with ApiController {
+  override def etmpConnector: ETMPConnector = ???
 }

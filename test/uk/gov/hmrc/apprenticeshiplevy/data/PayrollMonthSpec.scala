@@ -47,4 +47,16 @@ class PayrollMonthSpec extends FlatSpec with Matchers {
     data.foreach { case (pm, d) => pm.endDate shouldBe d }
   }
 
+  it should "calculate correct PayrollMonth" in {
+    val data = Seq(
+      (new LocalDate(2016, 1, 1), PayrollMonth(2015, 9)),
+      (new LocalDate(2016, 2, 5), PayrollMonth(2015, 10)),
+      (new LocalDate(2016, 2, 6), PayrollMonth(2015, 11)),
+      (new LocalDate(2016, 4, 5), PayrollMonth(2015, 12)),
+      (new LocalDate(2016, 4, 6), PayrollMonth(2016, 1))
+    )
+
+    data.foreach { case (d, pm) => PayrollMonth.forDate(d) shouldBe pm }
+  }
+
 }
