@@ -16,6 +16,24 @@
         "status": "PROTOTYPED",
         "endpoints": [
           {
+            "uriPattern": "/",
+            "endpointName": "root",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": []
+          },
+          {
+            "uriPattern": "/epaye/{empref}",
+            "endpointName": "routes",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": []
+          },
+          {
             "uriPattern": "/epaye/{empref}/declarations",
             "endpointName": "levy-declarations",
             "method": "GET",
