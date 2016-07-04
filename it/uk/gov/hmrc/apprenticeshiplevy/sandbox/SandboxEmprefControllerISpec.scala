@@ -19,9 +19,10 @@ package uk.gov.hmrc.apprenticeshiplevy.sandbox
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, EpayeConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.EpayeConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxEmprefController
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
+import uk.gov.hmrc.apprenticeshiplevy.data.epaye.{DesignatoryDetails, DesignatoryDetailsData, HodName}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, NotFoundException}
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
@@ -47,20 +48,20 @@ class SandboxEmprefControllerISpec extends UnitSpec with ScalaFutures with Integ
     }
   }
 
-  lazy val dummyAuthConnector = new AuthConnector {
-    override def authBaseUrl: String = ???
+  lazy val dummyEpayeConnector = new EpayeConnector {
+    override def epayeBaseUrl: String = ???
 
     override def http: HttpGet = ???
 
-    override def getEmprefs(implicit hc: HeaderCarrier): Future[Seq[String]] = Future.successful(Seq("123/AB12345"))
+    override def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] =
+      if (empref == "123/AB12345") Future.successful(DesignatoryDetails(Some(DesignatoryDetailsData(Some(HodName(Some("Foo Bar Ltd."), None)), None, None)), None))
+      else Future.failed(new NotFoundException(empref))
   }
 
   lazy val testController = new SandboxEmprefController {
     override def env: String = "Test"
 
-    override def authConnector: AuthConnector = dummyAuthConnector
-
-    override def epayeConnector: EpayeConnector = ???
+    override def epayeConnector: EpayeConnector = dummyEpayeConnector
   }
 
 }

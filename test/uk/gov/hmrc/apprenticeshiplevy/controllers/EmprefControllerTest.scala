@@ -34,8 +34,6 @@ class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues 
   }
 
   val testController = new EmprefController {
-    override def authConnector: AuthConnector = ???
-
     override def epayeConnector: EpayeConnector = ???
 
     override def emprefUrl(empref: String): String = s"""/epaye/${URLEncoder.encode(empref, "UTF-8")}"""

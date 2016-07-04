@@ -16,12 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, EpayeConnector, LiveAuthConnector, LiveEpayeConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{EpayeConnector, LiveEpayeConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 
 object LiveEmprefController extends EmprefController {
-  override def authConnector: AuthConnector = LiveAuthConnector
-
   override def emprefUrl(empref: String): String = routes.LiveEmprefController.empref(empref).url
 
   override def declarationsUrl(empref: String): String = routes.LiveLevyDeclarationController.declarations(empref, None).url
@@ -29,6 +27,4 @@ object LiveEmprefController extends EmprefController {
   override def fractionsUrl(empref: String): String = routes.LiveFractionsController.fractions(empref, None).url
 
   override def epayeConnector: EpayeConnector = LiveEpayeConnector
-
-
 }

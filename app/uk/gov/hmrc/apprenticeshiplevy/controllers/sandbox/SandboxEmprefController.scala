@@ -18,8 +18,8 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{EpayeConnector, SandboxAuthConnector, SandboxEpayeConnector}
-import uk.gov.hmrc.apprenticeshiplevy.controllers.{EmprefController, HalController}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{EpayeConnector, SandboxEpayeConnector}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 
 trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
   override def emprefUrl(empref: String): String = routes.SandboxEmprefController.empref(empref).url
@@ -33,8 +33,6 @@ trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
 
 object SandboxEmprefController extends SandboxEmprefController {
   override val env = AppContext.env
-
-  override def authConnector = SandboxAuthConnector
 
   override def epayeConnector: EpayeConnector = SandboxEpayeConnector
 }
