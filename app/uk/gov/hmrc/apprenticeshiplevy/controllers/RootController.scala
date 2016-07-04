@@ -20,7 +20,7 @@ import play.api.hal.{Hal, HalLink, HalResource}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-trait HalController extends ApiController {
+trait RootController extends ApiController {
   def authConnector: AuthConnector
 
   def rootUrl: String

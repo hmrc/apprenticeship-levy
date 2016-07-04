@@ -21,7 +21,7 @@ import java.net.URLEncoder
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
 
-class HalControllerTest extends WordSpecLike with Matchers with OptionValues {
+class RootControllerTest extends WordSpecLike with Matchers with OptionValues {
   "transformEmprefs" should {
     "correctly generate HAL for emprefs" in {
       val hal = testController.transformEmpRefs(Seq("123/AB12345", "321/XY54321"))
@@ -34,7 +34,7 @@ class HalControllerTest extends WordSpecLike with Matchers with OptionValues {
   }
 
 
-  val testController = new HalController {
+  val testController = new RootController {
     override def rootUrl: String = "/"
 
     override def authConnector: AuthConnector = ???

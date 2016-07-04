@@ -1,6 +1,6 @@
 # microservice specific routes
 
-GET        /                                            uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveHalController.root
+GET        /                                            uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveRootController.root
 GET        /epaye/:empref                               uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveEmprefController.empref(empref:String)
 
 GET        /epaye/:empref/declarations                  uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController.declarations(empref:String, months:Option[Int])

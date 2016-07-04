@@ -20,13 +20,13 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxHalController
+import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxRootController
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class SandboxHalControllerISpec extends UnitSpec with ScalaFutures with IntegrationPatience {
+class SandboxRootControllerISpec extends UnitSpec with ScalaFutures with IntegrationPatience {
 
   "getting the root" should {
     "return links for each empref" in {
@@ -47,7 +47,7 @@ class SandboxHalControllerISpec extends UnitSpec with ScalaFutures with Integrat
     override def getEmprefs(implicit hc: HeaderCarrier): Future[Seq[String]] = Future.successful(Seq("123/AB12345"))
   }
 
-  lazy val testController = new SandboxHalController {
+  lazy val testController = new SandboxRootController {
     override def env: String = "Test"
 
     override def authConnector: AuthConnector = dummyAuthConnector

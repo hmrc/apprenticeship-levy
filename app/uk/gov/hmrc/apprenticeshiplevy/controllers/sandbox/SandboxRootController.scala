@@ -19,10 +19,10 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxAuthConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.HalController
+import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
 
-trait SandboxHalController extends HalController with SandboxLinkHelper {
-  override val rootUrl: String = routes.SandboxHalController.root().url
+trait SandboxRootController extends RootController with SandboxLinkHelper {
+  override val rootUrl: String = routes.SandboxRootController.root().url
 
   override def emprefUrl(empref: String): String = routes.SandboxEmprefController.empref(empref).url
 
@@ -30,7 +30,7 @@ trait SandboxHalController extends HalController with SandboxLinkHelper {
   override def processLink(l: HalLink): HalLink = stripSandboxForNonDev(l)
 }
 
-object SandboxHalController extends SandboxHalController {
+object SandboxRootController extends SandboxRootController {
   override val env = AppContext.env
 
   override def authConnector = SandboxAuthConnector
