@@ -17,25 +17,39 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import play.api.hal.{Hal, HalLink, HalResource}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
+import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, EpayeConnector}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-trait HalController extends ApiController {
+trait EmprefController extends ApiController {
   def authConnector: AuthConnector
 
-  def rootUrl: String
+  def epayeConnector: EpayeConnector
+
+  def declarationsUrl(empref: String): String
+
+  def fractionsUrl(empref: String): String
 
   def emprefUrl(empref: String): String
 
   // Hook to allow post-processing of the links, specifically for sandbox handling
   def processLink(l: HalLink): HalLink = identity(l)
 
-  def root = withValidAcceptHeader.async { implicit request =>
-    authConnector.getEmprefs.map(es => Ok(transformEmpRefs(es)))
+  case class EmprefDetails()
+
+  def empref(empref: String) = withValidAcceptHeader.async { implicit request =>
+    epayeConnector.designatoryDetails(empref).map { details =>
+      val hal = prepareLinks(empref)
+      Ok(hal.copy(state = Json.toJson(details).as[JsObject]))
+    }
   }
 
-  private[controllers] def transformEmpRefs(empRefs: Seq[String]): HalResource = {
-    val links = selfLink(rootUrl) +: empRefs.map(empref => HalLink(empref, emprefUrl(empref)))
+  private[controllers] def prepareLinks(empref: String): HalResource = {
+    val links = Seq(
+      selfLink(emprefUrl(empref)),
+      HalLink("declarations", declarationsUrl(empref)),
+      HalLink("fractions", fractionsUrl(empref))
+    )
 
     Hal.linksSeq(links.map(processLink))
   }

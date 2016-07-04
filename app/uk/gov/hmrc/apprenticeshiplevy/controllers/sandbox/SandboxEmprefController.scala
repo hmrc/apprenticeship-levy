@@ -18,21 +18,24 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxAuthConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.HalController
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{EpayeConnector, SandboxAuthConnector, SandboxEpayeConnector}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.{EmprefController, HalController}
 
-trait SandboxHalController extends HalController with SandboxLinkHelper {
-  override val rootUrl: String = routes.SandboxHalController.root().url
-
+trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
   override def emprefUrl(empref: String): String = routes.SandboxEmprefController.empref(empref).url
 
+  override def declarationsUrl(empref: String): String = routes.SandboxLevyDeclarationController.declarations(empref, None).url
+
+  override def fractionsUrl(empref: String): String = routes.SandboxFractionsController.fractions(empref, None).url
 
   override def processLink(l: HalLink): HalLink = stripSandboxForNonDev(l)
 }
 
-object SandboxHalController extends SandboxHalController {
+object SandboxEmprefController extends SandboxEmprefController {
   override val env = AppContext.env
 
   override def authConnector = SandboxAuthConnector
+
+  override def epayeConnector: EpayeConnector = SandboxEpayeConnector
 }
 
