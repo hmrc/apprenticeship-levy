@@ -16,14 +16,16 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, LiveAuthConnector}
+import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
 
 object LiveRootController extends RootController {
-  override def authConnector: AuthConnector = LiveAuthConnector
+  override def authConnector: AuthConnector = ???
 
   override def rootUrl: String = routes.LiveRootController.root().url
 
   override def emprefUrl(empref: String): String = routes.LiveEmprefController.empref(empref).url
 
+  override def root: Action[AnyContent] = Action(NotImplemented)
 }
