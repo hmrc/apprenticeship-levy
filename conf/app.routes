@@ -5,6 +5,5 @@ GET        /epaye/:empref                               uk.gov.hmrc.apprenticesh
 
 GET        /epaye/:empref/declarations                  uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController.declarations(empref:String, months:Option[Int])
 GET        /epaye/:empref/fractions                     uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsController.fractions(empref:String, months:Option[Int])
-GET        /user-accounts                               uk.gov.hmrc.apprenticeshiplevy.controllers.UserInfoController.userAccounts
 GET        /api/definition                              controllers.Assets.at(path="/public/api", file = "definition.json")
 GET        /api/documentation/:version/:endpoint        uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.documentation(version, endpoint)
