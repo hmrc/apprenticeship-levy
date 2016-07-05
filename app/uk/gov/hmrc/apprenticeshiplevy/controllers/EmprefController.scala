@@ -16,14 +16,16 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+
 import play.api.hal.{Hal, HalLink, HalResource}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
+import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.EpayeConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
+import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-trait HalController extends ApiController {
-  def authConnector: AuthConnector
-
-  def rootUrl: String
+trait EmprefController extends ApiController {
+  def epayeConnector: EpayeConnector
 
   def declarationsUrl(empref: String): String
 
@@ -34,20 +36,14 @@ trait HalController extends ApiController {
   // Hook to allow post-processing of the links, specifically for sandbox handling
   def processLink(l: HalLink): HalLink = identity(l)
 
-  def root = withValidAcceptHeader.async { implicit request =>
-    authConnector.getEmprefs.map(es => Ok(transformEmpRefs(es)))
-  }
+  case class EmprefDetails()
 
-  private[controllers] def transformEmpRefs(empRefs: Seq[String]): HalResource = {
-    val links = selfLink(rootUrl) +: empRefs.map(empref => HalLink(empref, emprefUrl(empref)))
-
-    Hal.linksSeq(links.map(processLink))
-  }
-
-  def emprefLinks(empref: String) = withValidAcceptHeader.async { implicit request =>
-    authConnector.getEmprefs.map { emprefs =>
-      if (emprefs.contains(empref)) Ok(prepareLinks(empref))
-      else NotFound
+  def empref(empref: String) = withValidAcceptHeader.async { implicit request =>
+    epayeConnector.designatoryDetails(empref).map { details =>
+      val hal = prepareLinks(empref)
+      Ok(hal.copy(state = Json.toJson(details).as[JsObject]))
+    }.recover {
+      case e: NotFoundException => ErrorNotFound.result
     }
   }
 

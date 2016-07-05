@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
+import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
-import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, LevyDeclarationController}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
 
-object LiveLevyDeclarationController extends ApiController with LevyDeclarationController {
-  override def etmpConnector: ETMPConnector = ???
+object LiveRootController extends RootController {
+  override def authConnector: AuthConnector = ???
 
-  /**
-    * TODO: Remove this overridden method to enable the main implementation from the trait
-    */
-  override def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader {
-    ErrorNotImplemented.result
-  }
+  override def rootUrl: String = routes.LiveRootController.root().url
+
+  override def emprefUrl(empref: String): String = routes.LiveEmprefController.empref(empref).url
+
+  override def root: Action[AnyContent] = Action(ErrorNotImplemented.result)
 }

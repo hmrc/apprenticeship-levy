@@ -20,8 +20,8 @@ import com.github.nscala_time.time.Imports._
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.api.controllers.ErrorNotFound
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, TaxYear}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
 import uk.gov.hmrc.apprenticeshiplevy.data.charges.Charge
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollMonth}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._

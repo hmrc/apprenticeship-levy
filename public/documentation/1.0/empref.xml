@@ -1,6 +1,6 @@
 <endpoint>
-    <name>Routes for an Empref</name>
-    <description>Returns a list of available endpoints for a given employer reference.</description>
+    <name>Details for an Empref</name>
+    <description>Returns more details about an empref including details about the employer and a list of available endpoints that apply to the empref.</description>
     <section id="resource">
         <title>Resource</title>
         <resource>GET /apprenticeship-levy/epaye/{empref}</resource>
@@ -54,6 +54,11 @@
             "fractions": {
                 "href": "/epaye/123%2FAB12345/fractions"
             }
+        }
+    },
+    "employer": {
+        "name": {
+            "nameLine1": "Foo Bar Ltd."
         }
     }
 ]]></json>

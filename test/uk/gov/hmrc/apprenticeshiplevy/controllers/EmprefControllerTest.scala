@@ -19,20 +19,9 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import java.net.URLEncoder
 
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, EpayeConnector}
 
-class HalControllerTest extends WordSpecLike with Matchers with OptionValues {
-  "transformEmprefs" should {
-    "correctly generate HAL for emprefs" in {
-      val hal = testController.transformEmpRefs(Seq("123/AB12345", "321/XY54321"))
-
-      hal.links.links.length shouldBe 3
-      hal.links.links.find(_.rel == "self").value.href shouldBe "/"
-      hal.links.links.find(_.rel == "123/AB12345").value.href shouldBe "/epaye/123%2FAB12345"
-      hal.links.links.find(_.rel == "321/XY54321").value.href shouldBe "/epaye/321%2FXY54321"
-    }
-  }
-
+class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues {
   "prepareLinks" should {
     "correctly prepare HAL for an empref" in {
       val hal = testController.prepareLinks("123/AB12345")
@@ -44,10 +33,8 @@ class HalControllerTest extends WordSpecLike with Matchers with OptionValues {
     }
   }
 
-  val testController = new HalController {
-    override def rootUrl: String = "/"
-
-    override def authConnector: AuthConnector = ???
+  val testController = new EmprefController {
+    override def epayeConnector: EpayeConnector = ???
 
     override def emprefUrl(empref: String): String = s"""/epaye/${URLEncoder.encode(empref, "UTF-8")}"""
 

@@ -20,13 +20,13 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxHalController
+import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxRootController
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class SandboxHalControllerISpec extends UnitSpec with ScalaFutures with IntegrationPatience {
+class SandboxRootControllerISpec extends UnitSpec with ScalaFutures with IntegrationPatience {
 
   "getting the root" should {
     "return links for each empref" in {
@@ -39,24 +39,6 @@ class SandboxHalControllerISpec extends UnitSpec with ScalaFutures with Integrat
     }
   }
 
-  "getting the routes" should {
-    "return the declarations and fractions link for each empref" in {
-      val result = testController.emprefLinks("123/AB12345")(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
-      result.header.status shouldBe OK
-      val json = contentAsJson(result)
-
-      (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/123%2FAB12345"
-      (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/123%2FAB12345/fractions"
-      (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/123%2FAB12345/declarations"
-    }
-
-    "return NOT FOUND for a non known empref" in {
-      val result = testController.emprefLinks("UNKNOWN")(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
-
-      result.header.status shouldBe NOT_FOUND
-    }
-  }
-
   lazy val dummyAuthConnector = new AuthConnector {
     override def authBaseUrl: String = ???
 
@@ -65,7 +47,7 @@ class SandboxHalControllerISpec extends UnitSpec with ScalaFutures with Integrat
     override def getEmprefs(implicit hc: HeaderCarrier): Future[Seq[String]] = Future.successful(Seq("123/AB12345"))
   }
 
-  lazy val testController = new SandboxHalController {
+  lazy val testController = new SandboxRootController {
     override def env: String = "Test"
 
     override def authConnector: AuthConnector = dummyAuthConnector
