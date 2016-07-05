@@ -17,6 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, FractionsController}
 
 
@@ -27,6 +28,6 @@ object LiveFractionsController extends ApiController with FractionsController {
     * TODO: Remove this overridden method to enable the main implementation from the trait
     */
   override def fractions(empref: String, months: Option[Int]): Action[AnyContent] = withValidAcceptHeader {
-    NotImplemented
+    ErrorNotImplemented.result
   }
 }

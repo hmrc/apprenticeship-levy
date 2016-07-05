@@ -46,6 +46,6 @@ object ErrorResponses {
 
   object ErrorServiceUnavailable extends ErrorResponse(SERVICE_UNAVAILABLE, CODE_SERVICE_UNAVAILABLE, "Could not connect to DES endpoint")
 
-  object ErrorNotImplemented extends ErrorResponse(NOT_IMPLEMENTED, CODE_SERVICE_UNAVAILABLE, "Service endpoint is not implemented")
+  object ErrorNotImplemented extends ErrorResponse(NOT_IMPLEMENTED, CODE_NOT_IMPLEMENTED, "Service endpoint is not implemented")
 
 }
