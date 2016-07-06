@@ -88,6 +88,12 @@
                     <cell><code>/epaye/123%2FAB12345/fractions</code></cell>
                     <cell>The link to the endpoint that returns information on fraction calculations for the empref</cell>
                 </row>
+                <row>
+                    <cell><code>employer.name.nameLine1</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>Foo Bar Ltd.</code></cell>
+                    <cell>The name associated to this empref</cell>
+                </row>
             </rows>
         </table>
     </section>
