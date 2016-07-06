@@ -41,6 +41,5 @@ object SandboxEpayeConnector extends EpayeConnector with ServicesConfig {
 
 object LiveEpayeConnector extends EpayeConnector with ServicesConfig {
   override def epayeBaseUrl: String = baseUrl("epaye")
-
   override def http: HttpGet = WSHttp
 }
