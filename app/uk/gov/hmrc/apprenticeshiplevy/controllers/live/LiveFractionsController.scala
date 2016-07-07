@@ -22,7 +22,7 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, FractionsContr
 
 
 object LiveFractionsController extends ApiController with FractionsController {
-  override def itmpConnector = ???
+  override def edhConnector = ???
 
   /**
     * TODO: Remove this overridden method to enable the main implementation from the trait

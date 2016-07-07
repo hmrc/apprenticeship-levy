@@ -24,31 +24,31 @@ import views.html.helper
 
 import scala.concurrent.Future
 
-trait ITMPConnector {
+trait EDHConnector {
 
-  def itmpBaseUrl: String
+  def edhBaseUrl: String
 
   def httpGet: HttpGet
 
   def fractions(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[Fractions] = {
-    val url = (s"$itmpBaseUrl/empref/${helper.urlEncode(empref)}/fractions", months) match {
+    val url = (s"$edhBaseUrl/empref/${helper.urlEncode(empref)}/fractions", months) match {
       case (u, Some(n)) => s"$u/?months=$n"
       case (u, None) => u
     }
 
-    Logger.debug(s"Calling ITMP at $url")
+    Logger.debug(s"Calling EDH at $url")
     httpGet.GET[Fractions](url)
   }
 }
 
-object LiveITMPConnector extends ITMPConnector {
-  override def itmpBaseUrl = AppContext.etmpUrl
+object LiveEDHConnector extends EDHConnector {
+  override def edhBaseUrl = AppContext.etmpUrl
 
   override def httpGet = WSHttp
 }
 
-object SandboxITMPConnector extends ITMPConnector {
-  override def itmpBaseUrl = AppContext.stubItmpUrl
+object SandboxEDHConnector extends EDHConnector {
+  override def edhBaseUrl = AppContext.stubEtmpUrl
 
   override def httpGet = WSHttp
 }
