@@ -17,14 +17,14 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.apprenticeshiplevy.connectors.ITMPConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.EDHConnector
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 trait FractionsController {
   self: ApiController =>
-  def itmpConnector: ITMPConnector
+  def edhConnector: EDHConnector
 
   def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
-    itmpConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
+    edhConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
   }
 }
