@@ -13,6 +13,10 @@
     "versions": [
       {
         "version": "1.0",
+        "access": {
+          "type": "PRIVATE",
+          "whitelistedApplicationIds": ["f0e2611e-2f45-4326-8cd2-6eefebec77b7"]
+        },
         "status": "PROTOTYPED",
         "endpoints": [
           {
