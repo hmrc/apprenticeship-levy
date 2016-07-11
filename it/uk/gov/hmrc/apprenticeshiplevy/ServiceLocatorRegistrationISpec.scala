@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mock.MockitoSugar
+import play.api.Play
 import play.api.test.FakeRequest
 import uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController
 import uk.gov.hmrc.apprenticeshiplevy.util.{MicroserviceLocalRunSupport, WiremockServiceLocatorSupport}
@@ -27,6 +28,8 @@ class ServiceLocatorRegistrationISpec
       override def documentation(version: String, endpoint: String) =
       // resources in it are not under /public
         super.at(s"/documentation/$version", s"${endpoint.replaceAll(" ", "-")}.xml")
+
+      override implicit lazy val current = Play.current
     }
     val request = FakeRequest()
   }

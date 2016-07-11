@@ -1,0 +1,31 @@
+{
+  "scopes": [
+    {
+      "key": "read:apprenticeship-levy",
+      "name": "access levy data",
+      "description": "Access apprenticeship levy data"
+    }
+  ],
+  "api": {
+    "name": "Apprenticeship Levy",
+    "description": "Levy declarations for employers",
+    "context": "apprenticeship-levy",
+    "versions": [
+      {
+        "version": "1.0",
+        "status": "PROTOTYPED",
+        "endpoints": [
+          {
+            "uriPattern": "/",
+            "endpointName": "root",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": []
+          }
+        ]
+      }
+    ]
+  }
+}
