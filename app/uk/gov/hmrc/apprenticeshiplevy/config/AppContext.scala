@@ -36,6 +36,13 @@ object AppContext extends ServicesConfig {
         true
       }
 
+  lazy val privateModeEnabled = current.configuration.getString("microservice.private-mode")
+    .flatMap(flag => Try(flag.toBoolean).toOption)
+    .getOrElse {
+      Logger.warn("A configuration value has not been provided for microservice.private-mode, defaulting to true")
+      true
+    }
+
   lazy val etmpUrl = baseUrl("etmp")
   lazy val stubEtmpUrl = baseUrl("stub-etmp")
 
