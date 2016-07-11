@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import play.api.hal.{Hal, HalLink, HalResource}
+import play.api.hal.{Hal, HalLink, HalLinks, HalResource}
+import play.api.libs.json.{JsArray, JsObject, JsString, Json}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
@@ -36,7 +37,8 @@ trait RootController extends ApiController {
 
   private[controllers] def transformEmpRefs(empRefs: Seq[String]): HalResource = {
     val links = selfLink(rootUrl) +: empRefs.map(empref => HalLink(empref, emprefUrl(empref)))
+    val body = Json.toJson(Map("emprefs" -> empRefs)).as[JsObject]
 
-    Hal.linksSeq(links.map(processLink))
+    HalResource(HalLinks(links.map(processLink).toVector), body)
   }
 }
