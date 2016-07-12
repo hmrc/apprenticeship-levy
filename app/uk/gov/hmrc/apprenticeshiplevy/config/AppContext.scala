@@ -16,13 +16,17 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config
 
-import play.api.Logger
 import play.api.Play._
+import play.api.{Configuration, Logger}
 import uk.gov.hmrc.play.config.ServicesConfig
 
+import scala.collection.JavaConversions.asScalaBuffer
 import scala.util.Try
 
 object AppContext extends ServicesConfig {
+
+  case class WhitelistedApplication(id: String, name: String)
+
   lazy val appName =
     current.configuration.getString("appName").getOrElse(throw new RuntimeException("appName is not configured"))
   lazy val appUrl =
@@ -43,9 +47,21 @@ object AppContext extends ServicesConfig {
       true
     }
 
+  lazy val whitelistedApplications = current.configuration.getConfigList("microservice.whitelisted-applications")
+    .map { applications =>
+      asScalaBuffer(applications).map { application =>
+        val read = getString(application) _
+        WhitelistedApplication(id = read("id"), name = read("name"))
+      }
+    }.getOrElse(Seq.empty)
+
+
   lazy val etmpUrl = baseUrl("etmp")
   lazy val stubEtmpUrl = baseUrl("stub-etmp")
 
   lazy val edhUrl = baseUrl("edh")
   lazy val stubEdhUrl = baseUrl("stub-edh")
+
+  private def getString(config: Configuration)(id: String): String = config.getString(id)
+    .getOrElse(throw new RuntimeException(s"Unable to read whitelisted application (value '$id' not found"))
 }
