@@ -19,9 +19,9 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import java.io.InputStream
 
 import controllers.AssetsBuilder
+import play.api.{Application, Play}
 import play.api.libs.json.{Json, _}
 import play.api.mvc.Action
-import play.api.{Application, Play}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
@@ -32,17 +32,12 @@ trait DocumentationController extends AssetsBuilder with BaseController {
 
   implicit def current: Application
 
-  case class ApplicationId(id: String, name: String)
-
-  val applicationIds = Seq(
-    ApplicationId("fa80e4e7-1f3a-433f-8efb-70b9a0b101b1", "Doug's DAS client mock"),
-    ApplicationId("f0e2611e-2f45-4326-8cd2-6eefebec77b7", "Emanuele's QA test application")
-  )
+  lazy val whitelistedApplications = AppContext.whitelistedApplications
 
   lazy val whitelist = Json.obj(
     "access" -> Json.obj(
       "type" -> "PRIVATE",
-      "whitelistedApplicationIds" -> JsArray(applicationIds.map(aId => JsString(aId.id)))
+      "whitelistedApplicationIds" -> JsArray(whitelistedApplications.map(aId => JsString(aId.id)))
     ))
 
   lazy val whitelistJsonTransformer = (__ \ 'api \ 'versions).json.update(

@@ -18,6 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.scalatest.Inside
 import play.api.Play
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext.WhitelistedApplication
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.util.{Failure, Success}
@@ -46,4 +47,5 @@ class DocumentationControllerSpec extends UnitSpec with Inside {
 
 class TestDocumentationController extends DocumentationController {
   override implicit lazy val current = Play.current
+  override lazy val whitelistedApplications = Seq(WhitelistedApplication(id = "f0e2611e-2f45-4326-8cd2-6eefebec77b7", name = "test"))
 }
