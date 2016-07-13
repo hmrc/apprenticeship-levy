@@ -32,12 +32,12 @@ trait DocumentationController extends AssetsBuilder with BaseController {
 
   implicit def current: Application
 
-  lazy val whitelistedApplications = AppContext.whitelistedApplications
+  lazy val whitelistedApplicationIds = AppContext.whitelistedApplicationIds
 
   lazy val whitelist = Json.obj(
     "access" -> Json.obj(
       "type" -> "PRIVATE",
-      "whitelistedApplicationIds" -> JsArray(whitelistedApplications.map(aId => JsString(aId.id)))
+      "whitelistedApplicationIds" -> JsArray(whitelistedApplicationIds.map(JsString))
     ))
 
   lazy val whitelistJsonTransformer = (__ \ 'api \ 'versions).json.update(

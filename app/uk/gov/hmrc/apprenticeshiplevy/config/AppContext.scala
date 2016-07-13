@@ -20,12 +20,9 @@ import play.api.Play._
 import play.api.{Configuration, Logger}
 import uk.gov.hmrc.play.config.ServicesConfig
 
-import scala.collection.JavaConversions.asScalaBuffer
 import scala.util.Try
 
 object AppContext extends ServicesConfig {
-
-  case class WhitelistedApplication(id: String, name: String)
 
   lazy val appName =
     current.configuration.getString("appName").getOrElse(throw new RuntimeException("appName is not configured"))
@@ -47,14 +44,9 @@ object AppContext extends ServicesConfig {
       true
     }
 
-  lazy val whitelistedApplications = current.configuration.getConfigList("microservice.whitelisted-applications")
-    .map { applications =>
-      asScalaBuffer(applications).map { application =>
-        val read = getString(application) _
-        WhitelistedApplication(id = read("id"), name = read("name"))
-      }
-    }.getOrElse(Seq.empty)
-
+  lazy val whitelistedApplicationIds = current.configuration.getString("microservice.whitelisted-applications")
+    .map { applicationIds => applicationIds.split(",").toSeq }
+    .getOrElse(Seq.empty)
 
   lazy val etmpUrl = baseUrl("etmp")
   lazy val stubEtmpUrl = baseUrl("stub-etmp")

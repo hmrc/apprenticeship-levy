@@ -18,7 +18,6 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.scalatest.Inside
 import play.api.Play
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext.WhitelistedApplication
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.util.{Failure, Success}
@@ -35,7 +34,8 @@ class DocumentationControllerSpec extends UnitSpec with Inside {
       inside(enrichedDefinition) { case Success(json) =>
         val firstVersion = (json \ "api" \ "versions")(0)
         (firstVersion \ "access" \ "type").as[String] shouldBe "PRIVATE"
-        (firstVersion \ "access" \ "whitelistedApplicationIds").as[List[String]] shouldBe List("f0e2611e-2f45-4326-8cd2-6eefebec77b7")
+        (firstVersion \ "access" \ "whitelistedApplicationIds").as[List[String]] should contain inOrderOnly
+          ("f0e2611e-2f45-4326-8cd2-6eefebec77b7","cafebabe-2f45-4326-8cd2-6eefebec77b7")
       }
     }
 
@@ -47,5 +47,8 @@ class DocumentationControllerSpec extends UnitSpec with Inside {
 
 class TestDocumentationController extends DocumentationController {
   override implicit lazy val current = Play.current
-  override lazy val whitelistedApplications = Seq(WhitelistedApplication(id = "f0e2611e-2f45-4326-8cd2-6eefebec77b7", name = "test"))
+  override lazy val whitelistedApplicationIds = Seq(
+    "f0e2611e-2f45-4326-8cd2-6eefebec77b7",
+    "cafebabe-2f45-4326-8cd2-6eefebec77b7"
+  )
 }
