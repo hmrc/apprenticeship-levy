@@ -16,14 +16,11 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import com.github.nscala_time.time.Imports._
-import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, TaxYear}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{EmployerPaymentSummary, RTIConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
-import uk.gov.hmrc.apprenticeshiplevy.data.charges.Charge
-import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollMonth}
+import uk.gov.hmrc.apprenticeshiplevy.data.LevyDeclaration
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, NotFoundException}
 
@@ -31,27 +28,17 @@ import scala.concurrent.Future
 
 trait LevyDeclarationController {
   self: ApiController =>
-  def etmpConnector: ETMPConnector
-
+  def rtiConnector: RTIConnector
 
   def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
-    retrieveDeclarations(empref, months.getOrElse(48), LocalDate.now)
+    retrieveDeclarations(empref, months)
+      .map(ds => buildResult(ds.sortBy(_.submissionTime), empref))
   }
 
-  private[controllers] def retrieveDeclarations(empref: String, months: Int, now: LocalDate)(implicit hc: HeaderCarrier): Future[Result] = {
-    val earliest = now.minusMonths(months)
-    val taxYears = TaxYear.yearsInRange(earliest, now)
+  private[controllers] def retrieveDeclarations(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
 
-    Future
-      .traverse(taxYears)(ty => declarationsForTaxYear(empref, ty))
-      .map(ds => buildResult(ds.flatten.sortBy(_.submissionDate), empref, earliest))
-  }
-
-  private[controllers] def declarationsForTaxYear(empref: String, taxYear: TaxYear)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
-    etmpConnector.charges(empref.replace("/", ""), taxYear).map { result =>
-      result.charges
-        .filter(isLevyCharge)
-        .flatMap(convertToDeclaration(_, taxYear))
+    rtiConnector.eps(empref, months).map { lds =>
+      lds.map(convertToDeclaration)
     }.recover {
       /*
       * The etmp charges call can return 404 if either the empref is unknown or there is no data for the tax year.
@@ -62,30 +49,23 @@ trait LevyDeclarationController {
     }
   }
 
-  private[controllers] def buildResult(ds: Seq[LevyDeclaration], empref: String, earliest: LocalDate): Result =
-    ds match {
-      case Seq() => ErrorNotFound.result
-      case _ => Ok(Json.toJson(buildDeclarations(ds, empref, earliest)))
-    }
-
-  private[controllers] def buildDeclarations(ds: Seq[LevyDeclaration], empref: String, earliest: LocalDate): LevyDeclarations =
-    LevyDeclarations(empref, None, ds.filter(_.submissionDate >= earliest))
-
-  private[controllers] def convertToDeclaration(charge: Charge, taxYear: TaxYear): Seq[LevyDeclaration] = {
-    charge.period.map { period =>
-      LevyDeclaration(
-        PayrollMonth.forDate(period.startDate.getOrElse(taxYear.endDate)),
-        period.value,
-        originalOrAmended(charge),
-        period.endDate.getOrElse(taxYear.endDate))
-    }
+  private[controllers] def buildResult(ds: Seq[LevyDeclaration], empref: String): Result = {
+    if (ds.nonEmpty) Ok(Json.toJson(ds))
+    else ErrorNotFound.result
   }
 
-  // Likely to get more complex as we understand the Charges data better
-  private[controllers] def isLevyCharge(charge: Charge): Boolean = charge.chargeType.contains("APPRENTICESHIP LEVY")
-
-  // Likely to get more complex as we understand the Charges data better
-  private[controllers] def originalOrAmended(charge: Charge) = if (charge.mainType == "EYU") "amended" else "original"
+  private[controllers] def convertToDeclaration(employerPaymentSummary: EmployerPaymentSummary) =
+    employerPaymentSummary match {
+      case eps if eps.finalSubmission.exists(_.dateSchemeCeased.isDefined) =>
+        LevyDeclaration(eps.eventId, eps.submissionTime,
+          dateCeased = eps.finalSubmission.flatMap {
+            fs => fs.dateSchemeCeased
+          })
+      case eps if eps.periodOfInactivity.isDefined =>
+        LevyDeclaration(eps.eventId, eps.submissionTime,
+          inactiveFrom = eps.periodOfInactivity.map(_.from),
+          inactiveTo = eps.periodOfInactivity.map(_.to))
+    }
 
 }
 

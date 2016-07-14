@@ -16,32 +16,31 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data
 
-import org.joda.time.LocalDate
+import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json.Json
 
-case class PayrollMonth(year: Int, month: Int) {
-  // TODO: this should be removed
-  def startDate = new LocalDate(year, month, 6)
-  def endDate = new LocalDate(year, month, 5).plusMonths(1)
+case class PayrollPeriod(year: String, month: Int)
+
+object PayrollPeriod {
+  implicit val formats = Json.format[PayrollPeriod]
 }
 
-object PayrollMonth {
-  implicit val formats = Json.format[PayrollMonth]
+case class LevyDeclaration(id: Long,
+                           submissionTime: DateTime,
+                           dateCeased: Option[LocalDate] = None,
+                           inactiveFrom: Option[LocalDate] = None,
+                           inactiveTo: Option[LocalDate] = None,
+                           payrollPeriod: Option[PayrollPeriod] = None,
+                           amount: Option[BigDecimal] = None,
+                           allowance: Option[BigDecimal] = None,
+                           noPaymentForPeriod: Option[Boolean] = None)
 
-  def forDate(ld: LocalDate): PayrollMonth = {
-    val adjustedDate = ld.minusMonths(3)
-    if (adjustedDate.getDayOfMonth >= 6) PayrollMonth(adjustedDate.getYear, adjustedDate.getMonthOfYear)
-    else PayrollMonth(adjustedDate.minusMonths(1).getYear, adjustedDate.minusMonths(1).getMonthOfYear)
-  }
-}
-
-case class LevyDeclaration(payrollMonth: PayrollMonth, amount: BigDecimal, submissionType: String, submissionDate: LocalDate)
 
 object LevyDeclaration {
   implicit val formats = Json.format[LevyDeclaration]
 }
 
-case class LevyDeclarations(empref: String, schemeCessationDate: Option[LocalDate], declarations: Seq[LevyDeclaration])
+case class LevyDeclarations(empref: String, declarations: Seq[LevyDeclaration])
 
 object LevyDeclarations {
   implicit val formats = Json.format[LevyDeclarations]
