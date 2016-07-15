@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
+import com.github.nscala_time.time.Imports._
 import org.joda.time.LocalDate
 import play.api.Logger
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
-import uk.gov.hmrc.apprenticeshiplevy.data.{PayrollPeriod, PayrollPeriod$}
+import uk.gov.hmrc.apprenticeshiplevy.data.PayrollPeriod
 import uk.gov.hmrc.apprenticeshiplevy.data.charges.Charges
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import views.html.helper
-import com.github.nscala_time.time.Imports._
 
 import scala.concurrent.Future
 
