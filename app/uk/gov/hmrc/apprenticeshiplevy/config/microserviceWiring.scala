@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.config
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.auth.microservice.connectors.AuthConnector

@@ -16,19 +16,19 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
+import com.github.nscala_time.time.Imports._
 import org.joda.time.LocalDate
 import play.api.Logger
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
-import uk.gov.hmrc.apprenticeshiplevy.data.PayrollMonth
+import uk.gov.hmrc.apprenticeshiplevy.data.PayrollPeriod
 import uk.gov.hmrc.apprenticeshiplevy.data.charges.Charges
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import views.html.helper
-import com.github.nscala_time.time.Imports._
 
 import scala.concurrent.Future
 
-case class ETMPLevyDeclaration(payrollMonth: PayrollMonth, amount: BigDecimal, submissionType: String, submissionDate: String)
+case class ETMPLevyDeclaration(payrollMonth: PayrollPeriod, amount: BigDecimal, submissionType: String, submissionDate: String)
 
 object ETMPLevyDeclaration {
   implicit val formats = Json.format[ETMPLevyDeclaration]

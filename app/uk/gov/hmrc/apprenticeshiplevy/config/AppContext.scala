@@ -54,6 +54,9 @@ object AppContext extends ServicesConfig {
   lazy val edhUrl = baseUrl("edh")
   lazy val stubEdhUrl = baseUrl("stub-edh")
 
+  lazy val rtiUrl = baseUrl("rti")
+  lazy val stubRtiUrl = baseUrl("stub-rti")
+
   private def getString(config: Configuration)(id: String): String = config.getString(id)
     .getOrElse(throw new RuntimeException(s"Unable to read whitelisted application (value '$id' not found)"))
 }

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
+package uk.gov.hmrc.apprenticeshiplevy
 
-import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxRTIConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, LevyDeclarationController}
+package object connectors {
 
-object SandboxLevyDeclarationController extends ApiController with LevyDeclarationController {
-  override def rtiConnector = SandboxRTIConnector
+  type Yes = Option[String]
+  type YesNo = Option[String]
+
 }
