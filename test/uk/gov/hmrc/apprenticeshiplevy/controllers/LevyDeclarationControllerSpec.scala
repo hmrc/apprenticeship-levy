@@ -16,18 +16,15 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import org.joda.time.LocalDate
+import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{ETMPConnector, ETMPLevyDeclarations, TaxYear}
+import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
-import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, PayrollPeriod, PayrollPeriod$}
-import uk.gov.hmrc.apprenticeshiplevy.data.charges.{Charge, Charges, Period}
+import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, PayrollPeriod}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.test.UnitSpec
-
-import scala.concurrent.Future
 
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
   "getting the levy declarations" should {
@@ -43,35 +40,58 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
   }
 
   "convertToDeclaration" should {
-    "convert fields as expected" in {
-      val data = Seq(
-        (Charge("RTI Spec Charge-APPRENTICESHIP LEVY", "FPS", Seq(Period(None, None, 1000.00, 0, 0))),
-          TaxYear(2016),
-          Seq(
-            LevyDeclaration(PayrollPeriod(2016, 12), 1000.00, "original", new LocalDate(2017, 4, 5))
-          )),
-        (Charge("RTI Spec Charge-APPRENTICESHIP LEVY", "EYU", Seq(Period(Some(new LocalDate(2016, 4, 6)), Some(new LocalDate(2016, 5, 5)), 1000.00, 0, 0))),
-          TaxYear(2016),
-          Seq(
-            LevyDeclaration(PayrollPeriod(2016, 1), 1000.00, "amended", new LocalDate(2016, 5, 5))
-          ))
-      )
 
-      data.foreach {
-        case (c, y, ds) => TestLevyDeclarationController.convertToDeclaration(c, y) shouldBe ds
-      }
+    val id = 123456L
+    val submissionTime = DateTime.now()
+    val relatedTaxYear = "16-17"
+
+    val refs = EmpRefs(officeNumber = "123", payeRef = "123/AB12345", aoRef = "123PQ7654321X")
+
+    "convert a terminated payroll scheme" in {
+      val schemeCeasedDate = submissionTime.minusDays(1).toLocalDate
+      val eps = EmployerPaymentSummary(id, submissionTime, refs, finalSubmission = Some(FinalSubmission(Some("yes"), dateSchemeCeased = Some(schemeCeasedDate))), relatedTaxYear = relatedTaxYear)
+
+      TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime, Some(schemeCeasedDate))
+    }
+
+    "convert an inactive submission" in {
+      val inactiveFrom = submissionTime.minusMonths(2).toLocalDate
+      val inactiveTo = submissionTime.minusMonths(2).toLocalDate
+      val eps = EmployerPaymentSummary(id, submissionTime, refs, relatedTaxYear = relatedTaxYear, periodOfInactivity = Some(DateRange(from = inactiveFrom, to = inactiveTo)))
+
+      TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo))
+    }
+
+    "convert a submission" in {
+      val levyDueYTD = BigDecimal(500)
+      val allowance = BigDecimal(10000)
+      val taxMonth = 2
+      val eps = EmployerPaymentSummary(id, submissionTime, refs, relatedTaxYear = relatedTaxYear, apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, taxMonth, allowance)))
+
+      TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime, payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)), levyDueYTD = Some(levyDueYTD), allowance = Some(allowance))
+    }
+
+    "convert a submission without payment" in {
+
+      val startNoPayment = submissionTime.minusMonths(2).toLocalDate
+      val endNoPayment = submissionTime.minusMonths(1).toLocalDate
+
+      val eps = EmployerPaymentSummary(id, submissionTime, refs, Some("yes"), Some(DateRange(startNoPayment, endNoPayment)), relatedTaxYear = relatedTaxYear)
+
+      // TODO: specify the right format for this response - tax month is the tax month related to the END date.
+
     }
   }
 }
 
-object TestETMPConnector extends ETMPConnector {
-  override def etmpBaseUrl: String = ???
+object TestRTIConnector extends RTIConnector {
+  override def rtiBaseUrl: String = ???
 
   override def httpGet: HttpGet = ???
 
-  override def charges(empref: String, taxYear: TaxYear)(implicit hc: HeaderCarrier): Future[Charges] = ???
+  override def eps(empref: String, months: Option[Int])(implicit hc: HeaderCarrier) = ???
 }
 
 object TestLevyDeclarationController extends LevyDeclarationController with ApiController {
-  override def etmpConnector: ETMPConnector = TestETMPConnector
+  override def rtiConnector: RTIConnector = TestRTIConnector
 }

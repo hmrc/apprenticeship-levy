@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-import uk.gov.hmrc.apprenticeshiplevy.connectors.ETMPConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.RTIConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, LevyDeclarationController}
 
 object LiveLevyDeclarationController extends ApiController with LevyDeclarationController {
-  override def etmpConnector: ETMPConnector = ???
+  override def rtiConnector: RTIConnector = ???
 
   /**
     * TODO: Remove this overridden method to enable the main implementation from the trait

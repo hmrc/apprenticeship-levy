@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
-import com.github.nscala_time.time.Imports._
-import org.joda.time.LocalDate
+import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json.Json
+import uk.gov.hmrc.play.controllers.RestFormats
 
 case class EmpRefs(officeNumber: String, payeRef: String, aoRef: String)
 
@@ -62,7 +62,7 @@ object Account {
   implicit val formats = Json.format[Account]
 }
 
-case class FinalSubmission(becauseSchemeCeased: Yes, dateSchemeCeased: Option[LocalDate], forYear: Yes)
+case class FinalSubmission(becauseSchemeCeased: Yes = None, dateSchemeCeased: Option[LocalDate] = None, forYear: Yes = None)
 
 object FinalSubmission {
   implicit val formats = Json.format[FinalSubmission]
@@ -71,16 +71,17 @@ object FinalSubmission {
 case class EmployerPaymentSummary(eventId: Long,
                                   submissionTime: DateTime,
                                   empRefs: EmpRefs,
-                                  noPaymentForPeriod: Yes,
-                                  noPaymentDates: Option[DateRange],
-                                  periodOfInactivity: Option[DateRange],
-                                  empAllceInd: YesNo,
-                                  recoverableAmountsYTD: Option[RecoverableAmountsYTD],
-                                  apprenticeshipLevy: Option[ApprenticeshipLevy],
-                                  account: Option[Account],
+                                  noPaymentForPeriod: Yes = None,
+                                  noPaymentDates: Option[DateRange] = None,
+                                  periodOfInactivity: Option[DateRange] = None,
+                                  empAllceInd: YesNo = None,
+                                  recoverableAmountsYTD: Option[RecoverableAmountsYTD] = None,
+                                  apprenticeshipLevy: Option[ApprenticeshipLevy] = None,
+                                  account: Option[Account] = None,
                                   relatedTaxYear: String,
-                                  finalSubmission: Option[FinalSubmission])
+                                  finalSubmission: Option[FinalSubmission] = None)
 
 object EmployerPaymentSummary {
+  implicit val dateTimeFormats = RestFormats.dateTimeFormats
   implicit val formats = Json.format[EmployerPaymentSummary]
 }

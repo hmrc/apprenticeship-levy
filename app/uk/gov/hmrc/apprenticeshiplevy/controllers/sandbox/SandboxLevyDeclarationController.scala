@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxETMPConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxRTIConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, LevyDeclarationController}
 
 object SandboxLevyDeclarationController extends ApiController with LevyDeclarationController {
-  override def etmpConnector = SandboxETMPConnector
+  override def rtiConnector = SandboxRTIConnector
 }
