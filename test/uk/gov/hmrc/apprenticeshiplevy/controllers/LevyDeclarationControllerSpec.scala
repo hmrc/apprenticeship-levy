@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import org.joda.time.DateTime
+import org.joda.time.DateTimeConstants.{APRIL, MAY}
+import org.joda.time.{DateTimeConstants, LocalDate, LocalDateTime}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,7 +43,7 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
   "convertToDeclaration" should {
 
     val id = 123456L
-    val submissionTime = DateTime.now()
+    val submissionTime = LocalDateTime.now()
     val relatedTaxYear = "16-17"
 
     val refs = EmpRefs(officeNumber = "123", payeRef = "123/AB12345", aoRef = "123PQ7654321X")
@@ -68,18 +69,42 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
       val taxMonth = 2
       val eps = EmployerPaymentSummary(id, submissionTime, refs, relatedTaxYear = relatedTaxYear, apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, taxMonth, allowance)))
 
-      TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime, payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)), levyDueYTD = Some(levyDueYTD), allowance = Some(allowance))
+      TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime,
+        payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
+        levyDueYTD = Some(levyDueYTD),
+        allowance = Some(allowance))
     }
 
-    "convert a submission without payment" in {
+    "convert a submission with no payment for period" in {
 
-      val startNoPayment = submissionTime.minusMonths(2).toLocalDate
-      val endNoPayment = submissionTime.minusMonths(1).toLocalDate
+      val startNoPayment = new LocalDate("2016-05-06")
+      val endNoPayment = new LocalDate("2016-06-05")
+
+      val expectedTaxMonth = 2
 
       val eps = EmployerPaymentSummary(id, submissionTime, refs, Some("yes"), Some(DateRange(startNoPayment, endNoPayment)), relatedTaxYear = relatedTaxYear)
 
-      // TODO: specify the right format for this response - tax month is the tax month related to the END date.
+      TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime,
+        noPaymentForPeriod = Some(true),
+        payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)))
+    }
+  }
 
+  "calculate tax month" should {
+    "calculate month 1 for 6 Apr" in {
+      TestLevyDeclarationController.calculateTaxMonth(new LocalDate(2016, APRIL, 6)) shouldBe 1
+    }
+
+    "calculate month 1 for 5 May" in {
+      TestLevyDeclarationController.calculateTaxMonth(new LocalDate(2016, MAY, 5)) shouldBe 1
+    }
+
+    "calculate month 2 for 6 May" in {
+      TestLevyDeclarationController.calculateTaxMonth(new LocalDate(2016, MAY, 5)) shouldBe 1
+    }
+
+    "calculate month 12 for 5 Apr" in {
+      TestLevyDeclarationController.calculateTaxMonth(new LocalDate(2016, APRIL, 5)) shouldBe 12
     }
   }
 }

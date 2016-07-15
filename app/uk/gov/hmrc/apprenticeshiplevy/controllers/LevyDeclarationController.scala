@@ -16,15 +16,17 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import org.joda.time.DateTime
+import org.joda.time.DateTimeConstants.APRIL
+import org.joda.time.Months.monthsBetween
+import org.joda.time._
+import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{EmployerPaymentSummary, RTIConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
-import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollPeriod}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, NotFoundException}
-import play.api.Logger
 
 import scala.concurrent.Future
 
@@ -33,7 +35,7 @@ trait LevyDeclarationController{
 
   def rtiConnector: RTIConnector
 
-  implicit val dateTimeOrdering: Ordering[DateTime] = Ordering.by(dt => dt.getMillis)
+  implicit val dateTimeOrdering: Ordering[LocalDateTime] = Ordering.fromLessThan { (d1, d2) => d1.isBefore(d2) }
 
   def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
     retrieveDeclarations(empref, months)
@@ -59,7 +61,7 @@ trait LevyDeclarationController{
   }
 
   private[controllers] def buildResult(ds: Seq[LevyDeclaration], empref: String): Result = {
-    if (ds.nonEmpty) Ok(Json.toJson(ds))
+    if (ds.nonEmpty) Ok(Json.toJson(LevyDeclarations(empref, ds)))
     else ErrorNotFound.result
   }
 
@@ -82,5 +84,22 @@ trait LevyDeclarationController{
         levyDueYTD = eps.apprenticeshipLevy.map { al => al.levyDueYTD },
         allowance = eps.apprenticeshipLevy.map { al => al.annualAllce }
       )
+    case eps if eps.noPaymentForPeriod.exists(_.equalsIgnoreCase("yes")) =>
+      LevyDeclaration(eps.eventId, eps.submissionTime,
+        payrollPeriod = Some(PayrollPeriod(
+          year = eps.relatedTaxYear,
+          month = calculateTaxMonth(eps.noPaymentDates
+            .map(_.to)
+            .getOrElse(throw new RuntimeException("a NoPaymentDates element was expected")))
+        )),
+        noPaymentForPeriod = Some(true))
+  }
+
+  val BeginningOfTaxYear = new MonthDay(APRIL, 6)
+
+  private[controllers] def calculateTaxMonth(to: LocalDate) = {
+    val monthDay = new MonthDay(to.getMonthOfYear, to.getDayOfMonth)
+    val yearReference = if (monthDay.isBefore(BeginningOfTaxYear)) to.getYear - 1 else to.getYear
+    monthsBetween(new LocalDate(yearReference, APRIL, 6), to).getMonths + 1
   }
 }
