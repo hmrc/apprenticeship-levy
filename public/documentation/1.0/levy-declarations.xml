@@ -62,47 +62,70 @@
         <title>Response</title>
         <httpStatus>200 (OK)</httpStatus>
         <json><![CDATA[
-    "empref": "123/AB12345",
-    "schemeCessationDate": "2016-03-17",
-    "declarations": [
-        {
-            "submissionType": "amended",
-            "submissionDate": "2016-03-15",
-            "payrollMonth": {
-                "year": 2016,
-                "month": 2
-            },
-            "amount": -200
-        },
-        {
-            "submissionType": "original",
-            "submissionDate": "2016-02-21",
-            "payrollMonth": {
-                "year": 2016,
-                "month": 2
-            },
-            "amount": 1000
-        },
-        {
-            "submissionType": "original",
-            "submissionDate": "2016-01-21",
-            "payrollMonth": {
-                "year": 2016,
-                "month": 1
-            },
-            "amount": 500
-        },
-        {
-            "submissionType": "original",
-            "submissionDate": "2015-12-21",
-            "payrollMonth": {
-                "year": 2015,
-                "month": 12
-            },
-            "amount": 600
-        }
-    ]
-}]]></json>
+            "empref" : "123/AB12345",
+            "declarations" : [
+                {
+                    "id" : 12345684,
+                    "submissionTime" : "2016-10-15Z16:05:23",
+                    "dateCeased" : "2016-09-05"
+                },
+                {
+                    "id" : 12345683,
+                    "submissionTime" : "2016-07-15Z16:05:23",
+                    "inactiveFrom" : "2016-06-06",
+                    "inactiveTo" : "2016-09-05"
+                },
+                {
+                    "id" : 12345682,
+                    "submissionTime" : "2016-06-15Z16:05:23",
+                    "payrollPeriod" : {
+                        "year" : "16-17",
+                        "month" : 2
+                    },
+                    "amount" : 200,
+                    "allowance" : 15000
+                },
+                {
+                    "id" : 12345681,
+                    "submissionTime" : "2016-06-07Z16:05:23",
+                    "payrollPeriod" : {
+                        "year" : "16-17",
+                        "month" : 2
+                    },
+                    "amount" : 1000,
+                    "allowance" : 15000
+                },
+                {
+                    "id" : 12345680,
+                    "submissionTime" : "2016-05-07Z16:05:23",
+                    "payrollPeriod" : {
+                        "year" : "16-17",
+                        "month" : 1
+                    },
+                    "amount" : 500,
+                    "allowance" : 15000
+                },
+                {
+                    "id" : 12345679,
+                    "submissionTime" : "2015-04-07Z16:05:23",
+                    "payrollPeriod" : {
+                        "year" : "15-16",
+                        "month" : 12
+                    },
+                    "noPaymentForPeriod" : true
+                    },
+                {
+                    "id" : 12345678,
+                    "submissionTime" : "2016-03-07Z16:05:23",
+                    "payrollPeriod" : {
+                        "year" : "15-16",
+                        "month" : 11
+                    },
+                    "amount" : 600,
+                    "allowance" : 15000
+                }
+            ]
+        ]]></json>
         <table>
             <headings>
                 <cell>Name</cell>
@@ -118,40 +141,64 @@
                     <cell>The PAYE Reference for the employer. This will be the same as provided in the URL</cell>
                 </row>
                 <row>
-                    <cell><code>schemeCessationDate</code></cell>
+                    <cell><code>declarations[].id</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>12345684</code></cell>
+                    <cell>A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].dateCeased</code></cell>
                     <cell><code>Date</code></cell>
-                    <cell><code>2016-03-17</code></cell>
+                    <cell><code>2016–03–17</code></cell>
                     <cell>If present, indicates the date that the payroll scheme was ceased</cell>
                 </row>
                 <row>
-                    <cell><code>declarations[].submissionType</code></cell>
-                    <cell><code>String</code></cell>
-                    <cell><code>original</code></cell>
-                    <cell>original or amended to indicate if the declaration was made as part of an original or an amended RTI submission. If amended then the declarations[].amount figure (documented below) is taken to be the amount of the adjustment, so it could be positive or negative.</cell>
-                </row>
-                <row>
-                    <cell><code>declarations[].submissionDate</code></cell>
+                    <cell><code>declarations[].inactiveFrom</code></cell>
                     <cell><code>Date</code></cell>
-                    <cell><code>2016-03-21</code></cell>
-                    <cell>The date that the RTI submission that this declaration relates to was received by HMRC</cell>
+                    <cell><code>2016–06–06</code></cell>
+                    <cell>Indicates the the payroll scheme will be inactive starting from this date. Should always be the 6th of the month of the first inactive payroll period</cell>
                 </row>
                 <row>
-                    <cell><code>declarations[].payrollMonth.year</code></cell>
-                    <cell><code>Number</code></cell>
-                    <cell><code>2016</code></cell>
-                    <cell>The calendar year of the payroll month against which the declaration was made</cell>
+                    <cell><code>declarations[].inactiveTo</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2016–09–05</code></cell>
+                    <cell>The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period</cell>
                 </row>
                 <row>
-                    <cell><code>declarations[].payrollMonth.month</code></cell>
+                    <cell><code>declarations[].noPaymentForPeriod</code></cell>
+                    <cell><code>Boolean</code></cell>
+                    <cell><code>true</code></cell>
+                    <cell>If present, will always have the value true and indicates that no declaration was necessary for this period. This can be interpreted to mean that the YTD levy balance is unchanged from the previous submitted value</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].submissionTime</code></cell>
+                    <cell><code>DateTime</code></cell>
+                    <cell><code>2016–02–21Z16:05:23</code></cell>
+                    <cell>the time at which the EPS submission that this declaration relates to was received by HMRC</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].payrollPeriod.year</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>15-16</code></cell>
+                    <cell>The tax year of the payroll period against which the declaration was made</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].payrollPeriod.month</code></cell>
                     <cell><code>Number</code></cell>
                     <cell><code>1</code></cell>
-                    <cell>The tax month of the payroll month against which the declaration was made. Month 1 is April.</cell>
+                    <cell>The tax month of the payroll period against which the declaration was made. Month 1 is April.</cell>
                 </row>
                 <row>
                     <cell><code>declarations[].amount</code></cell>
                     <cell><code>Number</code></cell>
                     <cell><code>600.20</code></cell>
                     <cell>The amount of apprenticeship levy that was declared in the payroll month.</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].allowance</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>15000</code></cell>
+                    <cell>The annual amount of apprenticeship levy allowance that has been allocated to this payroll scheme. If absent then the value can be taken as 0. The maximum value in the 2017/18 will be 15,000</cell>
                 </row>
             </rows>
         </table>
