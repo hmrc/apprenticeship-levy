@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.joda.time.DateTimeConstants.{APRIL, MAY}
-import org.joda.time.{DateTimeConstants, LocalDate, LocalDateTime}
+import org.joda.time.{LocalDate, LocalDateTime}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -46,11 +46,9 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
     val submissionTime = LocalDateTime.now()
     val relatedTaxYear = "16-17"
 
-    val refs = EmpRefs(officeNumber = "123", payeRef = "123/AB12345", aoRef = "123PQ7654321X")
-
     "convert a terminated payroll scheme" in {
       val schemeCeasedDate = submissionTime.minusDays(1).toLocalDate
-      val eps = EmployerPaymentSummary(id, submissionTime, refs, finalSubmission = Some(FinalSubmission(Some("yes"), dateSchemeCeased = Some(schemeCeasedDate))), relatedTaxYear = relatedTaxYear)
+      val eps = EmployerPaymentSummary(id, submissionTime, finalSubmission = Some(FinalSubmission(Some("yes"), dateSchemeCeased = Some(schemeCeasedDate))), relatedTaxYear = relatedTaxYear)
 
       TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime, Some(schemeCeasedDate))
     }
@@ -58,7 +56,7 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
     "convert an inactive submission" in {
       val inactiveFrom = submissionTime.minusMonths(2).toLocalDate
       val inactiveTo = submissionTime.minusMonths(2).toLocalDate
-      val eps = EmployerPaymentSummary(id, submissionTime, refs, relatedTaxYear = relatedTaxYear, periodOfInactivity = Some(DateRange(from = inactiveFrom, to = inactiveTo)))
+      val eps = EmployerPaymentSummary(id, submissionTime, relatedTaxYear = relatedTaxYear, periodOfInactivity = Some(DateRange(from = inactiveFrom, to = inactiveTo)))
 
       TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo))
     }
@@ -67,7 +65,7 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
       val levyDueYTD = BigDecimal(500)
       val allowance = BigDecimal(10000)
       val taxMonth = 2
-      val eps = EmployerPaymentSummary(id, submissionTime, refs, relatedTaxYear = relatedTaxYear, apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, taxMonth, allowance)))
+      val eps = EmployerPaymentSummary(id, submissionTime, relatedTaxYear = relatedTaxYear, apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, taxMonth, allowance)))
 
       TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime,
         payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
@@ -82,7 +80,7 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
 
       val expectedTaxMonth = 2
 
-      val eps = EmployerPaymentSummary(id, submissionTime, refs, Some("yes"), Some(DateRange(startNoPayment, endNoPayment)), relatedTaxYear = relatedTaxYear)
+      val eps = EmployerPaymentSummary(id, submissionTime, Some("yes"), Some(DateRange(startNoPayment, endNoPayment)), relatedTaxYear = relatedTaxYear)
 
       TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime,
         noPaymentForPeriod = Some(true),
