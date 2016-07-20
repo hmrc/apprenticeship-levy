@@ -1,7 +1,7 @@
-# Fraction Calculations
+# Regional Fraction Calculations
 
 ## Resource
-`GET /apprenticeship-levy/epaye/{empref}/fractions[?months=n]`
+    GET /apprenticeship-levy/epaye/{empref}/fractions[?months=n]
 
 ## Path Parameters
 | Name | Type | Example | Description |
@@ -52,7 +52,7 @@ Departmental Access with TOTP (time-based one-time password) in cases where the 
 |:-|:-|:-|:-|
 | empref | String | 123/AB12345 | The empref of the scheme the declarations relate to. This will be the same as the empref provided in the URL |
 | fractionCalculations.calculatedAt | Date | 2015-11-18 | The date that the fractions were calculated |
-| fractions.region | String | England | The region the specific fraction applies to. May be England, Wales, Scotland or Northern Ireland |
-| fractions.value | Number | 0.83 | The fraction calculated for the region. Will be a decimal in the range 0 to 1. The values for all regions in the calculation will sum to 1. If the value for a region is 0 it may be omitted from the list. |
+| fractions.region | String | England | The region the specific fraction applies to. For the present this value will always be England. In the future the API may be extended to support reporting of the fraction values for Wales, Scotland and Northern Ireland |
+| fractions.value | Number | 0.83 | The fraction calculated for the region. Will be a decimal in the range 0 to 1. |
  
  
