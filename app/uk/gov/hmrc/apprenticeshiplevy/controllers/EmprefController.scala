@@ -51,7 +51,6 @@ trait EmprefController extends ApiController {
       HalLink("declarations", declarationsUrl(empref)),
       HalLink("fractions", fractionsUrl(empref))
     )
-
     Hal.linksSeq(links.map(processLink))
   }
 }
