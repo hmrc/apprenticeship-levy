@@ -26,7 +26,6 @@ trait SandboxRootController extends RootController with SandboxLinkHelper {
 
   override def emprefUrl(empref: String): String = routes.SandboxEmprefController.empref(empref).url
 
-
   override def processLink(l: HalLink): HalLink = stripSandboxForNonDev(l)
 }
 
