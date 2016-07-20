@@ -32,8 +32,8 @@ trait EpayeConnector {
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] = {
     http.GET[DesignatoryDetails](s"$epayeBaseUrl/epaye/${helper.urlEncode(empref)}/designatory-details")
   }
-
 }
+
 object SandboxEpayeConnector extends EpayeConnector with ServicesConfig {
   override val epayeBaseUrl: String = baseUrl("stub-epaye")
   override val http: HttpGet = WSHttp

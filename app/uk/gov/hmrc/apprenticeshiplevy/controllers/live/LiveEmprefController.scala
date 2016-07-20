@@ -16,10 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.EpayeConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{EpayeConnector, LiveEpayeConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
 
 object LiveEmprefController extends EmprefController {
   override def emprefUrl(empref: String): String = routes.LiveEmprefController.empref(empref).url
@@ -28,7 +26,5 @@ object LiveEmprefController extends EmprefController {
 
   override def fractionsUrl(empref: String): String = routes.LiveFractionsController.fractions(empref, None).url
 
-  override def epayeConnector: EpayeConnector = ???
-
-  override def empref(empref: String): Action[AnyContent] = Action(ErrorNotImplemented.result)
+  override def epayeConnector: EpayeConnector = LiveEpayeConnector
 }
