@@ -82,7 +82,7 @@
                         "year" : "16-17",
                         "month" : 2
                     },
-                    "amount" : 200,
+                    "levyDueYTD" : 200,
                     "allowance" : 15000
                 },
                 {
@@ -92,7 +92,7 @@
                         "year" : "16-17",
                         "month" : 2
                     },
-                    "amount" : 1000,
+                    "levyDueYTD" : 1000,
                     "allowance" : 15000
                 },
                 {
@@ -102,7 +102,7 @@
                         "year" : "16-17",
                         "month" : 1
                     },
-                    "amount" : 500,
+                    "levyDueYTD" : 500,
                     "allowance" : 15000
                 },
                 {
@@ -121,7 +121,7 @@
                         "year" : "15-16",
                         "month" : 11
                     },
-                    "amount" : 600,
+                    "levyDueYTD" : 600,
                     "allowance" : 15000
                 }
             ]
@@ -189,7 +189,7 @@
                     <cell>The tax month of the payroll period against which the declaration was made. Month 1 is April.</cell>
                 </row>
                 <row>
-                    <cell><code>declarations[].amount</code></cell>
+                    <cell><code>declarations[].levyDueYTD</code></cell>
                     <cell><code>Number</code></cell>
                     <cell><code>600.20</code></cell>
                     <cell>The amount of apprenticeship levy that was declared in the payroll month.</cell>
