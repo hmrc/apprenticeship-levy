@@ -1,6 +1,6 @@
 # Employment Check
 ## Resource
-	GET /apprenticeship-levy/epaye/empref/{empref}/employed/{nino}?fromDate={date}&toDate={date}
+	GET /apprenticeship-levy/epaye/{empref}/employed/{nino}?fromDate={date}&toDate={date}
 	
 ## Path Parameters
 
