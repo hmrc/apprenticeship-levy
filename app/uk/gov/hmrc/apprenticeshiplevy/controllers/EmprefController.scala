@@ -31,6 +31,8 @@ trait EmprefController extends ApiController {
 
   def fractionsUrl(empref: String): String
 
+  def employmentCheckUrl(empref: String): String
+
   def emprefUrl(empref: String): String
 
   // Hook to allow post-processing of the links, specifically for sandbox handling
@@ -49,7 +51,8 @@ trait EmprefController extends ApiController {
     val links = Seq(
       selfLink(emprefUrl(empref)),
       HalLink("declarations", declarationsUrl(empref)),
-      HalLink("fractions", fractionsUrl(empref))
+      HalLink("fractions", fractionsUrl(empref)),
+      HalLink("employment-check", employmentCheckUrl(empref))
     )
     Hal.linksSeq(links.map(processLink))
   }

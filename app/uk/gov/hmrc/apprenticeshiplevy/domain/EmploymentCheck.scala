@@ -39,7 +39,7 @@ case object NotEmployed extends EmploymentCheckStatus
 
 case object NinoUnknown extends EmploymentCheckStatus
 
-case class EmploymentCheck(empref: String, nino: String, date: LocalDate, employed: Boolean)
+case class EmploymentCheck(empref: String, nino: String, fromDate: LocalDate, toDate:LocalDate, employed: Boolean)
 
 object EmploymentCheck {
   implicit val dateFormats = RestFormats.localDateFormats

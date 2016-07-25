@@ -22,7 +22,7 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImpleme
 
 object LiveEmploymentCheckController extends EmploymentCheckController {
 
-  override def check(empref: String, nino: String, atDate: Option[LocalDate]) = withValidAcceptHeader {
+  override def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate) = withValidAcceptHeader {
     ErrorNotImplemented.result
   }
 

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
+import org.joda.time.LocalDate
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{EpayeConnector, SandboxEpayeConnector}
@@ -28,6 +29,11 @@ trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
 
   override def fractionsUrl(empref: String): String = routes.SandboxFractionsController.fractions(empref, None).url
 
+  override def employmentCheckUrl(empref: String): String = {
+    routes.SandboxEmploymentCheckController.check(empref, "nino", new LocalDate, new LocalDate)
+      .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
+  }
+
   override def processLink(l: HalLink): HalLink = stripSandboxForNonDev(l)
 }
 
@@ -35,5 +41,6 @@ object SandboxEmprefController extends SandboxEmprefController {
   override val env = AppContext.env
 
   override def epayeConnector: EpayeConnector = SandboxEpayeConnector
+
 }
 

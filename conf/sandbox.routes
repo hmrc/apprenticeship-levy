@@ -2,4 +2,4 @@ GET        /                                  uk.gov.hmrc.apprenticeshiplevy.con
 GET        /epaye/:empref                     uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxEmprefController.empref(empref: String)
 GET        /epaye/:empref/declarations        uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxLevyDeclarationController.declarations(empref:String, months:Option[Int])
 GET        /epaye/:empref/fractions           uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxFractionsController.fractions(empref:String, months:Option[Int])
-GET        /epaye/:empref/employed/:nino      uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxEmploymentCheckController.check(empref: String, nino: String, atDate: Option[LocalDate])
+GET        /epaye/:empref/employed/:nino      uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxEmploymentCheckController.check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate)

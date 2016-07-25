@@ -26,10 +26,11 @@ class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues 
     "correctly prepare HAL for an empref" in {
       val hal = testController.prepareLinks("123/AB12345")
 
-      hal.links.links should have size 3
+      hal.links.links should have size 4
       hal.links.links.find(_.rel == "self").value.href shouldBe "/epaye/123%2FAB12345"
       hal.links.links.find(_.rel == "declarations").value.href shouldBe "/epaye/123%2FAB12345/declarations"
       hal.links.links.find(_.rel == "fractions").value.href shouldBe "/epaye/123%2FAB12345/fractions"
+      hal.links.links.find(_.rel == "employment-check").value.href shouldBe "/epaye/123%2FAB12345/employed/{nino}"
     }
   }
 
@@ -41,6 +42,8 @@ class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues 
     override def declarationsUrl(empref: String): String = emprefUrl(empref) + "/declarations"
 
     override def fractionsUrl(empref: String): String = emprefUrl(empref) + "/fractions"
+
+    override def employmentCheckUrl(empref: String): String = emprefUrl(empref) + "/employed/{nino}"
   }
 
 }

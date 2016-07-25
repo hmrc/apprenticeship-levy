@@ -43,14 +43,18 @@ trait RTIConnector {
     httpGet.GET[Seq[EmployerPaymentSummary]](url)
   }
 
-  def check(empref: String, nino: String, atDate: LocalDate)(implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
-    val url = s"$rtiBaseUrl/empref/${helper.urlEncode(empref)}/employee/${helper.urlEncode(nino)}?atDate=${DateConverter.formatToString(atDate)}"
+  def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
+    val params =
+      Seq("fromDate" -> fromDate, "toDate" -> toDate)
+        .map(p => s"${p._1}=${DateConverter.formatToString(p._2)}")
+        .mkString("&")
+
+    val url = s"$rtiBaseUrl/empref/${helper.urlEncode(empref)}/employee/${helper.urlEncode(nino)}?$params"
 
     Logger.debug(s"Calling RTI at $url")
 
     httpGet.GET[EmploymentCheckStatus](url)
   }
-
 }
 
 object LiveRTIConnector extends RTIConnector {

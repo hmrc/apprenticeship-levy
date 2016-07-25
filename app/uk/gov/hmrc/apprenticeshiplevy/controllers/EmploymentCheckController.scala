@@ -27,12 +27,11 @@ import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 trait EmploymentCheckController extends ApiController {
 
   def rtiConnector: RTIConnector
-  def check(empref: String, nino: String, atDate: Option[LocalDate]) = Action.async { implicit request =>
-    val checkDate = atDate.getOrElse(LocalDate.now)
 
-    rtiConnector.check(empref, nino, checkDate).map {
-      case Employed => Ok(Json.toJson(EmploymentCheck(empref, nino, checkDate, employed = true)))
-      case NotEmployed => Ok(Json.toJson(EmploymentCheck(empref, nino, checkDate, employed = false)))
+  def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate) = Action.async { implicit request =>
+    rtiConnector.check(empref, nino, fromDate, toDate).map {
+      case Employed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = true)))
+      case NotEmployed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = false)))
       case NinoUnknown => ErrorNinoNotVisible.toResult
     }
   }
