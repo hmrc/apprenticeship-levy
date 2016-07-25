@@ -27,6 +27,15 @@ trait FractionsController {
   def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
     edhConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
   }
+}
+
+/**
+  * This needs to be a separate trait as the fractions endpoint needs to have auth enabled, but
+  * the calculation date endpoint doesn't
+  */
+trait FractionsCalculationController {
+  self: ApiController =>
+  def edhConnector: EDHConnector
 
   def fractionCalculationDate = withValidAcceptHeader.async { implicit request =>
     edhConnector.fractionCalculationDate.map(date => Ok(Json.toJson(date)))

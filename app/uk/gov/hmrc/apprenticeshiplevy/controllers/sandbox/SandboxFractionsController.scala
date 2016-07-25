@@ -17,8 +17,8 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxEDHConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, FractionsController}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, FractionsCalculationController, FractionsController}
 
-object SandboxFractionsController extends ApiController with FractionsController {
+object SandboxFractionsController extends ApiController with FractionsController with FractionsCalculationController {
   override def edhConnector = SandboxEDHConnector
 }

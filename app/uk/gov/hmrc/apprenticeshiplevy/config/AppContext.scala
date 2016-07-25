@@ -48,9 +48,6 @@ object AppContext extends ServicesConfig {
     .map { applicationIds => applicationIds.split(",").toSeq }
     .getOrElse(Seq.empty)
 
-  lazy val etmpUrl = baseUrl("etmp")
-  lazy val stubEtmpUrl = baseUrl("stub-etmp")
-
   lazy val edhUrl = baseUrl("edh")
   lazy val stubEdhUrl = baseUrl("stub-edh")
 
