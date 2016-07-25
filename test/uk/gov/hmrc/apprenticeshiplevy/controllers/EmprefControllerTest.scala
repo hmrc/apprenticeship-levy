@@ -24,13 +24,14 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, EpayeConnector}
 class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues {
   "prepareLinks" should {
     "correctly prepare HAL for an empref" in {
-      val hal = testController.prepareLinks("123/AB12345")
+      val empref = "123/AB12345"
+      val hal = testController.prepareLinks(empref)
 
       hal.links.links should have size 4
-      hal.links.links.find(_.rel == "self").value.href shouldBe "/epaye/123%2FAB12345"
-      hal.links.links.find(_.rel == "declarations").value.href shouldBe "/epaye/123%2FAB12345/declarations"
-      hal.links.links.find(_.rel == "fractions").value.href shouldBe "/epaye/123%2FAB12345/fractions"
-      hal.links.links.find(_.rel == "employment-check").value.href shouldBe "/epaye/123%2FAB12345/employed/{nino}"
+      hal.links.links.find(_.rel == "self").value.href shouldBe testController.emprefUrl(empref)
+      hal.links.links.find(_.rel == "declarations").value.href shouldBe testController.declarationsUrl(empref)
+      hal.links.links.find(_.rel == "fractions").value.href shouldBe testController.fractionsUrl(empref)
+      hal.links.links.find(_.rel == "employment-check").value.href shouldBe testController.employmentCheckUrl(empref)
     }
   }
 
