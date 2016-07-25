@@ -2,8 +2,9 @@
 
 GET        /                                            uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveRootController.root
 GET        /epaye/:empref                               uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveEmprefController.empref(empref:String)
-
 GET        /epaye/:empref/declarations                  uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController.declarations(empref:String, months:Option[Int])
 GET        /epaye/:empref/fractions                     uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsController.fractions(empref:String, months:Option[Int])
+GET        /epaye/:empref/employed/:nino                uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveEmploymentCheckController.check(empref: String, nino: String, atDate: Option[LocalDate])
+
 GET        /api/definition                              uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.definition
 GET        /api/documentation/:version/:endpoint        uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.documentation(version, endpoint)
