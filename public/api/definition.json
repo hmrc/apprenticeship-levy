@@ -65,13 +65,17 @@
             "uriPattern": "/epaye/{empref}/employed/{nino}",
             "endpointName": "employment-check",
             "method": "GET",
-            "authType": "NONE",
+            "authType": "USER",
             "throttlingTier": "UNLIMITED",
             "scope": "read:employment-check",
             "queryParameters": [
               {
-                "name": "atDate",
-                "required": false
+                "name": "fromDate",
+                "required": true
+              },
+              {
+                "name": "toDate",
+                "required": true
               }
             ]
           }
