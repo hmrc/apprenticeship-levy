@@ -46,7 +46,7 @@ trait RTIConnector {
   def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
     val params =
       Seq("fromDate" -> fromDate, "toDate" -> toDate)
-        .map(p => s"${p._1}=${DateConverter.formatToString(p._2)}")
+        .map { case (key, value) => s"$key=${DateConverter.formatToString(value)}" }
         .mkString("&")
 
     val url = s"$rtiBaseUrl/empref/${helper.urlEncode(empref)}/employee/${helper.urlEncode(nino)}?$params"

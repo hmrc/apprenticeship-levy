@@ -18,7 +18,6 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
-import play.api.mvc.Action
 import uk.gov.hmrc.apprenticeshiplevy.connectors.RTIConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNinoNotVisible
 import uk.gov.hmrc.apprenticeshiplevy.domain.{Employed, EmploymentCheck, NinoUnknown, NotEmployed}
@@ -28,7 +27,7 @@ trait EmploymentCheckController extends ApiController {
 
   def rtiConnector: RTIConnector
 
-  def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate) = Action.async { implicit request =>
+  def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate) = withValidAcceptHeader.async { implicit request =>
     rtiConnector.check(empref, nino, fromDate, toDate).map {
       case Employed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = true)))
       case NotEmployed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = false)))
