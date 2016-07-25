@@ -1,6 +1,6 @@
 # Employment Check
 ## Resource
-	GET /employment-check/epaye/empref/{empref}/employed/{nino}?fromDate={date}&toDate={date}
+	GET /apprenticeship-levy/epaye/empref/{empref}/employed/{nino}?fromDate={date}&toDate={date}
 	
 ## Path Parameters
 
@@ -16,7 +16,7 @@
 | toDate | Date | 2016-04-05 | none | The end date for which the check should be done. Mandatory |
 
 ## Authorisation
-OAuth 2.0 Bearer Token with the `read:employment-check` scope.
+OAuth 2.0 Bearer Token with the `read:apprenticeship-levy` scope.
 
 Departmental Access with TOTP (time-based one-time password) in cases where the application needs to carry out a check for a scheme where the OAuth access token has expired.
 
