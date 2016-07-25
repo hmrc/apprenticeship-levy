@@ -27,7 +27,14 @@ object LiveFractionsController extends ApiController with FractionsController {
   /**
     * TODO: Remove this overridden method to enable the main implementation from the trait
     */
-  override def fractions(empref: String, months: Option[Int]): Action[AnyContent] = withValidAcceptHeader {
+  override def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader {
+    ErrorNotImplemented.result
+  }
+
+  /**
+    * TODO: Remove this overridden method to enable the main implementation from the trait
+    */
+  override def fractionCalculationDate = withValidAcceptHeader {
     ErrorNotImplemented.result
   }
 }

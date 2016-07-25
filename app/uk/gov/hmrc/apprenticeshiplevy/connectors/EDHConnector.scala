@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
+import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.Fractions
@@ -38,6 +39,12 @@ trait EDHConnector {
 
     Logger.debug(s"Calling EDH at $url")
     httpGet.GET[Fractions](url)
+  }
+
+  def fractionCalculationDate(implicit hc: HeaderCarrier): Future[LocalDate] = {
+    val url = s"$edhBaseUrl/fraction-calculation-date"
+
+    httpGet.GET[LocalDate](url)
   }
 }
 

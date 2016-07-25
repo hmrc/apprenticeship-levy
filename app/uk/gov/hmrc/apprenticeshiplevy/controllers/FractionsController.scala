@@ -27,4 +27,8 @@ trait FractionsController {
   def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
     edhConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
   }
+
+  def fractionCalculationDate = withValidAcceptHeader.async { implicit request =>
+    edhConnector.fractionCalculationDate.map(date => Ok(Json.toJson(date)))
+  }
 }
