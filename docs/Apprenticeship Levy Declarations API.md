@@ -33,18 +33,18 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
     "declarations" : [
         {
             "id" : 12345684,
-            "submissionTime" : "2016-10-15Z16:05:23",
+            "submissionTime" : "2016-10-15T16:05:23",
             "dateCeased" : "2016-09-05"            
         },
         {
             "id" : 12345683,
-            "submissionTime" : "2016-07-15Z16:05:23",
+            "submissionTime" : "2016-07-15T16:05:23",
             "inactiveFrom" : "2016-06-06",
             "inactiveTo" : "2016-09-05"
         },    
         {
             "id" : 12345682,
-            "submissionTime" : "2016-06-15Z16:05:23",
+            "submissionTime" : "2016-06-15T16:05:23",
             "payrollPeriod" : {
                 "year" : "16-17",
                 "month" : 2
@@ -54,7 +54,7 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
         },
         {
             "id" : 12345681,
-            "submissionTime" : "2016-06-07Z16:05:23",
+            "submissionTime" : "2016-06-07T16:05:23",
             "payrollPeriod" : {
                 "year" : "16-17",
                 "month" : 2
@@ -64,7 +64,7 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
         },
         {
             "id" : 12345680,
-            "submissionTime" : "2016-05-07Z16:05:23",
+            "submissionTime" : "2016-05-07T16:05:23",
             "payrollPeriod" : {
                 "year" : "16-17",
                 "month" : 1
@@ -74,7 +74,7 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
         },
         {
             "id" : 12345679,
-            "submissionTime" : "2015-04-07Z16:05:23",
+            "submissionTime" : "2015-04-07T16:05:23",
             "payrollPeriod" : {
                 "year" : "15-16",
                 "month" : 12
@@ -83,7 +83,7 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
         },
         {
             "id" : 12345678,
-            "submissionTime" : "2016-03-07Z16:05:23",
+            "submissionTime" : "2016-03-07T16:05:23",
             "payrollPeriod" : {
                 "year" : "15-16",
                 "month" : 11
