@@ -16,9 +16,12 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
+import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
+import uk.gov.hmrc.apprenticeshiplevy.domain.EmploymentCheckStatus
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
+import uk.gov.hmrc.time.DateConverter
 import views.html.helper
 
 import scala.concurrent.Future
@@ -38,6 +41,14 @@ trait RTIConnector {
     Logger.debug(s"Calling RTI at $url")
 
     httpGet.GET[Seq[EmployerPaymentSummary]](url)
+  }
+
+  def check(empref: String, nino: String, atDate: LocalDate)(implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
+    val url = s"$rtiBaseUrl/empref/${helper.urlEncode(empref)}/employee/${helper.urlEncode(nino)}?atDate=${DateConverter.formatToString(atDate)}"
+
+    Logger.debug(s"Calling RTI at $url")
+
+    httpGet.GET[EmploymentCheckStatus](url)
   }
 
 }

@@ -60,6 +60,24 @@
                 "required": false
               }
             ]
+          },
+          {
+            "uriPattern": "/epaye/{empref}/employed/{nino}",
+            "endpointName": "employment-check",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:employment-check",
+            "queryParameters": [
+              {
+                "name": "fromDate",
+                "required": true
+              },
+              {
+                "name": "toDate",
+                "required": true
+              }
+            ]
           }
         ]
       }
