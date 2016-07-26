@@ -70,7 +70,7 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
       TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime,
         payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
         levyDueYTD = Some(levyDueYTD),
-        allowance = Some(allowance))
+        levyAllowanceForFullYear = Some(allowance))
     }
 
     "convert a submission with no payment for period" in {

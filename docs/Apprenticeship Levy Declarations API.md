@@ -106,8 +106,8 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
 | submissionTime | DateTime | 2016-02-21Z16:05:23 | the time at which the EPS submission that this declaration relates to was received by HMRC |
 | payrollPeriod.year | Number | 15-16 | The tax year of the payroll period against which the declaration was made |
 | payrollPeriod.month | Number | 1 | The tax month of the payroll period against which the declaration was made. Month 1 is April. |
-| amount | Number | 600.20 | The amount of apprenticeship levy that was declared in the payroll month. |
-| allowance | Number | 15000 | The annual amount of apprenticeship levy allowance that has been allocated to this payroll scheme. If absent then the value can be taken as 0. The maximum value in the 2017/18 will be 15,000 |
+| levyDueYTD | Number | 600.20 | The amount of apprenticeship levy that is due for this scheme. This is a year-to-date figure. |
+| levyAllowanceForFullYear | Number | 15000 | The annual amount of apprenticeship levy allowance that has been allocated to this payroll scheme for the whole year. If absent then the value can be taken as 0. The maximum value in the 2017/18 will be 15,000 |
 
 ## Error Scenarios
 

@@ -82,7 +82,7 @@ trait LevyDeclarationController{
           month = al.taxMonth)
         },
         levyDueYTD = eps.apprenticeshipLevy.map { al => al.levyDueYTD },
-        allowance = eps.apprenticeshipLevy.map { al => al.annualAllce }
+        levyAllowanceForFullYear = eps.apprenticeshipLevy.map { al => al.annualAllce }
       )
     case eps if eps.noPaymentForPeriod.exists(_.equalsIgnoreCase("yes")) =>
       LevyDeclaration(eps.eventId, eps.submissionTime,

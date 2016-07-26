@@ -33,7 +33,7 @@ case class LevyDeclaration(id: Long,
                            inactiveTo: Option[LocalDate] = None,
                            payrollPeriod: Option[PayrollPeriod] = None,
                            levyDueYTD: Option[BigDecimal] = None,
-                           allowance: Option[BigDecimal] = None,
+                           levyAllowanceForFullYear: Option[BigDecimal] = None,
                            noPaymentForPeriod: Option[Boolean] = None)
 
 
