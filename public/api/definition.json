@@ -62,6 +62,15 @@
             ]
           },
           {
+            "uriPattern": "/fraction-calculation-date",
+            "endpointName": "fraction-calculation-date",
+            "method": "GET",
+            "authType": "NONE",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": []
+          },
+          {
             "uriPattern": "/epaye/{empref}/employed/{nino}",
             "endpointName": "employment-check",
             "method": "GET",

@@ -83,7 +83,7 @@
                         "month" : 2
                     },
                     "levyDueYTD" : 200,
-                    "allowance" : 15000
+                    "levyAllowanceForFullYear" : 15000
                 },
                 {
                     "id" : 12345681,
@@ -93,7 +93,7 @@
                         "month" : 2
                     },
                     "levyDueYTD" : 1000,
-                    "allowance" : 15000
+                    "levyAllowanceForFullYear" : 15000
                 },
                 {
                     "id" : 12345680,
@@ -103,7 +103,7 @@
                         "month" : 1
                     },
                     "levyDueYTD" : 500,
-                    "allowance" : 15000
+                    "levyAllowanceForFullYear" : 15000
                 },
                 {
                     "id" : 12345679,
@@ -122,7 +122,7 @@
                         "month" : 11
                     },
                     "levyDueYTD" : 600,
-                    "allowance" : 15000
+                    "levyAllowanceForFullYear" : 15000
                 }
             ]
         ]]></json>

@@ -71,18 +71,6 @@
                     {
                         “region”: “England”,
                         “value”: “0.83”
-                    },
-                    {
-                        “region”: “Scotland”,
-                        “value”: “0.11”
-                    },
-                    {
-                        “region”: “Wales”,
-                        “value”: “0.06”
-                    },
-                    {
-                        “region”: “Northern Ireland”,
-                        “value”: “0”
                     }
                 ]
             },
@@ -92,18 +80,6 @@
                     {
                         “region”: “England”,
                         “value”: “0.78”
-                    },
-                    {
-                        “region”: “Scotland”,
-                        “value”: “0.16”
-                    },
-                    {
-                        “region”: “Wales”,
-                        “value”: “0.06”
-                    },
-                    {
-                        “region”: “Northern Ireland”,
-                        “value”: “0”
                     }
                 ]
             }
@@ -134,13 +110,13 @@
                     <cell><code>fractionCalculations[].fractions[].region</code></cell>
                     <cell><code>String</code></cell>
                     <cell><code>England</code></cell>
-                    <cell>The region the specific fraction applies to. Will be England, Wales, Scotland or Northern Ireland</cell>
+                    <cell>The region the specific fraction applies to. Will always be England for the forseeable future.</cell>
                 </row>
                 <row>
                     <cell><code>fractionCalculations[].fractions[].value</code></cell>
                     <cell><code>Number</code></cell>
                     <cell><code>0.83</code></cell>
-                    <cell>The fraction calculated for the region. Will be a decimal in the range 0 to 1. The values for all regions in the calculation will sum to 1. If the value for a region is 0 it may be omitted from the list.</cell>
+                    <cell>The fraction calculated for the region. Will be a decimal in the range 0 to 1.</cell>
                 </row>
             </rows>
         </table>
