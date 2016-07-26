@@ -76,7 +76,7 @@
             "method": "GET",
             "authType": "USER",
             "throttlingTier": "UNLIMITED",
-            "scope": "read:employment-check",
+            "scope": "read:apprenticeship-levy",
             "queryParameters": [
               {
                 "name": "fromDate",
