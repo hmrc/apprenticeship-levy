@@ -3,7 +3,7 @@
     <description>Checks the employment status of an individual in a payroll scheme.</description>
     <section id="resource">
         <title>Resource</title>
-        <resource>GET /employment-check/epaye/{empref}/employed/{nino}?atDate={date}</resource>
+        <resource>GET /apprenticeship-levy/epaye/{empref}/employed/{nino}?fromDate={date}&amp;toDate={date}</resource>
     </section>
     <section id="path-parameters">
         <title>Path Parameters</title>
@@ -53,7 +53,7 @@
         <title>Authorisation</title>
         <authorisation>
             <type>USER</type>
-            <scope>read:employment-check</scope>
+            <scope>read:apprenticeship-levy</scope>
         </authorisation>
     </section>
     <section id="content-types">
@@ -71,7 +71,8 @@
             {
                 "empref" : "123/AB12345",
                 "nino" : "XY654321Z",
-                "date" : "2016-03-15".
+                "fromDate" : "2016-03-06",
+                "toDate" : "2016-04-05",
                 "employed" : true
             }
     ]
@@ -97,16 +98,22 @@
                     <cell>The NINO of the individual being checked. This will be the same as provided in the URL.</cell>
                 </row>
                 <row>
+                    <cell><code>fromDate</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2016-03-06</code></cell>
+                    <cell>The start date of the range the check should be made for.</cell>
+                </row>
+                <row>
                     <cell><code>date</code></cell>
                     <cell><code>Date</code></cell>
-                    <cell><code>2016-03-15</code></cell>
-                    <cell>The date the check was made for. This will be the same as provided the parameter on the request, or today's date if no "atDate" parameter was provided.</cell>
+                    <cell><code>2016-04-05</code></cell>
+                    <cell>The end date of the range the check should be made for.</cell>
                 </row>
                 <row>
                     <cell><code>employed</code></cell>
                     <cell><code>Boolean</code></cell>
                     <cell><code>true</code></cell>
-                    <cell>Whether or not the individual was employed in the scheme on the check date.</cell>
+                    <cell>Whether or not the individual was employed in the scheme at any time with the date range.</cell>
                 </row>
             </rows>
         </table>
