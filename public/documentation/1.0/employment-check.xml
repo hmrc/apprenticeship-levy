@@ -41,10 +41,16 @@
             </headings>
             <rows>
                 <row>
-                    <cell><code>atDate</code></cell>
+                    <cell><code>fromDate</code></cell>
                     <cell><code>date</code></cell>
                     <cell><code><nowrap>2016-01-31</nowrap></code></cell>
-                    <cell>Check if the individual was employed in the scheme on the given date.</cell>
+                    <cell>Starting date of the period to check employment for.</cell>
+                </row>
+                <row>
+                    <cell><code>toDate</code></cell>
+                    <cell><code>date</code></cell>
+                    <cell><code><nowrap>2016-01-31</nowrap></code></cell>
+                    <cell>Ending date of the period to check employment for.</cell>
                 </row>
             </rows>
         </table>
