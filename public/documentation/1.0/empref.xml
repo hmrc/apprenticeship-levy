@@ -53,6 +53,9 @@
             },
             "fractions": {
                 "href": "/epaye/123%2FAB12345/fractions"
+            },
+            "employment-check": {
+                "href": "/epaye/123%2FAB12345/employed"
             }
         }
     },
@@ -87,6 +90,12 @@
                     <cell><code>URL</code></cell>
                     <cell><code>/epaye/123%2FAB12345/fractions</code></cell>
                     <cell>The link to the endpoint that returns information on fraction calculations for the empref</cell>
+                </row>
+                <row>
+                    <cell><code>_links.employment-check</code></cell>
+                    <cell><code>URL</code></cell>
+                    <cell><code>/epaye/123%2FAB12345/employed</code></cell>
+                    <cell>The link to the endpoint that returns information whether an employee was employed at a specific time by the empref</cell>
                 </row>
                 <row>
                     <cell><code>employer.name.nameLine1</code></cell>
