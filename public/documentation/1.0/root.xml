@@ -32,7 +32,10 @@
             "123/AB12345": {
                 "href": "/epaye/123%2FAB12345"
             }
-        }
+        },
+        "emprefs": [
+            "123/AB12345"
+        ]
     }]]></json>
         <table>
             <headings>
@@ -53,6 +56,12 @@
                     <cell><code>URL</code></cell>
                     <cell><code>/epaye/123%2FAB12345</code></cell>
                     <cell>A link to an endpoint that provides more information about the empref</cell>
+                </row>
+                <row>
+                    <cell><code>emprefs[]</code></cell>
+                    <cell><code>String[]</code></cell>
+                    <cell><code>["123/AB12345"]</code></cell>
+                    <cell>A list of emprefs for which links are provided</cell>
                 </row>
             </rows>
         </table>
