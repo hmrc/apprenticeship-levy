@@ -1,7 +1,7 @@
 # Regional Fraction Calculations
 
 ## Resource
-    GET /apprenticeship-levy/epaye/{empref}/fractions[?months=n]
+    GET /apprenticeship-levy/epaye/{empref}/fractions[?fromDate=fromdate&toDate=todate]
 
 ## Path Parameters
 | Name | Type | Example | Description |

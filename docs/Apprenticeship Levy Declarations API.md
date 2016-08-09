@@ -8,7 +8,7 @@ An employer makes levy declarations as part of an Employer Payment Summary (**EP
 Most submissions will include a year-to-date (**YTD**) figure for the total levy declared in the current tax year. However, there may be times that no levy or values for other fields are relevant, in which case the employer might file an EPS with an indication of a Period of Inactivity or No Payment for Period. The levy api needs to be able to reflect these situations out to DAS.
 
 ## API Endpoint
-    GET /apprenticeship-levy/epaye/{empref}/declarations[?months=n]
+    GET /apprenticeship-levy/epaye/{empref}/declarations[?fromDate=fromdate&toDate=todate]
 
 ## Path Parameters
 | Name | Type | Example | Description |
