@@ -39,7 +39,7 @@ trait LevyDeclarationController{
 
   def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
     retrieveDeclarations(empref, months)
-      .map(ds => buildResult(ds.sortBy(_.submissionTime), empref))
+      .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, empref))
   }
 
   private[controllers] def retrieveDeclarations(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {

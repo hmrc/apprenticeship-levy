@@ -30,16 +30,28 @@
             <headings>
                 <cell>Name</cell>
                 <cell>Type</cell>
+                <cell>Default</cell>
                 <cell>Example</cell>
+                <cell>Optional</cell>
                 <cell>Description</cell>
             </headings>
             <rows>
                 <row>
-                    <cell><code>months</code></cell>
-                    <cell><code>Number</code></cell>
-                    <cell><code><nowrap>12</nowrap></code></cell>
-                    <cell>Restrict the number of months of data returned. If the value is greater than 48 then it will be ignored.</cell>
+                    <cell><code>fromDate</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code><nowrap>2015-08-09</nowrap></code></cell>
+                    <cell>72 months prior to current date</cell>
+                    <cell>Yes</cell>
+                    <cell>The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.</cell>
                 </row>
+                 <row>
+                    <cell><code>fromDate</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code><nowrap>2015-08-09</nowrap></code></cell>
+                    <cell>Current date</cell>
+                    <cell>Yes</cell>
+                    <cell>The date of the latest record to return.</cell>
+                 </row>
             </rows>
         </table>
     </section>
