@@ -20,7 +20,7 @@ import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.domain.EmploymentCheckStatus
-import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
+import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.time.DateConverter
 import views.html.helper
@@ -45,13 +45,8 @@ trait RTIConnector {
     httpGet.GET[Seq[EmployerPaymentSummary]](url)
   }
 
-  def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate)(implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
-    val params =
-      Seq("fromDate" -> fromDate, "toDate" -> toDate)
-        .map { case (key, value) => s"$key=${DateConverter.formatToString(value)}" }
-        .mkString("&")
-
-    val url = s"$rtiBaseUrl/empref/${helper.urlEncode(empref)}/employee/${helper.urlEncode(nino)}?$params"
+  def check(empref: String, nino: String, dateRange: ClosedDateRange)(implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
+    val url = s"$rtiBaseUrl/empref/${helper.urlEncode(empref)}/employee/${helper.urlEncode(nino)}?${dateRange.paramString}"
 
     Logger.debug(s"Calling RTI at $url")
 

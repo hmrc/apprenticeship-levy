@@ -33,7 +33,9 @@ case object OpenDateRange extends DateRange {
 case class ClosedDateRange(from: LocalDate, to: LocalDate) extends DateRange {
   override def contains(date: LocalDate): Boolean = !date.isBefore(from) && !date.isAfter(to)
 
-  override def toParams: Option[String] = Some(s"fromDate=$from&toDate=$to")
+  override def toParams: Option[String] = Some(paramString)
+
+  def paramString = s"fromDate=$from&toDate=$to"
 }
 
 case class OpenEarlyDateRange(to: LocalDate) extends DateRange {
