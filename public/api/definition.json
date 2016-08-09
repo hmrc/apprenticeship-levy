@@ -60,7 +60,11 @@
             "scope": "read:apprenticeship-levy",
             "queryParameters": [
               {
-                "name": "months",
+                "name": "fromDate",
+                "required": false
+              },
+              {
+                "name": "toDate",
                 "required": false
               }
             ]
