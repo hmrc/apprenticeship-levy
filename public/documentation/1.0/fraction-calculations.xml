@@ -3,7 +3,7 @@
     <description>Returns a list of fraction calculations for a given employer reference.</description>
     <section id="resource">
         <title>Resource</title>
-        <resource>GET /apprenticeship-levy/epaye/{empref}/fractions?month={month}</resource>
+        <resource>GET /apprenticeship-levy/epaye/{empref}/fractions?fromDate={from}&amp;toDate={to}</resource>
     </section>
     <section id="path-parameters">
         <title>Path Parameters</title>
