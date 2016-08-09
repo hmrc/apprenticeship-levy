@@ -18,13 +18,9 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import org.joda.time.{LocalDate, LocalDateTime}
 import play.api.libs.json.Json
+import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.play.controllers.RestFormats
 
-case class DateRange(from: LocalDate, to: LocalDate)
-
-object DateRange {
-  implicit val formats = Json.format[DateRange]
-}
 
 case class ApprenticeshipLevy(levyDueYTD: BigDecimal, taxMonth: Int, annualAllce: BigDecimal)
 
@@ -41,13 +37,14 @@ object FinalSubmission {
 case class EmployerPaymentSummary(eventId: Long,
                                   submissionTime: LocalDateTime,
                                   noPaymentForPeriod: Yes = None,
-                                  noPaymentDates: Option[DateRange] = None,
-                                  periodOfInactivity: Option[DateRange] = None,
+                                  noPaymentDates: Option[ClosedDateRange] = None,
+                                  periodOfInactivity: Option[ClosedDateRange] = None,
                                   apprenticeshipLevy: Option[ApprenticeshipLevy] = None,
                                   relatedTaxYear: String,
                                   finalSubmission: Option[FinalSubmission] = None)
 
 object EmployerPaymentSummary {
+  implicit val drFormats = Json.format[ClosedDateRange]
   implicit val ldtFormats = RestFormats.localDateTimeFormats
   implicit val formats = Json.format[EmployerPaymentSummary]
 }

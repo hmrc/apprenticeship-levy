@@ -16,16 +16,18 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.EDHConnector
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 
 trait FractionsController {
   self: ApiController =>
   def edhConnector: EDHConnector
 
-  def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
-    edhConnector.fractions(empref, months).map(fs => Ok(Json.toJson(fs)))
+  def fractions(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
+    edhConnector.fractions(empref, DateRange(fromDate, toDate)).map(fs => Ok(Json.toJson(fs)))
   }
 }
 

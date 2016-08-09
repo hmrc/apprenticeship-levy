@@ -17,7 +17,8 @@ Most submissions will include a year-to-date (**YTD**) figure for the total levy
 ## Query Parameters
 | Name | Type | Example | Default | Description |
 |:-|:-|:-|:-|:-|
-| months | Number | 12 | 72 | Restrict the number of months of data returned. If the value is greater than 72 then the api will use a value of 72. |
+| fromDate | Date | 2015-08-09 | 72 months prior to current date | Optional. The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.  |
+| toDate | Date | 2016-08-09 |  current date | Optional. The date of the latest record to return. |
 ## Authorisation
 OAuth 2.0 Bearer Token with the `read:apprenticeship-levy` scope.
 

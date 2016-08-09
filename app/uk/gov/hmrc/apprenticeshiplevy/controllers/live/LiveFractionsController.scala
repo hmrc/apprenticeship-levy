@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
+import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, FractionsCalculationController, FractionsController}
-
 
 object LiveFractionsController extends ApiController with FractionsController {
   override def edhConnector = ???
@@ -26,7 +26,7 @@ object LiveFractionsController extends ApiController with FractionsController {
   /**
     * TODO: Remove this overridden method to enable the main implementation from the trait
     */
-  override def fractions(empref: String, months: Option[Int]) = withValidAcceptHeader {
+  override def fractions(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader {
     ErrorNotImplemented.result
   }
 }

@@ -25,26 +25,27 @@ import play.api.mvc.Result
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{EmployerPaymentSummary, RTIConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, NotFoundException}
 
 import scala.concurrent.Future
 
-trait LevyDeclarationController{
+trait LevyDeclarationController {
   self: ApiController =>
 
   def rtiConnector: RTIConnector
 
   implicit val dateTimeOrdering: Ordering[LocalDateTime] = Ordering.fromLessThan { (d1, d2) => d1.isBefore(d2) }
 
-  def declarations(empref: String, months: Option[Int]) = withValidAcceptHeader.async { implicit request =>
-    retrieveDeclarations(empref, months)
-      .map(ds => buildResult(ds.sortBy(_.submissionTime), empref))
+  def declarations(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
+    retrieveDeclarations(empref, DateRange(fromDate, toDate))
+      .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, empref))
   }
 
-  private[controllers] def retrieveDeclarations(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
+  private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
 
-    rtiConnector.eps(empref, months).map { lds =>
+    rtiConnector.eps(empref, dateRange).map { lds =>
       val declarations = lds.collect(convertToDeclaration)
       if (declarations.size != lds.size) {
         Logger.warn("Unable to convert some of the declarations retrieved from EPS.")
