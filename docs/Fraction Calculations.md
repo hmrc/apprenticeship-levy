@@ -11,7 +11,8 @@
 ## Query Parameters
 | Name | Type | Example | Default | Description |
 |:-|:-|:-|:-|:-|
-| months | Number | 12 | 48 | Restrict the number of months of data returned. If the value is greater than 48 then it will be ignored. |
+| fromDate | Date | 2015-08-09 | 72 months prior to current date | Optional. The date of the earliest calculation to return. |
+| toDate | Date | 2016-08-09 |  current date | Optional. The date of the latest calculation to return. |
 
 ## Authorisation
 OAuth 2.0 Bearer Token with the `read:apprenticeship-levy` scope.
