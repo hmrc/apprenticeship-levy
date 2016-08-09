@@ -25,9 +25,9 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
   override def emprefUrl(empref: String): String = routes.SandboxEmprefController.empref(empref).url
 
-  override def declarationsUrl(empref: String): String = routes.SandboxLevyDeclarationController.declarations(empref, None).url
+  override def declarationsUrl(empref: String): String = routes.SandboxLevyDeclarationController.declarations(empref, None, None).url
 
-  override def fractionsUrl(empref: String): String = routes.SandboxFractionsController.fractions(empref, None).url
+  override def fractionsUrl(empref: String): String = routes.SandboxFractionsController.fractions(empref, None, None).url
 
   override def employmentCheckUrl(empref: String): String = {
     routes.SandboxEmploymentCheckController.check(empref, "nino", new LocalDate, new LocalDate)

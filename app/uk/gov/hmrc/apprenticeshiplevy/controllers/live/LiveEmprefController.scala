@@ -24,9 +24,9 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 object LiveEmprefController extends EmprefController {
   override def emprefUrl(empref: String): String = routes.LiveEmprefController.empref(empref).url
 
-  override def declarationsUrl(empref: String): String = routes.LiveLevyDeclarationController.declarations(empref, None).url
+  override def declarationsUrl(empref: String): String = routes.LiveLevyDeclarationController.declarations(empref, None, None).url
 
-  override def fractionsUrl(empref: String): String = routes.LiveFractionsController.fractions(empref, None).url
+  override def fractionsUrl(empref: String): String = routes.LiveFractionsController.fractions(empref, None, None).url
 
   override def employmentCheckUrl(empref: String): String =
     routes.LiveEmploymentCheckController.check(empref, "nino", new LocalDate, new LocalDate)

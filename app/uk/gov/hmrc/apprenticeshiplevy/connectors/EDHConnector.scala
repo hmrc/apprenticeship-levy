@@ -20,6 +20,7 @@ import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.Fractions
+import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import views.html.helper
 
@@ -31,9 +32,9 @@ trait EDHConnector {
 
   def httpGet: HttpGet
 
-  def fractions(empref: String, months: Option[Int])(implicit hc: HeaderCarrier): Future[Fractions] = {
-    val url = (s"$edhBaseUrl/empref/${helper.urlEncode(empref)}/fractions", months) match {
-      case (u, Some(n)) => s"$u/?months=$n"
+  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Fractions] = {
+    val url = (s"$edhBaseUrl/empref/${helper.urlEncode(empref)}/fractions", dateRange.toParams) match {
+      case (u, Some(params)) => s"$u?params"
       case (u, None) => u
     }
 

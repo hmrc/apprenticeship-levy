@@ -24,18 +24,19 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.test.UnitSpec
 
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
   "getting the levy declarations" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {
-      val response = LiveLevyDeclarationController.declarations("empref", None)(FakeRequest()).futureValue
+      val response = LiveLevyDeclarationController.declarations("empref", None, None)(FakeRequest()).futureValue
       response.header.status shouldBe NOT_ACCEPTABLE
     }
 
     "return an HTTP Not Implemented response" in {
-      val response = LiveLevyDeclarationController.declarations("empref", None)(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
+      val response = LiveLevyDeclarationController.declarations("empref", None, None)(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
       response.header.status shouldBe NOT_IMPLEMENTED
     }
   }
@@ -56,7 +57,7 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
     "convert an inactive submission" in {
       val inactiveFrom = submissionTime.minusMonths(2).toLocalDate
       val inactiveTo = submissionTime.minusMonths(2).toLocalDate
-      val eps = EmployerPaymentSummary(id, submissionTime, relatedTaxYear = relatedTaxYear, periodOfInactivity = Some(DateRange(from = inactiveFrom, to = inactiveTo)))
+      val eps = EmployerPaymentSummary(id, submissionTime, relatedTaxYear = relatedTaxYear, periodOfInactivity = Some(EPSDateRange(from = inactiveFrom, to = inactiveTo)))
 
       TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo))
     }
@@ -80,7 +81,7 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
 
       val expectedTaxMonth = 2
 
-      val eps = EmployerPaymentSummary(id, submissionTime, Some("yes"), Some(DateRange(startNoPayment, endNoPayment)), relatedTaxYear = relatedTaxYear)
+      val eps = EmployerPaymentSummary(id, submissionTime, Some("yes"), Some(EPSDateRange(startNoPayment, endNoPayment)), relatedTaxYear = relatedTaxYear)
 
       TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime,
         noPaymentForPeriod = Some(true),
@@ -112,7 +113,7 @@ object TestRTIConnector extends RTIConnector {
 
   override def httpGet: HttpGet = ???
 
-  override def eps(empref: String, months: Option[Int])(implicit hc: HeaderCarrier) = ???
+  override def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier) = ???
 }
 
 object TestLevyDeclarationController extends LevyDeclarationController with ApiController {
