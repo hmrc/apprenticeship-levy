@@ -39,16 +39,16 @@
                 <row>
                     <cell><code>fromDate</code></cell>
                     <cell><code>Date</code></cell>
-                    <cell><code><nowrap>2015-08-09</nowrap></code></cell>
                     <cell>72 months prior to current date</cell>
+                    <cell><code><nowrap>2015-08-09</nowrap></code></cell>
                     <cell>Yes</cell>
                     <cell>The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.</cell>
                 </row>
                  <row>
                     <cell><code>fromDate</code></cell>
                     <cell><code>Date</code></cell>
-                    <cell><code><nowrap>2015-08-09</nowrap></code></cell>
                     <cell>Current date</cell>
+                    <cell><code><nowrap>2015-08-09</nowrap></code></cell>
                     <cell>Yes</cell>
                     <cell>The date of the latest record to return.</cell>
                  </row>
