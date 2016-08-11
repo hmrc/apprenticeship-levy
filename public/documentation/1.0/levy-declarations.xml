@@ -45,7 +45,7 @@
                     <cell>The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.</cell>
                 </row>
                  <row>
-                    <cell><code>fromDate</code></cell>
+                    <cell><code>toDate</code></cell>
                     <cell><code>Date</code></cell>
                     <cell>Current date</cell>
                     <cell><code><nowrap>2015-08-09</nowrap></code></cell>
