@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data
 
+import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate, LocalDateTime}
-import play.api.libs.json.Json
+import play.api.libs.json._
 import uk.gov.hmrc.play.controllers.RestFormats
 
 case class PayrollPeriod(year: String, month: Int)
@@ -38,7 +39,16 @@ case class LevyDeclaration(id: Long,
 
 
 object LevyDeclaration {
-  implicit val ldtFormats = RestFormats.localDateTimeFormats
+  implicit val ldtFormats = new Format[LocalDateTime] {
+    val fmt = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+
+    override def reads(json: JsValue): JsResult[LocalDateTime] = implicitly[Reads[JsString]].reads(json).map { js =>
+      fmt.parseDateTime(js.value).toLocalDateTime
+    }
+
+    override def writes(o: LocalDateTime): JsValue = JsString(fmt.print(o))
+  }
+
   implicit val formats = Json.format[LevyDeclaration]
 }
 

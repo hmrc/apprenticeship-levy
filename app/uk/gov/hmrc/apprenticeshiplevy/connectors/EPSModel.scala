@@ -28,7 +28,7 @@ object ApprenticeshipLevy {
   implicit val formats = Json.format[ApprenticeshipLevy]
 }
 
-case class FinalSubmission(becauseSchemeCeased: Yes = None, dateSchemeCeased: Option[LocalDate] = None, forYear: Yes = None)
+case class FinalSubmission(becauseSchemeCeased: Option[String] = None, dateSchemeCeased: Option[LocalDate] = None, forYear: Option[String] = None)
 
 object FinalSubmission {
   implicit val formats = Json.format[FinalSubmission]
@@ -36,7 +36,7 @@ object FinalSubmission {
 
 case class EmployerPaymentSummary(eventId: Long,
                                   submissionTime: LocalDateTime,
-                                  noPaymentForPeriod: Yes = None,
+                                  noPaymentForPeriod: Option[String] = None,
                                   noPaymentDates: Option[ClosedDateRange] = None,
                                   periodOfInactivity: Option[ClosedDateRange] = None,
                                   apprenticeshipLevy: Option[ApprenticeshipLevy] = None,

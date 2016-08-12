@@ -16,13 +16,11 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
-import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.domain.EmploymentCheckStatus
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
-import uk.gov.hmrc.time.DateConverter
 import views.html.helper
 
 import scala.concurrent.Future
