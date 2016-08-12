@@ -34,18 +34,18 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
     "declarations" : [
         {
             "id" : 12345684,
-            "submissionTime" : "2016-10-15T16:05:23",
+            "submissionTime" : "2016-10-15T16:05:23.000",
             "dateCeased" : "2016-09-05"            
         },
         {
             "id" : 12345683,
-            "submissionTime" : "2016-07-15T16:05:23",
+            "submissionTime" : "2016-07-15T16:05:23.000",
             "inactiveFrom" : "2016-06-06",
             "inactiveTo" : "2016-09-05"
         },    
         {
             "id" : 12345682,
-            "submissionTime" : "2016-06-15T16:05:23",
+            "submissionTime" : "2016-06-15T16:05:23.000",
             "payrollPeriod" : {
                 "year" : "16-17",
                 "month" : 2
@@ -55,7 +55,7 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
         },
         {
             "id" : 12345681,
-            "submissionTime" : "2016-06-07T16:05:23",
+            "submissionTime" : "2016-06-07T16:05:23.000",
             "payrollPeriod" : {
                 "year" : "16-17",
                 "month" : 2
@@ -65,7 +65,7 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
         },
         {
             "id" : 12345680,
-            "submissionTime" : "2016-05-07T16:05:23",
+            "submissionTime" : "2016-05-07T16:05:23.000",
             "payrollPeriod" : {
                 "year" : "16-17",
                 "month" : 1
@@ -75,7 +75,7 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
         },
         {
             "id" : 12345679,
-            "submissionTime" : "2015-04-07T16:05:23",
+            "submissionTime" : "2015-04-07T16:05:23.000",
             "payrollPeriod" : {
                 "year" : "15-16",
                 "month" : 12
@@ -84,7 +84,7 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
         },
         {
             "id" : 12345678,
-            "submissionTime" : "2016-03-07T16:05:23",
+            "submissionTime" : "2016-03-07T16:05:23.000",
             "payrollPeriod" : {
                 "year" : "15-16",
                 "month" : 11
@@ -104,7 +104,7 @@ Departmental Access with a Time-based One-Time Password (**TOTP**) in cases wher
 | inactiveFrom | Date | 2016-06-06 | Indicates the the payroll scheme will be inactive starting from this date. Should always be the 6th of the month of the first inactive payroll period |
 | inactiveTo | Date | 2016-09-05 | The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period |
 | noPaymentForPeriod | Boolean | true | Will always have the value `true` and indicates that no declaration was necessary for this period. This can be interpreted to mean that the YTD levy balance is unchanged from the previous submitted value |
-| submissionTime | DateTime | 2016-02-21Z16:05:23 | the time at which the EPS submission that this declaration relates to was received by HMRC |
+| submissionTime | DateTime | 2016-02-21Z16:05:23.000 | the time at which the EPS submission that this declaration relates to was received by HMRC |
 | payrollPeriod.year | Number | 15-16 | The tax year of the payroll period against which the declaration was made |
 | payrollPeriod.month | Number | 1 | The tax month of the payroll period against which the declaration was made. Month 1 is April. |
 | levyDueYTD | Number | 600.20 | The amount of apprenticeship levy that is due for this scheme. This is a year-to-date figure. |
@@ -127,7 +127,7 @@ The sample response shown above covers a number of different scenarios that can 
 ```
 {
     "id" : 12345678,
-    "submissionTime" : "2016-03-07Z16:05:23",
+    "submissionTime" : "2016-03-07Z16:05:23.000",
     "payrollPeriod" : {
         "year" : "15-16",
         "month" : 11
@@ -150,7 +150,7 @@ The `allowance` figure is the annual amount of apprenticeship levy allowance tha
 [
     {
         "id" : 12345682,
-        "submissionTime" : "2016-06-15Z16:05:23",
+        "submissionTime" : "2016-06-15Z16:05:23.000",
         "payrollPeriod" : {
             "year" : "16-17",
             "month" : 2
@@ -160,7 +160,7 @@ The `allowance` figure is the annual amount of apprenticeship levy allowance tha
     },
     {
         "id" : 12345681,
-        "submissionTime" : "2016-06-07Z16:05:23",
+        "submissionTime" : "2016-06-07Z16:05:23.000",
         "payrollPeriod" : {
             "year" : "16-17",
             "month" : 2
@@ -176,7 +176,7 @@ In this case the employer has submitted an EPS on June 7th and then submitted an
 ```
 {
     "id" : 12345679,
-    "submissionTime" : "2015-04-07Z16:05:23",
+    "submissionTime" : "2015-04-07Z16:05:23.000",
     "payrollPeriod" : {
         "year" : "15-16",
         "month" : 12
@@ -190,7 +190,7 @@ In this case the employer has indicated that no payments are due for the period.
 ```
 {
     "id" : 12345683,
-    "submissionTime" : "2016-07-15Z16:05:23",
+    "submissionTime" : "2016-07-15Z16:05:23.000",
     "inactiveFrom" : "2016-06-06",
     "inactiveTo" : "2016-09-05"
 }
@@ -202,7 +202,7 @@ Here, the employer has indicated that they will not be filing any EPS submission
 ```
 {
     "id" : 12345684,
-    "submissionTime" : "2016-10-15Z16:05:23",
+    "submissionTime" : "2016-10-15Z16:05:23.000",
     "dateCeased" : "2016-09-05"            
 }
 ```
