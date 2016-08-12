@@ -78,18 +78,18 @@
             "declarations" : [
                 {
                     "id" : 12345684,
-                    "submissionTime" : "2016-10-15Z16:05:23",
+                    "submissionTime" : "2016-10-15T16:05:23.000",
                     "dateCeased" : "2016-09-05"
                 },
                 {
                     "id" : 12345683,
-                    "submissionTime" : "2016-07-15Z16:05:23",
+                    "submissionTime" : "2016-07-15T16:05:23.000",
                     "inactiveFrom" : "2016-06-06",
                     "inactiveTo" : "2016-09-05"
                 },
                 {
                     "id" : 12345682,
-                    "submissionTime" : "2016-06-15Z16:05:23",
+                    "submissionTime" : "2016-06-15T16:05:23.000",
                     "payrollPeriod" : {
                         "year" : "16-17",
                         "month" : 2
@@ -99,7 +99,7 @@
                 },
                 {
                     "id" : 12345681,
-                    "submissionTime" : "2016-06-07Z16:05:23",
+                    "submissionTime" : "2016-06-07T16:05:23.000",
                     "payrollPeriod" : {
                         "year" : "16-17",
                         "month" : 2
@@ -109,7 +109,7 @@
                 },
                 {
                     "id" : 12345680,
-                    "submissionTime" : "2016-05-07Z16:05:23",
+                    "submissionTime" : "2016-05-07T16:05:23.000",
                     "payrollPeriod" : {
                         "year" : "16-17",
                         "month" : 1
@@ -119,7 +119,7 @@
                 },
                 {
                     "id" : 12345679,
-                    "submissionTime" : "2015-04-07Z16:05:23",
+                    "submissionTime" : "2015-04-07T16:05:23.000",
                     "payrollPeriod" : {
                         "year" : "15-16",
                         "month" : 12
@@ -128,7 +128,7 @@
                     },
                 {
                     "id" : 12345678,
-                    "submissionTime" : "2016-03-07Z16:05:23",
+                    "submissionTime" : "2016-03-07T16:05:23.000",
                     "payrollPeriod" : {
                         "year" : "15-16",
                         "month" : 11
@@ -185,7 +185,7 @@
                 <row>
                     <cell><code>declarations[].submissionTime</code></cell>
                     <cell><code>DateTime</code></cell>
-                    <cell><code>2016–02–21Z16:05:23</code></cell>
+                    <cell><code>2016–02–21T16:05:23.000.000</code></cell>
                     <cell>the time at which the EPS submission that this declaration relates to was received by HMRC</cell>
                 </row>
                 <row>
