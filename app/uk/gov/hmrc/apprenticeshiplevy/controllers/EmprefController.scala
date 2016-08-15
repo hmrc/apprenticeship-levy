@@ -17,6 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 
+import play.api.Logger
 import play.api.hal.{Hal, HalLink, HalResource}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.EpayeConnector
@@ -43,7 +44,9 @@ trait EmprefController extends ApiController {
       val hal = prepareLinks(empref)
       Ok(hal.copy(state = Json.toJson(details).as[JsObject]))
     }.recover {
-      case e: NotFoundException => ErrorNotFound.result
+      case e: NotFoundException =>
+        Logger.error("Error calling epaye for designatory details", e)
+        ErrorNotFound.result
     }
   }
 
