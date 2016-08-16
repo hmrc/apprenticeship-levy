@@ -57,11 +57,11 @@
             "employment-check": {
                 "href": "/epaye/123%2FAB12345/employed"
             }
-        }
-    },
-    "employer": {
-        "name": {
-            "nameLine1": "Foo Bar Ltd."
+        },
+        "employer": {
+            "name": {
+                "nameLine1": "Foo Bar Ltd."
+            }
         }
     }
 ]]></json>
