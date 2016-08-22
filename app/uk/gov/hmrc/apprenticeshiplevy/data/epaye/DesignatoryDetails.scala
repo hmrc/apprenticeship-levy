@@ -37,7 +37,7 @@ case class HodContact(telephone: Option[HodTelephone] = None, email: Option[HodE
 
 case class DesignatoryDetailsData(name: Option[HodName] = None, address: Option[HodAddress] = None, contact: Option[HodContact] = None)
 
-case class DesignatoryDetails(employer: Option[DesignatoryDetailsData] = None, communication: Option[DesignatoryDetailsData] = None)
+case class DesignatoryDetails(empref:Option[String], employer: Option[DesignatoryDetailsData] = None, communication: Option[DesignatoryDetailsData] = None)
 
 object DesignatoryDetails {
   implicit val hnformat = Json.format[HodName]

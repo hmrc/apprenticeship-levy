@@ -22,15 +22,17 @@ import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import views.html.helper
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait EpayeConnector {
   def epayeBaseUrl: String
 
   def http: HttpGet
 
-  def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] = {
-    http.GET[DesignatoryDetails](s"$epayeBaseUrl/epaye/${helper.urlEncode(empref)}/designatory-details")
+  def designatoryDetails(empref: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] = {
+    http
+      .GET[DesignatoryDetails](s"$epayeBaseUrl/epaye/${helper.urlEncode(empref)}/designatory-details")
+      .map(_.copy(empref = Some(empref)))
   }
 }
 
@@ -41,5 +43,6 @@ object SandboxEpayeConnector extends EpayeConnector with ServicesConfig {
 
 object LiveEpayeConnector extends EpayeConnector with ServicesConfig {
   override def epayeBaseUrl: String = baseUrl("epaye")
+
   override def http: HttpGet = WSHttp
 }

@@ -25,7 +25,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.epaye.{DesignatoryDetails, Designator
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, NotFoundException}
 import uk.gov.hmrc.play.test.UnitSpec
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class SandboxEmprefControllerISpec extends UnitSpec with ScalaFutures with IntegrationPatience {
 
@@ -53,8 +53,8 @@ class SandboxEmprefControllerISpec extends UnitSpec with ScalaFutures with Integ
 
     override def http: HttpGet = ???
 
-    override def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] =
-      if (empref == "123/AB12345") Future.successful(DesignatoryDetails(Some(DesignatoryDetailsData(Some(HodName(Some("Foo Bar Ltd."), None)), None, None)), None))
+    override def designatoryDetails(empref: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] =
+      if (empref == "123/AB12345") Future.successful(DesignatoryDetails(Some(empref), Some(DesignatoryDetailsData(Some(HodName(Some("Foo Bar Ltd."), None)), None, None)), None))
       else Future.failed(new NotFoundException(empref))
   }
 

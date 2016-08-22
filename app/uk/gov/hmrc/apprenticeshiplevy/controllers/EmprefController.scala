@@ -44,9 +44,7 @@ trait EmprefController extends ApiController {
       val hal = prepareLinks(empref)
       Ok(hal.copy(state = Json.toJson(details).as[JsObject]))
     }.recover {
-      case e: NotFoundException =>
-        Logger.error("Error calling epaye for designatory details", e)
-        ErrorNotFound.result
+      case e: NotFoundException => ErrorNotFound.result
     }
   }
 
