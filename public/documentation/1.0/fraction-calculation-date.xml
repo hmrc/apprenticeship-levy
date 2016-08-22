@@ -8,7 +8,7 @@
     <section id="authorisation">
         <title>Authorisation</title>
         <authorisation>
-            <type>NONE</type>
+            <type>APPLICATION</type>
             <scope>read:apprenticeship-levy</scope>
         </authorisation>
     </section>
@@ -24,22 +24,5 @@
         <title>Response</title>
         <httpStatus>200 (OK)</httpStatus>
         <json><![CDATA["2017-04-06"]]></json>
-    </section>
-    <section id="error-scenarios">
-        <title>Error Scenarios</title>
-        <table>
-            <headings>
-                <cell>Error Scenario</cell>
-                <cell>HTTP Status</cell>
-                <cell>Code</cell>
-            </headings>
-            <rows>
-                <row>
-                    <cell>Unknown EMPREF</cell>
-                    <cell><code>404 (Not Found)</code></cell>
-                    <cell><code>EPAYE_NO_CALCULATION_DATE</code></cell>
-                </row>
-            </rows>
-        </table>
     </section>
 </endpoint>
