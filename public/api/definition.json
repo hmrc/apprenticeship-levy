@@ -2,7 +2,7 @@
   "scopes": [
     {
       "key": "read:apprenticeship-levy",
-      "name": "access levy data",
+      "name": "Access Apprenticeship Levy data associated with your payroll schemes.",
       "description": "Access apprenticeship levy data"
     }
   ],
