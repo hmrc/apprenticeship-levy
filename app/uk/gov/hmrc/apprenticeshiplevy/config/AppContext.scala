@@ -47,6 +47,7 @@ object AppContext extends ServicesConfig {
   lazy val whitelistedApplicationIds = current.configuration.getString("microservice.whitelisted-applications")
     .map { applicationIds => applicationIds.split(",").toSeq }
     .getOrElse(Seq.empty)
+  Logger.info("\n***********************************\nWhite list:\n" + whitelistedApplicationIds.mkString(", ") + "\n***********************************\n")
 
   lazy val edhUrl = baseUrl("edh")
   lazy val stubEdhUrl = baseUrl("stub-edh")
