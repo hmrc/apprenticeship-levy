@@ -19,10 +19,19 @@ trait MicroService {
   lazy val appDependencies : Seq[ModuleID] = ???
   lazy val plugins : Seq[Plugins] = Seq(play.PlayScala)
   lazy val playSettings : Seq[Setting[_]] = Seq(routesImport ++= Seq("uk.gov.hmrc.apprenticeshiplevy.config.QueryBinders._", "org.joda.time.LocalDate"))
-
+  lazy val scoverageSettings = {
+    import scoverage.ScoverageKeys
+    Seq(
+      ScoverageKeys.coverageExcludedPackages :=  "<empty>;Reverse.*;sandbox.Routes.*;app.Routes.*;views.*;prod.*;.*assets.*;testOnlyDoNotUseInAppConf.*;uk.gov.hmrc.BuildInfo",
+      ScoverageKeys.coverageMinimum := 90,
+      ScoverageKeys.coverageFailOnMinimum := false,
+      ScoverageKeys.coverageHighlighting := true,
+      parallelExecution in Test := false
+    )
+  }
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(Seq(play.PlayScala) ++ plugins : _*)
-    .settings(playSettings : _*)
+    .settings(playSettings ++ scoverageSettings : _*)
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
     .settings(defaultSettings(): _*)
@@ -33,6 +42,7 @@ trait MicroService {
       libraryDependencies ++= appDependencies,
       parallelExecution in Test := false,
       fork in Test := false,
+      fork in IntegrationTest := false,
       retrieveManaged := true,
       evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
     )
@@ -43,7 +53,6 @@ trait MicroService {
       unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest)(base => Seq(base / "it")),
       unmanagedResourceDirectories in IntegrationTest <+= baseDirectory (_ / "public"),
       addTestReportOption(IntegrationTest, "int-test-reports"),
-      testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
       parallelExecution in IntegrationTest := false)
     .settings(resolvers += Resolver.bintrayRepo("hmrc", "releases"))
 }
