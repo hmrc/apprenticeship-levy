@@ -1,7 +1,7 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalatest.BeforeAndAfter
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.mock.MockitoSugar
 import play.api.Play
@@ -11,15 +11,14 @@ import uk.gov.hmrc.apprenticeshiplevy.util.{MicroserviceLocalRunSupport, Wiremoc
 import uk.gov.hmrc.play.test.UnitSpec
 
 class ServiceLocatorRegistrationISpec
-  extends UnitSpec with MockitoSugar with ScalaFutures with WiremockServiceLocatorSupport with BeforeAndAfter
+  extends UnitSpec with MockitoSugar with ScalaFutures with WiremockServiceLocatorSupport with BeforeAndAfterAll
   with IntegrationPatience {
 
-  before {
+  override def beforeAll() {
     startMockServer()
-    stubRegisterEndpoint(204)
   }
 
-  after {
+  override def afterAll() {
     stopMockServer()
   }
 

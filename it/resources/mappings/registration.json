@@ -1,0 +1,9 @@
+{
+    "request": {
+        "method": "POST",
+        "url": "/registration"
+    },
+    "response": {
+        "status": 204
+    }
+}
