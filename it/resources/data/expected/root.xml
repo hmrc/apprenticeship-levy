@@ -1,0 +1,69 @@
+<endpoint>
+    <name>Empref Discovery</name>
+    <description>Returns a list of valid links indexed by empref in HAL format</description>
+    <section id="resource">
+        <title>Resource</title>
+        <resource>GET /apprenticeship-levy</resource>
+    </section>
+    <section id="authorisation">
+        <title>Authorisation</title>
+        <authorisation>
+            <type>USER</type>
+            <scope>read:apprenticeship-levy</scope>
+        </authorisation>
+    </section>
+    <section id="content-types">
+        <title>Accepted Media Types</title>
+        <list>
+            <item>
+                <code>application/vnd.hmrc.1.0+json</code>
+            </item>
+        </list>
+    </section>
+    <section id="response">
+        <title>Response</title>
+        <httpStatus>200 (OK)</httpStatus>
+        <json><![CDATA[
+        {
+        "_links": {
+            "self": {
+                "href": "/"
+            },
+            "123/AB12345": {
+                "href": "/epaye/123%2FAB12345"
+            }
+        },
+        "emprefs": [
+            "123/AB12345"
+        ]
+    }]]></json>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>_links.self</code></cell>
+                    <cell><code>URL</code></cell>
+                    <cell><code>/</code></cell>
+                    <cell>The link to this endpoint</cell>
+                </row>
+                <row>
+                    <cell><code>_links.{empref}</code></cell>
+                    <cell><code>URL</code></cell>
+                    <cell><code>/epaye/123%2FAB12345</code></cell>
+                    <cell>A link to an endpoint that provides more information about the empref</cell>
+                </row>
+                <row>
+                    <cell><code>emprefs[]</code></cell>
+                    <cell><code>String[]</code></cell>
+                    <cell><code>["123/AB12345"]</code></cell>
+                    <cell>A list of emprefs for which links are provided</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+</endpoint>

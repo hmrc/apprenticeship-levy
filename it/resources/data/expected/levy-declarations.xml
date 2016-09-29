@@ -1,0 +1,240 @@
+<endpoint>
+    <name>Levy Declarations</name>
+    <description>Returns a list of levy declarations for a given employer reference.</description>
+    <section id="resource">
+        <title>Resource</title>
+        <resource>GET /apprenticeship-levy/epaye/{empref}/declarations?fromDate={from}&amp;toDate={to}</resource>
+    </section>
+    <section id="path-parameters">
+        <title>Path Parameters</title>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>empref</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>123/AB12345</code></cell>
+                    <cell>A valid (URL encoded) employer reference for the PAYE scheme.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="query-parameters">
+        <title>Query Parameters</title>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Default</cell>
+                <cell>Example</cell>
+                <cell>Optional</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>fromDate</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell>72 months prior to current date</cell>
+                    <cell><code><nowrap>2015-08-09</nowrap></code></cell>
+                    <cell>Yes</cell>
+                    <cell>The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.</cell>
+                </row>
+                 <row>
+                    <cell><code>toDate</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell>Current date</cell>
+                    <cell><code><nowrap>2015-08-09</nowrap></code></cell>
+                    <cell>Yes</cell>
+                    <cell>The date of the latest record to return.</cell>
+                 </row>
+            </rows>
+        </table>
+    </section>
+    <section id="authorisation">
+        <title>Authorisation</title>
+        <authorisation>
+            <type>USER</type>
+            <scope>read:apprenticeship-levy</scope>
+        </authorisation>
+    </section>
+    <section id="content-types">
+        <title>Accepted Media Types</title>
+        <list>
+            <item>
+                <code>application/vnd.hmrc.1.0+json</code>
+            </item>
+        </list>
+    </section>
+    <section id="response">
+        <title>Response</title>
+        <httpStatus>200 (OK)</httpStatus>
+        <json><![CDATA[
+            "empref" : "123/AB12345",
+            "declarations" : [
+                {
+                    "id" : 12345684,
+                    "submissionTime" : "2016-10-15T16:05:23.000",
+                    "dateCeased" : "2016-09-05"
+                },
+                {
+                    "id" : 12345683,
+                    "submissionTime" : "2016-07-15T16:05:23.000",
+                    "inactiveFrom" : "2016-06-06",
+                    "inactiveTo" : "2016-09-05"
+                },
+                {
+                    "id" : 12345682,
+                    "submissionTime" : "2016-06-15T16:05:23.000",
+                    "payrollPeriod" : {
+                        "year" : "16-17",
+                        "month" : 2
+                    },
+                    "levyDueYTD" : 200,
+                    "levyAllowanceForFullYear" : 15000
+                },
+                {
+                    "id" : 12345681,
+                    "submissionTime" : "2016-06-07T16:05:23.000",
+                    "payrollPeriod" : {
+                        "year" : "16-17",
+                        "month" : 2
+                    },
+                    "levyDueYTD" : 1000,
+                    "levyAllowanceForFullYear" : 15000
+                },
+                {
+                    "id" : 12345680,
+                    "submissionTime" : "2016-05-07T16:05:23.000",
+                    "payrollPeriod" : {
+                        "year" : "16-17",
+                        "month" : 1
+                    },
+                    "levyDueYTD" : 500,
+                    "levyAllowanceForFullYear" : 15000
+                },
+                {
+                    "id" : 12345679,
+                    "submissionTime" : "2015-04-07T16:05:23.000",
+                    "payrollPeriod" : {
+                        "year" : "15-16",
+                        "month" : 12
+                    },
+                    "noPaymentForPeriod" : true
+                    },
+                {
+                    "id" : 12345678,
+                    "submissionTime" : "2016-03-07T16:05:23.000",
+                    "payrollPeriod" : {
+                        "year" : "15-16",
+                        "month" : 11
+                    },
+                    "levyDueYTD" : 600,
+                    "levyAllowanceForFullYear" : 15000
+                }
+            ]
+        ]]></json>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>empref</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>123/AB12345</code></cell>
+                    <cell>The PAYE Reference for the employer. This will be the same as provided in the URL</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].id</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>12345684</code></cell>
+                    <cell>A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].dateCeased</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2016–03–17</code></cell>
+                    <cell>If present, indicates the date that the payroll scheme was ceased</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].inactiveFrom</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2016–06–06</code></cell>
+                    <cell>Indicates the the payroll scheme will be inactive starting from this date. Should always be the 6th of the month of the first inactive payroll period</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].inactiveTo</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2016–09–05</code></cell>
+                    <cell>The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].noPaymentForPeriod</code></cell>
+                    <cell><code>Boolean</code></cell>
+                    <cell><code>true</code></cell>
+                    <cell>If present, will always have the value true and indicates that no declaration was necessary for this period. This can be interpreted to mean that the YTD levy balance is unchanged from the previous submitted value</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].submissionTime</code></cell>
+                    <cell><code>DateTime</code></cell>
+                    <cell><code>2016–02–21T16:05:23.000.000</code></cell>
+                    <cell>the time at which the EPS submission that this declaration relates to was received by HMRC</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].payrollPeriod.year</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>15-16</code></cell>
+                    <cell>The tax year of the payroll period against which the declaration was made</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].payrollPeriod.month</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>1</code></cell>
+                    <cell>The tax month of the payroll period against which the declaration was made. Month 1 is April.</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].levyDueYTD</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>600.20</code></cell>
+                    <cell>The amount of apprenticeship levy that was declared in the payroll month.</cell>
+                </row>
+                <row>
+                    <cell><code>declarations[].allowance</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>15000</code></cell>
+                    <cell>The annual amount of apprenticeship levy allowance that has been allocated to this payroll scheme. If absent then the value can be taken as 0. The maximum value in the 2017/18 will be 15,000</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="error-scenarios">
+        <title>Error Scenarios</title>
+        <table>
+            <headings>
+                <cell>Error Scenario</cell>
+                <cell>HTTP Status</cell>
+                <cell>Code</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell>Invalid EMPREF</cell>
+                    <cell><code>400 (Bad Request)</code></cell>
+                    <cell><code>EPAYE_EMPREF_INVALID</code></cell>
+                </row>
+                <row>
+                    <cell>Unknown EMPREF</cell>
+                    <cell><code>404 (Not Found)</code></cell>
+                    <cell><code>EPAYE_EMPREF_UNKNOWN</code></cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+</endpoint>

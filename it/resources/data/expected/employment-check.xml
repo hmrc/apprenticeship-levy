@@ -1,0 +1,159 @@
+<endpoint>
+    <name>Employment Check</name>
+    <description>Checks the employment status of an individual in a payroll scheme.</description>
+    <section id="resource">
+        <title>Resource</title>
+        <resource>GET /apprenticeship-levy/epaye/{empref}/employed/{nino}?fromDate={date}&amp;toDate={date}</resource>
+    </section>
+    <section id="path-parameters">
+        <title>Path Parameters</title>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>empref</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>123/AB12345</code></cell>
+                    <cell>A valid (URL encoded) employer reference for the PAYE scheme.</cell>
+                </row>
+                <row>
+                    <cell><code>nino</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>XY654321Z</code></cell>
+                    <cell>A valid National Insurance Number (nino) for the individual being checked.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="query-parameters">
+        <title>Query Parameters</title>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>fromDate</code></cell>
+                    <cell><code>date</code></cell>
+                    <cell><code><nowrap>2016-01-31</nowrap></code></cell>
+                    <cell>Starting date of the period to check employment for.</cell>
+                </row>
+                <row>
+                    <cell><code>toDate</code></cell>
+                    <cell><code>date</code></cell>
+                    <cell><code><nowrap>2016-01-31</nowrap></code></cell>
+                    <cell>Ending date of the period to check employment for.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="authorisation">
+        <title>Authorisation</title>
+        <authorisation>
+            <type>USER</type>
+            <scope>read:apprenticeship-levy</scope>
+        </authorisation>
+    </section>
+    <section id="content-types">
+        <title>Accepted Media Types</title>
+        <list>
+            <item>
+                <code>application/vnd.hmrc.1.0+json</code>
+            </item>
+        </list>
+    </section>
+    <section id="response">
+        <title>Response</title>
+        <httpStatus>200 (OK)</httpStatus>
+        <json><![CDATA[
+            {
+                "empref" : "123/AB12345",
+                "nino" : "XY654321Z",
+                "fromDate" : "2016-03-06",
+                "toDate" : "2016-04-05",
+                "employed" : true
+            }
+    ]
+}]]></json>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>empref</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>123/AB12345</code></cell>
+                    <cell>The PAYE Reference for the employer. This will be the same as provided in the URL.</cell>
+                </row>
+                <row>
+                    <cell><code>nino</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>XY654321Z</code></cell>
+                    <cell>The NINO of the individual being checked. This will be the same as provided in the URL.</cell>
+                </row>
+                <row>
+                    <cell><code>fromDate</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2016-03-06</code></cell>
+                    <cell>The start date of the range the check should be made for.</cell>
+                </row>
+                <row>
+                    <cell><code>date</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2016-04-05</code></cell>
+                    <cell>The end date of the range the check should be made for.</cell>
+                </row>
+                <row>
+                    <cell><code>employed</code></cell>
+                    <cell><code>Boolean</code></cell>
+                    <cell><code>true</code></cell>
+                    <cell>Whether or not the individual was employed in the scheme at any time with the date range.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="error-scenarios">
+        <title>Error Scenarios</title>
+        <table>
+            <headings>
+                <cell>Error Scenario</cell>
+                <cell>HTTP Status</cell>
+                <cell>Code</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell>Invalid EMPREF</cell>
+                    <cell><code>400 (Bad Request)</code></cell>
+                    <cell><code>EPAYE_EMPREF_INVALID</code></cell>
+                </row>
+                <row>
+                    <cell>Invalid NINO</cell>
+                    <cell><code>400 (Bad Request)</code></cell>
+                    <cell><code>EPAYE_NINO_INVALID</code></cell>
+                </row>
+                <row>
+                    <cell>Unknown EMPREF</cell>
+                    <cell><code>404 (Not Found)</code></cell>
+                    <cell><code>EPAYE_EMPREF_UNKNOWN</code></cell>
+                </row>
+                <row>
+                    <cell>Unknown NINO</cell>
+                    <cell><code>404 (Not Found)</code></cell>
+                    <cell><code>EPAYE_NINO_UNKNOWN</code></cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+</endpoint>
