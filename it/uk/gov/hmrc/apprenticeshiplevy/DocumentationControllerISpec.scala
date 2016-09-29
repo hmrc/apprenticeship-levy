@@ -1,6 +1,7 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
 import scala.io.Source
+import java.io.File
 
 import org.scalatest.{FunSpec, DoNotDiscover, Status, Args}
 import org.scalatest.Matchers._
@@ -9,11 +10,16 @@ import play.api.test.{FakeRequest, Helpers, RouteInvokers}
 import play.api.test.Helpers._
 import play.api.libs.json.Json
 import play.api.Play
+import play.api.Play._
 
-import uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController
+import uk.gov.hmrc.apprenticeshiplevy.util.IntegrationTestConfig
 
 @DoNotDiscover
-class DocumentationControllerISpec extends FunSpec {
+class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
+  def asString(filename: String): String = {
+    Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString
+  }
+
   describe ("Documentation Controller") {
     it (s"should provide definition endpoint") {
       // set up
@@ -24,6 +30,17 @@ class DocumentationControllerISpec extends FunSpec {
 
       // check
       status(result) shouldBe OK
+    }
+
+    it (s"should provide expected API defintion") {
+      // set up
+      val request = FakeRequest(GET, "/api/definition")
+
+      // test
+      val result = route(request).get
+
+      // check
+      contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
     }
   }
 

@@ -96,7 +96,11 @@
               }
             ]
           }
-        ]
+        ],
+        "access" : {
+          "type" : "PRIVATE",
+          "whitelistedApplicationIds" : [ "myappid" ]
+        }
       }
     ]
   }

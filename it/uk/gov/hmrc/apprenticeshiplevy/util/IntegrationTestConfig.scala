@@ -15,13 +15,16 @@ trait IntegrationTestConfig {
   def stubPort = sys.props.getOrElse("WIREMOCK_SERVICE_LOCATOR_PORT", "8080").toInt
   def stubHost = sys.props.getOrElse("WIREMOCK_SERVICE_LOCATOR_PORT", "localhost")
   def stubConfigPath = sys.props.getOrElse("WIREMOCK_SERVICE_RESPONSE_CONFIG", "./it/resources")
+  def resourcePath = sys.props.getOrElse("RESOURCE_PATH", "./it/resources")
+
   // val wireMockUrl = s"http://$stubHost:$stubPort"
   def additionalConfiguration: Map[String, Any] = Map(
         "appName" -> "application-name",
         "appUrl" -> "http://microservice-name.service",
         "microservice.services.service-locator.host" -> stubHost,
         "microservice.services.service-locator.port" -> stubPort,
-        "microservice.services.service-locator.enabled" -> "true")
+        "microservice.services.service-locator.enabled" -> "true",
+        "microservice.whitelisted-applications" -> "myappid")
   def port = sys.props.getOrElse("MICROSERVICE_PORT", "9001").toInt
   def localMicroserviceUrl = s"http://localhost:$port"
 }
