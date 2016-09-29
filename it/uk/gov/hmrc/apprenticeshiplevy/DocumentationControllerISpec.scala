@@ -38,7 +38,7 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
       status(result) shouldBe OK
     }
 
-    it (s"should provide expected API defintion") {
+    it (s"should provide expected API definition") {
       // set up
       val request = FakeRequest(GET, "/api/definition")
 
@@ -47,6 +47,31 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
 
       // check
       contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
+    }
+
+    it (s"should return not found when documentation version doesn't exist") {
+      // set up
+      val request = FakeRequest(GET, "/api/documentation/3131/empref")
+
+      // test
+      val documentationResult = route(request).get
+      val httpStatus = status(documentationResult)
+
+      // check
+      httpStatus shouldBe 404
+    }
+
+
+    it (s"should return not found when documentation endpoint doesn't exist") {
+      // set up
+      val request = FakeRequest(GET, "/api/documentation/1.0/someapiendpoint")
+
+      // test
+      val documentationResult = route(request).get
+      val httpStatus = status(documentationResult)
+
+      // check
+      httpStatus shouldBe 404
     }
   }
 
