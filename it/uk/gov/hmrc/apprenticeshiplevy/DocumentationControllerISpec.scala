@@ -1,10 +1,12 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
 import scala.io.Source
+import scala.xml.XML._
 import java.io.File
 
 import org.scalatest.{FunSpec, DoNotDiscover, Status, Args}
 import org.scalatest.Matchers._
+import org.scalatest.xml.XmlMatchers._
 
 import play.api.test.{FakeRequest, Helpers, RouteInvokers}
 import play.api.test.Helpers._
@@ -17,7 +19,11 @@ import uk.gov.hmrc.apprenticeshiplevy.util.IntegrationTestConfig
 @DoNotDiscover
 class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
   def asString(filename: String): String = {
-    Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString
+    Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
+  }
+
+  def asXml(content: String): scala.xml.Elem = {
+    loadString(content)
   }
 
   describe ("Documentation Controller") {
@@ -58,12 +64,16 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
           it (s"should return expected documentation for ${endpointName}") {
             // set up
             val request = FakeRequest(GET, s"/api/documentation/$version/$endpointName")
+            val expectedXml = asXml(asString(s"${endpointName}.xml"))
 
             // test
             val documentationResult = route(request).get
+            val httpStatus = status(documentationResult)
+            val xml = asXml(contentAsString(documentationResult))
 
             // check
-            status(documentationResult) shouldBe OK
+            httpStatus shouldBe OK
+            xml should beXml (expectedXml, true)
           }
         }
       }
