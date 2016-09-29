@@ -1,0 +1,10 @@
+{
+    "priority": 99,
+    "request": {
+        "method": "GET",
+        "urlPattern": "/empref/([a-zA-Z0-9%]*)/employee/([a-zA-Z0-9]*)"
+    },
+    "response": {
+        "status": 404
+    }
+}
