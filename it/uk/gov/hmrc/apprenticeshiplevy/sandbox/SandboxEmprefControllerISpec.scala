@@ -24,9 +24,10 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxEmprefControlle
 import uk.gov.hmrc.apprenticeshiplevy.data.epaye.{DesignatoryDetails, DesignatoryDetailsData, HodName}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, NotFoundException}
 import uk.gov.hmrc.play.test.UnitSpec
-
+import org.scalatest.DoNotDiscover
 import scala.concurrent.{ExecutionContext, Future}
 
+@DoNotDiscover
 class SandboxEmprefControllerISpec extends UnitSpec with ScalaFutures with IntegrationPatience {
 
 

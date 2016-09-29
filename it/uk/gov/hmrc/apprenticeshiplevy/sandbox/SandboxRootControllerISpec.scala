@@ -23,9 +23,10 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxRootController
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.test.UnitSpec
-
+import org.scalatest.DoNotDiscover
 import scala.concurrent.Future
 
+@DoNotDiscover
 class SandboxRootControllerISpec extends UnitSpec with ScalaFutures with IntegrationPatience {
 
   "getting the root" should {
