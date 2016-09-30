@@ -4,7 +4,7 @@ import scala.io.Source
 import scala.xml.XML._
 import java.io.File
 
-import org.scalatest.{FunSpec, DoNotDiscover, Status, Args}
+import org.scalatest._
 import org.scalatest.Matchers._
 import org.scalatest.xml.XmlMatchers._
 
@@ -14,7 +14,8 @@ import play.api.libs.json.Json
 import play.api.Play
 import play.api.Play._
 
-import uk.gov.hmrc.apprenticeshiplevy.util.IntegrationTestConfig
+import uk.gov.hmrc.apprenticeshiplevy.util.{IntegrationTestConfig, PlayService}
+import uk.gov.hmrc.play.test.UnitSpec
 
 @DoNotDiscover
 class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
@@ -46,6 +47,7 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
       val result = route(request).get
 
       // check
+      contentType(result) shouldBe Some("application/json")
       contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
     }
 
@@ -95,14 +97,49 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
             val documentationResult = route(request).get
             val httpStatus = status(documentationResult)
             val xml = asXml(contentAsString(documentationResult))
+            val contenttype = contentType(documentationResult)
 
             // check
             httpStatus shouldBe OK
+            contenttype shouldBe Some("application/xml")
             xml should beXml (expectedXml, true)
           }
         }
       }
     }
     super.run(testName, args)
+  }
+}
+
+class DocumentationControllerAlternateConfigISpec extends UnitSpec with IntegrationTestConfig {
+  val altConfigPlayService = new PlayService() {
+    override def additionalConfiguration: Map[String, Any] = Map(
+      "microservice.private-mode" -> "false",
+      "appName" -> "application-name",
+      "appUrl" -> "http://microservice-name.service",
+      "microservice.services.service-locator.host" -> stubHost,
+      "microservice.services.service-locator.port" -> stubPort,
+      "microservice.services.service-locator.enabled" -> "true",
+      "microservice.whitelisted-applications" -> "myappid")
+  }
+
+  def asString(filename: String): String = {
+    Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
+  }
+
+  "when private-mode setting is false API" should {
+    "return definition without whitelisted-applications" in {
+      // set up
+      altConfigPlayService.start()
+      val request = FakeRequest(GET, "/api/definition")
+
+      // test
+      val result = route(request).get
+
+      // check
+      contentType(result) shouldBe Some("application/json")
+      contentAsJson(result) shouldBe Json.parse(asString("publicdefinition.json"))
+      altConfigPlayService.stop()
+    }
   }
 }

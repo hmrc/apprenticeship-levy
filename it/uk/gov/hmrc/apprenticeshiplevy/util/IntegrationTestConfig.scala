@@ -19,6 +19,7 @@ trait IntegrationTestConfig {
 
   // val wireMockUrl = s"http://$stubHost:$stubPort"
   def additionalConfiguration: Map[String, Any] = Map(
+        "microservice.private-mode" -> "true",
         "appName" -> "application-name",
         "appUrl" -> "http://microservice-name.service",
         "microservice.services.service-locator.host" -> stubHost,

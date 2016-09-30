@@ -7,11 +7,13 @@ trait PlayService extends IntegrationTestConfig {
   lazy val fakeApplication = FakeApplication(additionalConfiguration = additionalConfiguration)
 
   def start() = {
+    println(s"""Starting play with additional configuraion: ${additionalConfiguration.mkString(", ")}""")
     Play.start(fakeApplication)
   }
 
   def stop() = {
     Play.stop()
+    println("Stopped play")
   }
 }
 

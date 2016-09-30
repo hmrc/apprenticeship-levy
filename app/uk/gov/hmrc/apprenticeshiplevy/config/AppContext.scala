@@ -24,12 +24,12 @@ import scala.util.Try
 
 object AppContext extends ServicesConfig {
 
-  lazy val appName =
+  def appName =
     current.configuration.getString("appName").getOrElse(throw new RuntimeException("appName is not configured"))
-  lazy val appUrl =
+  def appUrl =
     current.configuration.getString("appUrl").getOrElse(throw new RuntimeException("appUrl is not configured"))
-  lazy val serviceLocatorUrl = baseUrl("service-locator")
-  lazy val registrationEnabled =
+  def serviceLocatorUrl = baseUrl("service-locator")
+  def registrationEnabled =
     current.configuration.getString("microservice.services.service-locator.enabled")
       .flatMap(flag => Try(flag.toBoolean).toOption)
       .getOrElse {
@@ -37,23 +37,22 @@ object AppContext extends ServicesConfig {
         true
       }
 
-  lazy val privateModeEnabled = current.configuration.getString("microservice.private-mode")
+  def privateModeEnabled = current.configuration.getString("microservice.private-mode")
     .flatMap(flag => Try(flag.toBoolean).toOption)
     .getOrElse {
       Logger.warn("A configuration value has not been provided for microservice.private-mode, defaulting to true")
       true
     }
 
-  lazy val whitelistedApplicationIds = current.configuration.getString("microservice.whitelisted-applications")
+  def whitelistedApplicationIds = current.configuration.getString("microservice.whitelisted-applications")
     .map { applicationIds => applicationIds.split(",").toSeq }
     .getOrElse(Seq.empty)
-  Logger.info("\n***********************************\nWhite list:\n" + whitelistedApplicationIds.mkString(", ") + "\n***********************************\n")
+  Logger.info(s"""\n${"*" * 80}\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
 
-  lazy val edhUrl = baseUrl("edh")
-  lazy val stubEdhUrl = baseUrl("stub-edh")
-
-  lazy val rtiUrl = baseUrl("rti")
-  lazy val stubRtiUrl = baseUrl("stub-rti")
+  def edhUrl = baseUrl("edh")
+  def stubEdhUrl = baseUrl("stub-edh")
+  def rtiUrl = baseUrl("rti")
+  def stubRtiUrl = baseUrl("stub-rti")
 
   private def getString(config: Configuration)(id: String): String = config.getString(id)
     .getOrElse(throw new RuntimeException(s"Unable to read whitelisted application (value '$id' not found)"))
