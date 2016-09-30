@@ -32,7 +32,7 @@ private object AppDependencies {
   private val playHalVersion = "0.3.0"
   private val scalaXMLVersion = "2.11.0-M4"
   private val xmlDiffVersion = "2.0.2"
-  private val scalacheckVersion = "1.12.5"
+  private val scalacheckVersion = "1.13.2"
 
   val compile = Seq(
     ws,

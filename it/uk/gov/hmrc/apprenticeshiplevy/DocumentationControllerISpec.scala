@@ -6,7 +6,10 @@ import java.io.File
 
 import org.scalatest._
 import org.scalatest.Matchers._
+import org.scalatest.prop._
 import org.scalatest.xml.XmlMatchers._
+
+import org.scalacheck.Gen
 
 import play.api.test.{FakeRequest, Helpers, RouteInvokers}
 import play.api.test.Helpers._
@@ -50,31 +53,6 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
       contentType(result) shouldBe Some("application/json")
       contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
     }
-
-    it (s"should return not found when documentation version doesn't exist") {
-      // set up
-      val request = FakeRequest(GET, "/api/documentation/3131/empref")
-
-      // test
-      val documentationResult = route(request).get
-      val httpStatus = status(documentationResult)
-
-      // check
-      httpStatus shouldBe 404
-    }
-
-
-    it (s"should return not found when documentation endpoint doesn't exist") {
-      // set up
-      val request = FakeRequest(GET, "/api/documentation/1.0/someapiendpoint")
-
-      // test
-      val documentationResult = route(request).get
-      val httpStatus = status(documentationResult)
-
-      // check
-      httpStatus shouldBe 404
-    }
   }
 
   override def run(testName: Option[String], args: Args): Status = {
@@ -111,7 +89,7 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
   }
 }
 
-class DocumentationControllerAlternateConfigISpec extends UnitSpec with IntegrationTestConfig {
+class DocumentationControllerAlternateConfigISpec extends UnitSpec with IntegrationTestConfig with GeneratorDrivenPropertyChecks {
   val altConfigPlayService = new PlayService() {
     override def additionalConfiguration: Map[String, Any] = Map(
       "microservice.private-mode" -> "false",
@@ -140,6 +118,39 @@ class DocumentationControllerAlternateConfigISpec extends UnitSpec with Integrat
       contentType(result) shouldBe Some("application/json")
       contentAsJson(result) shouldBe Json.parse(asString("publicdefinition.json"))
       altConfigPlayService.stop()
+    }
+
+    "should return not found when documentation version doesn't exist" in {
+      // set up
+      val urls = for { version <- Gen.choose(Int.MinValue, Int.MaxValue) } yield (s"/api/documentation/${version}/empref")
+
+      forAll(urls) { (url: String) =>
+        val request = FakeRequest(GET, url)
+
+        // test
+        val documentationResult = route(request).get
+        val httpStatus = status(documentationResult)
+
+        // check
+        httpStatus shouldBe 404
+      }
+    }
+
+
+    "should return not found when documentation endpoint doesn't exist" {
+      // set up
+      val urlss = for { endpoint <- Gen.alphaStr } yield (s"/api/documentation/1.0/${endpoint}")
+
+      forAll(urlss) { (url: String) =>
+        val request = FakeRequest(GET, url)
+
+        // test
+        val documentationResult = route(request).get
+        val httpStatus = status(documentationResult)
+
+        // check
+        httpStatus shouldBe 404
+      }
     }
   }
 }
