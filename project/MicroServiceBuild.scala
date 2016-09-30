@@ -32,6 +32,7 @@ private object AppDependencies {
   private val playHalVersion = "0.3.0"
   private val scalaXMLVersion = "2.11.0-M4"
   private val xmlDiffVersion = "2.0.2"
+  private val scalacheckVersion = "1.12.5"
 
   val compile = Seq(
     ws,
@@ -74,7 +75,8 @@ private object AppDependencies {
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "com.github.tomakehurst" % "wiremock" % "1.57" % scope,
         "org.scala-lang" % "scala-xml" % scalaXMLVersion % scope,
-        "com.github.andyglow" % "scala-xml-diff_2.11" % xmlDiffVersion % scope
+        "com.github.andyglow" % "scala-xml-diff_2.11" % xmlDiffVersion % scope,
+        "org.scalacheck" %% "scalacheck" % scalacheckVersion % scope
       )
     }.test
   }
