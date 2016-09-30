@@ -1,8 +1,8 @@
 {
-    "priority": 99,
+    "priority": 1,
     "request": {
         "method": "GET",
-        "urlPattern": "/empref/INV([a-zA-Z0-9%]*)/employee/([a-zA-Z0-9]*)"
+        "url": "/empref/123%2FAB12345/employee/QQ123456X"
     },
     "response": {
         "status": 404
