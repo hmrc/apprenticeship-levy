@@ -8,6 +8,7 @@
 - [ ] Consider consolidating data/domain classes into single package hierarchy
 - [ ] Unit tests where integration tests aren't in place
 - [ ] scalastyle
+- [ ] possibly remove ala stub and serve data from a sandbox data endpoint in case api platform requests stub to be removed
 
 ## :bangbang: Backend endpoints
 - [ ] Add wiremock stub responses for each endpoint with same data as stub
