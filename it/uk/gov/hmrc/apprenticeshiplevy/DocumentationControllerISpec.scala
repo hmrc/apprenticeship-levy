@@ -89,7 +89,7 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
   }
 }
 
-class DocumentationControllerAlternateConfigISpec extends UnitSpec with IntegrationTestConfig with GeneratorDrivenPropertyChecks {
+class DocumentationControllerAlternateConfigISpec extends UnitSpec with BeforeAndAfterAll with IntegrationTestConfig with GeneratorDrivenPropertyChecks {
   val altConfigPlayService = new PlayService() {
     override def additionalConfiguration: Map[String, Any] = Map(
       "microservice.private-mode" -> "false",
@@ -105,10 +105,17 @@ class DocumentationControllerAlternateConfigISpec extends UnitSpec with Integrat
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
   }
 
+  override def beforeAll() {
+    altConfigPlayService.start()
+  }
+
+  override def afterAll() {
+    altConfigPlayService.stop()
+  }
+
   "when private-mode setting is false API" should {
     "return definition without whitelisted-applications" in {
       // set up
-      altConfigPlayService.start()
       val request = FakeRequest(GET, "/api/definition")
 
       // test
@@ -117,10 +124,9 @@ class DocumentationControllerAlternateConfigISpec extends UnitSpec with Integrat
       // check
       contentType(result) shouldBe Some("application/json")
       contentAsJson(result) shouldBe Json.parse(asString("publicdefinition.json"))
-      altConfigPlayService.stop()
     }
 
-    "should return not found when documentation version doesn't exist" in {
+    "return not found when documentation version doesn't exist" in {
       // set up
       val urls = for { version <- Gen.choose(Int.MinValue, Int.MaxValue) } yield (s"/api/documentation/${version}/empref")
 
@@ -137,19 +143,22 @@ class DocumentationControllerAlternateConfigISpec extends UnitSpec with Integrat
     }
 
 
-    "should return not found when documentation endpoint doesn't exist" {
+    "return not found when documentation endpoint doesn't exist" in {
       // set up
-      val urlss = for { endpoint <- Gen.alphaStr } yield (s"/api/documentation/1.0/${endpoint}")
+      val endpoints = for { endpoint <- Gen.alphaStr } yield (endpoint)
 
-      forAll(urlss) { (url: String) =>
-        val request = FakeRequest(GET, url)
+      forAll(endpoints) { (endpoint: String) =>
+        whenever (!endpoint.isEmpty && endpoint != "/") {
+          val url = s"/api/documentation/1.0/${endpoint}"
+          val request = FakeRequest(GET, url)
 
-        // test
-        val documentationResult = route(request).get
-        val httpStatus = status(documentationResult)
+          // test
+          val documentationResult = route(request).get
+          val httpStatus = status(documentationResult)
 
-        // check
-        httpStatus shouldBe 404
+          // check
+          httpStatus shouldBe 404
+        }
       }
     }
   }

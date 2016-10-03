@@ -46,7 +46,7 @@ trait AssetsController extends BaseController {
   protected def at(rootPath: String, file: String): Action[AnyContent] = Action { request =>
     val fileToServe = retrieve(rootPath, file)
 
-    if (fileToServe.exists) {
+    if (!file.isEmpty && fileToServe.exists) {
       Ok.sendFile(fileToServe, inline = true)
     } else {
       Logger.error("Assets controller failed to serve a file: " + file)
