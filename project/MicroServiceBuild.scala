@@ -28,11 +28,11 @@ private object AppDependencies {
   private val playUrlBindersVersion = "1.0.0"
   private val playConfigVersion = "2.0.1"
   private val playHmrcApiVersion = "0.5.0"
-  private val hmrcTestVersion = "1.6.0"
+  private val hmrcTestVersion = "1.8.0"
   private val playHalVersion = "0.3.0"
   private val scalaXMLVersion = "2.11.0-M4"
   private val xmlDiffVersion = "2.0.2"
-  private val scalacheckVersion = "1.13.2"
+  private val scalacheckVersion = "1.12.5"
 
   val compile = Seq(
     ws,
