@@ -12,20 +12,25 @@ import com.github.tomakehurst.wiremock.common._
 
 trait IntegrationTestConfig {
   def verboseWiremockOutput: Boolean = sys.props.getOrElse("WIREMOCK_VERBOSE_OUTPUT", "false").toBoolean
-  def stubPort = sys.props.getOrElse("WIREMOCK_SERVICE_LOCATOR_PORT", "8080").toInt
-  def stubHost = sys.props.getOrElse("WIREMOCK_SERVICE_LOCATOR_PORT", "localhost")
-  def stubConfigPath = sys.props.getOrElse("WIREMOCK_SERVICE_RESPONSE_CONFIG", "./it/resources")
+  def stubPort = sys.props.getOrElse("WIREMOCK_PORT", "8080").toInt
+  def stubHost = sys.props.getOrElse("WIREMOCK_HOST", "localhost")
+  def stubConfigPath = sys.props.getOrElse("WIREMOCK_MAPPINGS", "./it/resources")
   def resourcePath = sys.props.getOrElse("RESOURCE_PATH", "./it/resources")
 
   // val wireMockUrl = s"http://$stubHost:$stubPort"
+  // apprenticeship-levy
+  def port = sys.props.getOrElse("MICROSERVICE_PORT", "9001").toInt
+  def localMicroserviceUrl = s"http://localhost:$port"
   def additionalConfiguration: Map[String, Any] = Map(
+        "http.port" -> port,
+        "auditing.enabled" -> "false",
         "microservice.private-mode" -> "true",
         "appName" -> "application-name",
         "appUrl" -> "http://microservice-name.service",
         "microservice.services.service-locator.host" -> stubHost,
         "microservice.services.service-locator.port" -> stubPort,
         "microservice.services.service-locator.enabled" -> "true",
+        "microservice.services.stub-rti.host" -> stubHost,
+        "microservice.services.stub-rti.port" -> stubPort,
         "microservice.whitelisted-applications" -> "myappid")
-  def port = sys.props.getOrElse("MICROSERVICE_PORT", "9001").toInt
-  def localMicroserviceUrl = s"http://localhost:$port"
 }
