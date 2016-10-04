@@ -62,5 +62,71 @@ class SandboxEmploymentCheckControllerISpec extends UnitSpec with GeneratorDrive
         }
       }
     }
+        
+    "return not found when nino doesn't exist" in {
+      // set up
+      val ninos = for { nino <- Gen.alphaStr } yield nino
+
+      forAll(ninos) { (nino: String) =>
+        whenever (!nino.isEmpty) {
+          val request = FakeRequest(GET, s"/sandbox/epaye/AB12345/employed/${helper.urlEncode(nino)}?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+          // test
+          val documentationResult = route(request).get
+          val httpStatus = status(documentationResult)
+
+          // check
+          httpStatus shouldBe 404
+        }
+      }
+    }
+    
+    "return bad request when from date is invalid" in {
+      // set up
+      val fromDates = for { str <- Gen.alphaStr } yield str
+
+      forAll(fromDates) { (fromDate: String) =>
+        whenever (!fromDate.isEmpty) {
+          val request = FakeRequest(GET, s"/sandbox/epaye/AB12345/employed/QQ123456C?fromDate=${helper.urlEncode(fromDate)}&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+          // test
+          val documentationResult = route(request).get
+          val httpStatus = status(documentationResult)
+
+          // check
+          httpStatus shouldBe 400
+        }
+      }
+    }
+
+    "return bad request when to date is invalid" in {
+      // set up
+      val toDates = for { str <- Gen.alphaStr } yield str
+
+      forAll(toDates) { (toDate: String) =>
+        whenever (!toDate.isEmpty) {
+          val request = FakeRequest(GET, s"/sandbox/epaye/AB12345/employed/QQ123456C?fromDate=2015-06-03&toDate=${helper.urlEncode(toDate)}").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+          // test
+          val documentationResult = route(request).get
+          val httpStatus = status(documentationResult)
+
+          // check
+          httpStatus shouldBe 400
+        }
+      }
+    }
+    
+    "return bad request when to date is before from date" in {
+      // set up
+      val request = FakeRequest(GET, s"/sandbox/epaye/AB12345/employed/QQ123456C?fromDate=2015-06-03&toDate=2014-06-03}").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+      // test
+      val documentationResult = route(request).get
+      val httpStatus = status(documentationResult)
+
+      // check
+      httpStatus shouldBe 400
+    }
   }
 }

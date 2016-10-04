@@ -19,8 +19,10 @@ trait IntegrationTestConfig {
 
   // val wireMockUrl = s"http://$stubHost:$stubPort"
   // apprenticeship-levy
+  def host = sys.props.getOrElse("MICROSERVICE_HOST", "localhost")
   def port = sys.props.getOrElse("MICROSERVICE_PORT", "9001").toInt
-  def localMicroserviceUrl = s"http://localhost:$port"
+  def localMicroserviceUrl = s"http://$host:$port"
+  def microserviceUrl = sys.props.getOrElse("MICROSERVICE_URL", s"http://localhost:$port")
   def additionalConfiguration: Map[String, Any] = Map(
         "http.port" -> port,
         "auditing.enabled" -> "false",
@@ -32,5 +34,9 @@ trait IntegrationTestConfig {
         "microservice.services.service-locator.enabled" -> "true",
         "microservice.services.stub-rti.host" -> stubHost,
         "microservice.services.stub-rti.port" -> stubPort,
+        "microservice.services.rti.host" -> stubHost,
+        "microservice.services.rti.port" -> stubPort,
+        "microservice.services.auth.host" -> stubHost,
+        "microservice.services.auth.port" -> stubPort,
         "microservice.whitelisted-applications" -> "myappid")
 }
