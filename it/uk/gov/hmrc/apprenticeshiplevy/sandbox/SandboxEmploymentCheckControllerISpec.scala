@@ -18,15 +18,22 @@ package uk.gov.hmrc.apprenticeshiplevy.sandbox
 
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+
 import uk.gov.hmrc.play.test.UnitSpec
+
 import org.scalatest.DoNotDiscover
-import scala.concurrent.{ExecutionContext, Future}
+import org.scalatest.Matchers._
+import org.scalatest.prop._
+
+import org.scalacheck.Gen
+
 import play.api.libs.json.Json
+import views.html.helper
 
 @DoNotDiscover
-class SandboxEmploymentCheckControllerISpec extends UnitSpec {
+class SandboxEmploymentCheckControllerISpec extends UnitSpec with GeneratorDrivenPropertyChecks {
   "Employment check" should {
-    "return 'employed' when valid request is made" in {
+    "return 'employed' when valid request is made to sandbox" in {
       // set up
       val request = FakeRequest(GET, "/sandbox/epaye/AB12345/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
@@ -36,6 +43,24 @@ class SandboxEmploymentCheckControllerISpec extends UnitSpec {
       // check
       contentType(result) shouldBe Some("application/json")
       contentAsJson(result) shouldBe Json.parse("""{"empref":"AB12345","nino":"QQ123456C","fromDate":"2015-03-03","toDate":"2015-06-30","employed":true}""")
+    }
+    
+    "return not found when empref doesn't exist" in {
+      // set up
+      val emprefs = for { empref <- Gen.alphaStr } yield empref
+
+      forAll(emprefs) { (empref: String) =>
+        whenever (!empref.isEmpty) {
+          val request = FakeRequest(GET, s"/sandbox/epaye/${helper.urlEncode(empref)}/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+          // test
+          val documentationResult = route(request).get
+          val httpStatus = status(documentationResult)
+
+          // check
+          httpStatus shouldBe 404
+        }
+      }
     }
   }
 }
