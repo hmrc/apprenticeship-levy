@@ -21,7 +21,7 @@ import uk.gov.hmrc.apprenticeshiplevy.util.{IntegrationTestConfig, PlayService}
 import uk.gov.hmrc.play.test.UnitSpec
 
 @DoNotDiscover
-class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
+class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig with GeneratorDrivenPropertyChecks {
   def asString(filename: String): String = {
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
   }
@@ -52,6 +52,42 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig {
       // check
       contentType(result) shouldBe Some("application/json")
       contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
+    }
+    
+    it (s"return not found when documentation version doesn't exist") {
+      // set up
+      val urls = for { version <- Gen.choose(Int.MinValue, Int.MaxValue) } yield (s"/api/documentation/${version}/empref")
+
+      forAll(urls) { (url: String) =>
+        val request = FakeRequest(GET, url)
+
+        // test
+        val documentationResult = route(request).get
+        val httpStatus = status(documentationResult)
+
+        // check
+        httpStatus shouldBe 404
+      }
+    }
+
+
+    it (s"return not found when documentation endpoint doesn't exist") {
+      // set up
+      val endpoints = for { endpoint <- Gen.alphaStr } yield (endpoint)
+
+      forAll(endpoints) { (endpoint: String) =>
+        whenever (!endpoint.isEmpty && endpoint != "/") {
+          val url = s"/api/documentation/1.0/${endpoint}"
+          val request = FakeRequest(GET, url)
+
+          // test
+          val documentationResult = route(request).get
+          val httpStatus = status(documentationResult)
+
+          // check
+          httpStatus shouldBe 404
+        }
+      }
     }
   }
 
@@ -124,42 +160,6 @@ class DocumentationControllerAlternateConfigISpec extends UnitSpec with BeforeAn
       // check
       contentType(result) shouldBe Some("application/json")
       contentAsJson(result) shouldBe Json.parse(asString("publicdefinition.json"))
-    }
-
-    "return not found when documentation version doesn't exist" in {
-      // set up
-      val urls = for { version <- Gen.choose(Int.MinValue, Int.MaxValue) } yield (s"/api/documentation/${version}/empref")
-
-      forAll(urls) { (url: String) =>
-        val request = FakeRequest(GET, url)
-
-        // test
-        val documentationResult = route(request).get
-        val httpStatus = status(documentationResult)
-
-        // check
-        httpStatus shouldBe 404
-      }
-    }
-
-
-    "return not found when documentation endpoint doesn't exist" in {
-      // set up
-      val endpoints = for { endpoint <- Gen.alphaStr } yield (endpoint)
-
-      forAll(endpoints) { (endpoint: String) =>
-        whenever (!endpoint.isEmpty && endpoint != "/") {
-          val url = s"/api/documentation/1.0/${endpoint}"
-          val request = FakeRequest(GET, url)
-
-          // test
-          val documentationResult = route(request).get
-          val httpStatus = status(documentationResult)
-
-          // check
-          httpStatus shouldBe 404
-        }
-      }
     }
   }
 }
