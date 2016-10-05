@@ -5,4 +5,5 @@ import org.scalatest._
 @DoNotDiscover
 class Suite extends Suites(new SandboxRootControllerISpec,
                            new SandboxEmprefControllerISpec,
-                           new SandboxEmploymentCheckControllerISpec)
+                           new SandboxEmploymentCheckControllerISpec,
+                           new SandboxFractionsCalculationControllerISpec)
