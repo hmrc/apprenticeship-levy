@@ -19,3 +19,23 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.sa
     WiremockService.stop()
   }
 }
+
+class DESErrorConditionsIntegrationTestsSuite extends Suites(new PublicDocumentationControllerISpec)
+  with BeforeAndAfterAllConfigMap with IntegrationTestConfig {
+  val playService = new PlayService() {
+    override def stubConfigPath = "./it/no-mappings"
+    override def additionalConfiguration: Map[String, Any] = (super.additionalConfiguration - "microservice.private-mode") ++ Map(
+      "microservice.private-mode" -> "false",
+      "microservice.whitelisted-applications" -> "none")
+  }
+
+  override def beforeAll(cm: ConfigMap) {
+    WiremockService.start()
+    playService.start()
+  }
+
+  override def afterAll(cm: ConfigMap) {
+    playService.stop()
+    WiremockService.stop()
+  }
+}

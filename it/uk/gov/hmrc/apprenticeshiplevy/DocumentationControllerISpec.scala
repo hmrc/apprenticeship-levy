@@ -53,7 +53,7 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig wi
       contentType(result) shouldBe Some("application/json")
       contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
     }
-    
+
     it (s"return not found when documentation version doesn't exist") {
       // set up
       val urls = for { version <- Gen.choose(Int.MinValue, Int.MaxValue) } yield (s"/api/documentation/${version}/empref")
@@ -125,28 +125,11 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig wi
   }
 }
 
-class DocumentationControllerAlternateConfigISpec extends UnitSpec with BeforeAndAfterAll with IntegrationTestConfig with GeneratorDrivenPropertyChecks {
-  val altConfigPlayService = new PlayService() {
-    override def additionalConfiguration: Map[String, Any] = Map(
-      "microservice.private-mode" -> "false",
-      "appName" -> "application-name",
-      "appUrl" -> "http://microservice-name.service",
-      "microservice.services.service-locator.host" -> stubHost,
-      "microservice.services.service-locator.port" -> stubPort,
-      "microservice.services.service-locator.enabled" -> "true",
-      "microservice.whitelisted-applications" -> "myappid")
-  }
-
+@DoNotDiscover
+class PublicDocumentationControllerISpec
+extends UnitSpec with GeneratorDrivenPropertyChecks with IntegrationTestConfig {
   def asString(filename: String): String = {
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
-  }
-
-  override def beforeAll() {
-    altConfigPlayService.start()
-  }
-
-  override def afterAll() {
-    altConfigPlayService.stop()
   }
 
   "when private-mode setting is false API" should {
