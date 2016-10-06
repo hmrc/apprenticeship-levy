@@ -1,0 +1,159 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/epaye/123%2FAB12345/eps"
+    },
+    "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json; charset=utf-8" },
+        "jsonBody": [
+  {
+    "eventId": 12345684,
+    "submissionTime": "2016-10-15T16:05:23.123",
+    "empRefs": {
+      "officeNumber": "123",
+      "payeRef": "123\/AB12345",
+      "aoRef": "123PQ7654321X"
+    },
+    "account": {
+      "accountHoldersName": "Mr. James T Bacon",
+      "accountNo": "12345678",
+      "sortCode": "123456",
+      "buildingSocRef": "SMITH-(123)"
+    },
+    "relatedTaxYear": "16-17",
+    "finalSubmission": {
+      "becauseSchemeCeased": "yes",
+      "dateSchemeCeased": "2016-09-05",
+      "forYear": "yes"
+    }
+  },
+  {
+    "eventId": 12345683,
+    "submissionTime": "2016-07-15T16:05:23.123",
+    "empRefs": {
+      "officeNumber": "123",
+      "payeRef": "123\/AB12345",
+      "aoRef": "123PQ7654321X"
+    },
+    "periodOfInactivity": {
+      "from": "2016-06-06",
+      "to": "2016-09-05"
+    },
+    "account": {
+      "accountHoldersName": "Mr. James T Bacon",
+      "accountNo": "12345678",
+      "sortCode": "123456",
+      "buildingSocRef": "SMITH-(123)"
+    },
+    "relatedTaxYear": "16-17"
+  },
+  {
+    "eventId": 12345682,
+    "submissionTime": "2016-06-15T16:20:23.000",
+    "empRefs": {
+      "officeNumber": "123",
+      "payeRef": "123\/AB12345",
+      "aoRef": "123PQ7654321X"
+    },
+    "apprenticeshipLevy": {
+      "levyDueYTD": 200,
+      "taxMonth": 2,
+      "annualAllce": 15000
+    },
+    "account": {
+      "accountHoldersName": "Mr. James T Bacon",
+      "accountNo": "12345678",
+      "sortCode": "123456",
+      "buildingSocRef": "SMITH-(123)"
+    },
+    "relatedTaxYear": "16-17"
+  },
+  {
+    "eventId": 12345681,
+    "submissionTime": "2016-06-07T16:05:23.123",
+    "empRefs": {
+      "officeNumber": "123",
+      "payeRef": "123\/AB12345",
+      "aoRef": "123PQ7654321X"
+    },
+    "apprenticeshipLevy": {
+      "levyDueYTD": 1000,
+      "taxMonth": 2,
+      "annualAllce": 15000
+    },
+    "account": {
+      "accountHoldersName": "Mr. James T Bacon",
+      "accountNo": "12345678",
+      "sortCode": "123456",
+      "buildingSocRef": "SMITH-(123)"
+    },
+    "relatedTaxYear": "16-17"
+  },
+  {
+    "eventId": 12345680,
+    "submissionTime": "2016-05-07T16:05:23.123",
+    "empRefs": {
+      "officeNumber": "123",
+      "payeRef": "123\/AB12345",
+      "aoRef": "123PQ7654321X"
+    },
+    "apprenticeshipLevy": {
+      "levyDueYTD": 500,
+      "taxMonth": 1,
+      "annualAllce": 15000
+    },
+    "account": {
+      "accountHoldersName": "Mr. James T Bacon",
+      "accountNo": "12345678",
+      "sortCode": "123456",
+      "buildingSocRef": "SMITH-(123)"
+    },
+    "relatedTaxYear": "16-17"
+  },
+  {
+    "eventId": 12345679,
+    "submissionTime": "2015-04-07T16:05:23.123",
+    "empRefs": {
+      "officeNumber": "123",
+      "payeRef": "123\/AB12345",
+      "aoRef": "123PQ7654321X"
+    },
+    "noPaymentForPeriod": "yes",
+    "noPaymentDates": {
+      "from": "2016-03-06",
+      "to": "2016-04-05"
+    },
+    "account": {
+      "accountHoldersName": "Mr. James T Bacon",
+      "accountNo": "12345678",
+      "sortCode": "123456",
+      "buildingSocRef": "SMITH-(123)"
+    },
+    "relatedTaxYear": "15-16"
+  },
+  {
+    "eventId": 12345678,
+    "submissionTime": "2016-07-14T16:05:23.123",
+    "empRefs": {
+      "officeNumber": "123",
+      "payeRef": "123\/AB12345",
+      "aoRef": "123PQ7654321X"
+    },
+    "apprenticeshipLevy": {
+      "levyDueYTD": 600,
+      "taxMonth": 11,
+      "annualAllce": 15000
+    },
+    "account": {
+      "accountHoldersName": "Mr. James T Bacon",
+      "accountNo": "12345678",
+      "sortCode": "123456",
+      "buildingSocRef": "SMITH-(123)"
+    },
+    "relatedTaxYear": "16-17"
+  }
+]
+    }
+}
