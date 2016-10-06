@@ -36,6 +36,8 @@ trait IntegrationTestConfig {
         "microservice.services.service-locator.host" -> stubHost,
         "microservice.services.service-locator.port" -> stubPort,
         "microservice.services.service-locator.enabled" -> "true",
+        "microservice.services.stub-auth.host" -> stubHost,
+        "microservice.services.stub-auth.port" -> stubPort,
         "microservice.services.stub-rti.host" -> stubHost,
         "microservice.services.stub-rti.port" -> stubPort,
         "microservice.services.stub-edh.host" -> stubHost,
