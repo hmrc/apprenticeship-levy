@@ -25,6 +25,10 @@ trait IntegrationTestConfig {
   def microserviceUrl = sys.props.getOrElse("MICROSERVICE_URL", s"http://localhost:$port")
   def additionalConfiguration: Map[String, Any] = Map(
         "http.port" -> port,
+        "logger.root" -> "OFF",
+        "logger.play" -> "OFF",
+        "logger.application" -> "OFF",
+        "logger.connector" -> "OFF",
         "auditing.enabled" -> "false",
         "microservice.private-mode" -> "true",
         "appName" -> "application-name",

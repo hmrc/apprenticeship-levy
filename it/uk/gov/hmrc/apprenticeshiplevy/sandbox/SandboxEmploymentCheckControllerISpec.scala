@@ -19,7 +19,8 @@ package uk.gov.hmrc.apprenticeshiplevy.sandbox
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.apprenticeshiplevy.WiremockSpec
+import uk.gov.hmrc.apprenticeshiplevy.util.{WiremockService, NullInformer}
 
 import org.scalatest.DoNotDiscover
 import org.scalatest.Matchers._
@@ -31,7 +32,7 @@ import play.api.libs.json.Json
 import views.html.helper
 
 @DoNotDiscover
-class SandboxEmploymentCheckControllerISpec extends UnitSpec with GeneratorDrivenPropertyChecks {
+class SandboxEmploymentCheckControllerISpec extends WiremockSpec {
   "Employment check" should {
     "return 'employed' when valid request is made to sandbox" in {
       // set up
@@ -44,9 +45,10 @@ class SandboxEmploymentCheckControllerISpec extends UnitSpec with GeneratorDrive
       contentType(result) shouldBe Some("application/json")
       contentAsJson(result) shouldBe Json.parse("""{"empref":"AB12345","nino":"QQ123456C","fromDate":"2015-03-03","toDate":"2015-06-30","employed":true}""")
     }
-    
+
     "return not found when empref doesn't exist" in {
       // set up
+      WiremockService.notifier.testInformer = NullInformer.info
       val emprefs = for { empref <- Gen.alphaStr } yield empref
 
       forAll(emprefs) { (empref: String) =>
@@ -62,9 +64,10 @@ class SandboxEmploymentCheckControllerISpec extends UnitSpec with GeneratorDrive
         }
       }
     }
-        
+
     "return not found when nino doesn't exist" in {
       // set up
+      WiremockService.notifier.testInformer = NullInformer.info
       val ninos = for { nino <- Gen.alphaStr } yield nino
 
       forAll(ninos) { (nino: String) =>
@@ -80,9 +83,10 @@ class SandboxEmploymentCheckControllerISpec extends UnitSpec with GeneratorDrive
         }
       }
     }
-    
+
     "return bad request when from date is invalid" in {
       // set up
+      WiremockService.notifier.testInformer = NullInformer.info
       val fromDates = for { str <- Gen.alphaStr } yield str
 
       forAll(fromDates) { (fromDate: String) =>
@@ -101,6 +105,7 @@ class SandboxEmploymentCheckControllerISpec extends UnitSpec with GeneratorDrive
 
     "return bad request when to date is invalid" in {
       // set up
+      WiremockService.notifier.testInformer = NullInformer.info
       val toDates = for { str <- Gen.alphaStr } yield str
 
       forAll(toDates) { (toDate: String) =>
@@ -116,7 +121,7 @@ class SandboxEmploymentCheckControllerISpec extends UnitSpec with GeneratorDrive
         }
       }
     }
-    
+
     "return bad request when to date is before from date" in {
       // set up
       val request = FakeRequest(GET, s"/sandbox/epaye/AB12345/employed/QQ123456C?fromDate=2015-06-03&toDate=2014-06-03}").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")

@@ -7,23 +7,17 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
 import org.scalatest.Informer
 import com.github.tomakehurst.wiremock.common._
 
-trait StandardOutInformer {
-  lazy val info = new Informer {
-    def apply(message: String, payload: Option[Any] = None): Unit = { println(message) }
-  }
-}
-
 trait WiremockService extends IntegrationTestConfig with StandardOutInformer {
+  lazy val notifier = new WiremockTestInformerNotifier(info, verboseWiremockOutput)
+
   info(s"Configuring wire mock server to listen on ${stubHost}:${stubPort} using responses configured in ${stubConfigPath}")
-  lazy val wireMockServer = new WireMockServer(wireMockConfig.notifier(WiremockTestInformerNotifier(info, verboseWiremockOutput)).usingFilesUnderDirectory(stubConfigPath).port(stubPort).bindAddress(stubHost))
+  lazy val wireMockServer = new WireMockServer(wireMockConfig.notifier(notifier).usingFilesUnderDirectory(stubConfigPath).port(stubPort).bindAddress(stubHost))
 
   def start() = {
-    info(s"Starting wirework....")
     wireMockServer.start()
   }
 
   def stop() = {
-    info(s"Stopping wirework....")
     wireMockServer.stop()
   }
 }

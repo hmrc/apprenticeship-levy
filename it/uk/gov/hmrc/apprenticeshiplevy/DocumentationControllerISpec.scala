@@ -17,11 +17,11 @@ import play.api.libs.json.Json
 import play.api.Play
 import play.api.Play._
 
-import uk.gov.hmrc.apprenticeshiplevy.util.{IntegrationTestConfig, PlayService}
+import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
 
 @DoNotDiscover
-class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig with GeneratorDrivenPropertyChecks {
+class DocumentationControllerISpec extends WiremockFunSpec  {
   def asString(filename: String): String = {
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
   }
@@ -56,6 +56,7 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig wi
 
     it (s"return not found when documentation version doesn't exist") {
       // set up
+      WiremockService.notifier.testInformer = NullInformer.info
       val urls = for { version <- Gen.choose(Int.MinValue, Int.MaxValue) } yield (s"/api/documentation/${version}/empref")
 
       forAll(urls) { (url: String) =>
@@ -73,6 +74,7 @@ class DocumentationControllerISpec extends FunSpec with IntegrationTestConfig wi
 
     it (s"return not found when documentation endpoint doesn't exist") {
       // set up
+      WiremockService.notifier.testInformer = NullInformer.info
       val endpoints = for { endpoint <- Gen.alphaStr } yield (endpoint)
 
       forAll(endpoints) { (endpoint: String) =>

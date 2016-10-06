@@ -7,6 +7,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import play.api.Logger
+
 trait WiremockNotifier extends Notifier {
   protected def verboseWiremockOutput: Boolean
   protected def handleMessage(msg: String): Unit
@@ -32,6 +34,35 @@ trait WiremockNotifier extends Notifier {
   }
 }
 
-case class WiremockTestInformerNotifier(testInformer: Informer, verboseWiremockOutput: Boolean = true) extends WiremockNotifier {
+class WiremockTestInformerNotifier(var testInformer: Informer, var verboseWiremockOutput: Boolean = true) extends WiremockNotifier {
   protected def handleMessage(msg: String): Unit = testInformer(msg)
 }
+
+trait StandardOutInformer {
+  lazy val info = new Informer {
+    def apply(message: String, payload: Option[Any] = None): Unit = { println(message) }
+  }
+}
+
+object StandardOutInformer extends StandardOutInformer
+
+trait NullInformer {
+  lazy val info = new Informer {
+    def apply(message: String, payload: Option[Any] = None): Unit = { }
+  }
+}
+
+object NullInformer extends NullInformer
+
+trait LoggerInformer {
+  lazy val info = new Informer {
+    def apply(message: String, payload: Option[Any] = None): Unit = {
+      if (message.contains("ERROR"))
+        Logger("wiremock").error(message)
+      else
+        Logger("wiremock").info(message)
+    }
+  }
+}
+
+object LoggerInformer extends LoggerInformer
