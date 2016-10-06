@@ -23,7 +23,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 @DoNotDiscover
 class RootEndpointISpec extends WiremockFunSpec  {
   describe("Root Endpoint") {
-    val contexts = Seq("/sandbox")
+    val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>
       describe (s"should when calling ${localMicroserviceUrl}$context/") {
         describe (s"and backend systems not failing") {

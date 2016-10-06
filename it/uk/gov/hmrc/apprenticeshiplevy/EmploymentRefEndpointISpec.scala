@@ -22,7 +22,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 @DoNotDiscover
 class EmploymentRefEndpointISpec extends WiremockFunSpec  {
   describe("Empref Endpoint") {
-    val contexts = Seq("/sandbox")
+    val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>
       describe (s"should when calling ${localMicroserviceUrl}$context/epaye/<empref>") {
         describe (s"with valid parameters") {
