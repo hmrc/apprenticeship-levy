@@ -1,13 +1,11 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
 import scala.io.Source
-import scala.xml.XML._
 import java.io.File
 
 import org.scalatest._
 import org.scalatest.Matchers._
 import org.scalatest.prop._
-import org.scalatest.xml.XmlMatchers._
 
 import org.scalacheck.Gen
 
@@ -26,54 +24,61 @@ class DefinitionEndpointISpec extends WiremockFunSpec  {
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
   }
 
-  def asXml(content: String): scala.xml.Elem = {
-    loadString(content)
-  }
+  describe (s"API Definition Endpoint (Private Mode)") {
+    describe (s"should when calling ${localMicroserviceUrl}/api/definition") {
+      describe (s"when definition file exists and private-mode is set to true") {
+        it (s"return OK") {
+          // set up
+          val request = FakeRequest(GET, "/api/definition")
 
-  describe (s"Calling ${localMicroserviceUrl}/api/definition") {
-    it (s"should return OK") {
-      // set up
-      val request = FakeRequest(GET, "/api/definition")
+          // test
+          val result = route(request).get
 
-      // test
-      val result = route(request).get
+          // check
+          status(result) shouldBe OK
+        }
 
-      // check
-      status(result) shouldBe OK
-    }
+        it (s"return expected JSON API definition") {
+          // set up
+          val request = FakeRequest(GET, "/api/definition")
 
-    it (s"should provide expected JSON API definition") {
-      // set up
-      val request = FakeRequest(GET, "/api/definition")
+          // test
+          val result = route(request).get
 
-      // test
-      val result = route(request).get
+          // check
+          contentType(result) shouldBe Some("application/json")
+          contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
+        }
 
-      // check
-      contentType(result) shouldBe Some("application/json")
-      contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
+        it (s"return definition with whitelisted applications") {
+          pending
+        }
+      }
     }
   }
 }
 
 @DoNotDiscover
-class PublicDefinitionEndpointISpec
-extends UnitSpec with GeneratorDrivenPropertyChecks with IntegrationTestConfig {
+class PublicDefinitionEndpointISpec extends UnitSpec with IntegrationTestConfig {
   def asString(filename: String): String = {
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
   }
 
-  s"Calling ${localMicroserviceUrl}/api/definition when private-mode setting is false API" should {
-    "return definition without whitelisted-applications" in {
-      // set up
-      val request = FakeRequest(GET, "/api/definition")
+  "API Definition Endpoint (Public)" can {
+    s"when calling ${localMicroserviceUrl}/api/definition" should {
+      "when private-mode is set to false" must {
+        "return definition without whitelisted-applications" in {
+          // set up
+          val request = FakeRequest(GET, "/api/definition")
 
-      // test
-      val result = route(request).get
+          // test
+          val result = route(request).get
 
-      // check
-      contentType(result) shouldBe Some("application/json")
-      contentAsJson(result) shouldBe Json.parse(asString("publicdefinition.json"))
+          // check
+          contentType(result) shouldBe Some("application/json")
+          contentAsJson(result) shouldBe Json.parse(asString("publicdefinition.json"))
+        }
+      }
     }
   }
 }

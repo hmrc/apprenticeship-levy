@@ -30,19 +30,20 @@ class DocumentationEndpointISpec extends WiremockFunSpec  {
     loadString(content)
   }
 
-  describe (s"API Documentation") {
-    describe (s"when called with valid paramters") {
-      val definitionFile = new File("./public/api/definition.json")
-      val definitionContents = Source.fromFile(definitionFile).getLines.mkString
-      val definitionJson = Json.parse(definitionContents)
-      val versions = (definitionJson \\ "version") map (_.as[String])
-      versions.foreach { case (version) =>
-          describe (s"Calling ${localMicroserviceUrl}/api/documentation/$version") {
+  describe (s"API Documentation Endpoint") {
+    describe (s"should when calling ${localMicroserviceUrl}/api/documentation/<version>/<endpoint>") {
+      describe (s"with valid parameters") {
+        val definitionFile = new File("./public/api/definition.json")
+        val definitionContents = Source.fromFile(definitionFile).getLines.mkString
+        val definitionJson = Json.parse(definitionContents)
+        val versions = (definitionJson \\ "version") map (_.as[String])
+        versions.foreach { case (version) =>
+          describe (s"when version is $version and endpoint is ") {
             val endpointNames = (definitionJson \\ "endpoints").map(_ \\ "endpointName").map(_.map(_.as[String].toLowerCase))
             versions.zip(endpointNames).flatMap { case (version, endpoint) =>
               endpoint.map(endpointName => (version, endpointName))
             }.filter(_._1 == version).foreach { case (v, endpointName) =>
-              it (s"/$endpointName should return expected documentation") {
+              it (s"'$endpointName' should return expected documentation") {
                 // set up
                 val request = FakeRequest(GET, s"/api/documentation/$version/$endpointName")
                 val expectedXml = asXml(asString(s"${endpointName}.xml"))
@@ -60,12 +61,11 @@ class DocumentationEndpointISpec extends WiremockFunSpec  {
               }
             }
           }
+        }
       }
-    }
 
-    describe (s"when called with invalid paramters") {
-      describe (s"Calling ${localMicroserviceUrl}/api/documentation/<version>/<endpoint-name>") {
-        it (s"return 404 when documentation version doesn't exist") {
+      describe (s"with invalid parameters") {
+        it (s"should return 404 when documentation version doesn't exist") {
           // set up
           WiremockService.notifier.testInformer = NullInformer.info
           val urls = for { version <- Gen.choose(Int.MinValue, Int.MaxValue) } yield (s"/api/documentation/${version}/empref")
@@ -83,7 +83,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec  {
         }
 
 
-        it (s"return 404 when documentation endpoint doesn't exist") {
+        it (s"should return 404 when documentation endpoint doesn't exist") {
           // set up
           WiremockService.notifier.testInformer = NullInformer.info
           val endpoints = for { endpoint <- Gen.alphaStr } yield (endpoint)
