@@ -1,6 +1,9 @@
 
 ## General
 
+- [ ] Connectors failing backend tests
+- [ ] Why is live responding differently with same requests as sandbox e.g. 401 v 404?
+- [ ] Prune unused code
 - [ ] Add caching to documentation controller
 - [ ] Consider converting config to be updatable on the fly (AppContext)
 - [ ] :question: Confirm useage of headercarrier
@@ -20,6 +23,9 @@
   - [ ] RTI
   - [ ] Service Locator
   - [ ] Update all tests once backend enpoint specs are in place
+  - [ ] Employment check for not employed
+  - [ ] Employment check for not known
+  - [ ] Declarations for different date ranges
 
 ## :bangbang: API endpoints
 - Integration tests (both happy/unhappy paths)
