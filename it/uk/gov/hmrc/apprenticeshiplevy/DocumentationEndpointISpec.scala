@@ -21,7 +21,7 @@ import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
 
 @DoNotDiscover
-class DocumentationControllerISpec extends WiremockFunSpec  {
+class DocumentationEndpointISpec extends WiremockFunSpec  {
   def asString(filename: String): String = {
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
   }
@@ -30,31 +30,8 @@ class DocumentationControllerISpec extends WiremockFunSpec  {
     loadString(content)
   }
 
-  describe ("Documentation Controller") {
-    it (s"should provide definition endpoint") {
-      // set up
-      val request = FakeRequest(GET, "/api/definition")
-
-      // test
-      val result = route(request).get
-
-      // check
-      status(result) shouldBe OK
-    }
-
-    it (s"should provide expected API definition") {
-      // set up
-      val request = FakeRequest(GET, "/api/definition")
-
-      // test
-      val result = route(request).get
-
-      // check
-      contentType(result) shouldBe Some("application/json")
-      contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
-    }
-
-    it (s"return not found when documentation version doesn't exist") {
+  describe (s"Calling ${localMicroserviceUrl}/api/documentation/xxx/yyy") {
+    it (s"return 404 when documentation version doesn't exist") {
       // set up
       WiremockService.notifier.testInformer = NullInformer.info
       val urls = for { version <- Gen.choose(Int.MinValue, Int.MaxValue) } yield (s"/api/documentation/${version}/empref")
@@ -72,7 +49,7 @@ class DocumentationControllerISpec extends WiremockFunSpec  {
     }
 
 
-    it (s"return not found when documentation endpoint doesn't exist") {
+    it (s"return 404 when documentation endpoint doesn't exist") {
       // set up
       WiremockService.notifier.testInformer = NullInformer.info
       val endpoints = for { endpoint <- Gen.alphaStr } yield (endpoint)
@@ -99,12 +76,12 @@ class DocumentationControllerISpec extends WiremockFunSpec  {
     val definitionJson = Json.parse(definitionContents)
     val versions = (definitionJson \\ "version") map (_.as[String])
     versions.foreach { case (version) =>
-      describe (s"Documentation Controller With Version ${version}") {
+      describe (s"Calling ${localMicroserviceUrl}/api/documentation/$version/") {
         val endpointNames = (definitionJson \\ "endpoints").map(_ \\ "endpointName").map(_.map(_.as[String].toLowerCase))
         versions.zip(endpointNames).flatMap { case (version, endpoint) =>
           endpoint.map(endpointName => (version, endpointName))
         }.filter(_._1 == version).foreach { case (v, endpointName) =>
-          it (s"should return expected documentation for ${endpointName}") {
+          it (s"/$endpointName should return expected documentation") {
             // set up
             val request = FakeRequest(GET, s"/api/documentation/$version/$endpointName")
             val expectedXml = asXml(asString(s"${endpointName}.xml"))
@@ -124,27 +101,5 @@ class DocumentationControllerISpec extends WiremockFunSpec  {
       }
     }
     super.run(testName, args)
-  }
-}
-
-@DoNotDiscover
-class PublicDocumentationControllerISpec
-extends UnitSpec with GeneratorDrivenPropertyChecks with IntegrationTestConfig {
-  def asString(filename: String): String = {
-    Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
-  }
-
-  "when private-mode setting is false API" should {
-    "return definition without whitelisted-applications" in {
-      // set up
-      val request = FakeRequest(GET, "/api/definition")
-
-      // test
-      val result = route(request).get
-
-      // check
-      contentType(result) shouldBe Some("application/json")
-      contentAsJson(result) shouldBe Json.parse(asString("publicdefinition.json"))
-    }
   }
 }

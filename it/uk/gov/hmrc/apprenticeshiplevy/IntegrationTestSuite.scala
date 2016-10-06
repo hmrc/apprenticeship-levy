@@ -6,7 +6,8 @@ import uk.gov.hmrc.play.test.UnitSpec
 
 class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
                                            new uk.gov.hmrc.apprenticeshiplevy.sandbox.Suite,
-                                           new DocumentationControllerISpec)
+                                           new DocumentationEndpointISpec,
+                                           new DefinitionEndpointISpec)
   with BeforeAndAfterAllConfigMap with IntegrationTestConfig {
 
   override def beforeAll(cm: ConfigMap) {
@@ -21,7 +22,7 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
 }
 
 class NoWiremockIntegrationTestsSuite
-  extends Suites(new PublicDocumentationControllerISpec)
+  extends Suites(new PublicDefinitionEndpointISpec)
   with BeforeAndAfterAllConfigMap with IntegrationTestConfig {
 
   val playService = new PlayService() {
