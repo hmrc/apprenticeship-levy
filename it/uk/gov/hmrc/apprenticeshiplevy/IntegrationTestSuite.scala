@@ -5,11 +5,11 @@ import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
 
 class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
-                                           new uk.gov.hmrc.apprenticeshiplevy.sandbox.Suite,
                                            new DeclarationsEndpointISpec,
                                            new DefinitionEndpointISpec,
                                            new DocumentationEndpointISpec,
                                            new EmploymentCheckEndpointISpec,
+                                           new EmploymentRefEndpointISpec,
                                            new FractionsEndpointISpec,
                                            new FractionsCalculationDateEndpointISpec,
                                            new RootEndpointISpec)

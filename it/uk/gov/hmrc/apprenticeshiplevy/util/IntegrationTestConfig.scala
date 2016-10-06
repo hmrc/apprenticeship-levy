@@ -40,6 +40,8 @@ trait IntegrationTestConfig {
         "microservice.services.stub-auth.port" -> stubPort,
         "microservice.services.stub-rti.host" -> stubHost,
         "microservice.services.stub-rti.port" -> stubPort,
+        "microservice.services.stub-epaye.host" -> stubHost,
+        "microservice.services.stub-epaye.port" -> stubPort,
         "microservice.services.stub-edh.host" -> stubHost,
         "microservice.services.stub-edh.port" -> stubPort,
         "microservice.services.rti.host" -> stubHost,
