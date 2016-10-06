@@ -7,7 +7,8 @@ import uk.gov.hmrc.play.test.UnitSpec
 class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
                                            new uk.gov.hmrc.apprenticeshiplevy.sandbox.Suite,
                                            new DocumentationEndpointISpec,
-                                           new DefinitionEndpointISpec)
+                                           new DefinitionEndpointISpec,
+                                           new EmploymentCheckEndpointISpec)
   with BeforeAndAfterAllConfigMap with IntegrationTestConfig {
 
   override def beforeAll(cm: ConfigMap) {
