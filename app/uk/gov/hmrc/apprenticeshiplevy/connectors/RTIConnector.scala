@@ -38,7 +38,9 @@ trait RTIConnector {
       case (u, Some(ps)) => s"$u?$ps"
     }
 
+    // $COVERAGE-OFF$
     Logger.debug(s"Calling RTI at $url")
+    // $COVERAGE-ON$
 
     httpGet.GET[Seq[EmployerPaymentSummary]](url)
   }

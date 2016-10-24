@@ -41,11 +41,15 @@ trait ServiceLocatorConnector {
         body = ServiceLocatorRegistration(appName, appUrl, metadata),
         headers = Seq("Content-Type" -> "application/json"))
       .map { _ =>
+        // $COVERAGE-OFF$
         Logger.info("Service successfully registered on the service locator")
+        // $COVERAGE-ON$
         Success(())
       }
       .recover { case NonFatal(e) =>
+        // $COVERAGE-OFF$
         Logger.error(s"Service could not register on the service locator", e)
+        // $COVERAGE-ON$
         Failure(e)
       }
 }
