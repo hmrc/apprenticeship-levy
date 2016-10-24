@@ -28,7 +28,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>
       describe (s"should when calling ${localMicroserviceUrl}$context/epaye/<empref>/fractions") {
-        describe (s"with valid paramters") {
+        describe (s"with no parameters") {
           it (s"should return fractions") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
@@ -54,6 +54,92 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
                            Fraction("Wales", BigDecimal(0.06)),
                            Fraction("Northern Ireland", BigDecimal(0)))
               fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 3, 15),f1), FractionCalculation(new LocalDate(2015, 11, 18),f2))
+            }
+          }
+        }
+
+        describe (s"with valid parameters") {
+          it (s"?fromDate=2017-09-01 should return fractions") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-09-01").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+            if (contentAsString(result).contains("NOT_IMPLEMENTED")) {
+              info("NOT_IMPLEMENTED")
+              throw new org.scalatest.exceptions.TestPendingException()
+            } else {
+              val json = contentAsJson(result)
+              (json \ "empref").as[String] shouldBe "123/AB12345"
+              val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
+              val f1 = Seq(Fraction("England", BigDecimal(0.83)),
+                           Fraction("Scotland", BigDecimal(0.11)),
+                           Fraction("Wales", BigDecimal(0.06)),
+                           Fraction("Northern Ireland", BigDecimal(0)))
+              val f2 = Seq(Fraction("England", BigDecimal(0.78)),
+                           Fraction("Scotland", BigDecimal(0.16)),
+                           Fraction("Wales", BigDecimal(0.06)),
+                           Fraction("Northern Ireland", BigDecimal(0)))
+              fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2016, 8, 18),f2))
+            }
+          }
+
+          it (s"?toDate=2017-09-01 should return fractions") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=2017-09-01").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+            if (contentAsString(result).contains("NOT_IMPLEMENTED")) {
+              info("NOT_IMPLEMENTED")
+              throw new org.scalatest.exceptions.TestPendingException()
+            } else {
+              val json = contentAsJson(result)
+              (json \ "empref").as[String] shouldBe "123/AB12345"
+              val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
+              val f1 = Seq(Fraction("England", BigDecimal(0.83)),
+                           Fraction("Scotland", BigDecimal(0.11)),
+                           Fraction("Wales", BigDecimal(0.06)),
+                           Fraction("Northern Ireland", BigDecimal(0)))
+              val f2 = Seq(Fraction("England", BigDecimal(0.78)),
+                           Fraction("Scotland", BigDecimal(0.16)),
+                           Fraction("Wales", BigDecimal(0.06)),
+                           Fraction("Northern Ireland", BigDecimal(0)))
+              fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2016, 8, 18),f2))
+            }
+          }
+
+          it (s"?fromDate=2017-08-01&toDate=2017-09-01 should return fractions") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-08-01&toDate=2017-09-01").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+            if (contentAsString(result).contains("NOT_IMPLEMENTED")) {
+              info("NOT_IMPLEMENTED")
+              throw new org.scalatest.exceptions.TestPendingException()
+            } else {
+              val json = contentAsJson(result)
+              (json \ "empref").as[String] shouldBe "123/AB12345"
+              val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
+              val f1 = Seq(Fraction("England", BigDecimal(0.83)),
+                           Fraction("Scotland", BigDecimal(0.11)),
+                           Fraction("Wales", BigDecimal(0.06)),
+                           Fraction("Northern Ireland", BigDecimal(0)))
+              val f2 = Seq(Fraction("England", BigDecimal(0.78)),
+                           Fraction("Scotland", BigDecimal(0.16)),
+                           Fraction("Wales", BigDecimal(0.06)),
+                           Fraction("Northern Ireland", BigDecimal(0)))
+              fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2016, 8, 18),f2))
             }
           }
         }

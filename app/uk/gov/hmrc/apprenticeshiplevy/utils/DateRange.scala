@@ -19,19 +19,19 @@ package uk.gov.hmrc.apprenticeshiplevy.utils
 import org.joda.time.LocalDate
 
 sealed trait DateRange {
-  def contains(date: LocalDate): Boolean
+  //def contains(date: LocalDate): Boolean
 
   def toParams: Option[String]
 }
 
 case object OpenDateRange extends DateRange {
-  override def contains(date: LocalDate): Boolean = true
+  //override def contains(date: LocalDate): Boolean = true
 
   override def toParams: Option[String] = None
 }
 
 case class ClosedDateRange(from: LocalDate, to: LocalDate) extends DateRange {
-  override def contains(date: LocalDate): Boolean = !date.isBefore(from) && !date.isAfter(to)
+  //override def contains(date: LocalDate): Boolean = !date.isBefore(from) && !date.isAfter(to)
 
   override def toParams: Option[String] = Some(paramString)
 
@@ -39,13 +39,13 @@ case class ClosedDateRange(from: LocalDate, to: LocalDate) extends DateRange {
 }
 
 case class OpenEarlyDateRange(to: LocalDate) extends DateRange {
-  override def contains(date: LocalDate): Boolean = !date.isAfter(to)
+  //override def contains(date: LocalDate): Boolean = !date.isAfter(to)
 
   override def toParams: Option[String] = Some(s"toDate=$to")
 }
 
 case class OpenLateDateRange(from: LocalDate) extends DateRange {
-  override def contains(date: LocalDate): Boolean = !date.isBefore(from)
+  //override def contains(date: LocalDate): Boolean = !date.isBefore(from)
 
   override def toParams: Option[String] = Some(s"fromDate=$from")
 }
