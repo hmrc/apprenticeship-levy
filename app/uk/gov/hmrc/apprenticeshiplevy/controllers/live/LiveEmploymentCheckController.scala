@@ -18,13 +18,8 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
+import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveRTIConnector
 
 object LiveEmploymentCheckController extends EmploymentCheckController {
-
-  override def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate) = withValidAcceptHeader {
-    ErrorNotImplemented.result
-  }
-
-  override def rtiConnector = ???
+  override def rtiConnector = LiveRTIConnector
 }

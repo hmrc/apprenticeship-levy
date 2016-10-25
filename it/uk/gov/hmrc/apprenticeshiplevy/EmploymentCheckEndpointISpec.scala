@@ -85,11 +85,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
                 val httpStatus = status(documentationResult)
 
                 // check
-                if (context == "") {
-                  httpStatus shouldBe 501
-                } else {
-                  httpStatus shouldBe 404
-                }
+                httpStatus shouldBe 404
               }
             }
             if (context == "") {
