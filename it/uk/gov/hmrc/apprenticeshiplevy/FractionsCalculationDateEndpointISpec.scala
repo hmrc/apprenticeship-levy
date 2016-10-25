@@ -34,13 +34,9 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             val result = route(request).get
 
             // check
+            status(result) shouldBe OK
             contentType(result) shouldBe Some("application/json")
-            if (contentAsString(result).contains("NOT_IMPLEMENTED")) {
-              info("NOT_IMPLEMENTED")
-              throw new org.scalatest.exceptions.TestPendingException()
-            } else {
-              contentAsJson(result) shouldBe Json.parse(""""2016-06-19"""")
-            }
+            contentAsJson(result) shouldBe Json.parse(""""2016-06-19"""")
           }
         }
 
