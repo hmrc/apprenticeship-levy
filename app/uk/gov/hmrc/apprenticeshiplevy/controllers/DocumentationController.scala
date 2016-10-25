@@ -49,7 +49,9 @@ trait AssetsController extends BaseController {
     if (!file.isEmpty && fileToServe.exists) {
       Ok.sendFile(fileToServe, inline = true)
     } else {
+      // $COVERAGE-OFF$
       Logger.error("Assets controller failed to serve a file: " + file)
+      // $COVERAGE-ON$
       NotFound
     }
   }
@@ -85,7 +87,9 @@ trait DocumentationController extends AssetsController {
         Future.successful(Ok.sendFile(fileToServe, inline = true))
       }
     } else {
+      // $COVERAGE-OFF$
       Logger.error(s"Documentation controller failed to serve a file: $fileToServe")
+      // $COVERAGE-ON$
       Future.successful(NotFound)
     }
   }

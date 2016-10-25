@@ -33,21 +33,27 @@ object AppContext extends ServicesConfig {
     current.configuration.getString("microservice.services.service-locator.enabled")
       .flatMap(flag => Try(flag.toBoolean).toOption)
       .getOrElse {
+        // $COVERAGE-OFF$
         Logger.warn("A configuration value has not been provided for service-locator.enabled, defaulting to true")
+        // $COVERAGE-ON$
         true
       }
 
   def privateModeEnabled = current.configuration.getString("microservice.private-mode")
     .flatMap(flag => Try(flag.toBoolean).toOption)
     .getOrElse {
+      // $COVERAGE-OFF$
       Logger.warn("A configuration value has not been provided for microservice.private-mode, defaulting to true")
+      // $COVERAGE-ON$
       true
     }
 
   def whitelistedApplicationIds = current.configuration.getString("microservice.whitelisted-applications")
     .map { applicationIds => applicationIds.split(",").toSeq }
     .getOrElse(Seq.empty)
+  // $COVERAGE-OFF$
   Logger.info(s"""\n${"*" * 80}\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
+  // $COVERAGE-ON$
 
   def edhUrl = baseUrl("edh")
   def stubEdhUrl = baseUrl("stub-edh")
