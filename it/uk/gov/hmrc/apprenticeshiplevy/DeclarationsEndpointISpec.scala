@@ -55,8 +55,51 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
         }
 
         describe ("with invalid paramters") {
-          it (s"should return 404") {
-            pending
+          it (s"DES HTTP 400") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/400/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.BadRequestException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+          it (s"DES HTTP 401") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/401/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+          it (s"DES HTTP 403") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/403/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+          it (s"DES HTTP 404") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/404/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 404
           }
         }
 
@@ -84,6 +127,31 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
               // check
               contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"DES HTTP 500") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/500/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 404
+            }
+          }
+          it (s"DES HTTP 503") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/503/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 404
             }
           }
         }
