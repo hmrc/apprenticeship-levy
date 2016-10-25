@@ -27,7 +27,7 @@ private object AppDependencies {
   private val playJsonLoggerVersion = "2.1.1"
   private val playUrlBindersVersion = "1.0.0"
   private val playConfigVersion = "2.0.1"
-  private val playHmrcApiVersion = "0.5.0"
+  private val playHmrcApiVersion = "0.6.0"
   private val hmrcTestVersion = "1.8.0"
   private val playHalVersion = "0.3.0"
   private val scalaXMLVersion = "2.11.0-M4"
