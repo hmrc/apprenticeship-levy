@@ -29,6 +29,9 @@ class ServiceLocatorRegistrationISpec
       // resources in it are not under /public
         super.at(s"/documentation/$version", s"${endpoint.replaceAll(" ", "-")}.xml")
 
+      override def conf(version: String, file: String) =
+        super.at(s"/api/conf/${version}", file)
+
       override implicit lazy val current = Play.current
     }
     val request = FakeRequest()
@@ -79,6 +82,21 @@ class ServiceLocatorRegistrationISpec
           endpoint.map(endpointName => (version, endpointName))
         }.foreach { case (version, endpointName) => verifyDocumentationPresent(version, endpointName) }
       }
+      }
+    }
+
+    "provide RAML conf endpoint" in new MicroserviceLocalRunSupport with Setup {
+      override val additionalConfiguration: Map[String, Any] = Map(
+        "appName" -> "application-name",
+        "appUrl" -> "http://microservice-name.service",
+        "Test.microservice.services.service-locator.host" -> stubHost,
+        "Test.microservice.services.service-locator.port" -> stubPort)
+      run {
+        () => {
+          val result = documentationController.conf("1.0", "application.raml")(request)
+          status(result) shouldBe 200
+          bodyOf(result).startsWith("#%RAML 1.0") shouldBe true
+        }
       }
     }
   }
