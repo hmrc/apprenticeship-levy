@@ -53,7 +53,17 @@ class RootEndpointISpec extends WiremockFunSpec  {
 
         describe ("when backend systems failing") {
           it (s"should throw IOException? when connection closed") {
-            pending
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
+            val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[java.io.IOException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
           }
         }
       }

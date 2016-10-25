@@ -12,6 +12,8 @@ import play.api.test.Helpers._
 import play.api.libs.json.Json
 import play.api.Play
 import play.api.Play._
+import play.api.Play.current
+import play.api.libs.ws.WS
 import views.html.helper
 
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -23,7 +25,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration,PayrollPeriod}
 
 @DoNotDiscover
-class DeclarationsEndpointISpec extends WiremockFunSpec  {
+class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConfig {
   describe("Declarations Endpoint") {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>
@@ -39,17 +41,16 @@ class DeclarationsEndpointISpec extends WiremockFunSpec  {
             // check
             contentType(result) shouldBe Some("application/json")
 
-              val json = contentAsJson(result)
-              (json \ "empref").as[String] shouldBe "123/AB12345"
-              val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-              declarations should contain atLeastOneOf (LevyDeclaration(12345684,
-                                                                        new LocalDateTime(2016, 10, 15, 16, 5, 23, 123),
-                                                                        Some(new LocalDate(2016, 9, 5))),
-                                                        LevyDeclaration(12345679,
-                                                                        new LocalDateTime(2015, 4, 7, 16, 5, 23, 123),
-                                                                        payrollPeriod=Some(PayrollPeriod("15-16", 12)),
-                                                                        noPaymentForPeriod=Some(true)))
-
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123/AB12345"
+            val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
+            declarations should contain atLeastOneOf (LevyDeclaration(12345684,
+                                                                      new LocalDateTime(2016, 10, 15, 16, 5, 23, 123),
+                                                                      Some(new LocalDate(2016, 9, 5))),
+                                                      LevyDeclaration(12345679,
+                                                                      new LocalDateTime(2015, 4, 7, 16, 5, 23, 123),
+                                                                      payrollPeriod=Some(PayrollPeriod("15-16", 12)),
+                                                                      noPaymentForPeriod=Some(true)))
           }
         }
 
@@ -61,7 +62,16 @@ class DeclarationsEndpointISpec extends WiremockFunSpec  {
 
         describe ("when backend systems failing") {
           it (s"should throw IOException? when connection closed") {
-            pending
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/malformed/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[java.io.IOException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
           }
         }
       }

@@ -1,0 +1,9 @@
+{
+    "request": {
+        "method": "GET",
+        "url": "/empref/malformed/employee/QQ123456C"
+    },
+    "response": {
+      "fault": "MALFORMED_RESPONSE_CHUNK"
+    }
+}

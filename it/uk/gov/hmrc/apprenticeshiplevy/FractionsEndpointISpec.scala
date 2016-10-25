@@ -147,7 +147,16 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
 
         describe ("when backend systems failing") {
           it (s"should throw IOException? when connection closed") {
-            pending
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/malformed/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[java.io.IOException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
           }
         }
       }

@@ -45,7 +45,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
-            val request = FakeRequest(GET, "/sandbox/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
             intercept[java.io.IOException] {
               // test

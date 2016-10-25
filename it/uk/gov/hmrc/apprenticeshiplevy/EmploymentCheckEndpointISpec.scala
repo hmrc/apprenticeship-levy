@@ -31,13 +31,8 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
             // check
             contentType(result) shouldBe Some("application/json")
-            if (contentAsString(result).contains("NOT_IMPLEMENTED")) {
-              info("NOT_IMPLEMENTED")
-              throw new org.scalatest.exceptions.TestPendingException()
-            } else {
-              val json = contentAsJson(result)
-              json shouldBe Json.parse("""{"empref":"AB12345","nino":"QQ123456C","fromDate":"2015-03-03","toDate":"2015-06-30","employed":true}""")
-            }
+            val json = contentAsJson(result)
+            json shouldBe Json.parse("""{"empref":"AB12345","nino":"QQ123456C","fromDate":"2015-03-03","toDate":"2015-06-30","employed":true}""")
           }
 
           it (s"?fromDate=2015-03-03&toDate=2015-06-30 should return 'not_employed'") {
@@ -133,8 +128,17 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
         }
 
         describe ("when backend systems failing") {
-          it (s"should") {
-            pending
+          it (s"should throw IOException? when connection closed") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/malformed/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[java.io.IOException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
           }
         }
       }
