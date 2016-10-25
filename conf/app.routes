@@ -9,3 +9,4 @@ GET        /epaye/:empref/employed/:nino                uk.gov.hmrc.apprenticesh
 
 GET        /api/definition                              uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.definition
 GET        /api/documentation/:version/:endpoint        uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.documentation(version, endpoint)
+GET        /api/conf/:version/*file                     uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.conf(version, file)
