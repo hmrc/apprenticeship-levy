@@ -61,9 +61,22 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
         }
 
         describe ("when backend systems failing") {
-          it (s"should throw IOException? when connection closed") {
+          it (s"and connection closed it should throw IOException?") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/malformed/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[java.io.IOException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"and response is empty it should ???") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/empty/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
             intercept[java.io.IOException] {
               // test
