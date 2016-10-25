@@ -38,10 +38,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec  {
 
             // check
             contentType(result) shouldBe Some("application/json")
-            if (contentAsString(result).contains("NOT_IMPLEMENTED")) {
-              info("NOT_IMPLEMENTED")
-              throw new org.scalatest.exceptions.TestPendingException()
-            } else {
+
               val json = contentAsJson(result)
               (json \ "empref").as[String] shouldBe "123/AB12345"
               val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
@@ -52,7 +49,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec  {
                                                                         new LocalDateTime(2015, 4, 7, 16, 5, 23, 123),
                                                                         payrollPeriod=Some(PayrollPeriod("15-16", 12)),
                                                                         noPaymentForPeriod=Some(true)))
-            }
+
           }
         }
 
