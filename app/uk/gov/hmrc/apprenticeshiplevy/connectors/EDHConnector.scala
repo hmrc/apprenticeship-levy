@@ -37,8 +37,9 @@ trait EDHConnector {
       case (u, Some(params)) => s"$u?$params"
       case (u, None) => u
     }
-
+    // $COVERAGE-OFF$
     Logger.debug(s"Calling EDH at $url")
+    // $COVERAGE-ON$
     httpGet.GET[Fractions](url)
   }
 
