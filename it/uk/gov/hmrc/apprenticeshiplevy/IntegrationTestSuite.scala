@@ -23,6 +23,7 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
   lazy val auuid2 = randomUUID()
   lazy val auuid3 = randomUUID()
   lazy val auuid4 = randomUUID()
+  lazy val auuid5 = randomUUID()
 
   override def beforeAll(cm: ConfigMap) {
     WiremockService.start()
@@ -37,15 +38,15 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
     stubFor(get(urlEqualTo(validReadURL2)).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
     println("validReadURL2: " + validReadURL2)
 
-    val invalidReadURL1enc = "18e59cb4c2283077b719589a76e313da0879a0d4698db5456ec21a25ee047cd4c566006afbebd1a8f5ced40b47865577"
-    val invalidReadURL1 = Crypto.decryptAES(invalidReadURL1enc)
-    stubFor(get(urlEqualTo(invalidReadURL1)).withId(auuid3).atPriority(1).willReturn(aResponse().withStatus(404)))
-    println("invalidReadURL1: " + invalidReadURL1)
+    val faultURL1enc = "18e59cb4c2283077b719589a76e313da0a2b7fa681e8f70f76a0e1418104c792e625da469b6c15bb2839797d8c091a16a40d1904428c19b30469e36eab4725ab"
+    val faultURL1 = Crypto.decryptAES(faultURL1enc)
+    stubFor(get(urlEqualTo(faultURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
+    println("faultURL1: " + faultURL1)
 
-    val closeConnectionReadURL1enc = "18e59cb4c2283077b719589a76e313da0a2b7fa681e8f70f76a0e1418104c792e625da469b6c15bb2839797d8c091a16a40d1904428c19b30469e36eab4725ab"
-    val closeConnectionReadURL1 = Crypto.decryptAES(closeConnectionReadURL1enc)
-    stubFor(get(urlEqualTo(closeConnectionReadURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
-    println("closeConnectionReadURL1: " + closeConnectionReadURL1)
+    val invalidReadURL1enc = "18e59cb4c2283077b719589a76e313da4123df647b691eaf6adf7b594744a6da728607837640973000ae7cc4f5c2ae9808a986936db65a777e8be67e5db7fc899fddfe68755da272a5310c0d3e239f2e90394b75e716153ada5d25658b14477f"
+    val invalidReadURL1 = Crypto.decryptAES(invalidReadURL1enc)
+    stubFor(get(urlMatching(invalidReadURL1)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
+    println("invalidReadURL1: " + invalidReadURL1)
   }
 
   override def afterAll(cm: ConfigMap) {

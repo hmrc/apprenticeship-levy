@@ -140,8 +140,54 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
         }
 
         describe ("with invalid paramters") {
-          it (s"should return 404") {
-            pending
+          it (s"DES HTTP 400") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/400/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.BadRequestException] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 400
+            }
+          }
+
+          it (s"DES HTTP 401") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/401/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 401
+            }
+          }
+
+          it (s"DES HTTP 403") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/403/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 403
+            }
+          }
+
+          it (s"DES HTTP 404") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/404/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 404
           }
         }
 
@@ -156,6 +202,58 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
 
               // check
               contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"should throw TimeoutException? when timed out") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/timeout/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"should throw IOException? when empty response") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/empty/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[java.io.IOException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"DES HTTP 500") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/500/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 500
+            }
+          }
+
+          it (s"DES HTTP 503") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/503/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 503
             }
           }
         }
