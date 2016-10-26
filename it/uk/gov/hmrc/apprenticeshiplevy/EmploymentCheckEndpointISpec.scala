@@ -130,7 +130,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
         describe ("when backend systems failing") {
           it (s"should throw IOException? when connection closed") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/malformed/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/malformed/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
             intercept[java.io.IOException] {
               // test
@@ -138,6 +138,58 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
               // check
               contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"and response is empty it should throw IOException?") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/empty/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[java.io.IOException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"should throw TimeoutException? when timed out") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/timeout/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"DES HTTP 500") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/500/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 500
+            }
+          }
+
+          it (s"DES HTTP 503") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/503/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 503
             }
           }
         }

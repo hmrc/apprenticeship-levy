@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/empref/malformed/employee/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30"
+        "url": "/epaye/malformed/designatory-details"
     },
     "response": {
         "fault": "MALFORMED_RESPONSE_CHUNK"
