@@ -24,6 +24,8 @@ trait IntegrationTestConfig {
   def localMicroserviceUrl = s"http://$host:$port"
   def microserviceUrl = sys.props.getOrElse("MICROSERVICE_URL", s"http://localhost:$port")
   def additionalConfiguration: Map[String, Any] = Map(
+        "ws.timeout.request" -> "500",
+        "ws.timeout.connection" -> "500",
         "http.port" -> port,
         "logger.root" -> "OFF",
         "logger.play" -> "OFF",

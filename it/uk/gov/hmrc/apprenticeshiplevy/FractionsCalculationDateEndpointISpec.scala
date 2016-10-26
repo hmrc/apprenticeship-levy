@@ -57,6 +57,74 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
+
+          it (s"should throw TimeoutException? when timed out") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(200).withFixedDelay(1000*60)))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
+
+          it (s"should throw IOException? when empty response") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[java.io.IOException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
+
+          it (s"DES HTTP 500") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(500)))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 500
+            }
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
+
+          it (s"DES HTTP 503") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(503)))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              status(result) shouldBe 503
+            }
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
         }
       }
     }
