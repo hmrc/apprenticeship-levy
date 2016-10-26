@@ -117,7 +117,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             }
           }
 
-          it (s"and response is empty it should ???") {
+          it (s"and response is empty it should throw IOException?") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/empty/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 

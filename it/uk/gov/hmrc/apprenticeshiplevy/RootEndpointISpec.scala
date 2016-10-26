@@ -51,6 +51,22 @@ class RootEndpointISpec extends WiremockFunSpec  {
           }
         }
 
+        describe ("when errors occur") {
+          it (s"HTTP 401") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(401).withStatusMessage("Not authorised.")))
+            val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+        }
+
         describe ("when backend systems failing") {
           it (s"should throw IOException? when connection closed") {
             // set up
@@ -58,6 +74,32 @@ class RootEndpointISpec extends WiremockFunSpec  {
             val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
             intercept[java.io.IOException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+          it (s"HTTP 500") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(500).withStatusMessage("Internal server error")))
+            val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+          it (s"HTTP 503") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(503).withStatusMessage("Backend systems failing")))
+            val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
               // test
               val result = route(request).get
 
