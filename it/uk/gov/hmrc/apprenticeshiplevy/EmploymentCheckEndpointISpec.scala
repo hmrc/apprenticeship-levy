@@ -125,6 +125,45 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
             // check
             httpStatus shouldBe 400
           }
+
+          it (s"should throw IOException? when DES returns 400") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/404/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.BadRequestException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"should throw IOException? when DES returns 401") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/401/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"should throw IOException? when DES returns 403") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/403/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
         }
 
         describe ("when backend systems failing") {
