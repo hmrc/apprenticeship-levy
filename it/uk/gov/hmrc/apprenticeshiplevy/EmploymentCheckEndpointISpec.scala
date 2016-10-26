@@ -53,8 +53,8 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
                 val request = FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
                 // test
-                val documentationResult = route(request).get
-                val httpStatus = status(documentationResult)
+                val result = route(request).get
+                val httpStatus = status(result)
 
                 // check
                 if (context == "") {

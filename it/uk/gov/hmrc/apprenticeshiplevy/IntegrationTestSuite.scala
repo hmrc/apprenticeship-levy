@@ -27,10 +27,25 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
   override def beforeAll(cm: ConfigMap) {
     WiremockService.start()
     PlayService.start()
-    stubFor(get(urlEqualTo(Crypto.decryptAES("18e59cb4c2283077b719589a76e313da4529f6f4eff927757ffa01b6cc2ecebe21ae0a18adf30d74f635e5da559884be4d93722bd0f360140cc49f10863cd97e"))).withId(auuid1).atPriority(1).willReturn(aResponse().withStatus(200)))
-    stubFor(get(urlEqualTo(Crypto.decryptAES("18e59cb4c2283077b719589a76e313da48d1e556726608f18b181c7e5b83d1367ba0a55480e83d5cd092418a35eda73973e52c35a74ab03bdc4b4178f375c203"))).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
-    stubFor(get(urlEqualTo( Crypto.decryptAES("18e59cb4c2283077b719589a76e313da0879a0d4698db5456ec21a25ee047cd4c566006afbebd1a8f5ced40b47865577") )).withId(auuid3).atPriority(2).willReturn(aResponse().withStatus(401)))
-    stubFor(get(urlEqualTo( Crypto.decryptAES("18e59cb4c2283077b719589a76e313da0a2b7fa681e8f70f76a0e1418104c792e625da469b6c15bb2839797d8c091a16a40d1904428c19b30469e36eab4725ab") )).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
+    val validReadURL1enc = "18e59cb4c2283077b719589a76e313da4529f6f4eff927757ffa01b6cc2ecebe21ae0a18adf30d74f635e5da559884be4d93722bd0f360140cc49f10863cd97e"
+    val validReadURL1 = Crypto.decryptAES(validReadURL1enc)
+    stubFor(get(urlEqualTo(validReadURL1)).withId(auuid1).atPriority(1).willReturn(aResponse().withStatus(200)))
+    println("validReadURL1: " + validReadURL1)
+
+    val validReadURL2enc = "18e59cb4c2283077b719589a76e313da48d1e556726608f18b181c7e5b83d1367ba0a55480e83d5cd092418a35eda73973e52c35a74ab03bdc4b4178f375c203"
+    val validReadURL2 = Crypto.decryptAES(validReadURL2enc)
+    stubFor(get(urlEqualTo(validReadURL2)).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
+    println("validReadURL2: " + validReadURL2)
+
+    val invalidReadURL1enc = "18e59cb4c2283077b719589a76e313da0879a0d4698db5456ec21a25ee047cd4c566006afbebd1a8f5ced40b47865577"
+    val invalidReadURL1 = Crypto.decryptAES(invalidReadURL1enc)
+    stubFor(get(urlEqualTo(invalidReadURL1)).withId(auuid3).atPriority(1).willReturn(aResponse().withStatus(404)))
+    println("invalidReadURL1: " + invalidReadURL1)
+
+    val closeConnectionReadURL1enc = "18e59cb4c2283077b719589a76e313da0a2b7fa681e8f70f76a0e1418104c792e625da469b6c15bb2839797d8c091a16a40d1904428c19b30469e36eab4725ab"
+    val closeConnectionReadURL1 = Crypto.decryptAES(closeConnectionReadURL1enc)
+    stubFor(get(urlEqualTo(closeConnectionReadURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
+    println("closeConnectionReadURL1: " + closeConnectionReadURL1)
   }
 
   override def afterAll(cm: ConfigMap) {

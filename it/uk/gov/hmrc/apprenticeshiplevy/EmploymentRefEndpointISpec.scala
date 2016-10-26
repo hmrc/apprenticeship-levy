@@ -45,7 +45,6 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
 
         describe ("with invalid paramters") {
           it (s"should return 404") {
-            pending
           }
         }
 

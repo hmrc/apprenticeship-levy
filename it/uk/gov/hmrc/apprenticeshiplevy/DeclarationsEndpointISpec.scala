@@ -139,7 +139,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
               val result = route(request).get
 
               // check
-              status(result) shouldBe 404
+              status(result) shouldBe 500
             }
           }
           it (s"DES HTTP 503") {
@@ -151,7 +151,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
               val result = route(request).get
 
               // check
-              status(result) shouldBe 404
+              status(result) shouldBe 503
             }
           }
         }
