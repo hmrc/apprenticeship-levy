@@ -51,7 +51,18 @@ class DefinitionEndpointISpec extends WiremockFunSpec  {
         }
 
         it (s"return definition with whitelisted applications") {
-          pending
+          // set up
+          val request = FakeRequest(GET, "/api/definition")
+
+          // test
+          val result = route(request).get
+
+          // check
+          contentType(result) shouldBe Some("application/json")
+          val json = contentAsJson(result)
+          val version1 = (json \ "api" \ "versions")(0)
+          (version1 \ "access" \ "type").as[String] shouldBe "PRIVATE"
+          (version1 \ "access" \ "whitelistedApplicationIds")(0).as[String] shouldBe "myappid"
         }
       }
     }
