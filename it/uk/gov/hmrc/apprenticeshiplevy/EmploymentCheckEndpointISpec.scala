@@ -46,7 +46,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
             // set up
             WiremockService.notifier.testInformer = NullInformer.info
-            val emprefs = for { empref <- Gen.numStr } yield empref
+            val emprefs = for { empref <- genEmpref } yield empref
 
             forAll(emprefs) { (empref: String) =>
               whenever (!empref.isEmpty) {
