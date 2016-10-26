@@ -67,6 +67,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
               contentType(result) shouldBe Some("application/json")
             }
           }
+
           it (s"DES HTTP 401") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/401/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
@@ -79,6 +80,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
               contentType(result) shouldBe Some("application/json")
             }
           }
+
           it (s"DES HTTP 403") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/403/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
@@ -91,6 +93,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
               contentType(result) shouldBe Some("application/json")
             }
           }
+
           it (s"DES HTTP 404") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/404/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
@@ -130,6 +133,19 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             }
           }
 
+          it (s"should throw TimeoutException? when timed out") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/timeout/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
           it (s"DES HTTP 500") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/500/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
@@ -142,6 +158,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
               status(result) shouldBe 500
             }
           }
+
           it (s"DES HTTP 503") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/503/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
