@@ -45,6 +45,14 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
 
         describe ("with invalid paramters") {
           it (s"should return 404") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/404").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 404
           }
         }
 

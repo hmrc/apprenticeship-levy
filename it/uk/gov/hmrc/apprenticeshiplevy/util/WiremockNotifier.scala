@@ -35,7 +35,10 @@ trait WiremockNotifier extends Notifier {
 }
 
 class WiremockTestInformerNotifier(var testInformer: Informer, var verboseWiremockOutput: Boolean = true) extends WiremockNotifier {
-  protected def handleMessage(msg: String): Unit = testInformer(msg)
+  protected def handleMessage(msg: String): Unit = {
+    testInformer(msg)
+    throw new org.scalatest.exceptions.TestFailedException("Wiremock error", 3)
+  }
 }
 
 trait StandardOutInformer {

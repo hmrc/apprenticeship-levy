@@ -2,7 +2,7 @@
     "priority": 3,
     "request": {
         "method": "GET",
-        "url": "/empref/AB12345/employee/(.*)?fromDate=2015-03-03&toDate=2015-06-30"
+        "urlPattern": "/empref/AB12345/employee/(.*)?fromDate=2015-03-03&toDate=2015-06-30"
     },
     "response": {
         "status": 404

@@ -1,8 +1,8 @@
 {
-    "priority": 99,
+    "priority": 1,
     "request": {
         "method": "GET",
-        "urlPattern": "/empref/([a-zA-Z0-9%]+)/employee/([a-zA-Z0-9]+)"
+        "url": "/epaye/404/designatory-details"
     },
     "response": {
         "status": 404

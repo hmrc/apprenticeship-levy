@@ -55,6 +55,10 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
         }
 
         describe ("with invalid paramters") {
+          it (s"404 for various emprefs") {
+            pending
+          }
+
           it (s"DES HTTP 400") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/400/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
