@@ -29,7 +29,7 @@ class DocumentationControllerSpec extends UnitSpec with Inside {
 
   "DocumentationController" should {
     "add whitelist information correctly" in new TestDocumentationController {
-      val enrichedDefinition = enrichDefinition(validDefinition)
+      val enrichedDefinition = enrichDefinition(new java.io.FileInputStream(validDefinition))
 
       inside(enrichedDefinition) { case Success(json) =>
         val firstVersion = (json \ "api" \ "versions")(0)
@@ -40,7 +40,7 @@ class DocumentationControllerSpec extends UnitSpec with Inside {
     }
 
     "return a Failure if unable to transform definition.json" in new TestDocumentationController {
-      enrichDefinition(invalidDefinition) should matchPattern { case Failure(_) => }
+      enrichDefinition(new java.io.FileInputStream(invalidDefinition)) should matchPattern { case Failure(_) => }
     }
   }
 }
