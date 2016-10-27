@@ -100,6 +100,10 @@ trait DocumentationController extends AssetsController {
       case JsError(_) => Failure(new RuntimeException("Unable to transform definition.json"))
     }
   }
+
+  def conf(version: String, file: String) = {
+    super.at(s"public/api/conf/${version}", file)
+  }
 }
 
 object DocumentationController extends DocumentationController {

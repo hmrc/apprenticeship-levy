@@ -4,7 +4,6 @@ import org.scalatest.DoNotDiscover
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-
 import play.api.libs.json.Json
 
 import uk.gov.hmrc.apprenticeshiplevy.util.{IntegrationTestConfig, WiremockService}

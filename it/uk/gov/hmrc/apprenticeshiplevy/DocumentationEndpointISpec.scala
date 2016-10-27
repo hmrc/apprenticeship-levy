@@ -31,6 +31,39 @@ class DocumentationEndpointISpec extends WiremockFunSpec  {
   }
 
   describe (s"API Documentation Endpoint") {
+    describe (s"should provide RAML documentation") {
+      val versions = Seq("1.0")
+      versions.foreach { case (version) =>
+        it (s"${localMicroserviceUrl}/api/conf/$version/application.raml is defined") {
+          // set up
+          val request = FakeRequest(GET, s"/api/conf/$version/application.raml")
+
+          // test
+          val result = route(request).get
+
+          // check
+          status(result) shouldBe 200
+          contentAsString(result).startsWith("#%RAML 1.0") shouldBe true
+        }
+
+        val definitionFile = new File(s"./public/api/conf/$version/application.raml")
+        val includes = Source.fromFile(definitionFile).getLines.filter(_.contains("!include")).map((line)=>line.substring(line.indexOf("!include "))).toList
+        includes.foreach { case (include) =>
+          it (s"and serve file for $include") {
+            // set up
+            val file = include.substring(9)
+            val request = FakeRequest(GET, s"/api/conf/$version/$file")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 200
+          }
+        }
+      }
+    }
+
     describe (s"should when calling ${localMicroserviceUrl}/api/documentation/<version>/<endpoint>") {
       describe (s"with valid parameters") {
         val definitionFile = new File("./public/api/definition.json")
