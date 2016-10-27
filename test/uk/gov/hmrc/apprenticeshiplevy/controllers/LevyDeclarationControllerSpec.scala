@@ -34,11 +34,6 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
       val response = LiveLevyDeclarationController.declarations("empref", None, None)(FakeRequest()).futureValue
       response.header.status shouldBe NOT_ACCEPTABLE
     }
-
-    "return an HTTP Not Implemented response" in {
-      val response = LiveLevyDeclarationController.declarations("empref", None, None)(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
-      response.header.status shouldBe NOT_IMPLEMENTED
-    }
   }
 
   "convertToDeclaration" should {
