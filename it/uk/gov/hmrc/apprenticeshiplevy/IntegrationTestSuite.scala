@@ -27,39 +27,27 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
 
   override def beforeAll(cm: ConfigMap) {
     sys.props.get("play.crypto.secret") match {
-      case Some(secret) => {
-        val key = secret.substring(0, 16)
-        WiremockService.start()
-        PlayService.start()
-        val validReadURL1enc = "48297d60b292476c11c8ebd8269165f2380be895579b329a75517e385272517ae54e2439cb6d1e64445c6da0248684f1c7933b0e6991164c4547ac3032737be4"
-        val validReadURL1 = Crypto.decryptAES(validReadURL1enc, key)
-        stubFor(get(urlEqualTo(validReadURL1)).withId(auuid1).atPriority(1).willReturn(aResponse().withStatus(200)))
-        println("validReadURL1: " + validReadURL1)
-        //println(s"'${Crypto.encryptAES(validReadURL1, key)}'")
-
-        val validReadURL2enc = "48297d60b292476c11c8ebd8269165f25b7821c8dcc9fca9546ba679df6106c7892f6fa3f35038ed2fc3778ee60d7186f3b1304045378ca2d09145631f202d5c"
-        val validReadURL2 = Crypto.decryptAES(validReadURL2enc, key)
-        stubFor(get(urlEqualTo(validReadURL2)).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
-        println("validReadURL2: " + validReadURL2)
-        //println(s"'${Crypto.encryptAES(validReadURL2, key)}'")
-
-        val faultURL1enc = "48297d60b292476c11c8ebd8269165f242811bb4a3c861d8e01f8a30bb11621d986007148914440551fbb445ce5eebbe904bac64cfbf220d82cefa2cbc71508e"
-        val faultURL1 = Crypto.decryptAES(faultURL1enc, key)
-        stubFor(get(urlEqualTo(faultURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
-        println("faultURL1: " + faultURL1)
-        //println(s"'${Crypto.encryptAES(faultURL1, key)}'")
-
-        val invalidReadURL1enc = "48297d60b292476c11c8ebd8269165f2c00763f212a09bd5407513e830140d6f40a87f692300fbe2bea033e05bf266b18d38c0ce8c7d84354511073858c8a52b47c57717a271fd5a6ba8c2d3e6f0c53959b7ffe0a2b63fcd8a7360558a7eae09"
-        val invalidReadURL1 = Crypto.decryptAES(invalidReadURL1enc, key)
-        stubFor(get(urlMatching(invalidReadURL1)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
-        println("invalidReadURL1: " + invalidReadURL1)
-        //println(s"'${Crypto.encryptAES(invalidReadURL1, key)}'")
-      }
-      case _ => {
-        Console.err.println(s"${Console.RED} >>>>> play.crypto.secret system property not set ${Console.RESET}")
-        fail("play.crypto.secret system property not set")
-      }
+      case Some(_) => Console.println(s"[info] play.crypto.secret system property set.")
+      case _ => Console.err.println(s"[${Console.YELLOW}warn${Console.RESET}] play.crypto.secret system property not set. ${Console.RED}Tests will fail.${Console.RESET}")
     }
+
+    WiremockService.start()
+    PlayService.start()
+    val validReadURL1 = dFileToStr("./it/resources/data/input/mapping_url_1")
+    stubFor(get(urlEqualTo(validReadURL1)).withId(auuid1).atPriority(1).willReturn(aResponse().withStatus(200)))
+    println("validReadURL1: " + validReadURL1)
+
+    val validReadURL2 = dFileToStr("./it/resources/data/input/mapping_url_2")
+    stubFor(get(urlEqualTo(validReadURL2)).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
+    println("validReadURL2: " + validReadURL2)
+
+    val faultURL1 = dFileToStr("./it/resources/data/input/mapping_url_3")
+    stubFor(get(urlEqualTo(faultURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
+    println("faultURL1: " + faultURL1)
+
+    val invalidReadURL1 = dFileToStr("./it/resources/data/input/mapping_url_4")
+    stubFor(get(urlMatching(invalidReadURL1)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
+    println("invalidReadURL1: " + invalidReadURL1)
   }
 
   override def afterAll(cm: ConfigMap) {
