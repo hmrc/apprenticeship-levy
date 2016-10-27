@@ -32,8 +32,10 @@ class RootEndpointISpec extends WiremockFunSpec  {
               case Some(_) => {
                 // set up
                 val responseBodyEnc = "03295379a9f614aa18fac872051d73cae3fdde4881518514800abbec6be43abe764292898a91e901945ec4f136d3cbf140edba699eec1dc38a53662fa3ee58545e1ffbffc8c86c6acd258bb2586a1af295cdfb37eeede2444ebe585749a83d9a9dfe9aa4155b8cc7f79a366a68024f583e470d99132c9764cba0e7678768f3b627afbd957b6e7097dc01b5c0bd87eeef3fc08afc0528d876537f46af5bfdd0577889a2f0205e26316a8e1debabf9606e0c56f9f6e7b0afcce5f072c4aea0dcae5c5ea15b7c33b532a002b2c8b1c82b050f6c73e0df4effcb200fe6bc1693144a7d88d1e1d258d033be183a916e3dbc7d1c69c860c05859f1591e009b557790e6a208817916078f1758c5f477c1868eb0"
-
-                stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withBody(Crypto.decryptAES(responseBodyEnc))))
+                val response = Crypto.decryptAES(responseBodyEnc)
+                //println(s"'${Crypto.encryptAES(response)}'")
+                println(response)
+                stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withBody(response)))
                 val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
                 // test

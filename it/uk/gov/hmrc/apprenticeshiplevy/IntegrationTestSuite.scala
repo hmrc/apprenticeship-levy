@@ -32,21 +32,25 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
     val validReadURL1 = Crypto.decryptAES(validReadURL1enc)
     stubFor(get(urlEqualTo(validReadURL1)).withId(auuid1).atPriority(1).willReturn(aResponse().withStatus(200)))
     println("validReadURL1: " + validReadURL1)
+    //println(s"'${Crypto.encryptAES(validReadURL1)}'")
 
     val validReadURL2enc = "18e59cb4c2283077b719589a76e313da48d1e556726608f18b181c7e5b83d1367ba0a55480e83d5cd092418a35eda73973e52c35a74ab03bdc4b4178f375c203"
     val validReadURL2 = Crypto.decryptAES(validReadURL2enc)
     stubFor(get(urlEqualTo(validReadURL2)).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
     println("validReadURL2: " + validReadURL2)
+    //println(s"'${Crypto.encryptAES(validReadURL2)}'")
 
     val faultURL1enc = "18e59cb4c2283077b719589a76e313da0a2b7fa681e8f70f76a0e1418104c792e625da469b6c15bb2839797d8c091a16a40d1904428c19b30469e36eab4725ab"
     val faultURL1 = Crypto.decryptAES(faultURL1enc)
     stubFor(get(urlEqualTo(faultURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
     println("faultURL1: " + faultURL1)
+    //println(s"'${Crypto.encryptAES(faultURL1)}'")
 
     val invalidReadURL1enc = "18e59cb4c2283077b719589a76e313da4123df647b691eaf6adf7b594744a6da728607837640973000ae7cc4f5c2ae9808a986936db65a777e8be67e5db7fc899fddfe68755da272a5310c0d3e239f2e90394b75e716153ada5d25658b14477f"
     val invalidReadURL1 = Crypto.decryptAES(invalidReadURL1enc)
     stubFor(get(urlMatching(invalidReadURL1)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
     println("invalidReadURL1: " + invalidReadURL1)
+    //println(s"'${Crypto.encryptAES(invalidReadURL1)}'")
   }
 
   override def afterAll(cm: ConfigMap) {
