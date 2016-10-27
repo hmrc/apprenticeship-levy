@@ -26,31 +26,40 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
   lazy val auuid5 = randomUUID()
 
   override def beforeAll(cm: ConfigMap) {
-    WiremockService.start()
-    PlayService.start()
-    val validReadURL1enc = "18e59cb4c2283077b719589a76e313da4529f6f4eff927757ffa01b6cc2ecebe21ae0a18adf30d74f635e5da559884be4d93722bd0f360140cc49f10863cd97e"
-    val validReadURL1 = Crypto.decryptAES(validReadURL1enc)
-    stubFor(get(urlEqualTo(validReadURL1)).withId(auuid1).atPriority(1).willReturn(aResponse().withStatus(200)))
-    println("validReadURL1: " + validReadURL1)
-    //println(s"'${Crypto.encryptAES(validReadURL1)}'")
+    sys.props.get("play.crypto.secret") match {
+      case Some(secret) => {
+        val key = secret.substring(0, 16)
+        WiremockService.start()
+        PlayService.start()
+        val validReadURL1enc = "48297d60b292476c11c8ebd8269165f2380be895579b329a75517e385272517ae54e2439cb6d1e64445c6da0248684f1c7933b0e6991164c4547ac3032737be4"
+        val validReadURL1 = Crypto.decryptAES(validReadURL1enc, key)
+        stubFor(get(urlEqualTo(validReadURL1)).withId(auuid1).atPriority(1).willReturn(aResponse().withStatus(200)))
+        println("validReadURL1: " + validReadURL1)
+        //println(s"'${Crypto.encryptAES(validReadURL1, key)}'")
 
-    val validReadURL2enc = "18e59cb4c2283077b719589a76e313da48d1e556726608f18b181c7e5b83d1367ba0a55480e83d5cd092418a35eda73973e52c35a74ab03bdc4b4178f375c203"
-    val validReadURL2 = Crypto.decryptAES(validReadURL2enc)
-    stubFor(get(urlEqualTo(validReadURL2)).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
-    println("validReadURL2: " + validReadURL2)
-    //println(s"'${Crypto.encryptAES(validReadURL2)}'")
+        val validReadURL2enc = "48297d60b292476c11c8ebd8269165f25b7821c8dcc9fca9546ba679df6106c7892f6fa3f35038ed2fc3778ee60d7186f3b1304045378ca2d09145631f202d5c"
+        val validReadURL2 = Crypto.decryptAES(validReadURL2enc, key)
+        stubFor(get(urlEqualTo(validReadURL2)).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
+        println("validReadURL2: " + validReadURL2)
+        //println(s"'${Crypto.encryptAES(validReadURL2, key)}'")
 
-    val faultURL1enc = "18e59cb4c2283077b719589a76e313da0a2b7fa681e8f70f76a0e1418104c792e625da469b6c15bb2839797d8c091a16a40d1904428c19b30469e36eab4725ab"
-    val faultURL1 = Crypto.decryptAES(faultURL1enc)
-    stubFor(get(urlEqualTo(faultURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
-    println("faultURL1: " + faultURL1)
-    //println(s"'${Crypto.encryptAES(faultURL1)}'")
+        val faultURL1enc = "48297d60b292476c11c8ebd8269165f242811bb4a3c861d8e01f8a30bb11621d986007148914440551fbb445ce5eebbe904bac64cfbf220d82cefa2cbc71508e"
+        val faultURL1 = Crypto.decryptAES(faultURL1enc, key)
+        stubFor(get(urlEqualTo(faultURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
+        println("faultURL1: " + faultURL1)
+        //println(s"'${Crypto.encryptAES(faultURL1, key)}'")
 
-    val invalidReadURL1enc = "18e59cb4c2283077b719589a76e313da4123df647b691eaf6adf7b594744a6da728607837640973000ae7cc4f5c2ae9808a986936db65a777e8be67e5db7fc899fddfe68755da272a5310c0d3e239f2e90394b75e716153ada5d25658b14477f"
-    val invalidReadURL1 = Crypto.decryptAES(invalidReadURL1enc)
-    stubFor(get(urlMatching(invalidReadURL1)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
-    println("invalidReadURL1: " + invalidReadURL1)
-    //println(s"'${Crypto.encryptAES(invalidReadURL1)}'")
+        val invalidReadURL1enc = "48297d60b292476c11c8ebd8269165f2c00763f212a09bd5407513e830140d6f40a87f692300fbe2bea033e05bf266b18d38c0ce8c7d84354511073858c8a52b47c57717a271fd5a6ba8c2d3e6f0c53959b7ffe0a2b63fcd8a7360558a7eae09"
+        val invalidReadURL1 = Crypto.decryptAES(invalidReadURL1enc, key)
+        stubFor(get(urlMatching(invalidReadURL1)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
+        println("invalidReadURL1: " + invalidReadURL1)
+        //println(s"'${Crypto.encryptAES(invalidReadURL1, key)}'")
+      }
+      case _ => {
+        Console.err.println(s"${Console.RED} >>>>> play.crypto.secret system property not set ${Console.RESET}")
+        fail("play.crypto.secret system property not set")
+      }
+    }
   }
 
   override def afterAll(cm: ConfigMap) {

@@ -29,11 +29,12 @@ class RootEndpointISpec extends WiremockFunSpec  {
         describe (s"and backend systems not failing") {
           it (s"should return links for each empref") {
             sys.props.get("play.crypto.secret") match {
-              case Some(_) => {
+              case Some(secret) => {
                 // set up
-                val responseBodyEnc = "03295379a9f614aa18fac872051d73cae3fdde4881518514800abbec6be43abe764292898a91e901945ec4f136d3cbf140edba699eec1dc38a53662fa3ee58545e1ffbffc8c86c6acd258bb2586a1af295cdfb37eeede2444ebe585749a83d9a9dfe9aa4155b8cc7f79a366a68024f583e470d99132c9764cba0e7678768f3b627afbd957b6e7097dc01b5c0bd87eeef3fc08afc0528d876537f46af5bfdd0577889a2f0205e26316a8e1debabf9606e0c56f9f6e7b0afcce5f072c4aea0dcae5c5ea15b7c33b532a002b2c8b1c82b050f6c73e0df4effcb200fe6bc1693144a7d88d1e1d258d033be183a916e3dbc7d1c69c860c05859f1591e009b557790e6a208817916078f1758c5f477c1868eb0"
-                val response = Crypto.decryptAES(responseBodyEnc)
-                //println(s"'${Crypto.encryptAES(response)}'")
+                val key = secret.substring(0, 16)
+                val responseBodyEnc = "1610320a0447208bb56cb5a4f4133eca30573a9d8c67302e96a52dcb08e75402b92289dee806cb86704c1c3d7af9e18ed2b6818a9dc83519f192c9a0da5d9966653a136035525708645d74fe5d4aec48a330e2a7de150823508983073f525ab07a0b694c63b4aa2a34764dd591ba722f585a237141faaab6c23029823b06b6dd4f4590e9f36e2ae21b49cac109de908e08dbfaa2d6c9afab9c117d636c004d582d35c61004fbb63fe2f7a7e2dfe1d6c61cd9b298afa7b6865459e4cddf73faff511b6260b6741ac542b15c0172629c86fc1f66359513068fb0b40e5aceef36164639bd3de25ab6aa9151b0d357d85f356ae18b5098dc79eb0284197763c5ae3deafcd52b81fa8336137580eceb085a9e"
+                val response = Crypto.decryptAES(responseBodyEnc,key)
+                //println(s"'${Crypto.encryptAES(response, key)}'")
                 println(response)
                 stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withBody(response)))
                 val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
