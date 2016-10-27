@@ -1,0 +1,10 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/empref/500/fractions"
+    },
+    "response": {
+        "status": 500
+    }
+}

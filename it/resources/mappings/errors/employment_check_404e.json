@@ -1,0 +1,10 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/empref/123%2FAB12345/employee/QQ123456X"
+    },
+    "response": {
+        "status": 404
+    }
+}

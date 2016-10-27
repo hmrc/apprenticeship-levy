@@ -22,11 +22,9 @@ import play.api.mvc.Results._
 import uk.gov.hmrc.api.controllers.ErrorResponse
 
 package object sandbox {
-
   case object ErrorNinoNotVisible extends ErrorResponse(404, "EPAYE_NINO_UNKNOWN", "The provided NINO was not recognised")
 
   implicit class ErrorResponseSyntax(er: ErrorResponse) {
     def toResult: Result = Status(er.httpStatusCode)(Json.toJson(er))
   }
-
 }

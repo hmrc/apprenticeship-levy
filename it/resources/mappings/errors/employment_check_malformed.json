@@ -1,0 +1,9 @@
+{
+    "request": {
+        "method": "GET",
+        "url": "/empref/malformed/employee/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30"
+    },
+    "response": {
+      "fault": "MALFORMED_RESPONSE_CHUNK"
+    }
+}

@@ -38,7 +38,9 @@ trait RTIConnector {
       case (u, Some(ps)) => s"$u?$ps"
     }
 
+    // $COVERAGE-OFF$
     Logger.debug(s"Calling RTI at $url")
+    // $COVERAGE-ON$
 
     httpGet.GET[Seq[EmployerPaymentSummary]](url)
   }
@@ -46,7 +48,9 @@ trait RTIConnector {
   def check(empref: String, nino: String, dateRange: ClosedDateRange)(implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
     val url = s"$rtiBaseUrl/empref/${helper.urlEncode(empref)}/employee/${helper.urlEncode(nino)}?${dateRange.paramString}"
 
+    // $COVERAGE-OFF$
     Logger.debug(s"Calling RTI at $url")
+    // $COVERAGE-ON$
 
     httpGet.GET[EmploymentCheckStatus](url)
   }

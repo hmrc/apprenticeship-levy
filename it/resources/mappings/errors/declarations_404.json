@@ -1,0 +1,10 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/epaye/404/eps"
+    },
+    "response": {
+        "status": 404
+    }
+}

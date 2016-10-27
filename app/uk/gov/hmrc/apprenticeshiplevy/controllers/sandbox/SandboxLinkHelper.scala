@@ -25,5 +25,7 @@ trait SandboxLinkHelper {
 
   def stripSandboxForNonDev(halLink: HalLink): HalLink = halLink.copy(href = stripSandboxForNonDev(halLink.href))
 
+  // $COVERAGE-OFF$
   def stripSandboxForNonDev(s: String): String = if (env != "Dev") SandboxRegex.replaceFirstIn(s, "/") else s
+  // $COVERAGE-ON$
 }

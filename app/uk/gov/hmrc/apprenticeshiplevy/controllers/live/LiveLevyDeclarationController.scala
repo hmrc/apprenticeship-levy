@@ -17,17 +17,11 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import org.joda.time.LocalDate
-import uk.gov.hmrc.apprenticeshiplevy.connectors.RTIConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{RTIConnector, LiveRTIConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotImplemented
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, LevyDeclarationController}
 
 object LiveLevyDeclarationController extends ApiController with LevyDeclarationController {
-  override def rtiConnector: RTIConnector = ???
+  override def rtiConnector: RTIConnector = LiveRTIConnector
 
-  /**
-    * TODO: Remove this overridden method to enable the main implementation from the trait
-    */
-  override def declarations(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader {
-    ErrorNotImplemented.result
-  }
 }

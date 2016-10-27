@@ -1,0 +1,10 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/epaye/malformed/eps"
+    },
+     "response": {
+        "fault": "MALFORMED_RESPONSE_CHUNK"
+    }
+}

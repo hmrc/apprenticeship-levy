@@ -1,0 +1,158 @@
+<endpoint>
+    <name>Fraction Calculations</name>
+    <description>Returns a list of fraction calculations for a given employer reference.</description>
+    <section id="resource">
+        <title>Resource</title>
+        <resource>GET /apprenticeship-levy/epaye/{empref}/fractions?fromDate={from}&amp;toDate={to}</resource>
+    </section>
+    <section id="path-parameters">
+        <title>Path Parameters</title>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>empref</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>123/AB12345</code></cell>
+                    <cell>A valid (URL encoded) employer reference for the PAYE scheme.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="query-parameters">
+        <title>Query Parameters</title>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Default</cell>
+                <cell>Example</cell>
+                <cell>Optional</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>fromDate</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code><nowrap>2015-08-09</nowrap></code></cell>
+                    <cell>72 months prior to current date</cell>
+                    <cell>Yes</cell>
+                    <cell>The date of the earliest calculation to return.</cell>
+                </row>
+                <row>
+                    <cell><code>toDate</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code><nowrap>2015-08-09</nowrap></code></cell>
+                    <cell>Current date</cell>
+                    <cell>Yes</cell>
+                    <cell>The date of the latest calculation to return.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="authorisation">
+        <title>Authorisation</title>
+        <authorisation>
+            <type>USER</type>
+            <scope>read:apprenticeship-levy</scope>
+        </authorisation>
+    </section>
+    <section id="content-types">
+        <title>Accepted Media Types</title>
+        <list>
+            <item>
+                <code>application/vnd.hmrc.1.0+json</code>
+            </item>
+        </list>
+    </section>
+    <section id="response">
+        <title>Response</title>
+        <httpStatus>200 (OK)</httpStatus>
+        <json><![CDATA[
+    {
+        “empref”: “123/AB12345”,
+        “fractionCalculations”: [
+            {
+                “calculatedAt”: “2016-03-15”,
+                “fractions”: [
+                    {
+                        “region”: “England”,
+                        “value”: “0.83”
+                    }
+                ]
+            },
+            {
+                “calculatedAt”: “2015-11-18”,
+                “fractions”: [
+                    {
+                        “region”: “England”,
+                        “value”: “0.78”
+                    }
+                ]
+            }
+        ]
+    }
+]]></json>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell><code>empref</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>123/AB12345</code></cell>
+                    <cell>The PAYE Reference for the employer. This will be the same as provided in the URL</cell>
+                </row>
+                <row>
+                    <cell><code>fractionCalculations[].calculatedAt</code></cell>
+                    <cell><code>Date</code></cell>
+                    <cell><code>2015–11–18</code></cell>
+                    <cell>The date that the fractions were calculated</cell>
+                </row>
+                <row>
+                    <cell><code>fractionCalculations[].fractions[].region</code></cell>
+                    <cell><code>String</code></cell>
+                    <cell><code>England</code></cell>
+                    <cell>The region the specific fraction applies to. Will always be England for the forseeable future.</cell>
+                </row>
+                <row>
+                    <cell><code>fractionCalculations[].fractions[].value</code></cell>
+                    <cell><code>Number</code></cell>
+                    <cell><code>0.83</code></cell>
+                    <cell>The fraction calculated for the region. Will be a decimal in the range 0 to 1.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="error-scenarios">
+        <title>Error Scenarios</title>
+        <table>
+            <headings>
+                <cell>Error Scenario</cell>
+                <cell>HTTP Status</cell>
+                <cell>Code</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell>Invalid EMPREF</cell>
+                    <cell><code>400 (Bad Request)</code></cell>
+                    <cell><code>EPAYE_EMPREF_INVALID</code></cell>
+                </row>
+                <row>
+                    <cell>Unknown EMPREF</cell>
+                    <cell><code>404 (Not Found)</code></cell>
+                    <cell><code>EPAYE_EMPREF_UNKNOWN</code></cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+</endpoint>

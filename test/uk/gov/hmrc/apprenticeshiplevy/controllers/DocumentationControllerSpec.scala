@@ -19,13 +19,13 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import org.scalatest.Inside
 import play.api.Play
 import uk.gov.hmrc.play.test.UnitSpec
-
+import java.io.File
 import scala.util.{Failure, Success}
 
 class DocumentationControllerSpec extends UnitSpec with Inside {
 
-  val validDefinition = getClass.getResourceAsStream("/validDefinition.json")
-  val invalidDefinition = getClass.getResourceAsStream("/invalidDefinition.json")
+  val validDefinition = new File(getClass.getResource("/validDefinition.json").toURI())
+  val invalidDefinition = new File(getClass.getResource("/invalidDefinition.json").toURI())
 
   "DocumentationController" should {
     "add whitelist information correctly" in new TestDocumentationController {

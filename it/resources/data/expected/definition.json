@@ -1,0 +1,107 @@
+{
+  "scopes": [
+    {
+      "key": "read:apprenticeship-levy",
+      "name": "Access Apprenticeship Levy data associated with your payroll schemes.",
+      "description": "Access apprenticeship levy data"
+    }
+  ],
+  "api": {
+    "name": "Apprenticeship Levy",
+    "description": "Levy declarations for employers",
+    "context": "apprenticeship-levy",
+    "versions": [
+      {
+        "version": "1.0",
+        "status": "PUBLISHED",
+        "endpoints": [
+          {
+            "uriPattern": "/",
+            "endpointName": "root",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": []
+          },
+          {
+            "uriPattern": "/epaye/{empref}",
+            "endpointName": "empref",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": []
+          },
+          {
+            "uriPattern": "/epaye/{empref}/declarations",
+            "endpointName": "levy-declarations",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": [
+              {
+                "name": "fromDate",
+                "required": false
+              },
+              {
+                "name": "toDate",
+                "required": false
+              }
+            ]
+          },
+          {
+            "uriPattern": "/epaye/{empref}/fractions",
+            "endpointName": "fraction-calculations",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": [
+              {
+                "name": "fromDate",
+                "required": false
+              },
+              {
+                "name": "toDate",
+                "required": false
+              }
+            ]
+          },
+          {
+            "uriPattern": "/fraction-calculation-date",
+            "endpointName": "fraction-calculation-date",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": []
+          },
+          {
+            "uriPattern": "/epaye/{empref}/employed/{nino}",
+            "endpointName": "employment-check",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": [
+              {
+                "name": "fromDate",
+                "required": true
+              },
+              {
+                "name": "toDate",
+                "required": true
+              }
+            ]
+          }
+        ],
+        "access" : {
+          "type" : "PRIVATE",
+          "whitelistedApplicationIds" : [ "myappid" ]
+        }
+      }
+    ]
+  }
+}

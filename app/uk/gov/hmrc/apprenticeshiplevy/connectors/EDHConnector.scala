@@ -34,11 +34,12 @@ trait EDHConnector {
 
   def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Fractions] = {
     val url = (s"$edhBaseUrl/empref/${helper.urlEncode(empref)}/fractions", dateRange.toParams) match {
-      case (u, Some(params)) => s"$u?params"
+      case (u, Some(params)) => s"$u?$params"
       case (u, None) => u
     }
-
+    // $COVERAGE-OFF$
     Logger.debug(s"Calling EDH at $url")
+    // $COVERAGE-ON$
     httpGet.GET[Fractions](url)
   }
 

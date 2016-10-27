@@ -1,0 +1,10 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/epaye/^([a-zA-Z0-9]*)/designatory-details"
+    },
+    "response": {
+        "status": 404
+    }
+}

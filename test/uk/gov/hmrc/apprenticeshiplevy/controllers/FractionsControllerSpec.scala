@@ -29,10 +29,5 @@ class FractionsControllerSpec extends UnitSpec with ScalaFutures {
       val response = LiveFractionsController.fractions("empref", None, None)(FakeRequest()).futureValue
       response.header.status shouldBe NOT_ACCEPTABLE
     }
-
-    "return an HTTP Not Implemented response" in {
-      val response = LiveFractionsController.fractions("empref", None, None)(FakeRequest().withHeaders("Accept" -> "application/vnd.hmrc.1.0+json")).futureValue
-      response.header.status shouldBe NOT_IMPLEMENTED
-    }
   }
 }

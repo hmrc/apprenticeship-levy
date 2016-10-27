@@ -3,15 +3,16 @@ package uk.gov.hmrc.apprenticeshiplevy.util
 import play.api.Play
 import play.api.test.FakeApplication
 
-trait MicroserviceLocalRunSupport {
-  val additionalConfiguration: Map[String, Any]
-  val port = sys.env.getOrElse("MICROSERVICE_PORT", "9001").toInt
-  val localMicroserviceUrl = s"http://localhost:$port"
+trait PlayService extends IntegrationTestConfig {
   lazy val fakeApplication = FakeApplication(additionalConfiguration = additionalConfiguration)
 
-  def run(block: () => Unit) = {
+  def start() = {
     Play.start(fakeApplication)
-    block()
+  }
+
+  def stop() = {
     Play.stop()
   }
 }
+
+object PlayService extends PlayService

@@ -27,9 +27,12 @@ private object AppDependencies {
   private val playJsonLoggerVersion = "2.1.1"
   private val playUrlBindersVersion = "1.0.0"
   private val playConfigVersion = "2.0.1"
-  private val playHmrcApiVersion = "0.5.0"
-  private val hmrcTestVersion = "1.6.0"
+  private val playHmrcApiVersion = "0.6.0"
+  private val hmrcTestVersion = "1.8.0"
   private val playHalVersion = "0.3.0"
+  private val scalaXMLVersion = "2.11.0-M4"
+  private val xmlDiffVersion = "2.0.2"
+  private val scalacheckVersion = "1.12.5"
 
   val compile = Seq(
     ws,
@@ -70,7 +73,10 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % "2.2.6" % scope,
         "org.pegdown" % "pegdown" % "1.5.0" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "com.github.tomakehurst" % "wiremock" % "1.57" % scope
+        "com.github.tomakehurst" % "wiremock" % "2.1.12" % scope,
+        "org.scala-lang" % "scala-xml" % scalaXMLVersion % scope,
+        "com.github.andyglow" % "scala-xml-diff_2.11" % xmlDiffVersion % scope,
+        "org.scalacheck" %% "scalacheck" % scalacheckVersion % scope
       )
     }.test
   }
