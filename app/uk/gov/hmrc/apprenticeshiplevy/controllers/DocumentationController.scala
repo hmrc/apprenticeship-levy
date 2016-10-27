@@ -17,13 +17,15 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import scala.io.Source
-import java.io.File
+import java.io.{File,InputStream}
 
-import play.api.{Application, Play, Logger}
+import play.api.{Application, Play, Logger, Mode}
+import play.api.Play.current
+import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
 import play.api.mvc.{Action, AnyContent, Controller}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-
+import play.api.libs.iteratee.Enumerator
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
@@ -36,23 +38,26 @@ trait AssetsController extends BaseController {
 
   private val AbsolutePath = """^(/|[a-zA-Z]:\\).*""".r
 
-  protected def retrieve(rootPath: String, file: String): File = {
-    rootPath match {
-      case AbsolutePath(_) => new File(rootPath, file)
-      case _ => new File(current.getFile(rootPath), file)
+  protected def retrieve(rootPath: String, file: String): Option[InputStream] = {
+    if (current.mode == Mode.Prod) {
+      current.resourceAsStream(s"${rootPath}/${file}")
+    } else {
+      current.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
     }
   }
 
   protected def at(rootPath: String, file: String): Action[AnyContent] = Action { request =>
-    val fileToServe = retrieve(rootPath, file)
-
-    if (!file.isEmpty && fileToServe.exists) {
-      Ok.sendFile(fileToServe, inline = true)
-    } else {
-      // $COVERAGE-OFF$
-      Logger.error("Assets controller failed to serve a file: " + file)
-      // $COVERAGE-ON$
-      NotFound
+    retrieve(rootPath, file) match {
+      case Some(fileToServe) => {
+        val mimeType = if (file.contains("raml")) "application/raml+yaml" else play.api.libs.MimeTypes.forFileName(file).getOrElse("text/plain")
+        Ok(Source.fromInputStream(fileToServe).mkString).withHeaders(HeaderNames.CONTENT_TYPE->mimeType)
+      }
+      case _ => {
+        // $COVERAGE-OFF$
+        Logger.error(s"Assets controller failed to serve a file: ${rootPath}/${file}.")
+        // $COVERAGE-ON$
+        NotFound
+      }
     }
   }
 }
@@ -75,27 +80,29 @@ trait DocumentationController extends AssetsController {
     super.at(s"public/documentation/$version", s"${endpoint.replaceAll(" ", "-")}.xml")
 
   def definition = Action.async {
-    val fileToServe = retrieve("public/api", "definition.json")
-
-    if (fileToServe.exists) {
-      if (AppContext.privateModeEnabled) {
-        enrichDefinition(fileToServe) match {
-          case Success(json) => Future.successful(Ok(json))
-          case Failure(_) => Future.successful(InternalServerError)
+    val filename = "definition.json"
+    retrieve("public/api", filename) match {
+      case Some(fileToServe) => {
+        if (AppContext.privateModeEnabled) {
+          enrichDefinition(fileToServe) match {
+            case Success(json) => Future.successful(Ok(json).withHeaders(HeaderNames.CONTENT_TYPE->MimeTypes.JSON))
+            case Failure(_) => Future.successful(InternalServerError)
+          }
+        } else {
+          Future.successful(Ok(Source.fromInputStream(fileToServe).mkString).withHeaders(HeaderNames.CONTENT_TYPE->MimeTypes.JSON))
         }
-      } else {
-        Future.successful(Ok.sendFile(fileToServe, inline = true))
       }
-    } else {
-      // $COVERAGE-OFF$
-      Logger.error(s"Documentation controller failed to serve a file: $fileToServe")
-      // $COVERAGE-ON$
-      Future.successful(NotFound)
+      case _ => {
+        // $COVERAGE-OFF$
+        Logger.error(s"Documentation controller failed to serve a file: public/api/definition.json as not found")
+        // $COVERAGE-ON$
+        Future.successful(NotFound)
+      }
     }
   }
 
-  def enrichDefinition(file: File): Try[JsValue] = {
-    Json.parse(Source.fromFile(file).getLines.mkString).transform(whitelistJsonTransformer) match {
+  def enrichDefinition(inputStream: InputStream): Try[JsValue] = {
+    Json.parse(Source.fromInputStream(inputStream).mkString).transform(whitelistJsonTransformer) match {
       case JsSuccess(json, _) => Success(json)
       case JsError(_) => Failure(new RuntimeException("Unable to transform definition.json"))
     }
