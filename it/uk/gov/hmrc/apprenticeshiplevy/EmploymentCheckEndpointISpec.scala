@@ -35,8 +35,30 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
             json shouldBe Json.parse("""{"empref":"AB12345","nino":"QQ123456C","fromDate":"2015-03-03","toDate":"2015-06-30","employed":true}""")
           }
 
-          it (s"?fromDate=2015-03-03&toDate=2015-06-30 should return 'not_employed'") {
-            pending
+          it (s"?fromDate=2015-03-03&toDate=2015-06-30 should return 'not recognised'") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/AB12345/employed/QQ123459C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+            val json = contentAsJson(result)
+            json shouldBe Json.parse("""{"code":"EPAYE_NINO_UNKNOWN","message":"The provided NINO was not recognised"}""")
+          }
+
+          it (s"?fromDate=2015-03-03&toDate=2015-06-30 should return 'not employed'") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/AB12345/employed/QQ123451C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+            val json = contentAsJson(result)
+            json shouldBe Json.parse("""{"empref":"AB12345","nino":"QQ123451C","fromDate":"2015-03-03","toDate":"2015-06-30","employed":false}""")
           }
         }
 
