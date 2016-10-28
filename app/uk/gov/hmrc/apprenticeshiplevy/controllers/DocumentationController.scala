@@ -40,7 +40,9 @@ trait AssetsController extends BaseController {
 
   protected def retrieve(rootPath: String, file: String): Option[InputStream] = {
     if (current.mode == Mode.Prod) {
+      // $COVERAGE-OFF$
       current.resourceAsStream(s"${rootPath}/${file}")
+      // $COVERAGE-ON$
     } else {
       current.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
     }

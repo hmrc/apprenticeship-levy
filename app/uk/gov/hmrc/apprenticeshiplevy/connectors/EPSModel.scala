@@ -50,8 +50,9 @@ object EmployerPaymentSummary {
     override def reads(json: JsValue): JsResult[LocalDateTime] = implicitly[Reads[JsString]].reads(json).map { js =>
       fmt.parseDateTime(js.value).toLocalDateTime
     }
-
+    // $COVERAGE-OFF$
     override def writes(o: LocalDateTime): JsValue = JsString(fmt.print(o))
+    // $COVERAGE-ON$
   }
 
   implicit val drFormats = Json.format[ClosedDateRange]
