@@ -1,0 +1,11 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/epaye/timeout/designatory-details"
+    },
+    "response": {
+        "status": 200,
+        "fixedDelayMilliseconds": 2000
+    }
+}
