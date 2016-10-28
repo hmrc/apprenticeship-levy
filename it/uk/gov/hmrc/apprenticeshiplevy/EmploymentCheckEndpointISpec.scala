@@ -43,10 +43,9 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
         describe ("with invalid paramters") {
           it (s"should return 404 when empref is unknown") {
             info("why getting 401 in live as opposed to 404 for sandbox????")
-            pending
-            /*
+
             // set up
-            WiremockService.notifier.testInformer = NullInformer.info
+            //WiremockService.notifier.testInformer = NullInformer.info
             val emprefs = for { empref <- genEmpref } yield empref
 
             forAll(emprefs) { (empref: String) =>
@@ -58,19 +57,15 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
                 val httpStatus = status(result)
 
                 // check
-                if (context == "") {
-                  httpStatus shouldBe 401
-                } else {
-                  httpStatus shouldBe 404
-                }
+                httpStatus shouldBe 404
               }
-            }*/
+            }
           }
 
           it (s"should return 404 when nino is unknown") {
             // set up
             WiremockService.notifier.testInformer = NullInformer.info
-            val ninos = for { nino <- Gen.alphaStr } yield nino
+            val ninos = for { nino <- genNino } yield nino
 
             forAll(ninos) { (nino: String) =>
               whenever (!nino.isEmpty) {
@@ -83,10 +78,6 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
                 // check
                 httpStatus shouldBe 404
               }
-            }
-            if (context == "") {
-              info("NOT_IMPLEMENTED")
-              throw new org.scalatest.exceptions.TestPendingException()
             }
           }
 

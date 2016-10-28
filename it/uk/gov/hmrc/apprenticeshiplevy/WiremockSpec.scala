@@ -29,4 +29,11 @@ trait WiremockFunSpec extends FunSpec with GeneratorDrivenPropertyChecks with Wi
       c <- Gen.alphaLowerChar
       cs <- Gen.listOf(Gen.alphaNumChar)
     } yield (c::cs).mkString).suchThat(_.forall(c => c.isLetter || c.isDigit))
+
+    def genNino: Gen[String] = (for {
+      c1 <- Gen.alphaUpperChar
+      c2 <- Gen.alphaUpperChar
+      cs <- Gen.listOf(Gen.numChar)
+      c3 <- Gen.oneOf('A', 'B', 'C', 'D')
+    } yield (c1+c2+cs.mkString+c3)).suchThat(_.forall(c => c.isLetter || c.isDigit))
 }
