@@ -7,6 +7,7 @@ import play.api.libs.Crypto
 import java.util.UUID._
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.Fault
+import scala.util.Try
 
 class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
                                            new DeclarationsEndpointISpec,
@@ -33,21 +34,27 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
 
     WiremockService.start()
     PlayService.start()
-    val validReadURL1 = dFileToStr("./it/resources/data/input/mapping_url_1")
-    stubFor(get(urlEqualTo(validReadURL1)).withId(auuid1).atPriority(1).willReturn(aResponse().withStatus(200)))
-    println("validReadURL1: " + validReadURL1)
 
-    val validReadURL2 = dFileToStr("./it/resources/data/input/mapping_url_2")
-    stubFor(get(urlEqualTo(validReadURL2)).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
-    println("validReadURL2: " + validReadURL2)
 
-    val faultURL1 = dFileToStr("./it/resources/data/input/mapping_url_3")
-    stubFor(get(urlEqualTo(faultURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
-    println("faultURL1: " + faultURL1)
+    Try(dFileToStr("./it/resources/data/input/mapping_url_1")).foreach { (validReadURL1) =>
+      stubFor(get(urlEqualTo(validReadURL1)).withId(auuid1).atPriority(1).willReturn(aResponse().withStatus(200)))
+      //println("validReadURL1: " + validReadURL1)
+    }
 
-    val invalidReadURL1 = dFileToStr("./it/resources/data/input/mapping_url_4")
-    stubFor(get(urlMatching(invalidReadURL1)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
-    println("invalidReadURL1: " + invalidReadURL1)
+    Try(dFileToStr("./it/resources/data/input/mapping_url_2")).foreach { (validReadURL2) =>
+      stubFor(get(urlEqualTo(validReadURL2)).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
+      //println("validReadURL2: " + validReadURL2)
+    }
+
+    Try(dFileToStr("./it/resources/data/input/mapping_url_3")).foreach { (faultURL1) =>
+      stubFor(get(urlEqualTo(faultURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
+      //println("faultURL1: " + faultURL1)
+    }
+
+    Try(dFileToStr("./it/resources/data/input/mapping_url_4")).foreach { (invalidReadURL1) =>
+      stubFor(get(urlMatching(invalidReadURL1)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
+      //println("invalidReadURL1: " + invalidReadURL1)
+    }
   }
 
   override def afterAll(cm: ConfigMap) {

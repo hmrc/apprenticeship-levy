@@ -36,7 +36,11 @@ trait WiremockNotifier extends Notifier {
 
 class WiremockTestInformerNotifier(var testInformer: Informer, var verboseWiremockOutput: Boolean = true) extends WiremockNotifier {
   protected def handleMessage(msg: String): Unit = {
-    testInformer(msg)
+    if (msg.contains("read") && !sys.props.get("play.crypto.secret").isDefined) {
+      testInformer("Wiremock Error: Request was not matched. Please set 'play.crypto.secret' system property")
+    } else {
+      testInformer(msg)
+    }
     throw new org.scalatest.exceptions.TestFailedException("Wiremock error", 3)
   }
 }
