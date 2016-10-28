@@ -41,8 +41,8 @@ object MicroserviceAuthConnector extends AuthConnector with ServicesConfig {
 
   def http: HttpGet = WSHttp
 
-  def currentAuthority(implicit hc: HeaderCarrier): Future[Option[Authority]] = {
+  /*def currentAuthority(implicit hc: HeaderCarrier): Future[Option[Authority]] = {
     http.GET[Authority](s"$authBaseUrl/auth/authority").map(Some.apply) // Option return is legacy of previous http library now baked into this class's api
-  }
+  }*/
 }
 

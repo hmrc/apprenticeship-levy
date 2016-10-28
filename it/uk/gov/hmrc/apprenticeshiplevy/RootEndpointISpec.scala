@@ -59,6 +59,32 @@ class RootEndpointISpec extends WiremockFunSpec  {
               contentType(result) shouldBe Some("application/json")
             }
           }
+
+          it (s"HTTP 403") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(403).withStatusMessage("Forbidden.")))
+            val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"HTTP 404") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(404).withStatusMessage("Not found.")))
+            val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 404
+          }
         }
 
         describe ("when backend systems failing") {
@@ -75,6 +101,35 @@ class RootEndpointISpec extends WiremockFunSpec  {
               contentType(result) shouldBe Some("application/json")
             }
           }
+
+          it (s"should throw IOException? when returning empty response and connection closed") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)))
+            val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[java.io.IOException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
+          it (s"should throw TimeoutException? when timed out") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(200).withFixedDelay(1000*60)))
+            val request = FakeRequest(GET, s"$context/").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
+              // test
+              val result = route(request).get
+
+              // check
+              contentType(result) shouldBe Some("application/json")
+            }
+          }
+
           it (s"HTTP 500") {
             // set up
             stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(500).withStatusMessage("Internal server error")))
@@ -88,6 +143,7 @@ class RootEndpointISpec extends WiremockFunSpec  {
               contentType(result) shouldBe Some("application/json")
             }
           }
+
           it (s"HTTP 503") {
             // set up
             stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(503).withStatusMessage("Backend systems failing")))

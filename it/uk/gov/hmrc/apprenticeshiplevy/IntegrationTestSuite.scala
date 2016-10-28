@@ -47,13 +47,18 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
     }
 
     Try(dFileToStr("./it/resources/data/input/mapping_url_3")).foreach { (faultURL1) =>
-      stubFor(get(urlEqualTo(faultURL1)).withId(auuid4).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
+      stubFor(get(urlEqualTo(faultURL1)).withId(auuid3).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
       //println("faultURL1: " + faultURL1)
     }
 
     Try(dFileToStr("./it/resources/data/input/mapping_url_4")).foreach { (invalidReadURL1) =>
-      stubFor(get(urlMatching(invalidReadURL1)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
+      stubFor(get(urlMatching(invalidReadURL1)).withId(auuid4).atPriority(1).willReturn(aResponse().withStatus(200)))
       //println("invalidReadURL1: " + invalidReadURL1)
+    }
+
+    Try(dFileToStr("./it/resources/data/input/mapping_url_5")).foreach { (validRead) =>
+      stubFor(get(urlMatching(validRead)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
+      //println("validRead: " + validRead)
     }
   }
 
