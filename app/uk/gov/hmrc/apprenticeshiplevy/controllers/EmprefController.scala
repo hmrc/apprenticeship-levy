@@ -42,7 +42,7 @@ trait EmprefController extends ApiController {
   def empref(empref: String) = withValidAcceptHeader.async { implicit request =>
     epayeConnector.designatoryDetails(empref).map { details =>
       val hal = prepareLinks(empref)
-      Ok(hal.copy(state = Json.toJson(details).as[JsObject]))
+      ok(hal.copy(state = Json.toJson(details).as[JsObject]))
     }.recover {
       case e: NotFoundException => ErrorNotFound.result
     }

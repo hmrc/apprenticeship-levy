@@ -24,12 +24,12 @@ import scala.util.Try
 
 object AppContext extends ServicesConfig {
 
-  def appName =
+  def appName: String =
     current.configuration.getString("appName").getOrElse(throw new RuntimeException("appName is not configured"))
-  def appUrl =
+  def appUrl: String =
     current.configuration.getString("appUrl").getOrElse(throw new RuntimeException("appUrl is not configured"))
-  def serviceLocatorUrl = baseUrl("service-locator")
-  def registrationEnabled =
+  def serviceLocatorUrl: String = baseUrl("service-locator")
+  def registrationEnabled: Boolean =
     current.configuration.getString("microservice.services.service-locator.enabled")
       .flatMap(flag => Try(flag.toBoolean).toOption)
       .getOrElse {
@@ -39,7 +39,7 @@ object AppContext extends ServicesConfig {
         true
       }
 
-  def privateModeEnabled = current.configuration.getString("microservice.private-mode")
+  def privateModeEnabled: Boolean = current.configuration.getString("microservice.private-mode")
     .flatMap(flag => Try(flag.toBoolean).toOption)
     .getOrElse {
       // $COVERAGE-OFF$
@@ -48,17 +48,18 @@ object AppContext extends ServicesConfig {
       true
     }
 
-  def whitelistedApplicationIds = current.configuration.getString("microservice.whitelisted-applications")
+  def whitelistedApplicationIds: Seq[String] = current.configuration.getString("microservice.whitelisted-applications")
     .map { applicationIds => applicationIds.split(",").toSeq }
     .getOrElse(Seq.empty)
+
   // $COVERAGE-OFF$
   Logger.info(s"""\n${"*" * 80}\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
   // $COVERAGE-ON$
 
-  def edhUrl = baseUrl("edh")
-  def stubEdhUrl = baseUrl("stub-edh")
-  def rtiUrl = baseUrl("rti")
-  def stubRtiUrl = baseUrl("stub-rti")
+  def edhUrl: String = baseUrl("edh")
+  def stubEdhUrl: String = baseUrl("stub-edh")
+  def rtiUrl: String = baseUrl("rti")
+  def stubRtiUrl: String = baseUrl("stub-rti")
 
   private def getString(config: Configuration)(id: String): String = config.getString(id)
     .getOrElse(throw new RuntimeException(s"Unable to read whitelisted application (value '$id' not found)"))

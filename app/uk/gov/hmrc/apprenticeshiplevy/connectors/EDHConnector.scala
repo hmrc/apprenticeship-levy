@@ -51,13 +51,13 @@ trait EDHConnector {
 }
 
 object LiveEDHConnector extends EDHConnector {
-  override def edhBaseUrl = AppContext.edhUrl
+  override def edhBaseUrl: String = AppContext.edhUrl
 
-  override def httpGet = WSHttp
+  override def httpGet: HttpGet = WSHttp
 }
 
 object SandboxEDHConnector extends EDHConnector {
-  override def edhBaseUrl = AppContext.stubEdhUrl
+  override def edhBaseUrl: String = AppContext.stubEdhUrl
 
-  override def httpGet = WSHttp
+  override def httpGet: HttpGet = WSHttp
 }

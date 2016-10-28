@@ -78,10 +78,10 @@ trait DocumentationController extends AssetsController {
       JsArray(versions.value.updated(0, versions(0).as[JsObject] ++ whitelist))
     })
 
-  def documentation(version: String, endpoint: String) =
+  def documentation(version: String, endpoint: String): Action[AnyContent]  =
     super.at(s"public/documentation/$version", s"${endpoint.replaceAll(" ", "-")}.xml")
 
-  def definition = Action.async {
+  def definition: Action[AnyContent]  = Action.async {
     val filename = "definition.json"
     retrieve("public/api", filename) match {
       case Some(fileToServe) => {
@@ -110,7 +110,7 @@ trait DocumentationController extends AssetsController {
     }
   }
 
-  def conf(version: String, file: String) = {
+  def conf(version: String, file: String): Action[AnyContent] = {
     super.at(s"public/api/conf/${version}", file)
   }
 }

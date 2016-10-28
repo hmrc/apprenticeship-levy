@@ -35,7 +35,9 @@ object ErrorResponses {
   /*
   object ErrorUnauthorized extends ErrorResponse(UNAUTHORIZED, CODE_UNAUTHORIZED, "Invalid Authentication information provided")
 
-  object ErrorTaxYearInvalid extends ErrorResponse(BAD_REQUEST, CODE_INVALID_TAX_YEAR, "Tax Year must be of the form yyyy-yy and the year values must be consecutive. ex. 2012-13")
+  object ErrorTaxYearInvalid extends ErrorResponse(BAD_REQUEST,
+                                                   CODE_INVALID_TAX_YEAR,
+                                                  "Tax Year must be of the form yyyy-yy and the year values must be consecutive. ex. 2012-13")
 
   object ErrorEmpRefInvalid extends ErrorResponse(BAD_REQUEST, CODE_INVALID_EMP_REF, "EmpRef requires two identifiers separated by a slash")
 

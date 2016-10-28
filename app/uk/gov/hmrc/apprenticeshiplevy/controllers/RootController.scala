@@ -32,7 +32,7 @@ trait RootController extends ApiController {
   def processLink(l: HalLink): HalLink = identity(l)
 
   def root = withValidAcceptHeader.async { implicit request =>
-    authConnector.getEmprefs.map(es => Ok(transformEmpRefs(es)))
+    authConnector.getEmprefs.map(es => ok(transformEmpRefs(es)))
   }
 
   private[controllers] def transformEmpRefs(empRefs: Seq[String]): HalResource = {

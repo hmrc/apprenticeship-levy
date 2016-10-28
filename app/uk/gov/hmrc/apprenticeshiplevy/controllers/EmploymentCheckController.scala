@@ -23,6 +23,8 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNinoNotVisible
 import uk.gov.hmrc.apprenticeshiplevy.domain.{Employed, EmploymentCheck, NinoUnknown, NotEmployed}
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import scala.concurrent.Future
+import play.api.mvc.Result
 
 trait EmploymentCheckController extends ApiController {
 
@@ -35,5 +37,4 @@ trait EmploymentCheckController extends ApiController {
       case NinoUnknown => ErrorNinoNotVisible.toResult
     }
   }
-
 }
