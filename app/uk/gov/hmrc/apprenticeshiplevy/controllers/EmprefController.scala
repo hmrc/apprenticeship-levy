@@ -39,7 +39,9 @@ trait EmprefController extends ApiController {
   // Hook to allow post-processing of the links, specifically for sandbox handling
   def processLink(l: HalLink): HalLink = identity(l)
 
+  // scalastyle:off
   def empref(empref: String) = withValidAcceptHeader.async { implicit request =>
+  // scalastyle:on
     epayeConnector.designatoryDetails(empref).map { details =>
       val hal = prepareLinks(empref)
       ok(hal.copy(state = Json.toJson(details).as[JsObject]))

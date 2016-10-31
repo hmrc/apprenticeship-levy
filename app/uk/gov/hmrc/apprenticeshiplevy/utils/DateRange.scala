@@ -35,7 +35,7 @@ case class ClosedDateRange(from: LocalDate, to: LocalDate) extends DateRange {
 
   override def toParams: Option[String] = Some(paramString)
 
-  def paramString = s"fromDate=$from&toDate=$to"
+  def paramString: String = s"fromDate=$from&toDate=$to"
 }
 
 case class OpenEarlyDateRange(to: LocalDate) extends DateRange {

@@ -31,7 +31,9 @@ trait RootController extends ApiController {
   // Hook to allow post-processing of the links, specifically for sandbox handling
   def processLink(l: HalLink): HalLink = identity(l)
 
+  // scalastyle:off
   def root = withValidAcceptHeader.async { implicit request =>
+  // scalastyle:on
     authConnector.getEmprefs.map(es => ok(transformEmpRefs(es)))
   }
 

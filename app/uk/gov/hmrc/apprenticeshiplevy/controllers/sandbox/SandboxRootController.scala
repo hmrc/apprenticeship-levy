@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxAuthConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{SandboxAuthConnector, AuthConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
 
 trait SandboxRootController extends RootController with SandboxLinkHelper {
@@ -32,6 +32,6 @@ trait SandboxRootController extends RootController with SandboxLinkHelper {
 object SandboxRootController extends SandboxRootController {
   override val env = AppContext.env
 
-  override def authConnector = SandboxAuthConnector
+  override def authConnector: AuthConnector = SandboxAuthConnector
 }
 

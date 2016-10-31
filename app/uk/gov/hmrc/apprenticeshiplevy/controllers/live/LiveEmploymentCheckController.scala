@@ -18,8 +18,8 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
-import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveRTIConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{LiveRTIConnector, RTIConnector}
 
 object LiveEmploymentCheckController extends EmploymentCheckController {
-  override def rtiConnector = LiveRTIConnector
+  override def rtiConnector: RTIConnector = LiveRTIConnector
 }

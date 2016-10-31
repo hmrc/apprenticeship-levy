@@ -38,7 +38,9 @@ trait LevyDeclarationController {
 
   implicit val dateTimeOrdering: Ordering[LocalDateTime] = Ordering.fromLessThan { (d1, d2) => d1.isBefore(d2) }
 
+  // scalastyle:off
   def declarations(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
+  // scalastyle:on
     retrieveDeclarations(empref, DateRange(fromDate, toDate))
       .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, empref))
   }
@@ -62,8 +64,12 @@ trait LevyDeclarationController {
   }
 
   private[controllers] def buildResult(ds: Seq[LevyDeclaration], empref: String): Result = {
-    if (ds.nonEmpty) Ok(Json.toJson(LevyDeclarations(empref, ds)))
-    else ErrorNotFound.result
+    if (ds.nonEmpty) {
+      Ok(Json.toJson(LevyDeclarations(empref, ds)))
+    }
+    else {
+      ErrorNotFound.result
+    }
   }
 
   private[controllers] val convertToDeclaration: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
@@ -96,11 +102,12 @@ trait LevyDeclarationController {
         noPaymentForPeriod = Some(true))
   }
 
-  val BeginningOfTaxYear = new MonthDay(APRIL, 6)
+  val TAX_YEAR_START_DAY = 6
+  val BeginningOfTaxYear = new MonthDay(APRIL, TAX_YEAR_START_DAY)
 
   private[controllers] def calculateTaxMonth(to: LocalDate) = {
     val monthDay = new MonthDay(to.getMonthOfYear, to.getDayOfMonth)
     val yearReference = if (monthDay.isBefore(BeginningOfTaxYear)) to.getYear - 1 else to.getYear
-    monthsBetween(new LocalDate(yearReference, APRIL, 6), to).getMonths + 1
+    monthsBetween(new LocalDate(yearReference, APRIL, TAX_YEAR_START_DAY), to).getMonths + 1
   }
 }
