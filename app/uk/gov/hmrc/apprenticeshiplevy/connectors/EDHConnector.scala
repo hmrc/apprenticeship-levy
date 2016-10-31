@@ -20,11 +20,13 @@ import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.Fractions
+import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import views.html.helper
 
 import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits._
 
 trait EDHConnector {
 
@@ -46,7 +48,9 @@ trait EDHConnector {
   def fractionCalculationDate(implicit hc: HeaderCarrier): Future[LocalDate] = {
     val url = s"$edhBaseUrl/fraction-calculation-date"
 
-    httpGet.GET[LocalDate](url)
+    httpGet.GET[FractionCalculationDate](url) map {
+      _.date
+    }
   }
 }
 
