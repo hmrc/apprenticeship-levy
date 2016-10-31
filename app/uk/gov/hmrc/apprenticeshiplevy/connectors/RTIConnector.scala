@@ -57,13 +57,13 @@ trait RTIConnector {
 }
 
 object LiveRTIConnector extends RTIConnector {
-  override def rtiBaseUrl = AppContext.rtiUrl
+  override def rtiBaseUrl: String = AppContext.rtiUrl
 
-  override def httpGet = WSHttp
+  override def httpGet: HttpGet = WSHttp
 }
 
 object SandboxRTIConnector extends RTIConnector {
-  override def rtiBaseUrl = AppContext.stubRtiUrl
+  override def rtiBaseUrl: String = AppContext.stubRtiUrl
 
-  override def httpGet = WSHttp
+  override def httpGet: HttpGet = WSHttp
 }

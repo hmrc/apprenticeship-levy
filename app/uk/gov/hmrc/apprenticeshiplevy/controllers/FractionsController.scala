@@ -26,7 +26,9 @@ trait FractionsController {
   self: ApiController =>
   def edhConnector: EDHConnector
 
+  // scalastyle:off
   def fractions(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
+  // scalastyle:on
     edhConnector.fractions(empref, DateRange(fromDate, toDate)).map(fs => Ok(Json.toJson(fs)))
   }
 }
@@ -39,7 +41,9 @@ trait FractionsCalculationController {
   self: ApiController =>
   def edhConnector: EDHConnector
 
+  // scalastyle:off
   def fractionCalculationDate = withValidAcceptHeader.async { implicit request =>
+  // scalastyle:on
     edhConnector.fractionCalculationDate.map(date => Ok(Json.toJson(date)))
   }
 }

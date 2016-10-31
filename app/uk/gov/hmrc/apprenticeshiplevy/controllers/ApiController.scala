@@ -32,5 +32,5 @@ trait ApiController extends BaseController with HeaderValidator {
 
   def selfLink(url: String): HalLink = HalLink("self", url)
 
-  def Ok(hal: HalResource): Result = Ok(Json.toJson(hal)).withHeaders("Content-Type" -> "application/hal+json")
+  def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).withHeaders("Content-Type" -> "application/hal+json")
 }

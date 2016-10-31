@@ -18,7 +18,10 @@ trait MicroService {
 
   lazy val appDependencies : Seq[ModuleID] = ???
   lazy val plugins : Seq[Plugins] = Seq(play.PlayScala)
-  lazy val playSettings : Seq[Setting[_]] = Seq(routesImport ++= Seq("uk.gov.hmrc.apprenticeshiplevy.config.QueryBinders._", "org.joda.time.LocalDate"))
+  lazy val compileScalastyle = taskKey[Unit]("compileScalastyle")
+  lazy val compileScalastyleTask = org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask("")
+  lazy val playSettings : Seq[Setting[_]] = Seq(routesImport ++= Seq("uk.gov.hmrc.apprenticeshiplevy.config.QueryBinders._", "org.joda.time.LocalDate"),
+                                                compile in Compile <<= (compile in Compile) dependsOn compileScalastyleTask)
   lazy val scoverageSettings = {
     import scoverage.ScoverageKeys
     Seq(

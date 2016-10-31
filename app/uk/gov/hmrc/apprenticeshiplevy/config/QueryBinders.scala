@@ -24,7 +24,7 @@ import scala.util.Try
 
 object QueryBinders {
 
-  implicit def bindableLocalDate(implicit stringBinder: QueryStringBindable[String]) = new QueryStringBindable[LocalDate] {
+  implicit def bindableLocalDate(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[LocalDate] = new QueryStringBindable[LocalDate] {
 
     def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, LocalDate]] = {
       params.get(key).flatMap(_.headOption).map { date: String => (Try {
