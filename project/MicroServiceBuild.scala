@@ -59,8 +59,7 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % "2.2.6" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.pegdown" % "pegdown" % "1.5.0" % scope,
-        "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % scope,
-        "org.mockito" % "mockito-all" % "2.2.9" % scope
+        "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % scope
       )
     }.test
   }
