@@ -1,7 +1,15 @@
 {
     "request": {
         "method": "GET",
-        "url": "/fraction-calculation-date"
+        "url": "/fraction-calculation-date",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live)"
+          }
+        }
     },
     "response": {
         "status": 200,
