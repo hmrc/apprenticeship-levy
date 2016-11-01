@@ -21,6 +21,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.EDHConnector
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 trait FractionsController {
   self: ApiController =>
@@ -44,6 +45,8 @@ trait FractionsCalculationController {
   // scalastyle:off
   def fractionCalculationDate = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    edhConnector.fractionCalculationDate.map(date => Ok(Json.toJson(date)))
+    edhConnector.fractionCalculationDate map { date =>
+      Ok(Json.toJson(date))
+    }
   }
 }

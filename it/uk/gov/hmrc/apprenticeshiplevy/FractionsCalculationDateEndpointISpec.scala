@@ -28,7 +28,9 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
         describe (s"when no backend systems failing") {
           it (s"return date") {
             // set up
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
 
             // test
             val result = route(request).get
@@ -36,7 +38,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe OK
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse(""""2016-06-19"""")
+            contentAsJson(result) shouldBe Json.parse(""""2016-03-15"""")
           }
         }
 
