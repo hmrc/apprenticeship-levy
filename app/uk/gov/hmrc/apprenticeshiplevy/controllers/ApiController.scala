@@ -23,6 +23,9 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import play.api.mvc.{ActionBuilder, Request, Result, Results, RequestHeader}
+import play.api.http.Status._
+import uk.gov.hmrc.play.http._
+import java.io.IOException
 
 trait ApiController extends BaseController with HeaderValidator {
 
@@ -38,7 +41,26 @@ trait ApiController extends BaseController with HeaderValidator {
 
   val withValidAcceptHeader: ActionBuilder[Request] = validateAccept(acceptHeaderValidationRules)
 
+  val desErrorHandler: PartialFunction[Throwable, Result] = {
+        case e: IOException => ServiceUnavailable(Json.toJson(DESError(SERVICE_UNAVAILABLE, s"DES connection error: ${extractReason(e.getMessage())}")))
+        case e: GatewayTimeoutException => RequestTimeout(Json.toJson(DESError(REQUEST_TIMEOUT, s"DES not responding error: ${extractReason(e.getMessage())}")))
+        case e: NotFoundException => ServiceUnavailable(Json.toJson(DESError(NOT_FOUND, s"DES endpoint not found: ${extractReason(e.getMessage())}")))
+        case e: Upstream5xxResponse => ServiceUnavailable(Json.toJson(DESError(e.reportAs, s"DES 5xx error: ${extractReason(e.getMessage())}")))
+        case e: Upstream4xxResponse => {
+          e.upstreamResponseCode match {
+            case FORBIDDEN => Forbidden(Json.toJson(DESError(e.reportAs, s"DES forbidden error: ${extractReason(e.getMessage())}")))
+            case UNAUTHORIZED => Unauthorized(Json.toJson(DESError(e.reportAs, s"DES unauthorised error: ${extractReason(e.getMessage())}")))
+            case TOO_MANY_REQUEST => TooManyRequest(Json.toJson(DESError(TOO_MANY_REQUEST, s"DES too many requests: ${extractReason(e.getMessage())}")))
+            case REQUEST_TIMEOUT => RequestTimeout(Json.toJson(DESError(REQUEST_TIMEOUT, s"DES not responding error: ${extractReason(e.getMessage())}")))
+            case _ => ServiceUnavailable(Json.toJson(DESError(e.reportAs, s"DES 4xx error: ${extractReason(e.getMessage())}")))
+          }
+        }
+        case e => InternalServerError(Json.toJson(DESError(INTERNAL_SERVER_ERROR, s"API or DES internal server error: ${extractReason(e.getMessage())}")))
+    }
+
   def selfLink(url: String): HalLink = HalLink("self", url)
 
   def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).withHeaders("Content-Type" -> "application/hal+json")
+
+  protected def extractReason(msg: String) = if (msg.contains("Response body: ")) (Json.parse(msg.substring(msg.indexOf("Response body: ")+16).reverse.substring(1).reverse) \ "reason").as[String] else msg
 }

@@ -19,6 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import play.mvc.Http.Status._
 import uk.gov.hmrc.api.controllers.ErrorResponse
 
+case class DESError(statusCode: Int, msg: String) extends ErrorResponse(statusCode, "DES_ERROR", msg)
 
 object ErrorResponses {
 

@@ -29,12 +29,13 @@ import uk.gov.hmrc.play.http.HttpGet
 import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
 import scala.concurrent.Future
-import uk.gov.hmrc.play.http.{HeaderCarrier,HttpReads,HttpResponse}
+import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.logging._
 import uk.gov.hmrc.play.http.hooks.HttpHook
 import play.api.libs.concurrent.Execution.Implicits._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import play.api.mvc.{ActionBuilder, Request, Result, Results}
+import play.api.libs.json.Json
 
 class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
   "getting fraction calculation date" should {
@@ -85,6 +86,27 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer dsfda9080")))
       actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
       actualHeaderCarrier.extraHeaders.head shouldBe (("Environment","clone"))
+    }
+
+    "recover from exceptions" in {
+      // set up
+      val stubHttpGet = mock[HttpGet]
+      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any()))
+           .thenReturn(Future.failed(new Upstream5xxResponse("DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503. Response body: '{\"reason\" : \"Backend systems not working\"}'", 1, 2)))
+      val controller = new FractionsCalculationController() with ApiController {
+        def edhConnector: EDHConnector = new EDHConnector() {
+          def edhBaseUrl: String = "http://a.guide.to.nowhere/"
+          def httpGet: HttpGet = stubHttpGet
+        }
+      }
+
+      // test
+      val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                                    "Authorization"->"Bearer dsfda9080"))
+
+      // check
+      status(response) shouldBe 503
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: Backend systems not working"}""")
     }
   }
 }

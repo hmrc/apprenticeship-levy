@@ -43,87 +43,211 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
         }
 
         describe ("when backend systems failing") {
-          it (s"should throw IOException? when connection closed") {
+          it (s"should return http status 503 when connection closed") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should throw TimeoutException? when timed out") {
+          it (s"should return http status 408 when timed out") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(200).withFixedDelay(1000*60)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
 
-            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 408
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: GET of 'http://localhost:8080/fraction-calculation-date' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should throw IOException? when empty response") {
+          it (s"should return http status 503 when empty response") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
-
-            WiremockService.wireMockServer.resetToDefaultMappings()
-          }
-
-          it (s"DES HTTP 500") {
-            // set up
-            WireMock.reset()
-            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(500)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
-
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
-
-              // check
-              status(result) shouldBe 500
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"DES HTTP 503") {
+          it (s"should return http status 503 when DES HTTP 404") {
             // set up
             WireMock.reset()
-            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(503)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(404).withBody("""{"reason" : "Not found"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 503
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES endpoint not found: Not found"}""")
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
+
+          it (s"should return http status 503 when DES HTTP 500") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(500).withBody("""{"reason" : "DES not working"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: DES not working"}""")
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
+
+          it (s"should return http status 503 when DES HTTP 503") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(503).withBody("""{"reason" : "Backend systems not working"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: Backend systems not working"}""")
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
+
+          it (s"should return http status 401 when DES HTTP 401") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(401).withBody("""{"reason" : "Not authorized"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 401
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES unauthorised error: Not authorized"}""")
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
+
+          it (s"should return http status 403 when DES HTTP 403") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(403).withBody("""{"reason" : "Forbidden"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 403
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES forbidden error: Forbidden"}""")
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
+
+          it (s"should return http status 429 when DES HTTP 429") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(429).withBody("""{"reason" : "Drowning in requests"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 429
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES too many requests: Drowning in requests"}""")
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
+
+          it (s"should return http status 408 when DES HTTP 408") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(408).withBody("""{"reason" : "Not responding"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 408
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: Not responding"}""")
+
+            WiremockService.wireMockServer.resetToDefaultMappings()
+          }
+
+          it (s"should return http status 503 when DES HTTP 409") {
+            // set up
+            WireMock.reset()
+            stubFor(get(urlEqualTo("/fraction-calculation-date")).withId(uuid).willReturn(aResponse().withStatus(409).withBody("""{"reason" : "Some 4xxx error"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                              "Environment"->"isit",
+                                                                                              "Authorization"->"Bearer 2423324")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 4xx error: Some 4xxx error"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
