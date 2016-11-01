@@ -44,6 +44,8 @@ trait FractionsCalculationController {
   // scalastyle:off
   def fractionCalculationDate = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    edhConnector.fractionCalculationDate.map(date => Ok(Json.toJson(date)))
+    edhConnector.fractionCalculationDate map { date =>
+      Ok(Json.toJson(date))
+    }
   }
 }

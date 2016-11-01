@@ -6,6 +6,6 @@
     "response": {
         "status": 200,
         "headers": { "Content-Type": "application/json; charset=utf-8" },
-        "jsonBody": "2016-06-19"
+        "jsonBody": { "date": "2016-03-15" }
     }
 }

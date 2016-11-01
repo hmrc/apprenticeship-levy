@@ -36,7 +36,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe OK
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse(""""2016-06-19"""")
+            contentAsJson(result) shouldBe Json.parse(""""2016-03-15"""")
           }
         }
 
