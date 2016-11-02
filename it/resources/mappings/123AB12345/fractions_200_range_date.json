@@ -2,13 +2,13 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/empref/123%2FAB12345/fractions?fromDate=2017-08-01&toDate=2017-09-01"
+        "url": "/empref/123AB12345/fractions?fromDate=2017-08-01&toDate=2017-09-01"
     },
     "response": {
         "status": 200,
         "headers": { "Content-Type": "application/json; charset=utf-8" },
         "jsonBody": {
-  "empref": "123\/AB12345",
+  "empref": "123AB12345",
   "fractionCalculations": [
     {
       "calculatedAt": "2016-12-23",
@@ -16,18 +16,6 @@
         {
           "region": "England",
           "value": 0.83
-        },
-        {
-          "region": "Scotland",
-          "value": 0.11
-        },
-        {
-          "region": "Wales",
-          "value": 0.06
-        },
-        {
-          "region": "Northern Ireland",
-          "value": 0
         }
       ]
     },
@@ -37,18 +25,6 @@
         {
           "region": "England",
           "value": 0.78
-        },
-        {
-          "region": "Scotland",
-          "value": 0.16
-        },
-        {
-          "region": "Wales",
-          "value": 0.06
-        },
-        {
-          "region": "Northern Ireland",
-          "value": 0
         }
       ]
     }
