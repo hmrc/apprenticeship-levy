@@ -56,21 +56,3 @@ case class LevyDeclarations(empref: String, declarations: Seq[LevyDeclaration])
 object LevyDeclarations {
   implicit val formats = Json.format[LevyDeclarations]
 }
-
-case class Fraction(region: String, value: BigDecimal)
-
-object Fraction {
-  implicit val formats = Json.format[Fraction]
-}
-
-case class FractionCalculation(calculatedAt: LocalDate, fractions: Seq[Fraction])
-
-object FractionCalculation {
-  implicit val formats = Json.format[FractionCalculation]
-}
-
-case class Fractions(empref: String, fractionCalculations: Seq[FractionCalculation])
-
-object Fractions {
-  implicit val formats = Json.format[Fractions]
-}

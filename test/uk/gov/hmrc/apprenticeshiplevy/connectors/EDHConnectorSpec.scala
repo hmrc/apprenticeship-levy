@@ -24,11 +24,12 @@ import org.mockito.Matchers._
 import uk.gov.hmrc.play.test.UnitSpec
 import uk.gov.hmrc.play.http.HttpGet
 import org.joda.time.LocalDate
-import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
+import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import scala.concurrent.Future
 import uk.gov.hmrc.play.http.{HeaderCarrier,HttpReads,HttpResponse}
 import uk.gov.hmrc.play.http.hooks.HttpHook
 import play.api.libs.concurrent.Execution.Implicits._
+import uk.gov.hmrc.apprenticeshiplevy.utils._
 
 class EDHConnectorSpec extends UnitSpec with MockitoSugar {
   "EDH Connector" should {
@@ -47,6 +48,25 @@ class EDHConnectorSpec extends UnitSpec with MockitoSugar {
 
         // check
         await[LocalDate](futureResult) shouldBe new LocalDate(2016,11,3)
+      }
+    }
+    "for Fractions endpoint" must {
+      "when EDH not failing return fractions" in {
+        // set up
+        val stubHttpGet = mock[HttpGet]
+        val expected = Fractions("123AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))
+        when(stubHttpGet.GET[Fractions](anyString())(any(), any()))
+           .thenReturn(Future.successful(expected))
+        val connector = new EDHConnector() {
+          def edhBaseUrl: String = "http://a.guide.to.nowhere/"
+          def httpGet: HttpGet = stubHttpGet
+        }
+
+        // test
+        val futureResult = connector.fractions("123AB12345", OpenDateRange)(HeaderCarrier())
+
+        // check
+        await[Fractions](futureResult) shouldBe expected
       }
     }
   }

@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 import org.joda.time.LocalDate
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
-import uk.gov.hmrc.apprenticeshiplevy.data.Fractions
+import uk.gov.hmrc.apprenticeshiplevy.data.des.Fractions
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
