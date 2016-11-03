@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/empref/404/fractions"
+        "url": "/apprenticeship-levy/employers/404/fractions"
     },
     "response": {
         "status": 404,

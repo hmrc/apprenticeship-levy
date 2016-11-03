@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/empref/timeout/fractions"
+        "url": "/apprenticeship-levy/employers/timeout/fractions"
     },
     "response": {
         "status": 200,

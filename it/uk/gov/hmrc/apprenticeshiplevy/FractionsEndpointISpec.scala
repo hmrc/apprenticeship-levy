@@ -205,7 +205,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: GET of 'http://localhost:8080/empref/timeout/fractions' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: GET of 'http://localhost:8080/apprenticeship-levy/employers/timeout/fractions' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
           }
 
           it (s"should return http status 503 when empty response") {

@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/empref/123AB12345/fractions?toDate=2017-09-01"
+        "url": "/apprenticeship-levy/employers/123AB12345/fractions?toDate=2017-09-01"
     },
     "response": {
         "status": 200,
