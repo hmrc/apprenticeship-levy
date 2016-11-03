@@ -1,8 +1,8 @@
 {
-    "priority": 2,
+    "priority": 1,
     "request": {
         "method": "GET",
-        "urlPattern": "/empref/([a-zA-Z0-9%]+)/employee/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30"
+        "url": "/apprenticeship-levy/employers/123AB12345/employed/ZZ123456C?fromDate=2016-03-03&toDate=2016-06-30"
     },
     "response": {
         "status": 404

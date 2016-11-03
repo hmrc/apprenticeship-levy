@@ -2,11 +2,17 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/empref/123AB12345/employee/QQ123451C?fromDate=2015-03-03&toDate=2015-06-30"
+        "url": "/apprenticeship-levy/employers/123AB12345/employed/AB123456C?fromDate=2016-03-03&toDate=2016-06-30"
     },
     "response": {
         "status": 200,
         "headers": { "Content-Type": "application/json; charset=utf-8" },
-        "jsonBody": "not_employed"
+        "jsonBody": {
+            "empref": "123AB12345",
+            "nino": "AB123456C",
+            "fromDate": "2016-03-06",
+            "toDate": "2016-04-05",
+            "employed": false
+        }
     }
 }

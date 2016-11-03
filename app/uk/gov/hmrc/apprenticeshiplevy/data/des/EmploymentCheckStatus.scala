@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.domain
+package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
-import org.joda.time.LocalDate
 import play.api.libs.json._
-import uk.gov.hmrc.play.controllers.RestFormats
+import play.api.libs.json.Reads._
+import play.api.libs.functional.syntax._
 
-case class EmploymentCheck(empref: String, nino: String, fromDate: LocalDate, toDate:LocalDate, employed: Boolean)
+sealed trait EmploymentCheckStatus
 
-object EmploymentCheck {
-  implicit val dateFormats = RestFormats.localDateFormats
-  implicit val formats = Json.format[EmploymentCheck]
+object EmploymentCheckStatus {
+  implicit val reads: Reads[EmploymentCheckStatus] = (__ \ "employed").read[Boolean].map(isEmployed => EmploymentCheckStatus(isEmployed))
+
+  def apply(isEmployed: Boolean) = isEmployed match {
+    case true => Employed
+    case false => NotEmployed
+  }
 }
+
+case object Employed extends EmploymentCheckStatus
+
+case object NotEmployed extends EmploymentCheckStatus
+
+case object NinoUnknown extends EmploymentCheckStatus

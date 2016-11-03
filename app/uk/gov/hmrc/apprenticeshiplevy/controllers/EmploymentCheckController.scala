@@ -20,7 +20,8 @@ import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.RTIConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNinoNotVisible
-import uk.gov.hmrc.apprenticeshiplevy.domain.{Employed, EmploymentCheck, NinoUnknown, NotEmployed}
+import uk.gov.hmrc.apprenticeshiplevy.data.des.{Employed, NinoUnknown, NotEmployed}
+import uk.gov.hmrc.apprenticeshiplevy.domain.EmploymentCheck
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
