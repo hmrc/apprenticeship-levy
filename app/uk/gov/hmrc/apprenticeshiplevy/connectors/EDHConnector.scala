@@ -46,7 +46,7 @@ trait EDHConnector {
   }
 
   def fractionCalculationDate(implicit hc: HeaderCarrier): Future[LocalDate] = {
-    httpGet.GET[FractionCalculationDate](s"$edhBaseUrl/fraction-calculation-date") map {
+    httpGet.GET[FractionCalculationDate](s"$edhBaseUrl/apprenticeship-levy/fraction-calculation-date") map {
       _.date
     }
   }
