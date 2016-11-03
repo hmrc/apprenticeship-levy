@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/empref/AB12345/employee/QQ123459C?fromDate=2015-03-03&toDate=2015-06-30"
+        "url": "/empref/123AB12345/employee/QQ123459C?fromDate=2015-03-03&toDate=2015-06-30"
     },
     "response": {
         "status": 200,

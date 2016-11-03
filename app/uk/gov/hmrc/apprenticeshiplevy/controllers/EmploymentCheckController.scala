@@ -33,7 +33,7 @@ trait EmploymentCheckController extends ApiController {
   // scalastyle:off
   def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    rtiConnector.check(empref, nino, ClosedDateRange(fromDate, toDate)).map {
+    rtiConnector.check(toDESFormat(empref), nino, ClosedDateRange(fromDate, toDate)).map {
       case Employed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = true)))
       case NotEmployed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = false)))
       case NinoUnknown => ErrorNinoNotVisible.toResult
