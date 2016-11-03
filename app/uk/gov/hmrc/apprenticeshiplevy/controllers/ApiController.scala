@@ -27,6 +27,8 @@ import play.api.http.Status._
 import uk.gov.hmrc.play.http._
 import java.io.IOException
 import scala.util.Try
+import scala.util.matching.Regex
+import java.net.URLDecoder
 
 trait ApiController extends BaseController with HeaderValidator {
 
@@ -72,4 +74,10 @@ trait ApiController extends BaseController with HeaderValidator {
                                                    Try((Json.parse(m) \ "reason").as[String]) getOrElse ((Json.parse(m) \ "Reason").as[String])
                                                  } else
                                                   msg) getOrElse(msg)
+
+  protected lazy val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
+  protected def toDESFormat(empref: String): String = URLDecoder.decode(empref, "UTF-8") match {
+    case emprefParts(part1, _, part2) => part1 + part2
+    case _ => empref
+  }
 }

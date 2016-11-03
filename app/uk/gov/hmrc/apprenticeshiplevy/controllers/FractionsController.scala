@@ -30,7 +30,7 @@ trait FractionsController {
   // scalastyle:off
   def fractions(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    edhConnector.fractions(empref, DateRange(fromDate, toDate)) map { fs =>
+    edhConnector.fractions(toDESFormat(empref), DateRange(fromDate, toDate)) map { fs =>
       Ok(Json.toJson(fs))
     } recover desErrorHandler
   }

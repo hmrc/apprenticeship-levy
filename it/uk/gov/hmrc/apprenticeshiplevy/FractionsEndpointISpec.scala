@@ -31,7 +31,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
         describe (s"with no parameters") {
           it (s"should return fractions") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123AB12345/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
             // test
             val result = route(request).get
@@ -50,7 +50,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
         describe (s"with valid parameters") {
           it (s"?fromDate=2017-09-01 should return fractions") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123AB12345/fractions?fromDate=2017-09-01")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-09-01")
                           .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                        "Environment"->"isit",
                                        "Authorization"->"Bearer 2423324")
@@ -70,7 +70,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
 
           it (s"?toDate=2017-09-01 should return fractions") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123AB12345/fractions?toDate=2017-09-01")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=2017-09-01")
                           .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                        "Environment"->"isit",
                                        "Authorization"->"Bearer 2423324")
