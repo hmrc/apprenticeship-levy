@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.http.Fault
 
 import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.apprenticeshiplevy.data.{FractionCalculation,Fraction}
+import uk.gov.hmrc.apprenticeshiplevy.data.des.{FractionCalculation,Fraction}
 
 @DoNotDiscover
 class FractionsEndpointISpec extends WiremockFunSpec  {
@@ -39,222 +39,220 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
             // check
             contentType(result) shouldBe Some("application/json")
             val json = contentAsJson(result)
-            (json \ "empref").as[String] shouldBe "123/AB12345"
+            (json \ "empref").as[String] shouldBe "123AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
-            val f1 = Seq(Fraction("England", BigDecimal(0.83)),
-                         Fraction("Scotland", BigDecimal(0.11)),
-                         Fraction("Wales", BigDecimal(0.06)),
-                         Fraction("Northern Ireland", BigDecimal(0)))
-            val f2 = Seq(Fraction("England", BigDecimal(0.78)),
-                         Fraction("Scotland", BigDecimal(0.16)),
-                         Fraction("Wales", BigDecimal(0.06)),
-                         Fraction("Northern Ireland", BigDecimal(0)))
-            fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 3, 15),f1), FractionCalculation(new LocalDate(2015, 11, 18),f2))
+            val f1 = List(Fraction("England", BigDecimal(0.83)))
+            val f2 = List(Fraction("England", BigDecimal(0.78)))
+            fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2015, 8, 18),f2))
           }
         }
 
         describe (s"with valid parameters") {
           it (s"?fromDate=2017-09-01 should return fractions") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-09-01").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-09-01")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
 
             // test
             val result = route(request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
-            if (contentAsString(result).contains("NOT_IMPLEMENTED")) {
-              info("NOT_IMPLEMENTED")
-              throw new org.scalatest.exceptions.TestPendingException()
-            } else {
-              val json = contentAsJson(result)
-              (json \ "empref").as[String] shouldBe "123/AB12345"
-              val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
-              val f1 = Seq(Fraction("England", BigDecimal(0.83)),
-                           Fraction("Scotland", BigDecimal(0.11)),
-                           Fraction("Wales", BigDecimal(0.06)),
-                           Fraction("Northern Ireland", BigDecimal(0)))
-              val f2 = Seq(Fraction("England", BigDecimal(0.78)),
-                           Fraction("Scotland", BigDecimal(0.16)),
-                           Fraction("Wales", BigDecimal(0.06)),
-                           Fraction("Northern Ireland", BigDecimal(0)))
-              fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2016, 8, 18),f2))
-            }
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123AB12345"
+            val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
+            val f1 = List(Fraction("England", BigDecimal(0.83)))
+            val f2 = List(Fraction("England", BigDecimal(0.78)))
+            fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2016, 8, 18),f2))
           }
 
           it (s"?toDate=2017-09-01 should return fractions") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=2017-09-01").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=2017-09-01")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
 
             // test
             val result = route(request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
-            if (contentAsString(result).contains("NOT_IMPLEMENTED")) {
-              info("NOT_IMPLEMENTED")
-              throw new org.scalatest.exceptions.TestPendingException()
-            } else {
-              val json = contentAsJson(result)
-              (json \ "empref").as[String] shouldBe "123/AB12345"
-              val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
-              val f1 = Seq(Fraction("England", BigDecimal(0.83)),
-                           Fraction("Scotland", BigDecimal(0.11)),
-                           Fraction("Wales", BigDecimal(0.06)),
-                           Fraction("Northern Ireland", BigDecimal(0)))
-              val f2 = Seq(Fraction("England", BigDecimal(0.78)),
-                           Fraction("Scotland", BigDecimal(0.16)),
-                           Fraction("Wales", BigDecimal(0.06)),
-                           Fraction("Northern Ireland", BigDecimal(0)))
-              fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2016, 8, 18),f2))
-            }
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123AB12345"
+            val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
+            val f1 = List(Fraction("England", BigDecimal(0.83)))
+            val f2 = List(Fraction("England", BigDecimal(0.78)))
+            fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2016, 8, 18),f2))
           }
 
           it (s"?fromDate=2017-08-01&toDate=2017-09-01 should return fractions") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-08-01&toDate=2017-09-01").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123AB12345/fractions?fromDate=2017-08-01&toDate=2017-09-01")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
 
             // test
             val result = route(request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
-            if (contentAsString(result).contains("NOT_IMPLEMENTED")) {
-              info("NOT_IMPLEMENTED")
-              throw new org.scalatest.exceptions.TestPendingException()
-            } else {
-              val json = contentAsJson(result)
-              (json \ "empref").as[String] shouldBe "123/AB12345"
-              val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
-              val f1 = Seq(Fraction("England", BigDecimal(0.83)),
-                           Fraction("Scotland", BigDecimal(0.11)),
-                           Fraction("Wales", BigDecimal(0.06)),
-                           Fraction("Northern Ireland", BigDecimal(0)))
-              val f2 = Seq(Fraction("England", BigDecimal(0.78)),
-                           Fraction("Scotland", BigDecimal(0.16)),
-                           Fraction("Wales", BigDecimal(0.06)),
-                           Fraction("Northern Ireland", BigDecimal(0)))
-              fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2016, 8, 18),f2))
-            }
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123AB12345"
+            val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
+            val f1 = List(Fraction("England", BigDecimal(0.83)))
+            val f2 = List(Fraction("England", BigDecimal(0.78)))
+            fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2016, 8, 18),f2))
           }
         }
 
         describe ("with invalid paramters") {
-          it (s"DES HTTP 400") {
+          it (s"should return http status 400 when DES HTTP 400") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/400/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
-
-            intercept[uk.gov.hmrc.play.http.BadRequestException] {
-              // test
-              val result = route(request).get
-
-              // check
-              status(result) shouldBe 400
-            }
-          }
-
-          it (s"DES HTTP 401") {
-            // set up
-            val request = FakeRequest(GET, s"$context/epaye/401/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
-
-            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
-              // test
-              val result = route(request).get
-
-              // check
-              status(result) shouldBe 401
-            }
-          }
-
-          it (s"DES HTTP 403") {
-            // set up
-            val request = FakeRequest(GET, s"$context/epaye/403/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
-
-            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
-              // test
-              val result = route(request).get
-
-              // check
-              status(result) shouldBe 403
-            }
-          }
-
-          it (s"DES HTTP 404") {
-            // set up
-            val request = FakeRequest(GET, s"$context/epaye/404/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/400/fractions")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
 
             // test
             val result = route(request).get
 
             // check
-            status(result) shouldBe 404
+            status(result) shouldBe 400
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"Bad request error: a backend error"}""")
+          }
+
+          it (s"should return http status 401 when DES HTTP 401") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/401/fractions")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 401
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES unauthorised error: a backend error"}""")
+          }
+
+          it (s"should return http status 403 when DES HTTP 403") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/403/fractions")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 403
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES forbidden error: a backend error"}""")
+          }
+
+          it (s"should return http status 503 when DES HTTP 404") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/404/fractions")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
+
+            // test
+            val result = route(request).get
+
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES endpoint not found: a backend error"}""")
           }
         }
 
         describe ("when backend systems failing") {
-          it (s"should throw IOException? when connection closed") {
+          it (s"should return http status 503 when connection closed") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/malformed/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/malformed/fractions")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
           }
 
-          it (s"should throw TimeoutException? when timed out") {
+          it (s"should return http status 408 when timed out") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/timeout/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/timeout/fractions")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
 
-            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 408
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: GET of 'http://localhost:8080/empref/timeout/fractions' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
           }
 
-          it (s"should throw IOException? when empty response") {
+          it (s"should return http status 503 when empty response") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/empty/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/empty/fractions")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
           }
 
-          it (s"DES HTTP 500") {
+          it (s"should return http status 503 when DES HTTP 500") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/500/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/500/fractions")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 500
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: a backend error"}""")
           }
 
-          it (s"DES HTTP 503") {
+          it (s"should return http status 503 when DES HTTP 503") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/503/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/503/fractions")
+                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                       "Environment"->"isit",
+                                       "Authorization"->"Bearer 2423324")
+            // test
+            val result = route(request).get
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
-
-              // check
-              status(result) shouldBe 503
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: a backend error"}""")
           }
         }
       }

@@ -5,6 +5,9 @@
         "url": "/empref/403/fractions"
     },
     "response": {
-        "status": 403
+        "status": 403,
+        "jsonBody": {
+          "reason": "a backend error"
+        }
     }
 }

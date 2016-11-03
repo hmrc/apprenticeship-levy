@@ -26,6 +26,9 @@ import play.api.mvc.{ActionBuilder, Request, Result, Results, RequestHeader}
 import play.api.http.Status._
 import uk.gov.hmrc.play.http._
 import java.io.IOException
+import scala.util.Try
+import scala.util.matching.Regex
+import java.net.URLDecoder
 
 trait ApiController extends BaseController with HeaderValidator {
 
@@ -42,6 +45,7 @@ trait ApiController extends BaseController with HeaderValidator {
   val withValidAcceptHeader: ActionBuilder[Request] = validateAccept(acceptHeaderValidationRules)
 
   val desErrorHandler: PartialFunction[Throwable, Result] = {
+        case e: BadRequestException => BadRequest(Json.toJson(DESError(SERVICE_UNAVAILABLE, s"Bad request error: ${extractReason(e.getMessage())}")))
         case e: IOException => ServiceUnavailable(Json.toJson(DESError(SERVICE_UNAVAILABLE, s"DES connection error: ${extractReason(e.getMessage())}")))
         case e: GatewayTimeoutException => RequestTimeout(Json.toJson(DESError(REQUEST_TIMEOUT, s"DES not responding error: ${extractReason(e.getMessage())}")))
         case e: NotFoundException => ServiceUnavailable(Json.toJson(DESError(NOT_FOUND, s"DES endpoint not found: ${extractReason(e.getMessage())}")))
@@ -55,12 +59,25 @@ trait ApiController extends BaseController with HeaderValidator {
             case _ => ServiceUnavailable(Json.toJson(DESError(e.reportAs, s"DES 4xx error: ${extractReason(e.getMessage())}")))
           }
         }
-        case e => InternalServerError(Json.toJson(DESError(INTERNAL_SERVER_ERROR, s"API or DES internal server error: ${extractReason(e.getMessage())}")))
+        case e => {
+          InternalServerError(Json.toJson(DESError(INTERNAL_SERVER_ERROR, s"API or DES internal server error: ${extractReason(e.getMessage())}")))
+        }
     }
 
   def selfLink(url: String): HalLink = HalLink("self", url)
 
   def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).withHeaders("Content-Type" -> "application/hal+json")
 
-  protected def extractReason(msg: String) = if (msg.contains("Response body: ")) (Json.parse(msg.substring(msg.indexOf("Response body: ")+16).reverse.substring(1).reverse) \ "reason").as[String] else msg
+  protected def extractReason(msg: String) = Try(if (msg.contains("Response body")) {
+                                                   val str1 = msg.reverse.substring(1).reverse.substring(msg.indexOf("Response body")+14).trim
+                                                   val m = if (str1.startsWith("{")) str1 else str1.substring(str1.indexOf("{"))
+                                                   Try((Json.parse(m) \ "reason").as[String]) getOrElse ((Json.parse(m) \ "Reason").as[String])
+                                                 } else
+                                                  msg) getOrElse(msg)
+
+  protected lazy val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
+  protected def toDESFormat(empref: String): String = URLDecoder.decode(empref, "UTF-8") match {
+    case emprefParts(part1, _, part2) => part1 + part2
+    case _ => empref
+  }
 }
