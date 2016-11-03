@@ -158,7 +158,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES forbidden error: a backend error"}""")
           }
 
-          it (s"should return http status 503 when DES HTTP 404") {
+          it (s"should return http status 404 when DES HTTP 404") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/404/fractions")
                           .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
@@ -169,7 +169,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
             val result = route(request).get
 
             // check
-            status(result) shouldBe 503
+            status(result) shouldBe 404
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES endpoint not found: a backend error"}""")
           }

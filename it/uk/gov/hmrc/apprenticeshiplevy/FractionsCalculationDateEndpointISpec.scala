@@ -103,7 +103,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 503 when DES HTTP 404") {
+          it (s"should return http status 404 when DES HTTP 404") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
@@ -116,7 +116,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             val result = route(request).get
 
             // check
-            status(result) shouldBe 503
+            status(result) shouldBe 404
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES endpoint not found: Not found"}""")
 
