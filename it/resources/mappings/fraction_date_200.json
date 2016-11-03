@@ -1,7 +1,7 @@
 {
     "request": {
         "method": "GET",
-        "url": "/fraction-calculation-date",
+        "url": "/apprenticeship-levy/fraction-calculation-date",
         "headers": {
           "Authorization": {
               "matches": "Bearer (.*)"

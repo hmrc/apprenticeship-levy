@@ -35,7 +35,7 @@ trait EDHConnector {
   def httpGet: HttpGet
 
   def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Fractions] = {
-    val url = (s"$edhBaseUrl/empref/${helper.urlEncode(empref)}/fractions", dateRange.toParams) match {
+    val url = (s"$edhBaseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions", dateRange.toParams) match {
       case (u, Some(params)) => s"$u?$params"
       case (u, None) => u
     }
@@ -46,7 +46,7 @@ trait EDHConnector {
   }
 
   def fractionCalculationDate(implicit hc: HeaderCarrier): Future[LocalDate] = {
-    httpGet.GET[FractionCalculationDate](s"$edhBaseUrl/fraction-calculation-date") map {
+    httpGet.GET[FractionCalculationDate](s"$edhBaseUrl/apprenticeship-levy/fraction-calculation-date") map {
       _.date
     }
   }

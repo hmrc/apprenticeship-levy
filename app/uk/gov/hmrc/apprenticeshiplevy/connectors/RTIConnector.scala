@@ -18,12 +18,13 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
-import uk.gov.hmrc.apprenticeshiplevy.domain.EmploymentCheckStatus
+import uk.gov.hmrc.apprenticeshiplevy.data.des.{EmploymentCheckStatus,NinoUnknown}
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, NotFoundException}
 import views.html.helper
 
 import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 trait RTIConnector {
 
@@ -46,13 +47,13 @@ trait RTIConnector {
   }
 
   def check(empref: String, nino: String, dateRange: ClosedDateRange)(implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
-    val url = s"$rtiBaseUrl/empref/${helper.urlEncode(empref)}/employee/${helper.urlEncode(nino)}?${dateRange.paramString}"
+    val url = s"$rtiBaseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?${dateRange.paramString}"
 
     // $COVERAGE-OFF$
     Logger.debug(s"Calling RTI at $url")
     // $COVERAGE-ON$
 
-    httpGet.GET[EmploymentCheckStatus](url)
+    httpGet.GET[EmploymentCheckStatus](url) recover { case notFound: NotFoundException => NinoUnknown }
   }
 }
 

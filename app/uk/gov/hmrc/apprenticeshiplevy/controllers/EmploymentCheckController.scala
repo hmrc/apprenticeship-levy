@@ -20,7 +20,8 @@ import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.RTIConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNinoNotVisible
-import uk.gov.hmrc.apprenticeshiplevy.domain.{Employed, EmploymentCheck, NinoUnknown, NotEmployed}
+import uk.gov.hmrc.apprenticeshiplevy.data.des.{Employed, NinoUnknown, NotEmployed}
+import uk.gov.hmrc.apprenticeshiplevy.domain.EmploymentCheck
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
@@ -33,7 +34,7 @@ trait EmploymentCheckController extends ApiController {
   // scalastyle:off
   def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    rtiConnector.check(empref, nino, ClosedDateRange(fromDate, toDate)).map {
+    rtiConnector.check(toDESFormat(empref), nino, ClosedDateRange(fromDate, toDate)).map {
       case Employed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = true)))
       case NotEmployed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = false)))
       case NinoUnknown => ErrorNinoNotVisible.toResult
