@@ -48,7 +48,7 @@ trait ApiController extends BaseController with HeaderValidator {
         case e: BadRequestException => BadRequest(Json.toJson(DESError(SERVICE_UNAVAILABLE, s"Bad request error: ${extractReason(e.getMessage())}")))
         case e: IOException => ServiceUnavailable(Json.toJson(DESError(SERVICE_UNAVAILABLE, s"DES connection error: ${extractReason(e.getMessage())}")))
         case e: GatewayTimeoutException => RequestTimeout(Json.toJson(DESError(REQUEST_TIMEOUT, s"DES not responding error: ${extractReason(e.getMessage())}")))
-        case e: NotFoundException => ServiceUnavailable(Json.toJson(DESError(NOT_FOUND, s"DES endpoint not found: ${extractReason(e.getMessage())}")))
+        case e: NotFoundException => NotFound(Json.toJson(DESError(NOT_FOUND, s"DES endpoint not found: ${extractReason(e.getMessage())}")))
         case e: Upstream5xxResponse => ServiceUnavailable(Json.toJson(DESError(e.reportAs, s"DES 5xx error: ${extractReason(e.getMessage())}")))
         case e: Upstream4xxResponse => {
           e.upstreamResponseCode match {
