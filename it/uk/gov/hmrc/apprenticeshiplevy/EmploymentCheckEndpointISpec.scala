@@ -63,12 +63,10 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
           }
         }
 
-        /*describe ("with invalid paramters") {
+        describe ("with invalid paramters") {
           it (s"should return 404 when empref is unknown") {
-            info("why getting 401 in live as opposed to 404 for sandbox????")
-
             // set up
-            //WiremockService.notifier.testInformer = NullInformer.info
+            WiremockService.notifier.testInformer = NullInformer.info
             val emprefs = for { empref <- genEmpref } yield empref
 
             forAll(emprefs) { (empref: String) =>
@@ -81,6 +79,8 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
                 // check
                 httpStatus shouldBe 404
+                contentType(result) shouldBe Some("application/json")
+                contentAsJson(result) shouldBe Json.parse("""{"code":"EPAYE_NINO_UNKNOWN","message":"The provided NINO was not recognised"}""")
               }
             }
           }
@@ -95,11 +95,13 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
                 val request = FakeRequest(GET, s"$context/epaye/AB12345/employed/${helper.urlEncode(nino)}?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
                 // test
-                val documentationResult = route(request).get
-                val httpStatus = status(documentationResult)
+                val result = route(request).get
+                val httpStatus = status(result)
 
                 // check
                 httpStatus shouldBe 404
+                contentType(result) shouldBe Some("application/json")
+                contentAsJson(result) shouldBe Json.parse("""{"code":"EPAYE_NINO_UNKNOWN","message":"The provided NINO was not recognised"}""")
               }
             }
           }
@@ -119,11 +121,13 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
                   val request = FakeRequest(GET, requestUrl).withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
                   // test
-                  val documentationResult = route(request).get
-                  val httpStatus = status(documentationResult)
+                  val result = route(request).get
+                  val httpStatus = status(result)
 
                   // check
                   httpStatus shouldBe 400
+                  contentType(result) shouldBe Some("application/json")
+                  contentAsJson(result) shouldBe Json.parse("""{"statusCode":400,"message":"date parameter is in the wrong format. Should be (yyyy-MM-dd)"}""")
                 }
               }
             }
@@ -131,122 +135,126 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return 400 when to date is before from date") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/AB12345/employed/QQ123456C?fromDate=2015-06-03&toDate=2014-06-03}").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/400/employed/QQ123456C?fromDate=2015-06-03&toDate=2015-03-30}").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
             // test
-            val documentationResult = route(request).get
-            val httpStatus = status(documentationResult)
+            val result = route(request).get
+            val httpStatus = status(result)
 
             // check
             httpStatus shouldBe 400
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":400,"message":"date parameter is in the wrong format. Should be (yyyy-MM-dd)"}""")
           }
 
-          it (s"should throw IOException? when DES returns 400") {
+          it (s"should return 400 when DES returns 400") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/404/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/400/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
-            intercept[uk.gov.hmrc.play.http.BadRequestException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            val httpStatus = status(result)
+            httpStatus shouldBe 400
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"Bad request error: Not found"}""")
           }
 
-          it (s"should throw IOException? when DES returns 401") {
+          it (s"should return http status 401 when DES returns 401") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/401/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
-            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            val httpStatus = status(result)
+            httpStatus shouldBe 401
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES unauthorised error: Not authorized"}""")
           }
 
-          it (s"should throw IOException? when DES returns 403") {
+          it (s"should return http status 403 when DES returns 403") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/403/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
-            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 403
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES forbidden error: Forbidden"}""")
           }
         }
 
         describe ("when backend systems failing") {
-          it (s"should throw IOException? when connection closed") {
+          it (s"should return 503 when connection closed") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/malformed/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
           }
 
-          it (s"and response is empty it should throw IOException?") {
+          it (s"should return http status 503 when empty response") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/empty/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
           }
 
-          it (s"should throw TimeoutException? when timed out") {
+          it (s"should return http status 408 when timed out") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/timeout/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
-            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 408
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: GET of 'http://localhost:8080/apprenticeship-levy/employers/timeout/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
           }
 
-          it (s"DES HTTP 500") {
+          it (s"should return http status 503 when DES HTTP 500") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/500/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 500
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: Not found"}""")
           }
 
-          it (s"DES HTTP 503") {
+          it (s"should return http status 503 when DES HTTP 503") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/503/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 503
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: Not found"}""")
           }
-        }*/
+        }
       }
     }
   }
