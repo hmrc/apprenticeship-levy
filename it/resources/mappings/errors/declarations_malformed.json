@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/malformed/eps"
+        "url": "/rti/employers/malformed/employer-payment-summary"
     },
      "response": {
         "fault": "MALFORMED_RESPONSE_CHUNK"

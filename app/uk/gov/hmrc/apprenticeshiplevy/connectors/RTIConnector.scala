@@ -34,7 +34,7 @@ trait RTIConnector {
 
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[EmployerPaymentSummary]] = {
 
-    val url = (s"$rtiBaseUrl/epaye/${helper.urlEncode(empref)}/eps", dateRange.toParams) match {
+    val url = (s"$rtiBaseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary", dateRange.toParams) match {
       case (u, None) => u
       case (u, Some(ps)) => s"$u?$ps"
     }

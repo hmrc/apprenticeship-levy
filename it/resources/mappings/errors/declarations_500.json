@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/500/eps"
+        "url": "/rti/employers/500/employer-payment-summary"
     },
     "response": {
         "status": 500
