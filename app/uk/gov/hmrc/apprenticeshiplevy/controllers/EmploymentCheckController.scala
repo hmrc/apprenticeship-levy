@@ -38,6 +38,6 @@ trait EmploymentCheckController extends ApiController {
       case Employed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = true)))
       case NotEmployed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = false)))
       case NinoUnknown => ErrorNinoNotVisible.toResult
-    }
+    } recover desErrorHandler
   }
 }

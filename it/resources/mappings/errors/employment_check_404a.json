@@ -1,10 +1,13 @@
 {
-    "priority": 99,
+    "priority": 2,
     "request": {
         "method": "GET",
         "urlPattern": "/apprenticeship-levy/employers/([a-zA-Z0-9%]+)/employed/([a-zA-Z0-9]+)"
     },
     "response": {
-        "status": 404
+        "status": 404,
+        "jsonBody": {
+          "reason": "Not found"
+        }
     }
 }

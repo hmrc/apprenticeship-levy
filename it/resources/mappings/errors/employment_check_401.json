@@ -5,6 +5,9 @@
         "url": "/apprenticeship-levy/employers/401/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30"
     },
     "response": {
-        "status": 401
+        "status": 401,
+        "jsonBody": {
+          "reason": "Not authorized"
+        }
     }
 }

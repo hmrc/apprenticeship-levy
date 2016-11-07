@@ -5,6 +5,9 @@
         "url": "/apprenticeship-levy/employers/503/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30"
     },
     "response": {
-        "status": 503
+        "status": 503,
+        "jsonBody": {
+          "reason": "Not found"
+        }
     }
 }

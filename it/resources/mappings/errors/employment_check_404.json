@@ -5,6 +5,9 @@
         "url": "/epaye/^([a-zA-Z0-9]*)/designatory-details"
     },
     "response": {
-        "status": 404
+        "status": 404,
+        "jsonBody": {
+          "reason": "Not found"
+        }
     }
 }
