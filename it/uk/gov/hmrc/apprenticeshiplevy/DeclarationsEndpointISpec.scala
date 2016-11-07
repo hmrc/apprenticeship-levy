@@ -44,18 +44,73 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations should contain atLeastOneOf (LevyDeclaration(6573215454L,
-                                                                      new LocalDateTime(2016, 4, 20, 14, 25, 32, 0),
-                                                                      None,
-                                                                      Some(new LocalDate(2016, 8, 6)),
-                                                                      Some(new LocalDate(2016, 11, 5))),
-                                                      LevyDeclaration(12345684,
-                                                                      new LocalDateTime(2016, 10, 15, 16, 5, 23, 123),
-                                                                      Some(new LocalDate(2016, 9, 5))),
-                                                      LevyDeclaration(12345679,
-                                                                      new LocalDateTime(2015, 4, 7, 16, 5, 23, 123),
-                                                                      payrollPeriod=Some(PayrollPeriod("15-16", 12)),
-                                                                      noPaymentForPeriod=Some(true)))
+            declarations.size shouldBe 9
+            info(declarations.mkString("\n"))
+          }
+
+          it (s"should handle no payment period") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123/AB12345"
+            val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
+            declarations(0) shouldBe LevyDeclaration(56774248744L,new LocalDateTime(2016, 5, 20, 14, 25, 32),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true))
+          }
+
+          it (s"should handle inactive period") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123/AB12345"
+            val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
+            declarations(3) shouldBe LevyDeclaration(6573215455L,new LocalDateTime(2016,4,20,14,25,32),None,Some(new LocalDate(2016,8,6)),Some(new LocalDate(2016,11,5)))
+          }
+
+          it (s"should handle ceased trading") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123/AB12345"
+            val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
+            declarations(4) shouldBe LevyDeclaration(56774248742L,new LocalDateTime(2016,4,20,14,25,32),Some(new LocalDate(2016,6,6)))
+          }
+
+          it (s"should handle levies") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123/AB12345"
+            val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
+            declarations(1) shouldBe LevyDeclaration(56774248743L,new LocalDateTime(2016,5,20,14,25,32),None,None,None,Some(PayrollPeriod("16-17",2)),Some(98.64),Some(15000))
+            declarations(2) shouldBe LevyDeclaration(6573215455L,new LocalDateTime(2016,4,20,14,25,32),None,None,None,Some(PayrollPeriod("16-17",2)),Some(124.27),Some(15000))
           }
         }
 

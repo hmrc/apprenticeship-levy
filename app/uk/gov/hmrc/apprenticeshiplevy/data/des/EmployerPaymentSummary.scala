@@ -19,11 +19,16 @@ package uk.gov.hmrc.apprenticeshiplevy.data.des
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
+import org.joda.time.DateTimeConstants.APRIL
+import org.joda.time.Months.monthsBetween
+import org.joda.time._
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{LocalDate, LocalDateTime}
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FinalSubmission._
+import uk.gov.hmrc.apprenticeshiplevy.data._
+import scala.util.{Try, Success, Failure}
 
 case class EmployerPaymentSummary(submissionId: Long,
                                   hmrcSubmissionTime: LocalDateTime,
@@ -37,6 +42,57 @@ case class EmployerPaymentSummary(submissionId: Long,
                                   questionsAndDeclarations: Option[QuestionsAndDeclaration])
 
 object EmployerPaymentSummary {
+  val TAX_YEAR_START_DAY = 6
+  val BeginningOfTaxYear = new MonthDay(APRIL, TAX_YEAR_START_DAY)
+
+  private def calculateTaxMonth(to: LocalDate) = {
+    val monthDay = new MonthDay(to.getMonthOfYear, to.getDayOfMonth)
+    val yearReference = if (monthDay.isBefore(BeginningOfTaxYear)) to.getYear - 1 else to.getYear
+    monthsBetween(new LocalDate(yearReference, APRIL, TAX_YEAR_START_DAY), to).getMonths + 1
+  }
+
+  private val toNoPayment: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
+    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, Some(dr), _, _, _, _, _) =>
+      LevyDeclaration(id,
+                      hmrcSt,
+                      payrollPeriod = Some(PayrollPeriod(ty, calculateTaxMonth(dr.to))),
+                      noPaymentForPeriod = Some(true))
+  }
+
+  private val toInactive: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
+    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, Some(dr), _, _, _, _) =>
+      LevyDeclaration(id,
+                      hmrcSt,
+                      inactiveFrom = Some(dr.from),
+                      inactiveTo = Some(dr.to))
+  }
+
+  private val toLevyDeclaration: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
+    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, _, _, Some(al), _, _) =>
+      LevyDeclaration(id,
+                      hmrcSt,
+                      payrollPeriod = Some(PayrollPeriod(ty, al.taxMonth.toInt)),
+                      levyDueYTD=Some(al.amountDue),
+                      levyAllowanceForFullYear=Some(al.amountAllowance))
+  }
+
+  private val toCeased: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
+    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, _, _, _, Some(SchemeCeased(_, schemeCeasedDate, _)), _) =>
+      LevyDeclaration(id, hmrcSt, dateCeased = Some(schemeCeasedDate))
+  }
+
+  val conversions = Seq(toNoPayment,toInactive,toLevyDeclaration,toCeased)
+
+  implicit def toDeclarations(eps: EmployerPaymentSummary): Seq[LevyDeclaration] = convert[EmployerPaymentSummary,LevyDeclaration](conversions)(eps)
+
+  implicit def convert[T,U](partialFunctions: Seq[PartialFunction[T,U]])(t: T): Seq[U] =
+    partialFunctions.foldLeft(Seq.empty[U]) { (seq, pf) =>
+      Try(pf(t)) match {
+        case Success(converted) => seq :+ converted
+        case Failure(_) => seq
+      }
+    }
+
   implicit val dateRangeFormat = Json.format[ClosedDateRange]
 
   implicit val jodaDateTimeFormat = new Format[LocalDateTime] {
