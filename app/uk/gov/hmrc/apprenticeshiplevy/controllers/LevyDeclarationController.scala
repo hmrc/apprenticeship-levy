@@ -22,9 +22,10 @@ import org.joda.time._
 import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{EmployerPaymentSummary, RTIConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.RTIConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, NotFoundException}
@@ -47,9 +48,9 @@ trait LevyDeclarationController {
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
 
-    rtiConnector.eps(empref, dateRange).map { lds =>
-      val declarations = lds.collect(convertToDeclaration)
-      if (declarations.size != lds.size) {
+    rtiConnector.eps(empref, dateRange).map { employerPayments =>
+      val declarations = employerPayments.eps.collect(convertToDeclaration)
+      if (declarations.size != employerPayments.eps.size) {
         Logger.warn("Unable to convert some of the declarations retrieved from EPS.")
       }
       declarations
@@ -73,33 +74,24 @@ trait LevyDeclarationController {
   }
 
   private[controllers] val convertToDeclaration: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
-    case eps if eps.finalSubmission.exists(_.dateSchemeCeased.isDefined) =>
-      LevyDeclaration(eps.eventId, eps.submissionTime,
-        dateCeased = eps.finalSubmission.flatMap {
-          fs => fs.dateSchemeCeased
-        })
-    case eps if eps.periodOfInactivity.isDefined =>
-      LevyDeclaration(eps.eventId, eps.submissionTime,
-        inactiveFrom = eps.periodOfInactivity.map(_.from),
-        inactiveTo = eps.periodOfInactivity.map(_.to))
-    case eps if eps.apprenticeshipLevy.isDefined =>
-      LevyDeclaration(eps.eventId, eps.submissionTime,
-        payrollPeriod = eps.apprenticeshipLevy.map { al => PayrollPeriod(
-          year = eps.relatedTaxYear,
-          month = al.taxMonth)
-        },
-        levyDueYTD = eps.apprenticeshipLevy.map { al => al.levyDueYTD },
-        levyAllowanceForFullYear = eps.apprenticeshipLevy.map { al => al.annualAllce }
-      )
-    case eps if eps.noPaymentForPeriod.exists(_.equalsIgnoreCase("yes")) =>
-      LevyDeclaration(eps.eventId, eps.submissionTime,
-        payrollPeriod = Some(PayrollPeriod(
-          year = eps.relatedTaxYear,
-          month = calculateTaxMonth(eps.noPaymentDates
-            .map(_.to)
-            .getOrElse(throw new RuntimeException("a NoPaymentDates element was expected")))
-        )),
-        noPaymentForPeriod = Some(true))
+    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, Some(dr), _, _, _, _, _) =>
+      LevyDeclaration(id,
+                      hmrcSt,
+                      payrollPeriod = Some(PayrollPeriod(ty, calculateTaxMonth(dr.to))),
+                      noPaymentForPeriod = Some(true))
+    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, Some(dr), _, _, _, _) =>
+      LevyDeclaration(id,
+                      hmrcSt,
+                      inactiveFrom = Some(dr.from),
+                      inactiveTo = Some(dr.to))
+    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, _, _, _, Some(SchemeCeased(_, schemeCeasedDate, _)), _) =>
+      LevyDeclaration(id, hmrcSt, dateCeased = Some(schemeCeasedDate))
+    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, _, _, Some(al), _, _) =>
+      LevyDeclaration(id,
+                      hmrcSt,
+                      payrollPeriod = Some(PayrollPeriod(ty, al.taxMonth.toInt)),
+                      levyDueYTD=Some(al.amountDue),
+                      levyAllowanceForFullYear=Some(al.amountAllowance))
   }
 
   val TAX_YEAR_START_DAY = 6
