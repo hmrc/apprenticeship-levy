@@ -34,24 +34,24 @@ case class EmployerPaymentSummary(submissionId: Long,
                                   hmrcSubmissionTime: LocalDateTime,
                                   rtiSubmissionTime: LocalDateTime,
                                   taxYear: String,
-                                  noPaymentPeriod: Option[ClosedDateRange],
-                                  inactivePeriod: Option[ClosedDateRange],
-                                  employmentAllowanceInd: Option[Boolean],
-                                  apprenticeshipLevy: Option[ApprenticeshipLevy],
-                                  finalSubmission: Option[FinalSubmission],
-                                  questionsAndDeclarations: Option[QuestionsAndDeclaration])
+                                  noPaymentPeriod: Option[ClosedDateRange] = None,
+                                  inactivePeriod: Option[ClosedDateRange] = None,
+                                  employmentAllowanceInd: Option[Boolean] = None,
+                                  apprenticeshipLevy: Option[ApprenticeshipLevy] = None,
+                                  finalSubmission: Option[FinalSubmission] = None,
+                                  questionsAndDeclarations: Option[QuestionsAndDeclaration] = None)
 
 object EmployerPaymentSummary {
   val TAX_YEAR_START_DAY = 6
   val BeginningOfTaxYear = new MonthDay(APRIL, TAX_YEAR_START_DAY)
 
-  private def calculateTaxMonth(to: LocalDate) = {
+  private[des] def calculateTaxMonth(to: LocalDate) = {
     val monthDay = new MonthDay(to.getMonthOfYear, to.getDayOfMonth)
     val yearReference = if (monthDay.isBefore(BeginningOfTaxYear)) to.getYear - 1 else to.getYear
     monthsBetween(new LocalDate(yearReference, APRIL, TAX_YEAR_START_DAY), to).getMonths + 1
   }
 
-  private val toNoPayment: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
+  private[des] val toNoPayment: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
     case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, Some(dr), _, _, _, _, _) =>
       LevyDeclaration(id,
                       hmrcSt,
@@ -59,7 +59,7 @@ object EmployerPaymentSummary {
                       noPaymentForPeriod = Some(true))
   }
 
-  private val toInactive: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
+  private[des] val toInactive: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
     case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, Some(dr), _, _, _, _) =>
       LevyDeclaration(id,
                       hmrcSt,
@@ -67,7 +67,7 @@ object EmployerPaymentSummary {
                       inactiveTo = Some(dr.to))
   }
 
-  private val toLevyDeclaration: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
+  private[des] val toLevyDeclaration: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
     case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, _, _, Some(al), _, _) =>
       LevyDeclaration(id,
                       hmrcSt,
@@ -76,7 +76,7 @@ object EmployerPaymentSummary {
                       levyAllowanceForFullYear=Some(al.amountAllowance))
   }
 
-  private val toCeased: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
+  private[des] val toCeased: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
     case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, _, _, _, Some(SchemeCeased(_, schemeCeasedDate, _)), _) =>
       LevyDeclaration(id, hmrcSt, dateCeased = Some(schemeCeasedDate))
   }
