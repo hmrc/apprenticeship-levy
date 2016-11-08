@@ -83,9 +83,9 @@ object EmployerPaymentSummary {
 
   val conversions = Seq(toNoPayment,toInactive,toLevyDeclaration,toCeased)
 
-  implicit def toDeclarations(eps: EmployerPaymentSummary): Seq[LevyDeclaration] = convert[EmployerPaymentSummary,LevyDeclaration](conversions)(eps)
+  def toDeclarations(eps: EmployerPaymentSummary): Seq[LevyDeclaration] = convert[EmployerPaymentSummary,LevyDeclaration](conversions)(eps)
 
-  implicit def convert[T,U](partialFunctions: Seq[PartialFunction[T,U]])(t: T): Seq[U] =
+  def convert[T,U](partialFunctions: Seq[PartialFunction[T,U]])(t: T): Seq[U] =
     partialFunctions.foldLeft(Seq.empty[U]) { (seq, pf) =>
       Try(pf(t)) match {
         case Success(converted) => seq :+ converted

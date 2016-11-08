@@ -25,7 +25,7 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.RTIConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollPeriod}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
+import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange,ClosedDateRange}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, NotFoundException}
 
@@ -41,7 +41,7 @@ trait LevyDeclarationController {
   // scalastyle:off
   def declarations(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    retrieveDeclarations(empref, DateRange(fromDate, toDate))
+    retrieveDeclarations(empref, toDateRange(fromDate, toDate))
       .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, empref))
   }
 
@@ -57,6 +57,11 @@ trait LevyDeclarationController {
         case t: NotFoundException => Seq.empty
       }
   }
+
+  private[controllers] def toDateRange(fromDate: Option[LocalDate], toDate: Option[LocalDate]): DateRange = if (fromDate.isDefined && toDate.isDefined)
+     DateRange(fromDate, toDate)
+   else
+     ClosedDateRange(new LocalDate().minusYears(6), new LocalDate())
 
   private[controllers] def buildResult(ds: Seq[LevyDeclaration], empref: String): Result = {
     if (ds.nonEmpty) {
