@@ -13,6 +13,9 @@
         }
     },
     "response": {
-        "status": 500
+        "status": 500,
+        "jsonBody": {
+          "reason": "DES internal error"
+        }
     }
 }

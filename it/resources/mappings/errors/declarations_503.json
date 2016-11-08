@@ -13,6 +13,9 @@
         }
     },
     "response": {
-        "status": 503
+        "status": 503,
+        "jsonBody": {
+          "reason": "Backend system error"
+        }
     }
 }

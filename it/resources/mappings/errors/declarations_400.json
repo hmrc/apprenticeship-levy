@@ -13,6 +13,9 @@
         }
     },
     "response": {
-        "status": 400
+        "status": 400,
+        "jsonBody": {
+          "reason": "Bad request"
+        }
     }
 }

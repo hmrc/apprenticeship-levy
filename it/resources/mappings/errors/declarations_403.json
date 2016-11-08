@@ -13,6 +13,9 @@
         }
     },
     "response": {
-        "status": 403
+        "status": 403,
+        "jsonBody": {
+          "reason": "Forbidden"
+        }
     }
 }

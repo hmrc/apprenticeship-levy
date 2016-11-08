@@ -43,6 +43,7 @@ trait LevyDeclarationController {
   // scalastyle:on
     retrieveDeclarations(empref, toDateRange(fromDate, toDate))
       .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, empref))
+      .recover(desErrorHandler)
   }
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
