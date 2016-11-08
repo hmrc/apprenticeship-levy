@@ -25,6 +25,9 @@ trait WiremockConfig extends BeforeAndAfterEach with Informing {
 trait WiremockSpec extends UnitSpec with GeneratorDrivenPropertyChecks with IntegrationTestConfig with WiremockConfig
 
 trait WiremockFunSpec extends FunSpec with GeneratorDrivenPropertyChecks with WiremockConfig with IntegrationTestConfig {
+    def standardDesHeaders(): Seq[(String,String)] = Seq(("ACCEPT"->"application/vnd.hmrc.1.0+json"),
+                                                         ("Environment"->"isit"),
+                                                         ("Authorization"->"Bearer 2423324"))
     def genEmpref: Gen[String] = (for {
       c <- Gen.alphaLowerChar
       cs <- Gen.listOf(Gen.alphaNumChar)

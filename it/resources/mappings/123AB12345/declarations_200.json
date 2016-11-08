@@ -2,158 +2,125 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/123%2FAB12345/eps"
+        "urlPattern": "/rti/employers/123%2FAB12345/employer-payment-summary\\?fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live)"
+          }
+        }
     },
     "response": {
         "status": 200,
         "headers": { "Content-Type": "application/json; charset=utf-8" },
-        "jsonBody": [
-  {
-    "eventId": 12345684,
-    "submissionTime": "2016-10-15T16:05:23.123",
-    "empRefs": {
-      "officeNumber": "123",
-      "payeRef": "123\/AB12345",
-      "aoRef": "123PQ7654321X"
+        "jsonBody": {
+  "empref": "123AB12345",
+  "eps": [
+    {
+      "submissionId": 56774248741,
+      "hmrcSubmissionTime": "2016-04-20T14:25:32",
+      "rtiSubmissionTime": "2016-04-20T14:31:02",
+      "taxYear": "16-17",
+      "noPaymentPeriod": {
+        "from": "2016-08-13",
+        "to": "2016-11-22"
+      },
+      "employmentAllowanceInd": true,
+      "apprenticeshipLevy": {
+        "amountDue": 24.27,
+        "taxMonth": "11",
+        "amountAllowance": 15000
+      },
+      "finalSubmission": {
+        "forYear": true
+      },
+      "questionsAndDeclarations": {
+        "freeOfTaxPaymentsMadeToEmployee": true,
+        "expensesVouchersOrBenefitsFromOthers": true,
+        "personEmployedOutsideUKWorkedFor30DaysOrMore": true,
+        "payToSomeoneElse": true,
+        "p11DFormsDue": true,
+        "serviceCompany": true
+      }
     },
-    "account": {
-      "accountHoldersName": "Mr. James T Bacon",
-      "accountNo": "12345678",
-      "sortCode": "123456",
-      "buildingSocRef": "SMITH-(123)"
+    {
+      "submissionId": 56774248742,
+      "hmrcSubmissionTime": "2016-04-20T14:25:32",
+      "rtiSubmissionTime": "2016-04-20T14:31:02",
+      "taxYear": "16-17",
+      "noPaymentPeriod": {
+        "from": "2016-08-13",
+        "to": "2016-11-22"
+      },
+      "employmentAllowanceInd": true,
+      "apprenticeshipLevy": {
+        "amountDue": 24.27,
+        "taxMonth": "11",
+        "amountAllowance": 15000
+      },
+      "finalSubmission": {
+        "schemeCeased": true,
+        "schemeCeasedDate": "2016-06-06"
+      },
+      "questionsAndDeclarations": {
+        "freeOfTaxPaymentsMadeToEmployee": true,
+        "expensesVouchersOrBenefitsFromOthers": true,
+        "personEmployedOutsideUKWorkedFor30DaysOrMore": true,
+        "payToSomeoneElse": true,
+        "p11DFormsDue": true,
+        "serviceCompany": true
+      }
     },
-    "relatedTaxYear": "16-17",
-    "finalSubmission": {
-      "becauseSchemeCeased": "yes",
-      "dateSchemeCeased": "2016-09-05",
-      "forYear": "yes"
+    {
+      "submissionId": 56774248743,
+      "hmrcSubmissionTime": "2016-05-20T14:25:32",
+      "rtiSubmissionTime": "2016-05-20T14:31:02",
+      "taxYear": "16-17",
+      "employmentAllowanceInd": true,
+      "apprenticeshipLevy": {
+        "amountDue": 98.64,
+        "taxMonth": "02",
+        "amountAllowance": 15000
+      },
+      "questionsAndDeclarations": {
+        "freeOfTaxPaymentsMadeToEmployee": true,
+        "expensesVouchersOrBenefitsFromOthers": true,
+        "personEmployedOutsideUKWorkedFor30DaysOrMore": true,
+        "payToSomeoneElse": true,
+        "p11DFormsDue": true,
+        "serviceCompany": true
+      }
+    },
+    {
+      "submissionId": 56774248744,
+      "hmrcSubmissionTime": "2016-05-20T14:25:32",
+      "rtiSubmissionTime": "2016-05-20T14:31:02",
+      "taxYear": "16-17",
+      "employmentAllowanceInd": true,
+      "noPaymentPeriod": {
+        "from": "2016-08-13",
+        "to": "2016-11-22"
+      }
+    },
+    {
+      "submissionId": 6573215455,
+      "hmrcSubmissionTime": "2016-04-20T14:25:32",
+      "rtiSubmissionTime": "2016-04-20T14:31:02",
+      "taxYear": "16-17",
+      "inactivePeriod": {
+        "from": "2016-08-06",
+        "to": "2016-11-05"
+      },
+      "employmentAllowanceInd": false,
+      "apprenticeshipLevy": {
+        "amountDue": 124.27,
+        "taxMonth": "2",
+        "amountAllowance": 15000
+      }
     }
-  },
-  {
-    "eventId": 12345683,
-    "submissionTime": "2016-07-15T16:05:23.123",
-    "empRefs": {
-      "officeNumber": "123",
-      "payeRef": "123\/AB12345",
-      "aoRef": "123PQ7654321X"
-    },
-    "periodOfInactivity": {
-      "from": "2016-06-06",
-      "to": "2016-09-05"
-    },
-    "account": {
-      "accountHoldersName": "Mr. James T Bacon",
-      "accountNo": "12345678",
-      "sortCode": "123456",
-      "buildingSocRef": "SMITH-(123)"
-    },
-    "relatedTaxYear": "16-17"
-  },
-  {
-    "eventId": 12345682,
-    "submissionTime": "2016-06-15T16:20:23.000",
-    "empRefs": {
-      "officeNumber": "123",
-      "payeRef": "123\/AB12345",
-      "aoRef": "123PQ7654321X"
-    },
-    "apprenticeshipLevy": {
-      "levyDueYTD": 200,
-      "taxMonth": 2,
-      "annualAllce": 15000
-    },
-    "account": {
-      "accountHoldersName": "Mr. James T Bacon",
-      "accountNo": "12345678",
-      "sortCode": "123456",
-      "buildingSocRef": "SMITH-(123)"
-    },
-    "relatedTaxYear": "16-17"
-  },
-  {
-    "eventId": 12345681,
-    "submissionTime": "2016-06-07T16:05:23.123",
-    "empRefs": {
-      "officeNumber": "123",
-      "payeRef": "123\/AB12345",
-      "aoRef": "123PQ7654321X"
-    },
-    "apprenticeshipLevy": {
-      "levyDueYTD": 1000,
-      "taxMonth": 2,
-      "annualAllce": 15000
-    },
-    "account": {
-      "accountHoldersName": "Mr. James T Bacon",
-      "accountNo": "12345678",
-      "sortCode": "123456",
-      "buildingSocRef": "SMITH-(123)"
-    },
-    "relatedTaxYear": "16-17"
-  },
-  {
-    "eventId": 12345680,
-    "submissionTime": "2016-05-07T16:05:23.123",
-    "empRefs": {
-      "officeNumber": "123",
-      "payeRef": "123\/AB12345",
-      "aoRef": "123PQ7654321X"
-    },
-    "apprenticeshipLevy": {
-      "levyDueYTD": 500,
-      "taxMonth": 1,
-      "annualAllce": 15000
-    },
-    "account": {
-      "accountHoldersName": "Mr. James T Bacon",
-      "accountNo": "12345678",
-      "sortCode": "123456",
-      "buildingSocRef": "SMITH-(123)"
-    },
-    "relatedTaxYear": "16-17"
-  },
-  {
-    "eventId": 12345679,
-    "submissionTime": "2015-04-07T16:05:23.123",
-    "empRefs": {
-      "officeNumber": "123",
-      "payeRef": "123\/AB12345",
-      "aoRef": "123PQ7654321X"
-    },
-    "noPaymentForPeriod": "yes",
-    "noPaymentDates": {
-      "from": "2016-03-06",
-      "to": "2016-04-05"
-    },
-    "account": {
-      "accountHoldersName": "Mr. James T Bacon",
-      "accountNo": "12345678",
-      "sortCode": "123456",
-      "buildingSocRef": "SMITH-(123)"
-    },
-    "relatedTaxYear": "15-16"
-  },
-  {
-    "eventId": 12345678,
-    "submissionTime": "2016-07-14T16:05:23.123",
-    "empRefs": {
-      "officeNumber": "123",
-      "payeRef": "123\/AB12345",
-      "aoRef": "123PQ7654321X"
-    },
-    "apprenticeshipLevy": {
-      "levyDueYTD": 600,
-      "taxMonth": 11,
-      "annualAllce": 15000
-    },
-    "account": {
-      "accountHoldersName": "Mr. James T Bacon",
-      "accountNo": "12345678",
-      "sortCode": "123456",
-      "buildingSocRef": "SMITH-(123)"
-    },
-    "relatedTaxYear": "16-17"
-  }
-]
+  ]
+}
     }
 }

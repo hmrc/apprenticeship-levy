@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
-import uk.gov.hmrc.apprenticeshiplevy.data.des.{EmploymentCheckStatus,NinoUnknown}
+import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, NotFoundException}
 import views.html.helper
@@ -32,9 +32,9 @@ trait RTIConnector {
 
   def httpGet: HttpGet
 
-  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[EmployerPaymentSummary]] = {
+  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[EmployerPaymentsSummary] = {
 
-    val url = (s"$rtiBaseUrl/epaye/${helper.urlEncode(empref)}/eps", dateRange.toParams) match {
+    val url = (s"$rtiBaseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary", dateRange.toParams) match {
       case (u, None) => u
       case (u, Some(ps)) => s"$u?$ps"
     }
@@ -43,7 +43,7 @@ trait RTIConnector {
     Logger.debug(s"Calling RTI at $url")
     // $COVERAGE-ON$
 
-    httpGet.GET[Seq[EmployerPaymentSummary]](url)
+    httpGet.GET[EmployerPaymentsSummary](url)
   }
 
   def check(empref: String, nino: String, dateRange: ClosedDateRange)(implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {

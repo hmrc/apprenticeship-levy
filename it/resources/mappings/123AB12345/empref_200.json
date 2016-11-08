@@ -2,7 +2,15 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/123%2FAB12345/designatory-details"
+        "url": "/epaye/123%2FAB12345/designatory-details",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live)"
+          }
+        }
     },
     "response": {
         "status": 200,

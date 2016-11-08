@@ -2,9 +2,20 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/404/eps"
+        "urlPattern": "/rti/employers/404/employer-payment-summary\\??fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live)"
+          }
+        }
     },
     "response": {
-        "status": 404
+        "status": 404,
+        "jsonBody": {
+          "reason": "Not found"
+        }
     }
 }

@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import org.joda.time.DateTimeConstants.APRIL
 import org.joda.time.Months.monthsBetween
 import org.joda.time._
 import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{EmployerPaymentSummary, RTIConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.RTIConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollPeriod}
-import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
+import uk.gov.hmrc.apprenticeshiplevy.data.des._
+import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange,ClosedDateRange}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, NotFoundException}
 
@@ -41,27 +41,28 @@ trait LevyDeclarationController {
   // scalastyle:off
   def declarations(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    retrieveDeclarations(empref, DateRange(fromDate, toDate))
+    retrieveDeclarations(empref, toDateRange(fromDate, toDate))
       .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, empref))
+      .recover(desErrorHandler)
   }
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
-
-    rtiConnector.eps(empref, dateRange).map { lds =>
-      val declarations = lds.collect(convertToDeclaration)
-      if (declarations.size != lds.size) {
-        Logger.warn("Unable to convert some of the declarations retrieved from EPS.")
+    rtiConnector.eps(empref, dateRange)
+      .map( employerPayments => employerPayments.eps.flatMap(EmployerPaymentSummary.toDeclarations(_)))
+      .recover {
+        /*
+        * The etmp charges call can return 404 if either the empref is unknown or there is no data for the tax year.
+        * We don't know which one it might be, so convert a 404 to an empty result. The controller can decide
+        * if it wants to return a 404 if all calls to `charges` return no results.
+         */
+        case t: NotFoundException => Seq.empty
       }
-      declarations
-    }.recover {
-      /*
-      * The etmp charges call can return 404 if either the empref is unknown or there is no data for the tax year.
-      * We don't know which one it might be, so convert a 404 to an empty result. The controller can decide
-      * if it wants to return a 404 if all calls to `charges` return no results.
-       */
-      case t: NotFoundException => Seq.empty
-    }
   }
+
+  private[controllers] def toDateRange(fromDate: Option[LocalDate], toDate: Option[LocalDate]): DateRange = if (fromDate.isDefined && toDate.isDefined)
+     DateRange(fromDate, toDate)
+   else
+     ClosedDateRange(new LocalDate().minusYears(6), new LocalDate())
 
   private[controllers] def buildResult(ds: Seq[LevyDeclaration], empref: String): Result = {
     if (ds.nonEmpty) {
@@ -70,44 +71,5 @@ trait LevyDeclarationController {
     else {
       ErrorNotFound.result
     }
-  }
-
-  private[controllers] val convertToDeclaration: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
-    case eps if eps.finalSubmission.exists(_.dateSchemeCeased.isDefined) =>
-      LevyDeclaration(eps.eventId, eps.submissionTime,
-        dateCeased = eps.finalSubmission.flatMap {
-          fs => fs.dateSchemeCeased
-        })
-    case eps if eps.periodOfInactivity.isDefined =>
-      LevyDeclaration(eps.eventId, eps.submissionTime,
-        inactiveFrom = eps.periodOfInactivity.map(_.from),
-        inactiveTo = eps.periodOfInactivity.map(_.to))
-    case eps if eps.apprenticeshipLevy.isDefined =>
-      LevyDeclaration(eps.eventId, eps.submissionTime,
-        payrollPeriod = eps.apprenticeshipLevy.map { al => PayrollPeriod(
-          year = eps.relatedTaxYear,
-          month = al.taxMonth)
-        },
-        levyDueYTD = eps.apprenticeshipLevy.map { al => al.levyDueYTD },
-        levyAllowanceForFullYear = eps.apprenticeshipLevy.map { al => al.annualAllce }
-      )
-    case eps if eps.noPaymentForPeriod.exists(_.equalsIgnoreCase("yes")) =>
-      LevyDeclaration(eps.eventId, eps.submissionTime,
-        payrollPeriod = Some(PayrollPeriod(
-          year = eps.relatedTaxYear,
-          month = calculateTaxMonth(eps.noPaymentDates
-            .map(_.to)
-            .getOrElse(throw new RuntimeException("a NoPaymentDates element was expected")))
-        )),
-        noPaymentForPeriod = Some(true))
-  }
-
-  val TAX_YEAR_START_DAY = 6
-  val BeginningOfTaxYear = new MonthDay(APRIL, TAX_YEAR_START_DAY)
-
-  private[controllers] def calculateTaxMonth(to: LocalDate) = {
-    val monthDay = new MonthDay(to.getMonthOfYear, to.getDayOfMonth)
-    val yearReference = if (monthDay.isBefore(BeginningOfTaxYear)) to.getYear - 1 else to.getYear
-    monthsBetween(new LocalDate(yearReference, APRIL, TAX_YEAR_START_DAY), to).getMonths + 1
   }
 }

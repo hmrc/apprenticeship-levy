@@ -24,6 +24,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
 import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.test.UnitSpec
@@ -33,72 +34,6 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
     "return a Not Acceptable response if the Accept header is not correctly set" in {
       val response = LiveLevyDeclarationController.declarations("empref", None, None)(FakeRequest()).futureValue
       response.header.status shouldBe NOT_ACCEPTABLE
-    }
-  }
-
-  "convertToDeclaration" should {
-
-    val id = 123456L
-    val submissionTime = LocalDateTime.now()
-    val relatedTaxYear = "16-17"
-
-    "convert a terminated payroll scheme" in {
-      val schemeCeasedDate = submissionTime.minusDays(1).toLocalDate
-      val eps = EmployerPaymentSummary(id, submissionTime, finalSubmission = Some(FinalSubmission(Some("yes"), dateSchemeCeased = Some(schemeCeasedDate))), relatedTaxYear = relatedTaxYear)
-
-      TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime, Some(schemeCeasedDate))
-    }
-
-    "convert an inactive submission" in {
-      val inactiveFrom = submissionTime.minusMonths(2).toLocalDate
-      val inactiveTo = submissionTime.minusMonths(2).toLocalDate
-      val eps = EmployerPaymentSummary(id, submissionTime, relatedTaxYear = relatedTaxYear, periodOfInactivity = Some(ClosedDateRange(from = inactiveFrom, to = inactiveTo)))
-
-      TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo))
-    }
-
-    "convert a submission" in {
-      val levyDueYTD = BigDecimal(500)
-      val allowance = BigDecimal(10000)
-      val taxMonth = 2
-      val eps = EmployerPaymentSummary(id, submissionTime, relatedTaxYear = relatedTaxYear, apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, taxMonth, allowance)))
-
-      TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime,
-        payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
-        levyDueYTD = Some(levyDueYTD),
-        levyAllowanceForFullYear = Some(allowance))
-    }
-
-    "convert a submission with no payment for period" in {
-
-      val startNoPayment = new LocalDate("2016-05-06")
-      val endNoPayment = new LocalDate("2016-06-05")
-
-      val expectedTaxMonth = 2
-
-      val eps = EmployerPaymentSummary(id, submissionTime, Some("yes"), Some(ClosedDateRange(startNoPayment, endNoPayment)), relatedTaxYear = relatedTaxYear)
-
-      TestLevyDeclarationController.convertToDeclaration(eps) shouldBe LevyDeclaration(id, submissionTime,
-        noPaymentForPeriod = Some(true),
-        payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)))
-    }
-  }
-
-  "calculate tax month" should {
-    "calculate month 1 for 6 Apr" in {
-      TestLevyDeclarationController.calculateTaxMonth(new LocalDate(2016, APRIL, 6)) shouldBe 1
-    }
-
-    "calculate month 1 for 5 May" in {
-      TestLevyDeclarationController.calculateTaxMonth(new LocalDate(2016, MAY, 5)) shouldBe 1
-    }
-
-    "calculate month 2 for 6 May" in {
-      TestLevyDeclarationController.calculateTaxMonth(new LocalDate(2016, MAY, 5)) shouldBe 1
-    }
-
-    "calculate month 12 for 5 Apr" in {
-      TestLevyDeclarationController.calculateTaxMonth(new LocalDate(2016, APRIL, 5)) shouldBe 12
     }
   }
 }

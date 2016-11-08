@@ -18,20 +18,15 @@ package uk.gov.hmrc.apprenticeshiplevy.data.des
 
 import play.api.libs.json._
 import play.api.libs.json.Reads._
-import play.api.libs.json.Writes._
 import play.api.libs.functional.syntax._
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{LocalDate, LocalDateTime}
-import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 
-package object des {
-  implicit val jodaDateFormat = new Format[LocalDate] {
-    val localDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd")
+case class QuestionsAndDeclaration(freeOfTaxPaymentsMadeToEmployee: Boolean,
+                                   expensesVouchersOrBenefitsFromOthers: Boolean,
+                                   personEmployedOutsideUKWorkedFor30DaysOrMore: Boolean,
+                                   payToSomeoneElse: Boolean,
+                                   p11DFormsDue: Boolean,
+                                   serviceCompany: Boolean)
 
-    override def reads(json: JsValue): JsResult[LocalDate] = implicitly[Reads[JsString]].reads(json).map { js =>
-      localDateFormat.parseDateTime(js.value).toLocalDate
-    }
-
-    override def writes(date: LocalDate): JsValue = JsString(localDateFormat.print(date))
-  }
+object QuestionsAndDeclaration {
+  implicit val format = Json.format[QuestionsAndDeclaration]
 }

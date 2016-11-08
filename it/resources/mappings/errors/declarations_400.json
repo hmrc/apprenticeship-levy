@@ -2,9 +2,20 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/400/eps"
+        "urlPattern": "/rti/employers/400/employer-payment-summary\\??fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live)"
+          }
+        }
     },
     "response": {
-        "status": 400
+        "status": 400,
+        "jsonBody": {
+          "reason": "Bad request"
+        }
     }
 }
