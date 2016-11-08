@@ -28,7 +28,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
         describe (s"with valid parameters") {
           it (s"should return the declarations and fractions link for each empref") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -46,7 +46,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
         describe ("with invalid paramters") {
           it (s"should return 400") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/400").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/400").withHeaders(standardDesHeaders: _*)
 
             // test
             intercept[uk.gov.hmrc.play.http.BadRequestException] {
@@ -59,7 +59,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return 401") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/401").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/401").withHeaders(standardDesHeaders: _*)
 
             // test
             intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
@@ -72,7 +72,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return 403") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/403").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/403").withHeaders(standardDesHeaders: _*)
 
             // test
             intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
@@ -85,7 +85,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return 404") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/404").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/404").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -98,7 +98,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
         describe ("when backend systems failing") {
           it (s"should throw IOException? when connection closed") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/malformed").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/malformed").withHeaders(standardDesHeaders: _*)
 
             intercept[java.io.IOException] {
               // test
@@ -111,7 +111,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
 
           it (s"should throw IOException? when response is empty") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/empty").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/empty").withHeaders(standardDesHeaders: _*)
 
             intercept[java.io.IOException] {
               // test
@@ -124,7 +124,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
 
           it (s"should throw TimeoutException? when timed out") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/timeout").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/timeout").withHeaders(standardDesHeaders: _*)
 
             intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
               // test
@@ -137,7 +137,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
 
           it (s"DES HTTP 500") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/500").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/500").withHeaders(standardDesHeaders: _*)
 
             intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
               // test
@@ -150,7 +150,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
 
           it (s"DES HTTP 503") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/503").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/503").withHeaders(standardDesHeaders: _*)
 
             intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
               // test

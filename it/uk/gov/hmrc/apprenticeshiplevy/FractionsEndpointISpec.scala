@@ -31,7 +31,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
         describe (s"with no parameters") {
           it (s"should return fractions") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -51,9 +51,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"?fromDate=2017-09-01 should return fractions") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-09-01")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -71,9 +69,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"?toDate=2017-09-01 should return fractions") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=2017-09-01")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -91,9 +87,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"?fromDate=2017-08-01&toDate=2017-09-01 should return fractions") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123AB12345/fractions?fromDate=2017-08-01&toDate=2017-09-01")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -113,9 +107,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"should return http status 400 when DES HTTP 400") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/400/fractions")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -129,9 +121,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"should return http status 401 when DES HTTP 401") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/401/fractions")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -145,9 +135,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"should return http status 403 when DES HTTP 403") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/403/fractions")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -161,9 +149,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"should return http status 404 when DES HTTP 404") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/404/fractions")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -179,9 +165,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"should return http status 503 when connection closed") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/malformed/fractions")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -195,9 +179,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"should return http status 408 when timed out") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/timeout/fractions")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -211,9 +193,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"should return http status 503 when empty response") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/empty/fractions")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -227,9 +207,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"should return http status 503 when DES HTTP 500") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/500/fractions")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -243,9 +221,7 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
           it (s"should return http status 503 when DES HTTP 503") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/503/fractions")
-                          .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                       "Environment"->"isit",
-                                       "Authorization"->"Bearer 2423324")
+                          .withHeaders(standardDesHeaders: _*)
             // test
             val result = route(request).get
 

@@ -24,7 +24,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
         describe ("with valid parameters") {
           it (s"?fromDate=2015-03-03&toDate=2015-06-30 should return 'employed'") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/AB123456A?fromDate=2016-03-03&toDate=2016-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/AB123456A?fromDate=2016-03-03&toDate=2016-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -37,7 +37,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"?fromDate=2016-03-03&toDate=2016-06-30 should return 'not recognised'") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/ZZ123456C?fromDate=2016-03-03&toDate=2016-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/ZZ123456C?fromDate=2016-03-03&toDate=2016-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -51,7 +51,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"?fromDate=2015-03-03&toDate=2015-06-30 should return 'not employed'") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/AB123456C?fromDate=2016-03-03&toDate=2016-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/AB123456C?fromDate=2016-03-03&toDate=2016-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -71,7 +71,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
             forAll(emprefs) { (empref: String) =>
               whenever (!empref.isEmpty) {
-                val request = FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+                val request = FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders: _*)
 
                 // test
                 val result = route(request).get
@@ -92,7 +92,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
             forAll(ninos) { (nino: String) =>
               whenever (!nino.isEmpty) {
-                val request = FakeRequest(GET, s"$context/epaye/AB12345/employed/${helper.urlEncode(nino)}?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+                val request = FakeRequest(GET, s"$context/epaye/AB12345/employed/${helper.urlEncode(nino)}?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders: _*)
 
                 // test
                 val result = route(request).get
@@ -118,7 +118,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
                     case "fromDate" => s"$context/epaye/AB12345/employed/QQ123456C?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
                     case _ => s"/sandbox/epaye/AB12345/employed/QQ123456C?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
                   }
-                  val request = FakeRequest(GET, requestUrl).withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+                  val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders: _*)
 
                   // test
                   val result = route(request).get
@@ -135,7 +135,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return 400 when to date is before from date") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/400/employed/QQ123456C?fromDate=2015-06-03&toDate=2015-03-30}").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/400/employed/QQ123456C?fromDate=2015-06-03&toDate=2015-03-30}").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -149,7 +149,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return 400 when DES returns 400") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/400/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/400/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -163,7 +163,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return http status 401 when DES returns 401") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/401/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/401/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -177,7 +177,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return http status 403 when DES returns 403") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/403/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/403/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -192,7 +192,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
         describe ("when backend systems failing") {
           it (s"should return 503 when connection closed") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/malformed/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/malformed/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -205,7 +205,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return http status 503 when empty response") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/empty/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/empty/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -218,7 +218,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return http status 408 when timed out") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/timeout/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/timeout/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -231,7 +231,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return http status 503 when DES HTTP 500") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/500/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/500/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -244,7 +244,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return http status 503 when DES HTTP 503") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/503/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/503/employed/QQ123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get

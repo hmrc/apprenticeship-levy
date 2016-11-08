@@ -2,7 +2,15 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/apprenticeship-levy/employers/timeout/fractions"
+        "url": "/apprenticeship-levy/employers/timeout/fractions",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live)"
+          }
+        }
     },
     "response": {
         "status": 200,

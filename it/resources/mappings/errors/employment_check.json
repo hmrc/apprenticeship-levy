@@ -2,7 +2,15 @@
     "priority": 2,
     "request": {
         "method": "GET",
-        "urlPattern": "/apprenticeship-levy/employers/(.*)/employed/QQ123456C\\?fromDate=2015-03-03&toDate=2015-06-30"
+        "urlPattern": "/apprenticeship-levy/employers/(.*)/employed/QQ123456C\\?fromDate=2015-03-03&toDate=2015-06-30",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live)"
+          }
+        }
     },
     "response": {
         "status": 404,

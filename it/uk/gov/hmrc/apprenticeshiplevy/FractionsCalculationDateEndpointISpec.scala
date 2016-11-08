@@ -28,9 +28,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
         describe (s"when no backend systems failing") {
           it (s"return date") {
             // set up
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -48,9 +46,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -68,9 +64,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withStatus(200).withFixedDelay(1000*60)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -88,9 +82,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -108,9 +100,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withStatus(404).withBody("""{"reason" : "Not found"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -128,9 +118,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withStatus(500).withBody("""{"reason" : "DES not working"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -148,9 +136,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withStatus(503).withBody("""{"reason" : "Backend systems not working"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -168,9 +154,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withStatus(401).withBody("""{"reason" : "Not authorized"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -188,9 +172,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withStatus(403).withBody("""{"reason" : "Forbidden"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -208,9 +190,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withStatus(429).withBody("""{"reason" : "Drowning in requests"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -228,9 +208,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withStatus(408).withBody("""{"reason" : "Not responding"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -248,9 +226,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
                     .withId(uuid).willReturn(aResponse().withStatus(409).withBody("""{"reason" : "Some 4xxx error"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                              "Environment"->"isit",
-                                                                                              "Authorization"->"Bearer 2423324")
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get

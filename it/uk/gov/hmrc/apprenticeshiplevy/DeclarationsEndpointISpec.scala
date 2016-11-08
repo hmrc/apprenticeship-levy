@@ -33,7 +33,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
         describe (s"with valid paramters") {
           it (s"should return levy declarations") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -50,7 +50,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"should handle no payment period") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -66,7 +66,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"should handle inactive period") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -82,7 +82,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"should handle ceased trading") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -98,7 +98,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"should handle levies") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -121,7 +121,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"DES HTTP 400") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/400/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/400/declarations").withHeaders(standardDesHeaders: _*)
 
             intercept[uk.gov.hmrc.play.http.BadRequestException] {
               // test
@@ -134,7 +134,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"DES HTTP 401") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/401/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/401/declarations").withHeaders(standardDesHeaders: _*)
 
             intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
               // test
@@ -147,7 +147,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"DES HTTP 403") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/403/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/403/declarations").withHeaders(standardDesHeaders: _*)
 
             intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
               // test
@@ -160,7 +160,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"DES HTTP 404") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/404/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/404/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -173,7 +173,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
         describe ("when backend systems failing") {
           it (s"and connection closed it should throw IOException?") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/malformed/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/malformed/declarations").withHeaders(standardDesHeaders: _*)
 
             intercept[java.io.IOException] {
               // test
@@ -186,7 +186,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"and response is empty it should throw IOException?") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/empty/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/empty/declarations").withHeaders(standardDesHeaders: _*)
 
             intercept[java.io.IOException] {
               // test
@@ -199,7 +199,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"should throw TimeoutException? when timed out") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/timeout/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/timeout/declarations").withHeaders(standardDesHeaders: _*)
 
             intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
               // test
@@ -212,7 +212,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"DES HTTP 500") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/500/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/500/declarations").withHeaders(standardDesHeaders: _*)
 
             intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
               // test
@@ -225,7 +225,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
 
           it (s"DES HTTP 503") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/503/declarations").withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json")
+            val request = FakeRequest(GET, s"$context/epaye/503/declarations").withHeaders(standardDesHeaders: _*)
 
             intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
               // test

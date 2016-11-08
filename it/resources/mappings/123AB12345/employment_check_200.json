@@ -2,7 +2,15 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/apprenticeship-levy/employers/123AB12345/employed/AB123456A?fromDate=2016-03-03&toDate=2016-06-30"
+        "url": "/apprenticeship-levy/employers/123AB12345/employed/AB123456A?fromDate=2016-03-03&toDate=2016-06-30",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live)"
+          }
+        }
     },
     "response": {
         "status": 200,
