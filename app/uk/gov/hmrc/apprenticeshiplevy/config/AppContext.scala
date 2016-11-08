@@ -56,10 +56,8 @@ object AppContext extends ServicesConfig {
   Logger.info(s"""\n${"*" * 80}\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
   // $COVERAGE-ON$
 
-  def edhUrl: String = baseUrl("edh")
-  def stubEdhUrl: String = baseUrl("stub-edh")
-  def rtiUrl: String = baseUrl("rti")
-  def stubRtiUrl: String = baseUrl("stub-rti")
+  def desUrl: String = baseUrl("des")
+  def stubDesUrl: String = baseUrl("stub-des")
 
   private def getString(config: Configuration)(id: String): String = config.getString(id)
     .getOrElse(throw new RuntimeException(s"Unable to read whitelisted application (value '$id' not found)"))
