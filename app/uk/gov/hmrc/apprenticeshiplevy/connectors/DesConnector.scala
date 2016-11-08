@@ -58,7 +58,8 @@ trait EmployerDetailsEndpoint {
 trait EmploymentCheckEndpoint {
   des: DesConnector =>
 
-  def check(empref: String, nino: String, dateRange: ClosedDateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[EmploymentCheckStatus] = {
+  def check(empref: String, nino: String, dateRange: ClosedDateRange)
+           (implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[EmploymentCheckStatus] = {
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?${dateRange.paramString}"
 
     // $COVERAGE-OFF$

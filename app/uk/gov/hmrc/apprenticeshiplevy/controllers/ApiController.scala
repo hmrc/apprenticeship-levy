@@ -36,7 +36,7 @@ trait ApiController extends BaseController with HeaderValidator {
     def result: Result = Status(er.httpStatusCode)(Json.toJson(er))
   }
 
-  override implicit def hc(implicit rh: RequestHeader) = super.hc(rh).withExtraHeaders(rh.headers
+  override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = super.hc(rh).withExtraHeaders(rh.headers
                                                                                           .toSimpleMap
                                                                                           .filterKeys(_ == "Environment")
                                                                                           .headOption
@@ -72,8 +72,8 @@ trait ApiController extends BaseController with HeaderValidator {
                                                    val str1 = msg.reverse.substring(1).reverse.substring(msg.indexOf("Response body") + 14).trim
                                                    val m = if (str1.startsWith("{")) str1 else str1.substring(str1.indexOf("{"))
                                                    Try((Json.parse(m) \ "reason").as[String]) getOrElse ((Json.parse(m) \ "Reason").as[String])
-                                                 } else
-                                                  msg) getOrElse(msg)
+                                                 } else {
+                                                    msg}) getOrElse(msg)
 
   protected lazy val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
   protected def toDESFormat(empref: String): String = URLDecoder.decode(empref, "UTF-8") match {

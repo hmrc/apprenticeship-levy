@@ -25,7 +25,7 @@ sealed trait EmploymentCheckStatus
 object EmploymentCheckStatus {
   implicit val reads: Reads[EmploymentCheckStatus] = (__ \ "employed").read[Boolean].map(isEmployed => EmploymentCheckStatus(isEmployed))
 
-  def apply(isEmployed: Boolean) = isEmployed match {
+  def apply(isEmployed: Boolean): EmploymentCheckStatus = isEmployed match {
     case true => Employed
     case false => NotEmployed
   }

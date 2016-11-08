@@ -28,6 +28,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange,ClosedDateRange}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 
 import scala.concurrent.Future
 
@@ -59,10 +60,11 @@ trait LevyDeclarationController {
       }
   }
 
-  private[controllers] def toDateRange(fromDate: Option[LocalDate], toDate: Option[LocalDate]): DateRange = if (fromDate.isDefined && toDate.isDefined)
+  private[controllers] def toDateRange(fromDate: Option[LocalDate], toDate: Option[LocalDate]): DateRange = if (fromDate.isDefined && toDate.isDefined) {
      DateRange(fromDate, toDate)
-   else
-     ClosedDateRange(new LocalDate().minusYears(6), new LocalDate())
+   } else {
+     ClosedDateRange(new LocalDate().minusYears(AppContext.defaultNumberOfDeclarationYears), new LocalDate())
+   }
 
   private[controllers] def buildResult(ds: Seq[LevyDeclaration], empref: String): Result = {
     if (ds.nonEmpty) {
