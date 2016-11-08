@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 
 import org.joda.time.LocalDate
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{EpayeConnector, LiveEpayeConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 
 object LiveEmprefController extends EmprefController {
@@ -32,5 +32,5 @@ object LiveEmprefController extends EmprefController {
     routes.LiveEmploymentCheckController.check(empref, "nino", new LocalDate, new LocalDate)
       .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
 
-  override def epayeConnector: EpayeConnector = LiveEpayeConnector
+  override def desConnector: DesConnector = LiveDesConnector
 }

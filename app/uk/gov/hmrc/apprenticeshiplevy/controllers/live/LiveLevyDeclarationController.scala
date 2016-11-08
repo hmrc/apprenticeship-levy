@@ -17,9 +17,9 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import org.joda.time.LocalDate
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{RTIConnector, LiveRTIConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{ApiController, LevyDeclarationController}
 
 object LiveLevyDeclarationController extends ApiController with LevyDeclarationController {
-  override def rtiConnector: RTIConnector = LiveRTIConnector
+  override def desConnector: DesConnector = LiveDesConnector
 }

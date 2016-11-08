@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
 import play.api.libs.json.Json
-import uk.gov.hmrc.apprenticeshiplevy.domain.ServiceLocatorRegistration
+import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration
 import org.scalatest.Informing
 import com.github.tomakehurst.wiremock.common._
 import play.api.libs.Crypto
@@ -50,18 +50,10 @@ trait IntegrationTestConfig {
         "microservice.services.service-locator.enabled" -> "true",
         "microservice.services.stub-auth.host" -> stubHost,
         "microservice.services.stub-auth.port" -> stubPort,
-        "microservice.services.stub-rti.host" -> stubHost,
-        "microservice.services.stub-rti.port" -> stubPort,
-        "microservice.services.stub-epaye.host" -> stubHost,
-        "microservice.services.stub-epaye.port" -> stubPort,
-        "microservice.services.stub-edh.host" -> stubHost,
-        "microservice.services.stub-edh.port" -> stubPort,
-        "microservice.services.epaye.host" -> stubHost,
-        "microservice.services.epaye.port" -> stubPort,
-        "microservice.services.edh.host" -> stubHost,
-        "microservice.services.edh.port" -> stubPort,
-        "microservice.services.rti.host" -> stubHost,
-        "microservice.services.rti.port" -> stubPort,
+        "microservice.services.stub-des.host" -> stubHost,
+        "microservice.services.stub-des.port" -> stubPort,
+        "microservice.services.des.host" -> stubHost,
+        "microservice.services.des.port" -> stubPort,
         "microservice.services.auth.host" -> stubHost,
         "microservice.services.auth.port" -> stubPort,
         "microservice.whitelisted-applications" -> "myappid")
