@@ -34,10 +34,14 @@ trait EmploymentCheckController extends ApiController {
   // scalastyle:off
   def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    desConnector.check(toDESFormat(empref), nino, ClosedDateRange(fromDate, toDate)).map {
-      case Employed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = true)))
-      case NotEmployed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = false)))
-      case NinoUnknown => ErrorNinoNotVisible.toResult
-    } recover desErrorHandler
+    if (fromDate.isAfter(toDate)) {
+      Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
+    } else {
+      desConnector.check(toDESFormat(empref), nino, ClosedDateRange(fromDate, toDate)).map {
+        case Employed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = true)))
+        case NotEmployed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = false)))
+        case NinoUnknown => ErrorNinoNotVisible.toResult
+      } recover desErrorHandler
+    }
   }
 }

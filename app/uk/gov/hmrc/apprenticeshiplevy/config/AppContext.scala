@@ -58,6 +58,11 @@ object AppContext extends ServicesConfig {
 
   def desUrl: String = baseUrl("des")
   def stubDesUrl: String = baseUrl("stub-des")
+
+  def datePattern(): String = getString(current.configuration)("microservice.dateRegex")
+  def employerReferencePattern(): String = getString(current.configuration)("microservice.emprefRegex")
+  def ninoPattern(): String = getString(current.configuration)("microservice.ninoRegex")
+
   def defaultNumberOfDeclarationYears: Int =
     current.configuration.getString("microservice.defaultNumberOfDeclarationYears").map(_.toInt).getOrElse(6)
 

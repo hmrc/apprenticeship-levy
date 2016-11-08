@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package uk.gov.hmrc.apprenticeshiplevy.data.api
 
-import play.mvc.Http.Status._
-import uk.gov.hmrc.api.controllers.ErrorResponse
-
-case class DESError(statusCode: Int, msg: String) extends ErrorResponse(statusCode, "DES_ERROR", msg)
-
-object ErrorResponses {
-  object ErrorNotFound extends ErrorResponse(NOT_FOUND, "NOT_FOUND", "Resource was not found")
-  object ErrorFromDateAfterToDate extends ErrorResponse(BAD_REQUEST, "BAD_REQUEST", "From date was after to date")
-}
+case class Nino(nino: String)

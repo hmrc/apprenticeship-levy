@@ -127,7 +127,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
                   // check
                   httpStatus shouldBe 400
                   contentType(result) shouldBe Some("application/json")
-                  contentAsJson(result) shouldBe Json.parse("""{"statusCode":400,"message":"date parameter is in the wrong format. Should be (yyyy-MM-dd)"}""")
+                  contentAsString(result) should include ("""date parameter is in the wrong format. Should be ('^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where data is yyyy-MM-dd and year is 2000 or later""")
                 }
               }
             }
@@ -135,7 +135,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
 
           it (s"should return 400 when to date is before from date") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/400/employed/QQ123456C?fromDate=2015-06-03&toDate=2015-03-30}").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/isok/employed/QQ123456C?fromDate=2015-06-03&toDate=2015-03-30").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -144,7 +144,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
             // check
             httpStatus shouldBe 400
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":400,"message":"date parameter is in the wrong format. Should be (yyyy-MM-dd)"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"BAD_REQUEST","message":"From date was after to date"}""")
           }
 
           it (s"should return 400 when DES returns 400") {
