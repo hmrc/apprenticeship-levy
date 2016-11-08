@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.domain
+package uk.gov.hmrc.apprenticeshiplevy.data.api
 
 import play.api.libs.json.Json
 

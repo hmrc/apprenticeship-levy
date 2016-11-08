@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 import org.joda.time.LocalDate
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{EpayeConnector, SandboxEpayeConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{SandboxDesConnector, DesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 
 trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
@@ -40,7 +40,7 @@ trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
 object SandboxEmprefController extends SandboxEmprefController {
   override val env = AppContext.env
 
-  override def epayeConnector: EpayeConnector = SandboxEpayeConnector
+  override def desConnector: DesConnector = SandboxDesConnector
 
 }
 

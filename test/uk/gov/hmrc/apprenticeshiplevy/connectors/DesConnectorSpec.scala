@@ -31,20 +31,20 @@ import uk.gov.hmrc.play.http.hooks.HttpHook
 import play.api.libs.concurrent.Execution.Implicits._
 import uk.gov.hmrc.apprenticeshiplevy.utils._
 
-class EDHConnectorSpec extends UnitSpec with MockitoSugar {
-  "EDH Connector" should {
+class DesConnectorSpec extends UnitSpec with MockitoSugar {
+  "DES Connector" should {
     "for Fraction Date endpoint" must {
       "when EDH not failing return local date instance of date" in {
         // set up
         val stubHttpGet = mock[HttpGet]
         when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any())).thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
-        val connector = new EDHConnector() {
-          def edhBaseUrl: String = "http://a.guide.to.nowhere/"
+        val connector = new DesConnector() {
+          def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
         }
 
         // test
-        val futureResult = connector.fractionCalculationDate(HeaderCarrier())
+        val futureResult = connector.fractionCalculationDate(HeaderCarrier(), defaultContext)
 
         // check
         await[LocalDate](futureResult) shouldBe new LocalDate(2016,11,3)
@@ -57,8 +57,8 @@ class EDHConnectorSpec extends UnitSpec with MockitoSugar {
         val expected = Fractions("123AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))
         when(stubHttpGet.GET[Fractions](anyString())(any(), any()))
            .thenReturn(Future.successful(expected))
-        val connector = new EDHConnector() {
-          def edhBaseUrl: String = "http://a.guide.to.nowhere/"
+        val connector = new DesConnector() {
+          def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
         }
 

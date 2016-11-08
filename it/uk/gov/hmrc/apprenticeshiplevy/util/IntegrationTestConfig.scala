@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
 import play.api.libs.json.Json
-import uk.gov.hmrc.apprenticeshiplevy.domain.ServiceLocatorRegistration
+import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration
 import org.scalatest.Informing
 import com.github.tomakehurst.wiremock.common._
 import play.api.libs.Crypto

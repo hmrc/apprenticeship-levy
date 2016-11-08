@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import java.net.URLEncoder
 
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, EpayeConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, DesConnector}
 
 class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues {
   "prepareLinks" should {
@@ -36,7 +36,7 @@ class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues 
   }
 
   val testController = new EmprefController {
-    override def epayeConnector: EpayeConnector = ???
+    override def desConnector: DesConnector = ???
 
     override def emprefUrl(empref: String): String = s"""/epaye/${URLEncoder.encode(empref, "UTF-8")}"""
 

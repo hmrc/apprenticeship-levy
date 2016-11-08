@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.data
+package uk.gov.hmrc.apprenticeshiplevy.data.api
 
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{LocalDate, LocalDateTime}

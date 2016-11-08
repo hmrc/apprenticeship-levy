@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 
 import uk.gov.hmrc.apprenticeshiplevy.util.{IntegrationTestConfig, WiremockService}
 import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.apprenticeshiplevy.domain.ServiceLocatorRegistration
+import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration
 
 @DoNotDiscover
 class ServiceLocatorRegistrationISpec

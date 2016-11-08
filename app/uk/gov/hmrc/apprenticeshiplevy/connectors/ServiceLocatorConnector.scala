@@ -18,8 +18,8 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
-import uk.gov.hmrc.apprenticeshiplevy.domain.ServiceLocatorRegistration
-import uk.gov.hmrc.apprenticeshiplevy.domain.ServiceLocatorRegistration._
+import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration
+import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost}
 
 import scala.concurrent.ExecutionContext.Implicits.global

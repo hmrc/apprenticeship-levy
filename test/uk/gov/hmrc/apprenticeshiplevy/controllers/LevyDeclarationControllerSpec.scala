@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
-import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, PayrollPeriod}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
@@ -38,8 +38,8 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
   }
 }
 
-object TestRTIConnector extends RTIConnector {
-  override def rtiBaseUrl: String = ???
+object TestDesConnector extends DesConnector {
+  override def baseUrl: String = ???
 
   override def httpGet: HttpGet = ???
 
@@ -47,5 +47,5 @@ object TestRTIConnector extends RTIConnector {
 }
 
 object TestLevyDeclarationController extends LevyDeclarationController with ApiController {
-  override def rtiConnector: RTIConnector = TestRTIConnector
+  override def desConnector: DesConnector = TestDesConnector
 }

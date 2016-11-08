@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.data.des
 
 import uk.gov.hmrc.play.test.UnitSpec
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import uk.gov.hmrc.apprenticeshiplevy.data._
+import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import play.api.libs.json._
 import play.api.libs.json.Json._
 import org.joda.time.LocalDate

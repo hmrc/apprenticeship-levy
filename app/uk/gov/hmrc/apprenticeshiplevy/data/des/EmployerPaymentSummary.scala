@@ -27,7 +27,7 @@ import org.joda.time.{LocalDate, LocalDateTime}
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FinalSubmission._
-import uk.gov.hmrc.apprenticeshiplevy.data._
+import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import scala.util.{Try, Success, Failure}
 
 case class EmployerPaymentSummary(submissionId: Long,

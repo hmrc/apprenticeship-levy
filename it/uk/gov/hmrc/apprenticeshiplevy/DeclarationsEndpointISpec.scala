@@ -22,7 +22,7 @@ import com.github.tomakehurst.wiremock.http.Fault
 
 import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration,PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration,PayrollPeriod}
 
 @DoNotDiscover
 class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConfig {

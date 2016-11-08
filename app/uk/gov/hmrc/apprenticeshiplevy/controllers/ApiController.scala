@@ -69,7 +69,7 @@ trait ApiController extends BaseController with HeaderValidator {
   def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).withHeaders("Content-Type" -> "application/hal+json")
 
   protected def extractReason(msg: String) = Try(if (msg.contains("Response body")) {
-                                                   val str1 = msg.reverse.substring(1).reverse.substring(msg.indexOf("Response body")+14).trim
+                                                   val str1 = msg.reverse.substring(1).reverse.substring(msg.indexOf("Response body") + 14).trim
                                                    val m = if (str1.startsWith("{")) str1 else str1.substring(str1.indexOf("{"))
                                                    Try((Json.parse(m) \ "reason").as[String]) getOrElse ((Json.parse(m) \ "Reason").as[String])
                                                  } else

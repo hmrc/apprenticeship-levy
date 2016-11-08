@@ -46,8 +46,8 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture()))
            .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
       val controller = new FractionsCalculationController() with ApiController {
-        def edhConnector: EDHConnector = new EDHConnector() {
-          def edhBaseUrl: String = "http://a.guide.to.nowhere/"
+        def desConnector: DesConnector = new DesConnector() {
+          def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
         }
       }
@@ -71,8 +71,8 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture()))
            .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
       val controller = new FractionsCalculationController() with ApiController {
-        def edhConnector: EDHConnector = new EDHConnector() {
-          def edhBaseUrl: String = "http://a.guide.to.nowhere/"
+        def desConnector: DesConnector = new DesConnector() {
+          def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
         }
       }
@@ -94,8 +94,8 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any()))
            .thenReturn(Future.failed(new Upstream5xxResponse("DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503. Response body: '{\"reason\" : \"Backend systems not working\"}'", 1, 2)))
       val controller = new FractionsCalculationController() with ApiController {
-        def edhConnector: EDHConnector = new EDHConnector() {
-          def edhBaseUrl: String = "http://a.guide.to.nowhere/"
+        def desConnector: DesConnector = new DesConnector() {
+          def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
         }
       }

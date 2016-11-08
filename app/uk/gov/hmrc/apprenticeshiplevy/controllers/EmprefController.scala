@@ -20,13 +20,13 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import play.api.Logger
 import play.api.hal.{Hal, HalLink, HalResource}
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.EpayeConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
 import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 trait EmprefController extends ApiController {
-  def epayeConnector: EpayeConnector
+  def desConnector: DesConnector
 
   def declarationsUrl(empref: String): String
 
@@ -42,7 +42,7 @@ trait EmprefController extends ApiController {
   // scalastyle:off
   def empref(empref: String) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    epayeConnector.designatoryDetails(empref).map { details =>
+    desConnector.designatoryDetails(empref).map { details =>
       val hal = prepareLinks(empref)
       ok(hal.copy(state = Json.toJson(details).as[JsObject]))
     }.recover {

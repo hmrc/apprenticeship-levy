@@ -21,9 +21,9 @@ import org.joda.time._
 import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.apprenticeshiplevy.connectors.RTIConnector
+import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
-import uk.gov.hmrc.apprenticeshiplevy.data.{LevyDeclaration, LevyDeclarations, PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, LevyDeclarations, PayrollPeriod}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange,ClosedDateRange}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
@@ -34,7 +34,7 @@ import scala.concurrent.Future
 trait LevyDeclarationController {
   self: ApiController =>
 
-  def rtiConnector: RTIConnector
+  def desConnector: DesConnector
 
   implicit val dateTimeOrdering: Ordering[LocalDateTime] = Ordering.fromLessThan { (d1, d2) => d1.isBefore(d2) }
 
@@ -47,7 +47,7 @@ trait LevyDeclarationController {
   }
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
-    rtiConnector.eps(empref, dateRange)
+    desConnector.eps(empref, dateRange)
       .map( employerPayments => employerPayments.eps.flatMap(EmployerPaymentSummary.toDeclarations(_)))
       .recover {
         /*
