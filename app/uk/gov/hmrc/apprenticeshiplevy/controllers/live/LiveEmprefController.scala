@@ -20,7 +20,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference,Nino}
 
 object LiveEmprefController extends EmprefController {
   override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url
@@ -30,7 +30,7 @@ object LiveEmprefController extends EmprefController {
   override def fractionsUrl(empref: EmploymentReference): String = routes.LiveFractionsController.fractions(empref, None, None).url
 
   override def employmentCheckUrl(empref: EmploymentReference): String =
-    routes.LiveEmploymentCheckController.check(empref, "nino", new LocalDate, new LocalDate)
+    routes.LiveEmploymentCheckController.check(empref, Nino("nino"), new LocalDate, new LocalDate)
       .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
 
   override def desConnector: DesConnector = LiveDesConnector
