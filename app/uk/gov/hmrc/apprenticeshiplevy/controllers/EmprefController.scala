@@ -24,33 +24,32 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
 import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
 trait EmprefController extends ApiController {
   def desConnector: DesConnector
 
-  def declarationsUrl(empref: String): String
+  def declarationsUrl(empref: EmploymentReference): String
 
-  def fractionsUrl(empref: String): String
+  def fractionsUrl(empref: EmploymentReference): String
 
-  def employmentCheckUrl(empref: String): String
+  def employmentCheckUrl(empref: EmploymentReference): String
 
-  def emprefUrl(empref: String): String
+  def emprefUrl(empref: EmploymentReference): String
 
   // Hook to allow post-processing of the links, specifically for sandbox handling
   def processLink(l: HalLink): HalLink = identity(l)
 
   // scalastyle:off
-  def empref(empref: String) = withValidAcceptHeader.async { implicit request =>
+  def empref(ref: EmploymentReference) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    desConnector.designatoryDetails(empref).map { details =>
-      val hal = prepareLinks(empref)
+    desConnector.designatoryDetails(ref.empref).map { details =>
+      val hal = prepareLinks(ref)
       ok(hal.copy(state = Json.toJson(details).as[JsObject]))
-    }.recover {
-      case e: NotFoundException => ErrorNotFound.result
-    }
+    }.recover(desErrorHandler)
   }
 
-  private[controllers] def prepareLinks(empref: String): HalResource = {
+  private[controllers] def prepareLinks(empref: EmploymentReference): HalResource = {
     val links = Seq(
       selfLink(emprefUrl(empref)),
       HalLink("declarations", declarationsUrl(empref)),

@@ -21,15 +21,16 @@ import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{SandboxDesConnector, DesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
+import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
 trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
-  override def emprefUrl(empref: String): String = routes.SandboxEmprefController.empref(empref).url
+  override def emprefUrl(empref: EmploymentReference): String = routes.SandboxEmprefController.empref(empref).url
 
-  override def declarationsUrl(empref: String): String = routes.SandboxLevyDeclarationController.declarations(empref, None, None).url
+  override def declarationsUrl(empref: EmploymentReference): String = routes.SandboxLevyDeclarationController.declarations(empref, None, None).url
 
-  override def fractionsUrl(empref: String): String = routes.SandboxFractionsController.fractions(empref, None, None).url
+  override def fractionsUrl(empref: EmploymentReference): String = routes.SandboxFractionsController.fractions(empref, None, None).url
 
-  override def employmentCheckUrl(empref: String): String = {
+  override def employmentCheckUrl(empref: EmploymentReference): String = {
     routes.SandboxEmploymentCheckController.check(empref, "nino", new LocalDate, new LocalDate)
       .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
   }

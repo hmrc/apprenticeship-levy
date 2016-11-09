@@ -46,46 +46,40 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
         describe ("with invalid paramters") {
           it (s"should return 400") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/400").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            intercept[uk.gov.hmrc.play.http.BadRequestException] {
-              val result = route(request).get
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 400
-            }
+            // check
+            status(result) shouldBe 400
           }
 
           it (s"should return 401") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/401").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
-              val result = route(request).get
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 401
-            }
+            // check
+            status(result) shouldBe 401
           }
 
           it (s"should return 403") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/403").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
-              val result = route(request).get
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 403
-            }
+            // check
+            status(result) shouldBe 403
           }
 
           it (s"should return 404") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/404").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -98,67 +92,57 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
         describe ("when backend systems failing") {
           it (s"should throw IOException? when connection closed") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/malformed").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345").withHeaders(standardDesHeaders: _*)
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            contentType(result) shouldBe Some("application/json")
           }
 
           it (s"should throw IOException? when response is empty") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/empty").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345").withHeaders(standardDesHeaders: _*)
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            contentType(result) shouldBe Some("application/json")
           }
 
           it (s"should throw TimeoutException? when timed out") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/timeout").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            contentType(result) shouldBe Some("application/json")
           }
 
           it (s"DES HTTP 500") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/500").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 500
-            }
+            // check
+            status(result) shouldBe 503
           }
 
           it (s"DES HTTP 503") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/503").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 503
-            }
+            // check
+            status(result) shouldBe 503
           }
         }
       }

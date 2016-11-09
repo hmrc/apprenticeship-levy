@@ -18,11 +18,12 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, LiveAuthConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
+import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
 object LiveRootController extends RootController {
   override def authConnector: AuthConnector = LiveAuthConnector
 
   override def rootUrl: String = routes.LiveRootController.root().url
 
-  override def emprefUrl(empref: String): String = routes.LiveEmprefController.empref(empref).url
+  override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url
 }

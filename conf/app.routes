@@ -1,11 +1,11 @@
 # microservice specific routes
 
 GET        /                                            uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveRootController.root
-GET        /epaye/:empref                               uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveEmprefController.empref(empref:String)
-GET        /epaye/:empref/declarations                  uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController.declarations(empref:String, fromDate: Option[LocalDate], toDate: Option[LocalDate])
-GET        /epaye/:empref/fractions                     uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsController.fractions(empref:String,fromDate: Option[LocalDate], toDate: Option[LocalDate])
+GET        /epaye/:empref                               uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveEmprefController.empref(empref: EmploymentReference)
+GET        /epaye/:empref/declarations                  uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController.declarations(empref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate])
+GET        /epaye/:empref/fractions                     uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsController.fractions(empref: EmploymentReference,fromDate: Option[LocalDate], toDate: Option[LocalDate])
 GET        /fraction-calculation-date                   uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsCalculationController.fractionCalculationDate
-GET        /epaye/:empref/employed/:nino                uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveEmploymentCheckController.check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate)
+GET        /epaye/:empref/employed/:nino                uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveEmploymentCheckController.check(empref: EmploymentReference, nino: String, fromDate: LocalDate, toDate: LocalDate)
 
 GET        /api/definition                              uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.definition
 GET        /api/documentation/:version/:endpoint        uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.documentation(version, endpoint)

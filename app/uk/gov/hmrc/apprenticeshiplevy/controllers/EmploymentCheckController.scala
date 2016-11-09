@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNinoNotVisible
 import uk.gov.hmrc.apprenticeshiplevy.data.des.{Employed, NinoUnknown, NotEmployed}
-import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentCheck
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentCheck,EmploymentReference}
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
@@ -32,14 +32,14 @@ trait EmploymentCheckController extends ApiController {
   def desConnector: DesConnector
 
   // scalastyle:off
-  def check(empref: String, nino: String, fromDate: LocalDate, toDate: LocalDate) = withValidAcceptHeader.async { implicit request =>
+  def check(ref: EmploymentReference, nino: String, fromDate: LocalDate, toDate: LocalDate) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
     if (fromDate.isAfter(toDate)) {
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
     } else {
-      desConnector.check(toDESFormat(empref), nino, ClosedDateRange(fromDate, toDate)).map {
-        case Employed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = true)))
-        case NotEmployed => Ok(Json.toJson(EmploymentCheck(empref, nino, fromDate, toDate, employed = false)))
+      desConnector.check(toDESFormat(ref.empref), nino, ClosedDateRange(fromDate, toDate)).map {
+        case Employed => Ok(Json.toJson(EmploymentCheck(ref.empref, nino, fromDate, toDate, employed = true)))
+        case NotEmployed => Ok(Json.toJson(EmploymentCheck(ref.empref, nino, fromDate, toDate, employed = false)))
         case NinoUnknown => ErrorNinoNotVisible.toResult
       } recover desErrorHandler
     }

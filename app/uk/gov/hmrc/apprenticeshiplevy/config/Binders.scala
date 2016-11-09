@@ -23,11 +23,10 @@ import scala.util.Try
 import java.util.regex.Pattern
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import scala.util.matching.Regex
+import java.net.{URLDecoder, URLEncoder}
 
 object QueryBinders {
   val DatePattern = AppContext.datePattern.r
-  val EmployerReferencePattern = AppContext.employerReferencePattern.r
-  val NinoPattern = AppContext.ninoPattern.r
 
   implicit def bindableLocalDate(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[LocalDate] = new QueryStringBindable[LocalDate] {
     def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, LocalDate]] = {
@@ -44,18 +43,23 @@ object QueryBinders {
 
     def unbind(key: String, value: LocalDate): String = QueryStringBindable.bindableString.unbind(key, DateConverter.formatToString(value))
   }
+}
+
+object PathBinders {
+  val EmployerReferencePattern = AppContext.employerReferencePattern.r
+  val NinoPattern = AppContext.ninoPattern.r
 
   implicit def bindableEmploymentReference(implicit binder: PathBindable[String]) =
-    bindable[String,EmploymentReference](EmployerReferencePattern, str => EmploymentReference(str), b => b.empref)
+    bindable[String,EmploymentReference](EmployerReferencePattern, str => EmploymentReference(str), b => URLEncoder.encode(b.empref, "UTF-8"))
 
-  implicit def bindableNino(implicit binder: PathBindable[String]) = bindable[String,Nino](NinoPattern, str => Nino(str), b => b.nino)
+  implicit def bindableNino(implicit binder: PathBindable[String]) = bindable[String,Nino](NinoPattern, str => Nino(str), b => URLEncoder.encode(b.nino, "UTF-8"))
 
   private[config] def bindable[A,B](regex: Regex, convertToB: String => B, convertToA: B => A)
                                    (implicit binder: PathBindable[A]): PathBindable[B] = new PathBindable[B] {
     override def bind(key: String, value: String): Either[String, B] = {
       for {
         theA <- binder.bind(key, value).right
-        bAsStr <- isValid(regex, theA.toString()).right
+        bAsStr <- isValid(regex, URLDecoder.decode(theA.toString(), "UTF-8")).right
       } yield convertToB(bAsStr)
     }
 

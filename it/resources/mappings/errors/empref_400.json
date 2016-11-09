@@ -2,9 +2,12 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/400/designatory-details"
+        "url": "/epaye/400%2FAB12345/designatory-details"
     },
     "response": {
-        "status": 400
+        "status": 400,
+        "jsonBody": {
+          "reason": "Bad request"
+        }
     }
 }

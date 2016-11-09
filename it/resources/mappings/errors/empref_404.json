@@ -2,9 +2,12 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/404/designatory-details"
+        "url": "/epaye/404%2FAB12345/designatory-details"
     },
     "response": {
-        "status": 404
+        "status": 404,
+        "jsonBody": {
+          "reason": "Not found"
+        }
     }
 }

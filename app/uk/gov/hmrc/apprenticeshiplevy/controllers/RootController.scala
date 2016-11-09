@@ -20,13 +20,14 @@ import play.api.hal.{Hal, HalLink, HalLinks, HalResource}
 import play.api.libs.json.{JsArray, JsObject, JsString, Json}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
 trait RootController extends ApiController {
   def authConnector: AuthConnector
 
   def rootUrl: String
 
-  def emprefUrl(empref: String): String
+  def emprefUrl(empref: EmploymentReference): String
 
   // Hook to allow post-processing of the links, specifically for sandbox handling
   def processLink(l: HalLink): HalLink = identity(l)
@@ -38,7 +39,7 @@ trait RootController extends ApiController {
   }
 
   private[controllers] def transformEmpRefs(empRefs: Seq[String]): HalResource = {
-    val links = selfLink(rootUrl) +: empRefs.map(empref => HalLink(empref, emprefUrl(empref)))
+    val links = selfLink(rootUrl) +: empRefs.map(empref => HalLink(empref, emprefUrl(EmploymentReference(empref))))
     val body = Json.toJson(Map("emprefs" -> empRefs)).as[JsObject]
 
     HalResource(HalLinks(links.map(processLink).toVector), body)
