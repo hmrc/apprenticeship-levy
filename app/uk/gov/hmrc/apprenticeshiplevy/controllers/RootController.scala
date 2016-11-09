@@ -35,7 +35,7 @@ trait RootController extends ApiController {
   // scalastyle:off
   def root = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    authConnector.getEmprefs.map(es => ok(transformEmpRefs(es)))
+    authConnector.getEmprefs.map(es => ok(transformEmpRefs(es))).recover(authErrorHandler)
   }
 
   private[controllers] def transformEmpRefs(empRefs: Seq[String]): HalResource = {

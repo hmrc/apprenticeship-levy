@@ -64,6 +64,27 @@ trait ApiController extends BaseController with HeaderValidator {
         }
     }
 
+  val authErrorHandler: PartialFunction[Throwable, Result] = {
+        case e: BadRequestException => BadRequest(Json.toJson(AuthError(SERVICE_UNAVAILABLE, s"Bad request error: ${extractReason(e.getMessage())}")))
+        case e: IOException => ServiceUnavailable(Json.toJson(AuthError(SERVICE_UNAVAILABLE, s"Auth connection error: ${extractReason(e.getMessage())}")))
+        case e: GatewayTimeoutException =>
+          RequestTimeout(Json.toJson(AuthError(REQUEST_TIMEOUT, s"Auth not responding error: ${extractReason(e.getMessage())}")))
+        case e: NotFoundException => NotFound(Json.toJson(AuthError(NOT_FOUND, s"Auth endpoint not found: ${extractReason(e.getMessage())}")))
+        case e: Upstream5xxResponse => ServiceUnavailable(Json.toJson(AuthError(e.reportAs, s"Auth 5xx error: ${extractReason(e.getMessage())}")))
+        case e: Upstream4xxResponse => {
+          e.upstreamResponseCode match {
+            case FORBIDDEN => Forbidden(Json.toJson(AuthError(e.reportAs, s"Auth forbidden error: ${extractReason(e.getMessage())}")))
+            case UNAUTHORIZED => Unauthorized(Json.toJson(AuthError(e.reportAs, s"Auth unauthorised error: ${extractReason(e.getMessage())}")))
+            case TOO_MANY_REQUEST => TooManyRequest(Json.toJson(AuthError(TOO_MANY_REQUEST, s"Auth too many requests: ${extractReason(e.getMessage())}")))
+            case REQUEST_TIMEOUT => RequestTimeout(Json.toJson(AuthError(REQUEST_TIMEOUT, s"Auth not responding error: ${extractReason(e.getMessage())}")))
+            case _ => ServiceUnavailable(Json.toJson(AuthError(e.reportAs, s"Auth 4xx error: ${extractReason(e.getMessage())}")))
+          }
+        }
+        case e => {
+          InternalServerError(Json.toJson(DESError(INTERNAL_SERVER_ERROR, s"API or Auth internal server error: ${extractReason(e.getMessage())}")))
+        }
+    }
+
   def selfLink(url: String): HalLink = HalLink("self", url)
 
   def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).withHeaders("Content-Type" -> "application/hal+json")

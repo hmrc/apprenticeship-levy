@@ -33,7 +33,8 @@ object QueryBinders {
       params.get(key).flatMap(_.headOption).map { date: String => (Try {
         date match {
           case DatePattern(year, _*) if year.toInt >= 2000 => Right(DateConverter.parseToLocalDate(date))
-          case _ => Left(s"'${date}' date parameter is in the wrong format. Should be ('${DatePattern.toString()}' where data is yyyy-MM-dd and year is 2000 or later)")
+          case _ =>
+            Left(s"'${date}' date parameter is in the wrong format. Should be ('${DatePattern.toString()}' where data is yyyy-MM-dd and year is 2000 or later)")
         }
       } recover {
         case e: Exception => Left(s"date parameter is in the wrong format. Should be ('${DatePattern.toString()}' where data is yyyy-MM-dd)")
@@ -49,10 +50,11 @@ object PathBinders {
   val EmployerReferencePattern = AppContext.employerReferencePattern.r
   val NinoPattern = AppContext.ninoPattern.r
 
-  implicit def bindableEmploymentReference(implicit binder: PathBindable[String]) =
+  implicit def bindableEmploymentReference(implicit binder: PathBindable[String]): PathBindable[EmploymentReference] =
     bindable[String,EmploymentReference](EmployerReferencePattern, str => EmploymentReference(str), b => URLEncoder.encode(b.empref, "UTF-8"))
 
-  implicit def bindableNino(implicit binder: PathBindable[String]) = bindable[String,Nino](NinoPattern, str => Nino(str), b => URLEncoder.encode(b.nino, "UTF-8"))
+  implicit def bindableNino(implicit binder: PathBindable[String]): PathBindable[Nino] =
+    bindable[String,Nino](NinoPattern, str => Nino(str), b => URLEncoder.encode(b.nino, "UTF-8"))
 
   private[config] def bindable[A,B](regex: Regex, convertToB: String => B, convertToA: B => A)
                                    (implicit binder: PathBindable[A]): PathBindable[B] = new PathBindable[B] {

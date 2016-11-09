@@ -20,6 +20,7 @@ import play.mvc.Http.Status._
 import uk.gov.hmrc.api.controllers.ErrorResponse
 
 case class DESError(statusCode: Int, msg: String) extends ErrorResponse(statusCode, "DES_ERROR", msg)
+case class AuthError(statusCode: Int, msg: String) extends ErrorResponse(statusCode, "AUTH_ERROR", msg)
 
 object ErrorResponses {
   object ErrorNotFound extends ErrorResponse(NOT_FOUND, "NOT_FOUND", "Resource was not found")

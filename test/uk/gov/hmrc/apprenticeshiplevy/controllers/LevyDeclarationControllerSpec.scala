@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, PayrollPeriod, EmploymentReference}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
   "getting the levy declarations" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {
-      val response = LiveLevyDeclarationController.declarations("empref", None, None)(FakeRequest()).futureValue
+      val response = LiveLevyDeclarationController.declarations(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
       response.header.status shouldBe NOT_ACCEPTABLE
     }
   }
