@@ -20,6 +20,7 @@ import java.net.URLEncoder
 
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
+import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
 class RootControllerTest extends WordSpecLike with Matchers with OptionValues {
   "transformEmprefs" should {
@@ -39,7 +40,7 @@ class RootControllerTest extends WordSpecLike with Matchers with OptionValues {
 
     override def authConnector: AuthConnector = ???
 
-    override def emprefUrl(empref: String): String = s"""/epaye/${URLEncoder.encode(empref, "UTF-8")}"""
+    override def emprefUrl(ref: EmploymentReference): String = s"""/epaye/${URLEncoder.encode(ref.empref, "UTF-8")}"""
   }
 
 }

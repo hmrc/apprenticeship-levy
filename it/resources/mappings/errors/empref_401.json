@@ -2,9 +2,12 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/401/designatory-details"
+        "url": "/epaye/401%2FAB12345/designatory-details"
     },
     "response": {
-        "status": 401
+        "status": 401,
+        "jsonBody": {
+          "reason": "Not authorized"
+        }
     }
 }

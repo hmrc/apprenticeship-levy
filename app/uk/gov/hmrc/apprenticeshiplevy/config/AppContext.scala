@@ -58,8 +58,15 @@ object AppContext extends ServicesConfig {
 
   def desUrl: String = baseUrl("des")
   def stubDesUrl: String = baseUrl("stub-des")
+
+  def datePattern(): String = getString(current.configuration)("microservice.dateRegex")
+  def employerReferencePattern(): String = getString(current.configuration)("microservice.emprefRegex")
+  def ninoPattern(): String = getString(current.configuration)("microservice.ninoRegex")
+
+  // scalastyle:off
   def defaultNumberOfDeclarationYears: Int =
     current.configuration.getString("microservice.defaultNumberOfDeclarationYears").map(_.toInt).getOrElse(6)
+  // scalastyle:on
 
   private def getString(config: Configuration)(id: String): String = config.getString(id)
     .getOrElse(throw new RuntimeException(s"Unable to read whitelisted application (value '$id' not found)"))

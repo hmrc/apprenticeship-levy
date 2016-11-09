@@ -20,7 +20,8 @@ trait MicroService {
   lazy val plugins : Seq[Plugins] = Seq(play.PlayScala)
   lazy val compileScalastyle = taskKey[Unit]("compileScalastyle")
   lazy val compileScalastyleTask = org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask("")
-  lazy val playSettings : Seq[Setting[_]] = Seq(routesImport ++= Seq("uk.gov.hmrc.apprenticeshiplevy.config.QueryBinders._", "org.joda.time.LocalDate"),
+  lazy val playSettings : Seq[Setting[_]] = Seq(routesImport ++= Seq("uk.gov.hmrc.apprenticeshiplevy.config.QueryBinders._", "org.joda.time.LocalDate",
+                                                                     "uk.gov.hmrc.apprenticeshiplevy.config.PathBinders._", "uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference","uk.gov.hmrc.apprenticeshiplevy.data.api.Nino"),
                                                 compile in Compile <<= (compile in Compile) dependsOn compileScalastyleTask)
   lazy val scoverageSettings = {
     import scoverage.ScoverageKeys

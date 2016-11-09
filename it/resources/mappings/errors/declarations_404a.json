@@ -1,8 +1,8 @@
 {
-    "priority": 1,
+    "priority": 2,
     "request": {
         "method": "GET",
-        "url": "/apprenticeship-levy/employers/401AB12345/fractions",
+        "urlPattern": "/rti/employers/(.+)/employer-payment-summary\\??fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
         "headers": {
           "Authorization": {
               "matches": "Bearer (.*)"
@@ -13,9 +13,9 @@
         }
     },
     "response": {
-        "status": 401,
+        "status": 404,
         "jsonBody": {
-          "reason": "a backend error"
+          "reason": "Not found"
         }
     }
 }

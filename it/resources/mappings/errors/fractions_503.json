@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/apprenticeship-levy/employers/503/fractions",
+        "url": "/apprenticeship-levy/employers/503AB12345/fractions",
         "headers": {
           "Authorization": {
               "matches": "Bearer (.*)"

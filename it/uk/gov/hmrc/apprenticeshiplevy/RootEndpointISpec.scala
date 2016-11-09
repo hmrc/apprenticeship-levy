@@ -46,32 +46,32 @@ class RootEndpointISpec extends WiremockFunSpec  {
         }
 
         describe ("when errors occur") {
-          it (s"HTTP 401") {
+          it (s"should return 401 when Auth returns 401") {
             // set up
             stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(401).withStatusMessage("Not authorised.")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 401
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth unauthorised error: GET of 'http://localhost:8080/auth/authority' returned 401. Response body: ''"}""")
           }
 
-          it (s"HTTP 403") {
+          it (s"should return 403 when Auth returns 403") {
             // set up
             stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(403).withStatusMessage("Forbidden.")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 403
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth forbidden error: GET of 'http://localhost:8080/auth/authority' returned 403. Response body: ''"}""")
           }
 
           it (s"HTTP 404") {
@@ -84,78 +84,80 @@ class RootEndpointISpec extends WiremockFunSpec  {
 
             // check
             status(result) shouldBe 404
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth endpoint not found: GET of 'http://localhost:8080/auth/authority' returned 404 (Not Found). Response body: ''"}""")
           }
         }
 
         describe ("when backend systems failing") {
-          it (s"should throw IOException? when connection closed") {
+          it (s"should return http status 503 when connection closed") {
             // set up
             stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth connection error: Remotely Closed"}""")
           }
 
-          it (s"should throw IOException? when returning empty response and connection closed") {
+          it (s"should return 503 when returning empty response and connection closed") {
             // set up
             stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth connection error: Remotely Closed"}""")
           }
 
-          it (s"should throw TimeoutException? when timed out") {
+          it (s"should return 408 when timed out") {
             // set up
             stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(200).withFixedDelay(1000*60)))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 408
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth not responding error: GET of 'http://localhost:8080/auth/authority' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
           }
 
-          it (s"HTTP 500") {
+          it (s"should return 503 when Auth returns 500") {
             // set up
             stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(500).withStatusMessage("Internal server error")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth 5xx error: GET of 'http://localhost:8080/auth/authority' returned 500. Response body: ''"}""")
           }
 
-          it (s"HTTP 503") {
+          it (s"should return 503 when Auth returns 503") {
             // set up
             stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(503).withStatusMessage("Backend systems failing")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth 5xx error: GET of 'http://localhost:8080/auth/authority' returned 503. Response body: ''"}""")
           }
         }
       }

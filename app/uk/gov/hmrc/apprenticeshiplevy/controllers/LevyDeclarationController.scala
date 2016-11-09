@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, LevyDeclarations, PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, LevyDeclarations, PayrollPeriod, EmploymentReference}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange,ClosedDateRange}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
@@ -40,11 +40,15 @@ trait LevyDeclarationController {
   implicit val dateTimeOrdering: Ordering[LocalDateTime] = Ordering.fromLessThan { (d1, d2) => d1.isBefore(d2) }
 
   // scalastyle:off
-  def declarations(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
+  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    retrieveDeclarations(empref, toDateRange(fromDate, toDate))
-      .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, empref))
-      .recover(desErrorHandler)
+    if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get)) {
+      Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
+    } else {
+      retrieveDeclarations(toDESFormat(ref.empref), toDateRange(fromDate, toDate))
+        .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, ref.empref))
+        .recover(desErrorHandler)
+    }
   }
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {

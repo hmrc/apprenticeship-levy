@@ -44,121 +44,123 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
         }
 
         describe ("with invalid paramters") {
-          it (s"should return 400") {
+          it (s"when DES returns 400 should return 400") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/400").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            intercept[uk.gov.hmrc.play.http.BadRequestException] {
-              val result = route(request).get
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 400
-            }
+            // check
+            status(result) shouldBe 400
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"Bad request error: Bad request"}""")
           }
 
-          it (s"should return 401") {
+          it (s"when DES returns unauthorized should return 401") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/401").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
-              val result = route(request).get
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 401
-            }
+            // check
+            status(result) shouldBe 401
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES unauthorised error: Not authorized"}""")
           }
 
-          it (s"should return 403") {
+          it (s"when DES returns forbidden should return 403") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/403").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            intercept[uk.gov.hmrc.play.http.Upstream4xxResponse] {
-              val result = route(request).get
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 403
-            }
+            // check
+            status(result) shouldBe 403
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES forbidden error: Forbidden"}""")
           }
 
-          it (s"should return 404") {
+          it (s"when DES returns 404 should return 404") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/404").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
 
             // check
             status(result) shouldBe 404
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES endpoint not found: Not found"}""")
           }
         }
 
         describe ("when backend systems failing") {
-          it (s"should throw IOException? when connection closed") {
+          it (s"should return 503 when connection closed") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/malformed").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345").withHeaders(standardDesHeaders: _*)
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
           }
 
-          it (s"should throw IOException? when response is empty") {
+          it (s"should return 503 when response is empty") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/empty").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345").withHeaders(standardDesHeaders: _*)
 
-            intercept[java.io.IOException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
           }
 
-          it (s"should throw TimeoutException? when timed out") {
+          it (s"should return 408 when timed out") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/timeout").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.GatewayTimeoutException] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              contentType(result) shouldBe Some("application/json")
-            }
+            // check
+            status(result) shouldBe 408
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: GET of 'http://localhost:8080/epaye/777%2FAB12345/designatory-details' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
           }
 
-          it (s"DES HTTP 500") {
+          it (s"should return 503 when DES returns 500") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/500").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 500
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: Internal error"}""")
           }
 
-          it (s"DES HTTP 503") {
+          it (s"should return 503 when DES returns 503") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/503").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345").withHeaders(standardDesHeaders: _*)
 
-            intercept[uk.gov.hmrc.play.http.Upstream5xxResponse] {
-              // test
-              val result = route(request).get
+            // test
+            val result = route(request).get
 
-              // check
-              status(result) shouldBe 503
-            }
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: Backend system error"}""")
           }
         }
       }

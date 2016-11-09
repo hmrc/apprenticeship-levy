@@ -20,31 +20,32 @@ import java.net.URLEncoder
 
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, DesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
 class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues {
   "prepareLinks" should {
     "correctly prepare HAL for an empref" in {
       val empref = "123/AB12345"
-      val hal = testController.prepareLinks(empref)
+      val hal = testController.prepareLinks(EmploymentReference(empref))
 
       hal.links.links should have size 4
-      hal.links.links.find(_.rel == "self").value.href shouldBe testController.emprefUrl(empref)
-      hal.links.links.find(_.rel == "declarations").value.href shouldBe testController.declarationsUrl(empref)
-      hal.links.links.find(_.rel == "fractions").value.href shouldBe testController.fractionsUrl(empref)
-      hal.links.links.find(_.rel == "employment-check").value.href shouldBe testController.employmentCheckUrl(empref)
+      hal.links.links.find(_.rel == "self").value.href shouldBe testController.emprefUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "declarations").value.href shouldBe testController.declarationsUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "fractions").value.href shouldBe testController.fractionsUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "employment-check").value.href shouldBe testController.employmentCheckUrl(EmploymentReference(empref))
     }
   }
 
   val testController = new EmprefController {
     override def desConnector: DesConnector = ???
 
-    override def emprefUrl(empref: String): String = s"""/epaye/${URLEncoder.encode(empref, "UTF-8")}"""
+    override def emprefUrl(ref: EmploymentReference): String = s"""/epaye/${URLEncoder.encode(ref.empref, "UTF-8")}"""
 
-    override def declarationsUrl(empref: String): String = emprefUrl(empref) + "/declarations"
+    override def declarationsUrl(ref: EmploymentReference): String = emprefUrl(ref) + "/declarations"
 
-    override def fractionsUrl(empref: String): String = emprefUrl(empref) + "/fractions"
+    override def fractionsUrl(ref: EmploymentReference): String = emprefUrl(ref) + "/fractions"
 
-    override def employmentCheckUrl(empref: String): String = emprefUrl(empref) + "/employed/{nino}"
+    override def employmentCheckUrl(ref: EmploymentReference): String = emprefUrl(ref) + "/employed/{nino}"
   }
 
 }

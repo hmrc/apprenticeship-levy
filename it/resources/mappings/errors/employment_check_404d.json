@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "urlPattern": "/apprenticeship-levy/employers/AB12345/employed/(.+)\\?fromDate=2015-03-03&toDate=2015-06-30",
+        "urlPattern": "/apprenticeship-levy/employers/123AB12345/employed/(.+)\\?fromDate=2015-03-03&toDate=2015-06-30",
         "headers": {
           "Authorization": {
               "matches": "Bearer (.*)"

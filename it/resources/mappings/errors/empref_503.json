@@ -2,9 +2,12 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/503/designatory-details"
+        "url": "/epaye/503%2FAB12345/designatory-details"
     },
     "response": {
-        "status": 503
+        "status": 503,
+        "jsonBody": {
+          "reason": "Backend system error"
+        }
     }
 }

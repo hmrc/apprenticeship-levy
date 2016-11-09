@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "urlPattern": "/rti/employers/400/employer-payment-summary\\??fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
+        "urlPattern": "/rti/employers/400AB12345/employer-payment-summary\\??fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
         "headers": {
           "Authorization": {
               "matches": "Bearer (.*)"

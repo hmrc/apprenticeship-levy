@@ -20,19 +20,25 @@ import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.play.http._
+import scala.concurrent.Future
 
 trait FractionsController {
   self: ApiController =>
   def desConnector: DesConnector
 
   // scalastyle:off
-  def fractions(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
+  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    desConnector.fractions(toDESFormat(empref), DateRange(fromDate, toDate)) map { fs =>
-      Ok(Json.toJson(fs))
-    } recover desErrorHandler
+    if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get)) {
+      Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
+    } else {
+      desConnector.fractions(toDESFormat(ref.empref), DateRange(fromDate, toDate)) map { fs =>
+        Ok(Json.toJson(fs))
+      } recover desErrorHandler
+    }
   }
 }
 

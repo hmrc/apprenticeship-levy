@@ -28,6 +28,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 import uk.gov.hmrc.play.http.HttpGet
 import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
+import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import scala.concurrent.Future
 import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.logging._
@@ -53,9 +54,10 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
       }
 
       // test
-      val response: Future[Result] = controller.fractions("123AB12345", None, None)(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                                              "Authorization"->"Bearer dsfda9080",
-                                                                                                              "Environment"->"clone"))
+      val response: Future[Result] = controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()
+                                                                       .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                    "Authorization"->"Bearer dsfda9080",
+                                                                                    "Environment"->"clone"))
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -69,7 +71,8 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
       val stubHttpGet = mock[HttpGet]
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(stubHttpGet.GET[Fractions](anyString())(any(), headerCarrierCaptor.capture()))
-           .thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
+           .thenReturn(Future.successful(Fractions("123AB12345",
+                                                   List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
       val controller = new FractionsController() with ApiController {
         def desConnector: DesConnector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
@@ -78,8 +81,9 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
       }
 
       // test
-      val response: Future[Result] = controller.fractions("123AB12345", None, None)(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                                              "Authorization"->"Bearer dsfda9080"))
+      val response: Future[Result] = controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()
+                                                                      .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                    "Authorization"->"Bearer dsfda9080"))
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
