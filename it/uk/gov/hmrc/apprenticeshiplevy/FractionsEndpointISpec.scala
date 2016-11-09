@@ -104,6 +104,32 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
         }
 
         describe ("with invalid paramters") {
+          Seq("fromDate", "toDate").foreach { case (param) =>
+            it (s"should return 400 when $param param is invalid") {
+              // set up
+              val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
+
+              forAll(dates) { (date: String) =>
+                whenever (!date.isEmpty) {
+                  val requestUrl = param match {
+                    case "fromDate" => s"$context/epaye/123AB12345/fractions?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
+                    case _ => s"/sandbox/epaye/123AB12345/fractions?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
+                  }
+                  val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders: _*)
+
+                  // test
+                  val result = route(request).get
+                  val httpStatus = status(result)
+
+                  // check
+                  httpStatus shouldBe 400
+                  contentType(result) shouldBe Some("application/json")
+                  contentAsString(result) should include ("""date parameter is in the wrong format. Should be ('^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where data is yyyy-MM-dd and year is 2000 or later""")
+                }
+              }
+            }
+          }
+
           it (s"should return http status 400 when DES HTTP 400") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/400/fractions")
@@ -158,6 +184,20 @@ class FractionsEndpointISpec extends WiremockFunSpec  {
             status(result) shouldBe 404
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES endpoint not found: a backend error"}""")
+          }
+
+          it (s"should return 400 when to date is before from date") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2015-06-03&toDate=2015-03-30").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(request).get
+            val httpStatus = status(result)
+
+            // check
+            httpStatus shouldBe 400
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"BAD_REQUEST","message":"From date was after to date"}""")
           }
         }
 

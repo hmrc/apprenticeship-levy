@@ -42,9 +42,13 @@ trait LevyDeclarationController {
   // scalastyle:off
   def declarations(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    retrieveDeclarations(empref, toDateRange(fromDate, toDate))
-      .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, empref))
-      .recover(desErrorHandler)
+    if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get)) {
+      Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
+    } else {
+      retrieveDeclarations(empref, toDateRange(fromDate, toDate))
+        .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, empref))
+        .recover(desErrorHandler)
+    }
   }
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {

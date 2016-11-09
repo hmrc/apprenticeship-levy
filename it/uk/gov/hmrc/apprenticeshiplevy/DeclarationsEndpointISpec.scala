@@ -45,7 +45,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
             declarations.size shouldBe 9
-            info(declarations.mkString("\n"))
+            //info(declarations.mkString("\n"))
           }
 
           it (s"should handle no payment period") {
@@ -114,9 +114,51 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
           }
         }
 
-        describe ("with invalid paramters") {
-          it (s"404 for various emprefs") {
-            pending
+        describe ("with invalid parameters") {
+          Seq("fromDate", "toDate").foreach { case (param) =>
+            it (s"should return 400 when $param param is invalid") {
+              // set up
+              val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
+
+              forAll(dates) { (date: String) =>
+                whenever (!date.isEmpty) {
+                  val requestUrl = param match {
+                    case "fromDate" => s"$context/epaye/123AB12345/declarations?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
+                    case _ => s"/sandbox/epaye/123AB12345/declarations?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
+                  }
+                  val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders: _*)
+
+                  // test
+                  val result = route(request).get
+                  val httpStatus = status(result)
+
+                  // check
+                  httpStatus shouldBe 400
+                  contentType(result) shouldBe Some("application/json")
+                  contentAsString(result) should include ("""date parameter is in the wrong format. Should be ('^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where data is yyyy-MM-dd and year is 2000 or later""")
+                }
+              }
+            }
+          }
+
+          it (s"should return 404 when empref is unknown") {
+            // set up
+            val emprefs = for { empref <- genEmpref } yield empref
+
+            forAll(emprefs) { (empref: String) =>
+              whenever (!empref.isEmpty) {
+                val request = FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/declarations").withHeaders(standardDesHeaders: _*)
+
+                // test
+                val result = route(request).get
+                val httpStatus = status(result)
+
+                // check
+                httpStatus shouldBe 404
+                contentType(result) shouldBe Some("application/json")
+                contentAsJson(result) shouldBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
+              }
+            }
           }
 
           it (s"should return 400 when DES returns 400") {
@@ -168,6 +210,20 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 404
           }
+
+          it (s"should return 400 when to date is before from date") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations?fromDate=2015-06-03&toDate=2015-03-30").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(request).get
+            val httpStatus = status(result)
+
+            // check
+            httpStatus shouldBe 400
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"BAD_REQUEST","message":"From date was after to date"}""")
+          }
         }
 
         describe ("when backend systems failing") {
@@ -207,7 +263,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: GET of 'http://localhost:8080/rti/employers/timeout/employer-payment-summary?fromDate=2010-11-08&toDate=2016-11-08' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
+            contentAsString(result) should include ("""{"code":"DES_ERROR","message":"DES not responding error: GET of """)
           }
 
           it (s"should return http status 503 when DES HTTP 500") {

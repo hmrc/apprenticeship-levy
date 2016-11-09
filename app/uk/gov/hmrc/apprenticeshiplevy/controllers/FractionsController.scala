@@ -22,6 +22,7 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.play.http._
+import scala.concurrent.Future
 
 trait FractionsController {
   self: ApiController =>
@@ -30,9 +31,13 @@ trait FractionsController {
   // scalastyle:off
   def fractions(empref: String, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    desConnector.fractions(toDESFormat(empref), DateRange(fromDate, toDate)) map { fs =>
-      Ok(Json.toJson(fs))
-    } recover desErrorHandler
+    if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get)) {
+      Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
+    } else {
+      desConnector.fractions(toDESFormat(empref), DateRange(fromDate, toDate)) map { fs =>
+        Ok(Json.toJson(fs))
+      } recover desErrorHandler
+    }
   }
 }
 

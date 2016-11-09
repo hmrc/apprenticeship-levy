@@ -110,7 +110,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec  {
             it (s"should return 400 when $param param is invalid") {
               // set up
               WiremockService.notifier.testInformer = NullInformer.info
-              val dates = for { str <- Gen.alphaStr } yield str
+              val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
 
               forAll(dates) { (date: String) =>
                 whenever (!date.isEmpty) {
