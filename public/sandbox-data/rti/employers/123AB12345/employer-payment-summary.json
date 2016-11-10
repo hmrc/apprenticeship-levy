@@ -1,0 +1,82 @@
+{
+  "status": 200,
+  "jsonBody": {
+  "empref": "123AB12345",
+  "eps": [
+    {
+      "submissionId": 12345678,
+      "hmrcSubmissionTime": "2016-07-14T16:05:23",
+      "rtiSubmissionTime": "2016-07-14T16:05:23",
+      "taxYear": "16-17",
+      "apprenticeshipLevy": {
+        "amountDue": 600.00,
+        "taxMonth": "11",
+        "amountAllowance": 15000
+      }
+    },
+    {
+      "submissionId": 12345679,
+      "hmrcSubmissionTime": "2015-04-07T16:05:23",
+      "rtiSubmissionTime": "2015-04-07T16:05:23",
+      "taxYear": "15-16",
+      "noPaymentPeriod": {
+        "from": "2016-12-13",
+        "to": "2017-03-22"
+      }
+    },
+    {
+      "submissionId": 12345680,
+      "hmrcSubmissionTime": "2016-05-07T16:05:23",
+      "rtiSubmissionTime": "2016-05-07T16:05:23",
+      "taxYear": "16-17",
+      "apprenticeshipLevy": {
+        "amountDue": 500.00,
+        "taxMonth": "1",
+        "amountAllowance": 15000
+      }
+    },
+    {
+      "submissionId": 12345681,
+      "hmrcSubmissionTime": "2016-06-07T16:05:23",
+      "rtiSubmissionTime": "2016-06-07T16:05:23",
+      "taxYear": "16-17",
+      "apprenticeshipLevy": {
+        "amountDue": 1000.00,
+        "taxMonth": "2",
+        "amountAllowance": 15000
+      }
+    },
+    {
+      "submissionId": 12345682,
+      "hmrcSubmissionTime": "2016-06-15T16:20:23",
+      "rtiSubmissionTime": "2016-06-15T16:20:23",
+      "taxYear": "16-17",
+      "apprenticeshipLevy": {
+        "amountDue": 200.00,
+        "taxMonth": "2",
+        "amountAllowance": 15000
+      }
+    },
+    {
+      "submissionId": 12345683,
+      "hmrcSubmissionTime": "2016-07-15T16:05:23",
+      "rtiSubmissionTime": "2016-07-15T16:05:23",
+      "taxYear": "16-17",
+      "inactivePeriod": {
+        "from": "2016-06-06",
+        "to": "2016-09-05"
+      }
+    },
+    {
+      "submissionId": 12345684,
+      "hmrcSubmissionTime": "2016-10-15T16:05:23",
+      "rtiSubmissionTime": "2016-10-15T16:05:23",
+      "taxYear": "16-17",
+      "finalSubmission": {
+        "schemeCeased": true,
+        "schemeCeasedDate": "2016-09-05"
+      }
+    }
+  ]
+}
+}

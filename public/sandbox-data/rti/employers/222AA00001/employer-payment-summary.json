@@ -1,0 +1,127 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "222AA00001",
+    "eps": [{
+        "submissionId": 22200000101,
+        "hmrcSubmissionTime": "2017-05-15T12:00:00",
+        "rtiSubmissionTime": "2017-05-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 10000.00,
+            "taxMonth": "1",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000102,
+        "hmrcSubmissionTime": "2017-06-15T12:00:00",
+        "rtiSubmissionTime": "2017-06-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 20000.00,
+            "taxMonth": "2",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000103,
+        "hmrcSubmissionTime": "2017-07-15T12:00:00",
+        "rtiSubmissionTime": "2017-07-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 18750.00,
+            "taxMonth": "3",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000104,
+        "hmrcSubmissionTime": "2017-08-15T12:00:00",
+        "rtiSubmissionTime": "2017-08-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 28750.00,
+            "taxMonth": "4",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000105,
+        "hmrcSubmissionTime": "2017-09-15T12:00:00",
+        "rtiSubmissionTime": "2017-09-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 38750.00,
+            "taxMonth": "5",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000106,
+        "hmrcSubmissionTime": "2017-10-15T12:00:00",
+        "rtiSubmissionTime": "2017-10-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 48750.00,
+            "taxMonth": "6",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000107,
+        "hmrcSubmissionTime": "2017-11-15T12:00:00",
+        "rtiSubmissionTime": "2017-11-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 58750.00,
+            "taxMonth": "7",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000108,
+        "hmrcSubmissionTime": "2017-12-15T12:00:00",
+        "rtiSubmissionTime": "2017-12-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 68750.00,
+            "taxMonth": "8",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000109,
+        "hmrcSubmissionTime": "2018-01-15T12:00:00",
+        "rtiSubmissionTime": "2018-01-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 67500.00,
+            "taxMonth": "9",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000110,
+        "hmrcSubmissionTime": "2018-02-15T12:00:00",
+        "rtiSubmissionTime": "2018-02-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 77500.00,
+            "taxMonth": "10",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000111,
+        "hmrcSubmissionTime": "2018-03-15T12:00:00",
+        "rtiSubmissionTime": "2018-03-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 87500.00,
+            "taxMonth": "11",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 22200000112,
+        "hmrcSubmissionTime": "2018-04-15T12:00:00",
+        "rtiSubmissionTime": "2018-04-15T12:00:00",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+            "amountDue": 97500.00,
+            "taxMonth": "12",
+            "amountAllowance": 15000
+        }
+    }]
+}
+}

@@ -23,6 +23,7 @@ import com.github.tomakehurst.wiremock.http.Fault
 import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration,PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 
 @DoNotDiscover
 class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConfig {
@@ -45,7 +46,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
             declarations.size shouldBe 9
-            //info(declarations.mkString("\n"))
+            info(declarations.mkString("\n"))
           }
 
           it (s"should handle no payment period") {
@@ -61,7 +62,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(0) shouldBe LevyDeclaration(56774248744L,new LocalDateTime(2016, 5, 20, 14, 25, 32),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true))
+            declarations(1) shouldBe LevyDeclaration(56774248744L,new LocalDateTime(2016, 5, 20, 14, 25, 32),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true))
           }
 
           it (s"should handle inactive period") {
@@ -77,7 +78,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(3) shouldBe LevyDeclaration(6573215455L,new LocalDateTime(2016,4,20,14,25,32),None,Some(new LocalDate(2016,8,6)),Some(new LocalDate(2016,11,5)))
+            declarations(7) shouldBe LevyDeclaration(6573215455L,new LocalDateTime(2016,4,20,14,25,32),None,Some(new LocalDate(2016,8,6)),Some(new LocalDate(2016,11,5)))
           }
 
           it (s"should handle ceased trading") {
@@ -93,7 +94,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(4) shouldBe LevyDeclaration(56774248742L,new LocalDateTime(2016,4,20,14,25,32),Some(new LocalDate(2016,6,6)))
+            declarations(6) shouldBe LevyDeclaration(56774248742L,new LocalDateTime(2016,4,20,14,25,32),Some(new LocalDate(2016,6,6)))
           }
 
           it (s"should handle levies") {
@@ -109,8 +110,8 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(1) shouldBe LevyDeclaration(56774248743L,new LocalDateTime(2016,5,20,14,25,32),None,None,None,Some(PayrollPeriod("16-17",2)),Some(98.64),Some(15000))
-            declarations(2) shouldBe LevyDeclaration(6573215455L,new LocalDateTime(2016,4,20,14,25,32),None,None,None,Some(PayrollPeriod("16-17",2)),Some(124.27),Some(15000))
+            declarations(0) shouldBe LevyDeclaration(56774248743L,new LocalDateTime(2016,5,20,14,25,32),None,None,None,Some(PayrollPeriod("16-17",2)),Some(98.64),Some(15000))
+            declarations(8) shouldBe LevyDeclaration(6573215455L,new LocalDateTime(2016,4,20,14,25,32),None,None,None,Some(PayrollPeriod("16-17",2)),Some(124.27),Some(15000))
           }
         }
 

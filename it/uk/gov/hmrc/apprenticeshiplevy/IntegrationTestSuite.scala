@@ -8,6 +8,7 @@ import java.util.UUID._
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.Fault
 import scala.util.Try
+import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 
 class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
                                            new DeclarationsEndpointISpec,

@@ -17,6 +17,7 @@ import play.api.Play._
 
 import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 
 @DoNotDiscover
 class DefinitionEndpointISpec extends WiremockFunSpec  {

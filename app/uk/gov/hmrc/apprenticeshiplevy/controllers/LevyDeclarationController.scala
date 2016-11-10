@@ -37,8 +37,6 @@ trait LevyDeclarationController {
 
   def desConnector: DesConnector
 
-  implicit val dateTimeOrdering: Ordering[LocalDateTime] = Ordering.fromLessThan { (d1, d2) => d1.isBefore(d2) }
-
   // scalastyle:off
   def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
@@ -46,7 +44,7 @@ trait LevyDeclarationController {
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
     } else {
       retrieveDeclarations(toDESFormat(ref.empref), toDateRange(fromDate, toDate))
-        .map(ds => buildResult(ds.sortBy(_.submissionTime).reverse, ref.empref))
+        .map(ds => buildResult(ds.sortWith((first:LevyDeclaration,second:LevyDeclaration)=>first.submissionTime.isAfter(second.submissionTime)), ref.empref))
         .recover(desErrorHandler)
     }
   }

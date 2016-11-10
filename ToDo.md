@@ -1,40 +1,40 @@
 
 ## General
 
-- [ ] Connectors failing backend tests
+- [x] Connectors failing backend tests
 - [ ] Why is live responding differently with same requests as sandbox e.g. 401 v 404?
-- [ ] Prune unused code
+- [x] Prune unused code
 - [ ] Add caching to documentation controller
-- [ ] Consider converting config to be updatable on the fly (AppContext)
-- [ ] :question: Confirm useage of headercarrier
-- [ ] Write tests for bindable local date
-- [ ] Consider consolidating data/domain classes into single package hierarchy
+- [x] Consider converting config to be updatable on the fly (AppContext)
+- [x] :question: Confirm useage of headercarrier
+- [v] Write tests for bindable local date
+- [x] Consider consolidating data/domain classes into single package hierarchy
 - [ ] Unit tests where integration tests aren't in place
-- [ ] scalastyle
-- [ ] possibly remove ala stub and serve data from a sandbox data endpoint in case api platform requests stub to be removed
+- [x] scalastyle
+- [x] possibly remove ala stub and serve data from a sandbox data endpoint in case api platform requests stub to be removed
 
 ## :bangbang: Backend endpoints
-- [ ] Add wiremock stub responses for each endpoint with same data as stub
+- [x] Add wiremock stub responses for each endpoint with same data as stub
 - Integration tests (both happy/unhappy paths and both live/sandbox)
-  - [ ] Auth
-  - [ ] EDH
-  - [ ] EPAYE
-  - [ ] EPS
-  - [ ] RTI
-  - [ ] Service Locator
-  - [ ] Update all tests once backend enpoint specs are in place
-  - [ ] Employment check for not employed
-  - [ ] Employment check for not known
-  - [ ] Declarations for different date ranges
+  - [x] Auth
+  - [x] EDH
+  - [x] EPAYE
+  - [x] EPS
+  - [x] RTI
+  - [x] Service Locator
+  - [x] Update all tests once backend endpoint specs are in place
+  - [x] Employment check for not employed
+  - [x] Employment check for not known
+  - [] Declarations for different date ranges
 
 ## :bangbang: API endpoints
 - Integration tests (both happy/unhappy paths)
-  - [ ] root
-  - [ ] empref
-  - [ ] declarations
-  - [ ] fractions
-  - [ ] fraction dates
-  - [ ] employment check
+  - [x] root
+  - [x] empref
+  - [x] declarations
+  - [x] fractions
+  - [x] fraction dates
+  - [x] employment check
   - [x] documentation
   - [x] api definition
 

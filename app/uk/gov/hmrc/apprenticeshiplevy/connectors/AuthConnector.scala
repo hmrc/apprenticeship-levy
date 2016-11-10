@@ -21,6 +21,7 @@ import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 
 import scala.concurrent.Future
 
@@ -37,7 +38,7 @@ trait AuthConnector {
 }
 
 object SandboxAuthConnector extends AuthConnector with ServicesConfig {
-  override val authBaseUrl: String = baseUrl("stub-auth")
+  override val authBaseUrl: String = AppContext.stubAuthUrl
   override val http: HttpGet = WSHttp
 }
 

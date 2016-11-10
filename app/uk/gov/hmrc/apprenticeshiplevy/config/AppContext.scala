@@ -57,7 +57,8 @@ object AppContext extends ServicesConfig {
   // $COVERAGE-ON$
 
   def desUrl: String = baseUrl("des")
-  def stubDesUrl: String = baseUrl("stub-des")
+  def stubDesUrl: String = Try(baseUrl("stub-des") + getString(current.configuration)("microservice.services.stub-des.path")).getOrElse(baseUrl("stub-des"))
+  def stubAuthUrl: String = Try(baseUrl("stub-auth") + getString(current.configuration)("microservice.services.stub-auth.path")).getOrElse(baseUrl("stub-auth"))
 
   def datePattern(): String = getString(current.configuration)("microservice.dateRegex")
   def employerReferencePattern(): String = getString(current.configuration)("microservice.emprefRegex")
