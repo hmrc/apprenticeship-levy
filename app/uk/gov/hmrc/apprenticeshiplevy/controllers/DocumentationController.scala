@@ -30,7 +30,6 @@ import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
 import scala.concurrent.Future
-import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 trait AssetsController extends BaseController {

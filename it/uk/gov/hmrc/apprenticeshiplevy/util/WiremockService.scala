@@ -6,6 +6,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
 import org.scalatest.Informer
 import com.github.tomakehurst.wiremock.common._
+import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 
 trait WiremockService extends IntegrationTestConfig with StandardOutInformer {
   lazy val notifier = new WiremockTestInformerNotifier(info, verboseWiremockOutput)

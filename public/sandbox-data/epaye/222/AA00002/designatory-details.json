@@ -1,0 +1,25 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref":"222AA00002",
+    "employer":{
+      "name":{
+        "nameLine1":"Employer for scenario 2 scheme 2"
+      },
+      "address":{
+        "addressLine1":"Address Line 1",
+        "addressLine2":"Address Line 2",
+        "addressLine3":"Address Line 3",
+        "addressLine4":"Address Line 4",
+        "addressLine5":"Address Line 5",
+        "postcode":"NE3033G",
+        "foreignCountry":"UK"
+      },
+      "contact":{
+        "telephone":{
+          "telephoneNumber":"123"
+        }
+      }
+    }
+  }
+}

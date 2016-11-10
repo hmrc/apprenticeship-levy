@@ -32,11 +32,11 @@ trait DesUrl {
 }
 
 trait DesSandboxUrl extends DesUrl {
-  def baseUrl: String = AppContext.desUrl
+  def baseUrl: String = AppContext.stubDesUrl
 }
 
 trait DesProductionUrl extends DesUrl {
-  def baseUrl: String = AppContext.stubDesUrl
+  def baseUrl: String = AppContext.desUrl
 }
 
 trait EmployerDetailsEndpoint {

@@ -1,11 +1,10 @@
-package uk.gov.hmrc.apprenticeshiplevy.util
+package uk.gov.hmrc.apprenticeshiplevy.config
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
 import play.api.libs.json.Json
-import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration
 import org.scalatest.Informing
 import com.github.tomakehurst.wiremock.common._
 import play.api.libs.Crypto
@@ -50,8 +49,10 @@ trait IntegrationTestConfig {
         "microservice.services.service-locator.enabled" -> "true",
         "microservice.services.stub-auth.host" -> stubHost,
         "microservice.services.stub-auth.port" -> stubPort,
+        "microservice.services.stub-auth.path" -> "",
         "microservice.services.stub-des.host" -> stubHost,
         "microservice.services.stub-des.port" -> stubPort,
+        "microservice.services.stub-des.path" -> "",
         "microservice.services.des.host" -> stubHost,
         "microservice.services.des.port" -> stubPort,
         "microservice.services.auth.host" -> stubHost,

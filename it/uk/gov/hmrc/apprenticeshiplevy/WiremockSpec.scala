@@ -6,7 +6,8 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest._
 import org.scalacheck.Gen
 
-import uk.gov.hmrc.apprenticeshiplevy.util.{WiremockService, IntegrationTestConfig}
+import uk.gov.hmrc.apprenticeshiplevy.util.WiremockService
+import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 
 trait WiremockConfig extends BeforeAndAfterEach with Informing {
   this: Suite =>

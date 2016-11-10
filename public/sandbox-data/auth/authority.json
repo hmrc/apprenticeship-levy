@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "uri": "",
+    "accounts":{
+      "epaye":{
+        "link":"",
+        "empRef":"123/AB12345"
+      }},
+      "credentialStrength":"weak",
+      "confidenceLevel":50
+  }
+}

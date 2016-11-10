@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "111AA00001",
+    "fractionCalculations": [{
+      "calculatedAt": "2017-03-15",
+      "fractions": [{
+        "region": "England",
+        "value": "1.00"
+      }]
+    }]
+  }
+}
