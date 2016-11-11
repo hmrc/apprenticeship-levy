@@ -60,17 +60,10 @@ object AppContext extends ServicesConfig {
   def desUrl: String = baseUrl("des")
 
   def stubURL(name: String) = Try {
-      val path = getString(current.configuration)(s"microservice.services.stub-${name}.path")
-      val baseurl = if (getString(current.configuration)(s"microservice.services.stub-${name}.host") == "localhost") {
-        if (current.mode == Mode.Prod) {
-          appUrl
-        } else {
-          baseUrl(s"stub-${name}")
-        }
-      } else {
-        baseUrl(s"stub-${name}")
-      }
-      s"${baseurl}${path}"
+    val stubUrl = baseUrl(s"stub-${name}")
+    val path = getString(current.configuration)(s"microservice.services.stub-${name}.path")
+    val baseurl = if (current.mode == Mode.Prod && !stubUrl.contains("localhost")) appUrl else stubUrl
+    s"${baseurl}${path}"
     }.getOrElse(baseUrl(s"stub-${name}"))
 
   def stubDesUrl: String = stubURL("des")
