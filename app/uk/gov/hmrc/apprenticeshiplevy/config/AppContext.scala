@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.config
 
 import play.api.Play._
-import play.api.{Configuration, Logger}
+import play.api.{Configuration, Logger, Mode}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.util.Try
@@ -58,8 +58,24 @@ object AppContext extends ServicesConfig {
   // $COVERAGE-ON$
 
   def desUrl: String = baseUrl("des")
-  def stubDesUrl: String = Try(baseUrl("stub-des") + getString(current.configuration)("microservice.services.stub-des.path")).getOrElse(baseUrl("stub-des"))
-  def stubAuthUrl: String = Try(baseUrl("stub-auth") + getString(current.configuration)("microservice.services.stub-auth.path")).getOrElse(baseUrl("stub-auth"))
+
+  def stubURL(name: String) = Try {
+      val path = getString(current.configuration)(s"microservice.services.stub-${name}.path")
+      val baseurl = if (getString(current.configuration)(s"microservice.services.stub-${name}.host") == "localhost") {
+        if (current.mode == Mode.Prod) {
+          appUrl
+        } else {
+          baseUrl(s"stub-${name}")
+        }
+      } else {
+        baseUrl(s"stub-${name}")
+      }
+      s"${baseurl}${path}"
+    }.getOrElse(baseUrl(s"stub-${name}"))
+
+  def stubDesUrl: String = stubURL("des")
+
+  def stubAuthUrl: String = stubURL("auth")
 
   // $COVERAGE-OFF$
   Logger.info(s"""\nStub DES URL: ${stubDesUrl}\nStub Auth URL: ${stubAuthUrl}\n""")
