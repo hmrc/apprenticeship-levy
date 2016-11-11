@@ -11,6 +11,7 @@
 - [x] Consider consolidating data/domain classes into single package hierarchy
 - [ ] Unit tests where integration tests aren't in place
 - [ ] Add date filtering to sandbox data endpoint
+- [ ] Update configuration for service manager to retire apprenticeship-levy-stub
 - [x] scalastyle
 - [x] possibly remove ala stub and serve data from a sandbox data endpoint in case api platform requests stub to be removed
 
