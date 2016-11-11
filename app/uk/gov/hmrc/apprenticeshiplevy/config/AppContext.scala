@@ -23,6 +23,7 @@ import uk.gov.hmrc.play.config.ServicesConfig
 import scala.util.Try
 
 object AppContext extends ServicesConfig {
+  Logger.info(s"""\n${"*" * 80}\n""")
 
   def appName: String =
     current.configuration.getString("appName").getOrElse(throw new RuntimeException("appName is not configured"))
@@ -60,9 +61,17 @@ object AppContext extends ServicesConfig {
   def stubDesUrl: String = Try(baseUrl("stub-des") + getString(current.configuration)("microservice.services.stub-des.path")).getOrElse(baseUrl("stub-des"))
   def stubAuthUrl: String = Try(baseUrl("stub-auth") + getString(current.configuration)("microservice.services.stub-auth.path")).getOrElse(baseUrl("stub-auth"))
 
+  // $COVERAGE-OFF$
+  Logger.info(s"""\nStub DES URL: ${stubDesUrl}\nStub Auth URL: ${stubAuthUrl}\n""")
+  // $COVERAGE-ON$
+
   def datePattern(): String = getString(current.configuration)("microservice.dateRegex")
   def employerReferencePattern(): String = getString(current.configuration)("microservice.emprefRegex")
   def ninoPattern(): String = getString(current.configuration)("microservice.ninoRegex")
+
+  // $COVERAGE-OFF$
+  Logger.info(s"""\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n""")
+  // $COVERAGE-ON$
 
   // scalastyle:off
   def defaultNumberOfDeclarationYears: Int =
@@ -71,4 +80,6 @@ object AppContext extends ServicesConfig {
 
   private def getString(config: Configuration)(id: String): String = config.getString(id)
     .getOrElse(throw new RuntimeException(s"Unable to read whitelisted application (value '$id' not found)"))
+
+  Logger.info(s"""\n${"*" * 80}\n""")
 }
