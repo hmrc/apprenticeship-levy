@@ -10,6 +10,7 @@
 - [v] Write tests for bindable local date
 - [x] Consider consolidating data/domain classes into single package hierarchy
 - [ ] Unit tests where integration tests aren't in place
+- [ ] Add date filtering to sandbox data endpoint
 - [x] scalastyle
 - [x] possibly remove ala stub and serve data from a sandbox data endpoint in case api platform requests stub to be removed
 
