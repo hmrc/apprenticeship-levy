@@ -34,19 +34,24 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.EventKeys._
+import uk.gov.hmrc.play.frontend.auth.connectors.domain._
+import uk.gov.hmrc.domain._
 
-class DesConnectorSpec extends UnitSpec with MockitoSugar {
-  "DES Connector" should {
+class AuthConnectorSpec extends UnitSpec with MockitoSugar {
+  "Auth Connector" should {
     "send audit events" in {
         // set up
         val stubAuditConnector= mock[AuditConnector]
         val eventCaptor = ArgumentCaptor.forClass(classOf[ALAEvent])
         when(stubAuditConnector.sendEvent(eventCaptor.capture())(any(), any())).thenReturn(Future.successful(AuditResult.Success))
+
+        val accounts = Accounts(None, None, None, None, Some(new EpayeAccount("", EmpRef("123", "AB12345"))))
+        val authority = Authority("", accounts, None, None, CredentialStrength.Weak, ConfidenceLevel.L50, None, None)
         val stubHttpGet = mock[HttpGet]
-        when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any())).thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
-        val connector = new DesConnector() {
-          def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpGet: HttpGet = stubHttpGet
+        when(stubHttpGet.GET[Authority](anyString())(any(), any())).thenReturn(Future.successful(authority))
+        val connector = new AuthConnector() {
+          def authBaseUrl: String = "http://a.guide.to.nowhere/"
+          def http: HttpGet = stubHttpGet
           protected def auditConnector: Option[AuditConnector] = Some(stubAuditConnector)
         }
         val event = new ALAEvent("readEmprefDetails", "123AB12345")(HeaderCarrier())
@@ -59,45 +64,6 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
         auditEvent.auditType shouldBe ("ServiceReceivedRequest")
         auditEvent.tags(TransactionName) shouldBe ("readEmprefDetails")
         auditEvent.detail("empref") shouldBe ("123AB12345")
-    }
-
-    "for Fraction Date endpoint" must {
-      "when EDH not failing return local date instance of date" in {
-        // set up
-        val stubHttpGet = mock[HttpGet]
-        when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any())).thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
-        val connector = new DesConnector() {
-          def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpGet: HttpGet = stubHttpGet
-          protected def auditConnector: Option[AuditConnector] = None
-        }
-
-        // test
-        val futureResult = connector.fractionCalculationDate(HeaderCarrier(), defaultContext)
-
-        // check
-        await[LocalDate](futureResult) shouldBe new LocalDate(2016,11,3)
-      }
-    }
-    "for Fractions endpoint" must {
-      "when EDH not failing return fractions" in {
-        // set up
-        val stubHttpGet = mock[HttpGet]
-        val expected = Fractions("123AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))
-        when(stubHttpGet.GET[Fractions](anyString())(any(), any()))
-           .thenReturn(Future.successful(expected))
-        val connector = new DesConnector() {
-          def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpGet: HttpGet = stubHttpGet
-          protected def auditConnector: Option[AuditConnector] = None
-        }
-
-        // test
-        val futureResult = connector.fractions("123AB12345", OpenDateRange)(HeaderCarrier(),defaultContext)
-
-        // check
-        await[Fractions](futureResult) shouldBe expected
-      }
     }
   }
 }

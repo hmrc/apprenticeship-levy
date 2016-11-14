@@ -36,6 +36,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import play.api.mvc.{ActionBuilder, Request, Result, Results}
 import play.api.libs.json.Json
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
   "getting fraction calculation date" should {
@@ -49,6 +50,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
         def desConnector: DesConnector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
+          protected def auditConnector: Option[AuditConnector] = None
         }
       }
 
@@ -74,6 +76,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
         def desConnector: DesConnector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
+          protected def auditConnector: Option[AuditConnector] = None
         }
       }
 
@@ -97,6 +100,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
         def desConnector: DesConnector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
+          protected def auditConnector: Option[AuditConnector] = None
         }
       }
 
