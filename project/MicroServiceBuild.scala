@@ -33,6 +33,7 @@ private object AppDependencies {
   private val scalaXMLVersion = "2.11.0-M4"
   private val xmlDiffVersion = "2.0.2"
   private val scalacheckVersion = "1.12.5"
+  private val playAuditingVersion = "0.2.0"
 
   val compile = Seq(
     ws,
@@ -44,7 +45,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-config" % playConfigVersion,
     "uk.gov.hmrc" %% "play-json-logger" % playJsonLoggerVersion,
     "uk.gov.hmrc" %% "play-hmrc-api" % playHmrcApiVersion,
-    "uk.gov.hmrc" %% "play-hal" % playHalVersion
+    "uk.gov.hmrc" %% "play-hal" % playHalVersion,
+    "uk.gov.hmrc" %% "play-auditing" % playAuditingVersion
   )
 
   trait TestDependencies {

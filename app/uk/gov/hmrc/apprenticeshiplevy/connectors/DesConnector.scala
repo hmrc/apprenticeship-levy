@@ -24,8 +24,13 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange, ClosedDateRange}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, NotFoundException}
 import views.html.helper
-
 import scala.concurrent.{Future, ExecutionContext}
+import uk.gov.hmrc.play.http.HeaderCarrier
+import scala.util.{Success, Failure, Try}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.apprenticeshiplevy.config.MicroserviceAuditFilter
+import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
+import play.api.Logger
 
 trait DesUrl {
   def baseUrl: String
@@ -43,15 +48,29 @@ trait EmployerDetailsEndpoint {
   des: DesConnector =>
 
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] = {
+    println("1")
     val url = s"${des.baseUrl}/epaye/${helper.urlEncode(empref)}/designatory-details"
 
     // $COVERAGE-OFF$
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
+    println("2")
     des.httpGet
       .GET[DesignatoryDetails](url)
       .map(_.copy(empref = Some(empref)))(ec)
+      .andThen {
+        case Success(v) => {
+          println("4")
+          Logger.debug("Successful call to designatory-details")
+          des.sendEvent(new ALAEvent("readEmprefDetails", empref))
+        }
+        case Failure(t) => {
+          println("5")
+          Logger.debug("Unsuccessful call to designatory-details")
+          Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
+        }
+      }
   }
 }
 
@@ -66,14 +85,21 @@ trait EmploymentCheckEndpoint {
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    des.httpGet.GET[EmploymentCheckStatus](url) recover { case notFound: NotFoundException => NinoUnknown }
+    des.httpGet.GET[EmploymentCheckStatus](url)
+               .recover { case notFound: NotFoundException => NinoUnknown }
+               .andThen {
+                  case Success(v) => {
+                    des.sendEvent(new ALAEvent("employmentCheck", empref, nino, s"daterange=${dateRange.toParams}"))
+                  }
+                  case Failure(t) => Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
+                }
   }
 }
 
 trait FractionsEndpoint {
   des: DesConnector =>
 
-  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Fractions] = {
+  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[Fractions] = {
     val url = (s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions", dateRange.toParams) match {
       case (u, Some(params)) => s"$u?$params"
       case (u, None) => u
@@ -84,6 +110,12 @@ trait FractionsEndpoint {
     // $COVERAGE-ON$
 
     des.httpGet.GET[Fractions](url)
+               .andThen {
+                  case Success(v) => {
+                    des.sendEvent(new ALAEvent("readFractions", empref, "", s"daterange=${dateRange.toParams}"))
+                  }
+                  case Failure(t) => Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
+               }
   }
 
   def fractionCalculationDate(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[LocalDate] = {
@@ -93,16 +125,21 @@ trait FractionsEndpoint {
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    des.httpGet.GET[FractionCalculationDate](url) map {
-      _.date
-    }
+    des.httpGet.GET[FractionCalculationDate](url)
+               .map { _.date }
+               .andThen {
+                  case Success(v) => {
+                    des.sendEvent(new ALAEvent("readFractionCalculationDate"))
+                  }
+                  case Failure(t) => Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
+               }
   }
 }
 
 trait LevyDeclarationsEndpoint {
   des: DesConnector =>
 
-  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[EmployerPaymentsSummary] = {
+  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[EmployerPaymentsSummary] = {
     val url = (s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary", dateRange.toParams) match {
       case (u, None) => u
       case (u, Some(ps)) => s"$u?$ps"
@@ -113,6 +150,12 @@ trait LevyDeclarationsEndpoint {
     // $COVERAGE-ON$
 
     des.httpGet.GET[EmployerPaymentsSummary](url)
+               .andThen {
+                  case Success(v) => {
+                    des.sendEvent(new ALAEvent("readLevyDeclarations", empref, "", s"daterange=${dateRange.toParams}"))
+                  }
+                  case Failure(t) => Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
+               }
   }
 }
 
@@ -122,12 +165,16 @@ trait DesConnector extends DesUrl
                    with EmploymentCheckEndpoint
                    with LevyDeclarationsEndpoint {
   def httpGet: HttpGet
+  def sendEvent(event: ALAEvent)(implicit ec: ExecutionContext): Unit = auditConnector.map(_.sendEvent(event))
+  protected def auditConnector: Option[AuditConnector]
 }
 
 object LiveDesConnector extends DesConnector with DesProductionUrl {
   def httpGet: HttpGet = WSHttp
+  protected def auditConnector: Option[AuditConnector] = Some(MicroserviceAuditFilter.auditConnector)
 }
 
 object SandboxDesConnector extends DesConnector with DesSandboxUrl {
   def httpGet: HttpGet = WSHttp
+  protected def auditConnector: Option[AuditConnector] = None
 }

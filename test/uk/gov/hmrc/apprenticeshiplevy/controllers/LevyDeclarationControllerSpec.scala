@@ -28,6 +28,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
   "getting the levy declarations" should {
@@ -43,7 +44,9 @@ object TestDesConnector extends DesConnector {
 
   override def httpGet: HttpGet = ???
 
-  override def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier) = ???
+  override def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext) = ???
+
+  protected def auditConnector: Option[AuditConnector] = None
 }
 
 object TestLevyDeclarationController extends LevyDeclarationController with ApiController {

@@ -30,9 +30,37 @@ import uk.gov.hmrc.play.http.{HeaderCarrier,HttpReads,HttpResponse}
 import uk.gov.hmrc.play.http.hooks.HttpHook
 import play.api.libs.concurrent.Execution.Implicits._
 import uk.gov.hmrc.apprenticeshiplevy.utils._
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import uk.gov.hmrc.play.audit.EventKeys._
 
 class DesConnectorSpec extends UnitSpec with MockitoSugar {
   "DES Connector" should {
+    "send audit events" in {
+        // set up
+        val stubAuditConnector= mock[AuditConnector]
+        val eventCaptor = ArgumentCaptor.forClass(classOf[ALAEvent])
+        when(stubAuditConnector.sendEvent(eventCaptor.capture())(any(), any())).thenReturn(Future.successful(AuditResult.Success))
+        val stubHttpGet = mock[HttpGet]
+        when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any())).thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
+        val connector = new DesConnector() {
+          def baseUrl: String = "http://a.guide.to.nowhere/"
+          def httpGet: HttpGet = stubHttpGet
+          protected def auditConnector: Option[AuditConnector] = Some(stubAuditConnector)
+        }
+        val event = new ALAEvent("readEmprefDetails", "123AB12345")(HeaderCarrier())
+
+        // test
+        connector.sendEvent(event)(defaultContext)
+
+        // check
+        val auditEvent = eventCaptor.getValue
+        auditEvent.auditType shouldBe ("ServiceReceivedRequest")
+        auditEvent.tags(TransactionName) shouldBe ("readEmprefDetails")
+        auditEvent.detail("empref") shouldBe ("123AB12345")
+    }
+
     "for Fraction Date endpoint" must {
       "when EDH not failing return local date instance of date" in {
         // set up
@@ -41,6 +69,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
         val connector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
+          protected def auditConnector: Option[AuditConnector] = None
         }
 
         // test
@@ -60,10 +89,11 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
         val connector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
+          protected def auditConnector: Option[AuditConnector] = None
         }
 
         // test
-        val futureResult = connector.fractions("123AB12345", OpenDateRange)(HeaderCarrier())
+        val futureResult = connector.fractions("123AB12345", OpenDateRange)(HeaderCarrier(),defaultContext)
 
         // check
         await[Fractions](futureResult) shouldBe expected
