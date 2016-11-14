@@ -48,25 +48,21 @@ trait EmployerDetailsEndpoint {
   des: DesConnector =>
 
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] = {
-    println("1")
     val url = s"${des.baseUrl}/epaye/${helper.urlEncode(empref)}/designatory-details"
 
     // $COVERAGE-OFF$
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    println("2")
     des.httpGet
       .GET[DesignatoryDetails](url)
       .map(_.copy(empref = Some(empref)))(ec)
       .andThen {
         case Success(v) => {
-          println("4")
           Logger.debug("Successful call to designatory-details")
           des.sendEvent(new ALAEvent("readEmprefDetails", empref))
         }
         case Failure(t) => {
-          println("5")
           Logger.debug("Unsuccessful call to designatory-details")
           Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
         }
@@ -163,10 +159,9 @@ trait DesConnector extends DesUrl
                    with FractionsEndpoint
                    with EmployerDetailsEndpoint
                    with EmploymentCheckEndpoint
-                   with LevyDeclarationsEndpoint {
+                   with LevyDeclarationsEndpoint
+                   with Auditor {
   def httpGet: HttpGet
-  def sendEvent(event: ALAEvent)(implicit ec: ExecutionContext): Unit = auditConnector.map(_.sendEvent(event))
-  protected def auditConnector: Option[AuditConnector]
 }
 
 object LiveDesConnector extends DesConnector with DesProductionUrl {

@@ -22,10 +22,14 @@ import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-
+import uk.gov.hmrc.apprenticeshiplevy.config.MicroserviceAuditFilter
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import scala.concurrent.Future
+import scala.util.{Success, Failure, Try}
+import play.api.Logger
+import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 
-trait AuthConnector {
+trait AuthConnector extends Auditor {
   def authBaseUrl: String
 
   def http: HttpGet
@@ -33,6 +37,14 @@ trait AuthConnector {
   def getEmprefs(implicit hc: HeaderCarrier): Future[Seq[String]] = {
     http.GET[Authority](s"$authBaseUrl/auth/authority").map { a =>
       a.accounts.epaye.map(_.empRef.value).toList
+    }.andThen {
+      case Success(v) => {
+        Logger.debug("Successful call to auth")
+        sendEvent(new ALAEvent("readEmprefs", ""))
+      }
+      case Failure(t) => {
+        Logger.error(s"Failed to fetch auth details ${t.getMessage()}",t)
+      }
     }
   }
 }
@@ -40,10 +52,11 @@ trait AuthConnector {
 object SandboxAuthConnector extends AuthConnector with ServicesConfig {
   override val authBaseUrl: String = AppContext.stubAuthUrl
   override val http: HttpGet = WSHttp
+  protected def auditConnector: Option[AuditConnector] = None
 }
 
 object LiveAuthConnector extends AuthConnector with ServicesConfig {
   override def authBaseUrl: String = baseUrl("auth")
-
   override def http: HttpGet = WSHttp
+  protected def auditConnector: Option[AuditConnector] = Some(MicroserviceAuditFilter.auditConnector)
 }
