@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.connectors
+package uk.gov.hmrc.apprenticeshiplevy.audit
 
 import scala.concurrent.{Future, ExecutionContext}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
