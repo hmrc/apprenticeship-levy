@@ -40,11 +40,8 @@ trait AuthConnector extends Auditor with GraphiteMetrics with Timer{
 
   def getEmprefs(implicit hc: HeaderCarrier): Future[Seq[String]] = {
     timer(RequestEvent(AUTH_SERVICE_REQUEST, None)) {
-      http.GET[Authority](s"$authBaseUrl/auth/authority").map { a =>
-        a.accounts.epaye.map(_.empRef.value).toList
-      }.andThen {
-        case Success(v) => sendEvent(new ALAEvent("readEmprefs", ""))
-        case Failure(t) => Logger.error(s"Failed to fetch auth details ${t.getMessage()}",t)
+      audit(new ALAEvent("readEmprefs", "")) {
+        http.GET[Authority](s"$authBaseUrl/auth/authority").map { a => a.accounts.epaye.map(_.empRef.value).toList}
       }
     }
   }

@@ -20,9 +20,9 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.audit.AuditExtensions._
 
-class ALAEvent(name: String, empref: String = "", nino: String = "", dateRange: String = "")
-                   (implicit hc: HeaderCarrier)
-   extends DataEvent("ala-api",
-                     "ServiceReceivedRequest",
-                     tags = hc.toAuditTags(name, ""),
-                     detail = Map("empref" -> empref, "nino" -> nino, "dateRange" -> dateRange))
+case class ALAEvent(name: String, empref: String = "", nino: String = "", dateRange: String = "") {
+  def toDataEvent(implicit hc: HeaderCarrier): DataEvent = DataEvent("ala-api",
+                                           "ServiceReceivedRequest",
+                                           tags = hc.toAuditTags(name, ""),
+                                           detail = Map("empref" -> empref, "nino" -> nino, "dateRange" -> dateRange))
+}
