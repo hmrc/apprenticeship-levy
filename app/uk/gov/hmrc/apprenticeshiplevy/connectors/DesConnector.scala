@@ -24,13 +24,14 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange, ClosedDateRange}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, NotFoundException}
 import views.html.helper
+import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import scala.concurrent.{Future, ExecutionContext}
 import uk.gov.hmrc.play.http.HeaderCarrier
-import scala.util.{Success, Failure, Try}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.apprenticeshiplevy.config.MicroserviceAuditFilter
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import play.api.Logger
+import uk.gov.hmrc.apprenticeshiplevy.metrics._
 
 trait DesUrl {
   def baseUrl: String
@@ -44,33 +45,26 @@ trait DesProductionUrl extends DesUrl {
   def baseUrl: String = AppContext.desUrl
 }
 
-trait EmployerDetailsEndpoint {
+trait EmployerDetailsEndpoint extends Timer {
   des: DesConnector =>
 
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] = {
+
     val url = s"${des.baseUrl}/epaye/${helper.urlEncode(empref)}/designatory-details"
 
     // $COVERAGE-OFF$
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    des.httpGet
-      .GET[DesignatoryDetails](url)
-      .map(_.copy(empref = Some(empref)))(ec)
-      .andThen {
-        case Success(v) => {
-          Logger.debug("Successful call to designatory-details")
-          des.sendEvent(new ALAEvent("readEmprefDetails", empref))
-        }
-        case Failure(t) => {
-          Logger.debug("Unsuccessful call to designatory-details")
-          Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
-        }
+    timer(RequestEvent(DES_EMPREF_DETAILS_REQUEST, Some(empref))) {
+      audit(new ALAEvent("readEmprefDetails", empref)) {
+        des.httpGet.GET[DesignatoryDetails](url).map(_.copy(empref = Some(empref)))(ec)
       }
+    }
   }
 }
 
-trait EmploymentCheckEndpoint {
+trait EmploymentCheckEndpoint extends Timer {
   des: DesConnector =>
 
   def check(empref: String, nino: String, dateRange: ClosedDateRange)
@@ -81,18 +75,15 @@ trait EmploymentCheckEndpoint {
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    des.httpGet.GET[EmploymentCheckStatus](url)
-               .recover { case notFound: NotFoundException => NinoUnknown }
-               .andThen {
-                  case Success(v) => {
-                    des.sendEvent(new ALAEvent("employmentCheck", empref, nino, s"daterange=${dateRange.toParams}"))
-                  }
-                  case Failure(t) => Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
-                }
+    timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
+      audit(new ALAEvent("employmentCheck", empref, nino, s"daterange=${dateRange.toParams}")) {
+        des.httpGet.GET[EmploymentCheckStatus](url).recover { case notFound: NotFoundException => NinoUnknown }
+      }
+    }
   }
 }
 
-trait FractionsEndpoint {
+trait FractionsEndpoint extends Timer {
   des: DesConnector =>
 
   def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[Fractions] = {
@@ -105,13 +96,11 @@ trait FractionsEndpoint {
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    des.httpGet.GET[Fractions](url)
-               .andThen {
-                  case Success(v) => {
-                    des.sendEvent(new ALAEvent("readFractions", empref, "", s"daterange=${dateRange.toParams}"))
-                  }
-                  case Failure(t) => Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
-               }
+    timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
+      audit(new ALAEvent("readFractions", empref, "", s"daterange=${dateRange.toParams}")) {
+        des.httpGet.GET[Fractions](url)
+      }
+    }
   }
 
   def fractionCalculationDate(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[LocalDate] = {
@@ -121,18 +110,15 @@ trait FractionsEndpoint {
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    des.httpGet.GET[FractionCalculationDate](url)
-               .map { _.date }
-               .andThen {
-                  case Success(v) => {
-                    des.sendEvent(new ALAEvent("readFractionCalculationDate"))
-                  }
-                  case Failure(t) => Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
-               }
+    timer(RequestEvent(DES_FRACTIONS_DATE_REQUEST, None)) {
+      audit(new ALAEvent("readFractionCalculationDate")) {
+        des.httpGet.GET[FractionCalculationDate](url).map { _.date }
+      }
+    }
   }
 }
 
-trait LevyDeclarationsEndpoint {
+trait LevyDeclarationsEndpoint extends Timer {
   des: DesConnector =>
 
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[EmployerPaymentsSummary] = {
@@ -145,13 +131,11 @@ trait LevyDeclarationsEndpoint {
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    des.httpGet.GET[EmployerPaymentsSummary](url)
-               .andThen {
-                  case Success(v) => {
-                    des.sendEvent(new ALAEvent("readLevyDeclarations", empref, "", s"daterange=${dateRange.toParams}"))
-                  }
-                  case Failure(t) => Logger.error(s"Failed to fetch company details ${t.getMessage()}",t)
-               }
+    timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
+      audit(new ALAEvent("readLevyDeclarations", empref, "", s"daterange=${dateRange.toParams}")) {
+        des.httpGet.GET[EmployerPaymentsSummary](url)
+      }
+    }
   }
 }
 
@@ -160,7 +144,8 @@ trait DesConnector extends DesUrl
                    with EmployerDetailsEndpoint
                    with EmploymentCheckEndpoint
                    with LevyDeclarationsEndpoint
-                   with Auditor {
+                   with Auditor
+                   with GraphiteMetrics {
   def httpGet: HttpGet
 }
 

@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.connectors
+package uk.gov.hmrc.apprenticeshiplevy.audit
 
 import scala.concurrent.{Future, ExecutionContext}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
+import uk.gov.hmrc.play.audit.EventKeys._
+import scala.util.{Success, Failure, Try}
+import play.api.Logger
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 trait Auditor  {
-  def sendEvent(event: ALAEvent)(implicit ec: ExecutionContext): Unit = auditConnector.map(_.sendEvent(event))
+  def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = {
+    block andThen {
+      case Success(v) => auditConnector.map(_.sendEvent(event.toDataEvent))
+      case Failure(t) => Logger.error(s"Failed to '${event.name}' ${t.getMessage()}",t)
+    }
+  }
+
   protected def auditConnector: Option[AuditConnector]
 }

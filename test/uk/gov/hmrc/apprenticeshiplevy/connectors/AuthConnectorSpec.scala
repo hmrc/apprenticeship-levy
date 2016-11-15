@@ -36,28 +36,21 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.EventKeys._
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.domain._
+import uk.gov.hmrc.play.audit.model.DataEvent
 
 class AuthConnectorSpec extends UnitSpec with MockitoSugar {
   "Auth Connector" should {
     "send audit events" in {
         // set up
         val stubAuditConnector= mock[AuditConnector]
-        val eventCaptor = ArgumentCaptor.forClass(classOf[ALAEvent])
+        val eventCaptor = ArgumentCaptor.forClass(classOf[DataEvent])
         when(stubAuditConnector.sendEvent(eventCaptor.capture())(any(), any())).thenReturn(Future.successful(AuditResult.Success))
-
-        val accounts = Accounts(None, None, None, None, Some(new EpayeAccount("", EmpRef("123", "AB12345"))))
-        val authority = Authority("", accounts, None, None, CredentialStrength.Weak, ConfidenceLevel.L50, None, None)
-        val stubHttpGet = mock[HttpGet]
-        when(stubHttpGet.GET[Authority](anyString())(any(), any())).thenReturn(Future.successful(authority))
-        val connector = new AuthConnector() {
-          def authBaseUrl: String = "http://a.guide.to.nowhere/"
-          def http: HttpGet = stubHttpGet
-          protected def auditConnector: Option[AuditConnector] = Some(stubAuditConnector)
-        }
-        val event = new ALAEvent("readEmprefDetails", "123AB12345")(HeaderCarrier())
+        val event = ALAEvent("readEmprefDetails", "123AB12345")
+        implicit val hc = HeaderCarrier()
+        implicit val ec = defaultContext
 
         // test
-        connector.sendEvent(event)(defaultContext)
+        stubAuditConnector.sendEvent(event.toDataEvent)(hc,ec)
 
         // check
         val auditEvent = eventCaptor.getValue

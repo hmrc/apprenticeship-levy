@@ -23,27 +23,25 @@ import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.config.MicroserviceAuditFilter
+import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import scala.concurrent.Future
 import scala.util.{Success, Failure, Try}
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
+import uk.gov.hmrc.apprenticeshiplevy.metrics._
 
-trait AuthConnector extends Auditor {
+trait AuthConnector extends Auditor with GraphiteMetrics with Timer{
+  metrics: GraphiteMetrics =>
+
   def authBaseUrl: String
 
   def http: HttpGet
 
   def getEmprefs(implicit hc: HeaderCarrier): Future[Seq[String]] = {
-    http.GET[Authority](s"$authBaseUrl/auth/authority").map { a =>
-      a.accounts.epaye.map(_.empRef.value).toList
-    }.andThen {
-      case Success(v) => {
-        Logger.debug("Successful call to auth")
-        sendEvent(new ALAEvent("readEmprefs", ""))
-      }
-      case Failure(t) => {
-        Logger.error(s"Failed to fetch auth details ${t.getMessage()}",t)
+    timer(RequestEvent(AUTH_SERVICE_REQUEST, None)) {
+      audit(new ALAEvent("readEmprefs", "")) {
+        http.GET[Authority](s"$authBaseUrl/auth/authority").map { a => a.accounts.epaye.map(_.empRef.value).toList}
       }
     }
   }

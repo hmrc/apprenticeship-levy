@@ -34,25 +34,21 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.EventKeys._
+import uk.gov.hmrc.play.audit.model.DataEvent
 
 class DesConnectorSpec extends UnitSpec with MockitoSugar {
   "DES Connector" should {
     "send audit events" in {
         // set up
         val stubAuditConnector= mock[AuditConnector]
-        val eventCaptor = ArgumentCaptor.forClass(classOf[ALAEvent])
+        val eventCaptor = ArgumentCaptor.forClass(classOf[DataEvent])
         when(stubAuditConnector.sendEvent(eventCaptor.capture())(any(), any())).thenReturn(Future.successful(AuditResult.Success))
-        val stubHttpGet = mock[HttpGet]
-        when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any())).thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
-        val connector = new DesConnector() {
-          def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpGet: HttpGet = stubHttpGet
-          protected def auditConnector: Option[AuditConnector] = Some(stubAuditConnector)
-        }
-        val event = new ALAEvent("readEmprefDetails", "123AB12345")(HeaderCarrier())
+        val event = ALAEvent("readEmprefDetails", "123AB12345")
+        implicit val hc = HeaderCarrier()
+        implicit val ec = defaultContext
 
         // test
-        connector.sendEvent(event)(defaultContext)
+        stubAuditConnector.sendEvent(event.toDataEvent)(hc,ec)
 
         // check
         val auditEvent = eventCaptor.getValue
