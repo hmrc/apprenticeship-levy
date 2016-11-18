@@ -10,14 +10,15 @@ documentation:
  - title: Overview
    content: !include docs/overview.md
  - title: Versioning
-   content: !include docs/versioning.md
+   content: !include http://api-documentation-raml-frontend.service/api-documentation/assets/common/docs/versioning.md
  - title: Errors
-   content: !include docs/errors.md
+   content: !include http://api-documentation-raml-frontend.service/api-documentation/assets/common/docs/errors.md
 
 mediaType: [ application/json, application/hal+json ]
 
 uses:
-  sec: modules/securitySchemes.raml
+  sec: http://api-documentation-raml-frontend.service/api-documentation/assets/common/modules/securitySchemes.raml
+  headers: http://api-documentation-raml-frontend.service/api-documentation/assets/common/modules/headers.raml
 
 annotationTypes:
   config: object
@@ -28,20 +29,11 @@ annotationTypes:
       description: string
   scope:
 
-traits:
-  commonHeaders:
-    headers:
-      Accept:
-        description: API version
-        type: string
-        required: true
-        example: application/vnd.hmrc.1.0+json
-
 /apprenticeship-levy:
   get:
     displayName: Get all employers
     description: Returns a list of valid links indexed by empref in HAL format
-    is: [commonHeaders]
+    is: [headers.acceptHeader]
     (scope): "read:apprenticeship-levy"
     securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
     responses:
@@ -55,7 +47,7 @@ traits:
     get:
       displayName: Get latest fraction calculation date
       description: Returns the date of the most recent fraction calculation batch run.
-      is: [commonHeaders]
+      is: [headers.acceptHeader]
       (scope): "read:apprenticeship-levy"
       securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
       responses:
@@ -75,7 +67,7 @@ traits:
       get:
         displayName: Get employer
         description: Returns more details about an empref including details about the employer and a list of available endpoints that apply to the empref.
-        is: [commonHeaders]
+        is: [headers.acceptHeader]
         (scope): "read:apprenticeship-levy"
         securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
         responses:
@@ -89,7 +81,7 @@ traits:
         get:
           displayName: Get employer levy declarations
           description: Returns a list of levy declarations for a given employer reference.
-          is: [commonHeaders]
+          is: [headers.acceptHeader]
           (scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
           queryParameters:
@@ -114,7 +106,7 @@ traits:
         get:
           displayName: Get employer fraction calculations
           description: Returns a list of fraction calculations for a given employer reference.
-          is: [commonHeaders]
+          is: [headers.acceptHeader]
           (scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
           queryParameters:
@@ -145,7 +137,7 @@ traits:
           get:
             displayName: Get employment status
             description: Checks the employment status of an individual in a payroll scheme.
-            is: [commonHeaders]
+            is: [headers.acceptHeader]
             (scope): "read:apprenticeship-levy"
             securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
             queryParameters:
