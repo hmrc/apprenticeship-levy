@@ -19,6 +19,16 @@ mediaType: [ application/json, application/hal+json ]
 uses:
   sec: http://api-documentation-raml-frontend.service/api-documentation/assets/common/modules/securitySchemes.raml
   headers: http://api-documentation-raml-frontend.service/api-documentation/assets/common/modules/headers.raml
+traits:
+  successResponse:
+    responses:
+      200:
+        body:
+          application/json:
+            type: <<responseSchema>>
+            examples:
+              example-1:
+                value: <<successExample>>
 
 annotationTypes:
   config: object
@@ -67,7 +77,11 @@ annotationTypes:
         get:
           displayName: Get employer levy declarations
           description: Returns a list of levy declarations for a given employer reference.
-          is: [headers.acceptHeader]
+          is:
+            - headers.acceptHeader
+            - successResponse:
+                successExample: !include examples/levy-declarations-example-1.json
+                responseSchema: !include schemas/employer-levy-declarations.json
           (scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
           queryParameters:
@@ -81,13 +95,6 @@ annotationTypes:
               type: date-only
               example: 2015-08-09
               required: false
-          responses:
-            200:
-              body:
-                application/json:
-                  examples:
-                    example-1:
-                      value: !include examples/levy-declarations-example-1.json
       /fractions:
         get:
           displayName: Get employer fraction calculations
