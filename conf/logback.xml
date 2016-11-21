@@ -4,33 +4,33 @@
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>logs/apprenticeship-levy.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] message=[%message] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
+            <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] message=[%replace(%message){'([A-Z]{2})([0-9]{6})([A-D]{1})','$1******$3'}] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
         </encoder>
     </appender>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] rid=[%X{X-Request-ID}] user=[%X{Authorization}] message=[%message] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
+            <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] rid=[%X{X-Request-ID}] user=[%X{Authorization}] message=[%replace(%message){'([A-Z]{2})([0-9]{6})([A-D]{1})','$1******$3'}] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
         </encoder>
     </appender>
 
     <appender name="STDOUT_IGNORE_NETTY" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] rid=[not-available] user=[not-available] message=[%message] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
+            <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] rid=[not-available] user=[not-available] message=[%replace(%message){'([A-Z]{2})([0-9]{6})([A-D]{1})','$1******$3'}] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
         </encoder>
     </appender>
 
     <appender name="ACCESS_LOG_FILE" class="ch.qos.logback.core.FileAppender">
         <file>logs/access.log</file>
-        <encoder>
-            <pattern>%message%n</pattern>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%replace(%message){'([A-Z]{2})([0-9]{6})([A-D]{1})','$1******$3'}%n</pattern>
         </encoder>
     </appender>
 
     <appender name="CONNECTOR_LOG_FILE" class="ch.qos.logback.core.FileAppender">
         <file>logs/connector.log</file>
         <encoder>
-            <pattern>%message%n</pattern>
+            <pattern>%replace(%message){'([A-Z]{2})([0-9]{6})([A-D]{1})','$1******$3'}%n</pattern>
         </encoder>
     </appender>
 
