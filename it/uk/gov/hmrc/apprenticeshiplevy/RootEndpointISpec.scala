@@ -12,6 +12,7 @@ import play.api.Play
 import play.api.libs.Crypto
 import play.api.Play._
 import views.html.helper
+import play.Logger
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
@@ -19,9 +20,10 @@ import com.github.tomakehurst.wiremock.http.Fault
 
 import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatestplus.play._
 
 @DoNotDiscover
-class RootEndpointISpec extends WiremockFunSpec  {
+class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
   describe("Root Endpoint") {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>
@@ -101,7 +103,7 @@ class RootEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth connection error: Remotely Closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth connection error: Remotely closed"}""")
           }
 
           it (s"should return 503 when returning empty response and connection closed") {
@@ -115,7 +117,7 @@ class RootEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth connection error: Remotely Closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth connection error: Remotely closed"}""")
           }
 
           it (s"should return 408 when timed out") {
@@ -129,7 +131,7 @@ class RootEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth not responding error: GET of 'http://localhost:8080/auth/authority' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth not responding error: GET of 'http://localhost:8080/auth/authority' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"}""")
           }
 
           it (s"should return 503 when Auth returns 500") {

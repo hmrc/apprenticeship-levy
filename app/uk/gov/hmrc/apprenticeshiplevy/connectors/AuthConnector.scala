@@ -30,8 +30,10 @@ import scala.util.{Success, Failure, Try}
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.metrics._
+import com.kenshoo.play.metrics.Metrics
+import com.codahale.metrics.Counter
 
-trait AuthConnector extends Auditor with GraphiteMetrics with Timer{
+trait AuthConnector extends Auditor with GraphiteMetrics with Timer {
   metrics: GraphiteMetrics =>
 
   def authBaseUrl: String

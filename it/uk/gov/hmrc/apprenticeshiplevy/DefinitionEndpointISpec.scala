@@ -18,9 +18,10 @@ import play.api.Play._
 import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
+import org.scalatestplus.play._
 
 @DoNotDiscover
-class DefinitionEndpointISpec extends WiremockFunSpec  {
+class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
   def asString(filename: String): String = {
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
   }

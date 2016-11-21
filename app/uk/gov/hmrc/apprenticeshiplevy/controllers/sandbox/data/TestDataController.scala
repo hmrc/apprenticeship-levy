@@ -53,7 +53,10 @@ trait TestDataController extends Controller with Utf8MimeTypes {
     data match {
       case Some(json) => {
         val result = new Status((json \ "status").as[Int])
-        Future.successful(result((json \ "jsonBody")))
+        (json \ "jsonBody").toOption match {
+          case Some(jsonOutStr) => Future.successful(result(jsonOutStr))
+          case _ => Future.successful(result("{}"))
+        }
       }
       case None => Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file found at '${filename}'"}"""))
     }

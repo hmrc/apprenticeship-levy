@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import scala.io.Source
 import java.io.{File,InputStream}
 
-import play.api.{Application, Play, Logger, Mode}
+import play.api.{Application, Play, Mode}
 import play.api.Play.current
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
@@ -28,7 +28,7 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.iteratee.Enumerator
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.microservice.controller.BaseController
-
+import play.Logger
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
@@ -51,7 +51,7 @@ trait AssetsController extends BaseController {
     retrieve(rootPath, file) match {
       case Some(fileToServe) => {
         val mimeType = if (file.contains("raml")) "application/raml+yaml" else play.api.libs.MimeTypes.forFileName(file).getOrElse("text/plain")
-        Ok(Source.fromInputStream(fileToServe).mkString).withHeaders(HeaderNames.CONTENT_TYPE->mimeType)
+        Ok(Source.fromInputStream(fileToServe).mkString).as(mimeType)
       }
       case _ => {
         // $COVERAGE-OFF$
@@ -90,7 +90,7 @@ trait DocumentationController extends AssetsController {
             case Failure(_) => Future.successful(InternalServerError)
           }
         } else {
-          Future.successful(Ok(Source.fromInputStream(fileToServe).mkString).withHeaders(HeaderNames.CONTENT_TYPE->MimeTypes.JSON))
+          Future.successful(Ok(Source.fromInputStream(fileToServe).mkString).as(MimeTypes.JSON))
         }
       }
       case _ => {
