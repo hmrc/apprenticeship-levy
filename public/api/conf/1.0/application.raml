@@ -99,7 +99,12 @@ annotationTypes:
         get:
           displayName: Get employer fraction calculations
           description: Returns a list of fraction calculations for a given employer reference.
-          is: [headers.acceptHeader]
+          is:
+            - headers.acceptHeader
+            - successResponse:
+                successExample: !include examples/fraction-calculations-example-1.json
+                responseSchema: !include schemas/fraction-calculations.json
+                #responseSchema: !include schemas/employer-levy-declarations.json
           (scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
           queryParameters:
@@ -113,13 +118,6 @@ annotationTypes:
               type: date-only
               example: 2015-08-09
               required: false
-          responses:
-            200:
-              body:
-                application/json:
-                  examples:
-                    example-1:
-                      value: !include examples/fraction-calculations-example-1.json
       /employed:
         /{nino}:
           uriParameters:
