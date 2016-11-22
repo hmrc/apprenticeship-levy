@@ -21,6 +21,7 @@ import play.api.libs.json.{JsArray, JsObject, JsString, Json}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import play.api.http.{HeaderNames}
 
 trait RootController extends ApiController {
   def authConnector: AuthConnector

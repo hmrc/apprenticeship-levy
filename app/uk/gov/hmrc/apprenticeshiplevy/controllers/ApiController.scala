@@ -87,7 +87,7 @@ trait ApiController extends BaseController with HeaderValidator {
 
   def selfLink(url: String): HalLink = HalLink("self", url)
 
-  def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).withHeaders("Content-Type" -> "application/hal+json")
+  def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).as("application/hal+json")
 
   protected def extractReason(msg: String) = Try(if (msg.contains("Response body")) {
                                                    val str1 = msg.reverse.substring(1).reverse.substring(msg.indexOf("Response body") + 14).trim

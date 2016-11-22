@@ -17,23 +17,24 @@ object MicroServiceBuild extends Build with MicroService {
 
 private object AppDependencies {
 
-  import play.PlayImport._
+  import play.sbt.PlayImport._
   import play.core.PlayVersion
 
-  private val microserviceBootstrapVersion = "4.4.0"
-  private val playAuthVersion = "3.3.0"
-  private val playAuthFrontendVersion = "5.5.0"
-  private val playHealthVersion = "1.1.0"
-  private val playJsonLoggerVersion = "2.1.1"
-  private val playUrlBindersVersion = "1.0.0"
-  private val playConfigVersion = "2.0.1"
-  private val playHmrcApiVersion = "0.6.0"
-  private val hmrcTestVersion = "1.8.0"
-  private val playHalVersion = "0.3.0"
+  private val microserviceBootstrapVersion = "5.8.0"
+  private val playAuthVersion = "4.2.0"
+  private val playAuthFrontendVersion = "6.2.0"
+  private val playHealthVersion = "2.0.0"
+  private val logbackJsonLoggerVersion = "3.1.0"
+  private val playUrlBindersVersion = "2.0.0"
+  private val playConfigVersion = "3.0.0"
+  private val playHmrcApiVersion = "1.2.0"
+  private val hmrcTestVersion = "2.1.0"
+  private val playHalVersion = "1.1.0"
   private val scalaXMLVersion = "2.11.0-M4"
   private val xmlDiffVersion = "2.0.2"
   private val scalacheckVersion = "1.12.5"
-  private val playAuditingVersion = "0.2.0"
+  private val playAuditingVersion = "2.4.0"
+  private val domainVersion = "4.0.0"
 
   val compile = Seq(
     ws,
@@ -43,10 +44,12 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "play-url-binders" % playUrlBindersVersion,
     "uk.gov.hmrc" %% "play-config" % playConfigVersion,
-    "uk.gov.hmrc" %% "play-json-logger" % playJsonLoggerVersion,
+    "uk.gov.hmrc" %% "logback-json-logger" % logbackJsonLoggerVersion,
     "uk.gov.hmrc" %% "play-hmrc-api" % playHmrcApiVersion,
     "uk.gov.hmrc" %% "play-hal" % playHalVersion,
-    "uk.gov.hmrc" %% "play-auditing" % playAuditingVersion
+    "uk.gov.hmrc" %% "play-auditing" % playAuditingVersion,
+    "uk.gov.hmrc" %% "domain" % domainVersion,
+    "com.kenshoo" %% "metrics-play" % "2.4.0_0.4.1"
   )
 
   trait TestDependencies {
@@ -61,7 +64,8 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % "2.2.6" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.pegdown" % "pegdown" % "1.5.0" % scope,
-        "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % scope
+        "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % scope,
+        "org.mockito" % "mockito-all" % "1.9.5" % scope
       )
     }.test
   }
@@ -79,7 +83,8 @@ private object AppDependencies {
         "com.github.tomakehurst" % "wiremock" % "2.1.12" % scope,
         "org.scala-lang" % "scala-xml" % scalaXMLVersion % scope,
         "com.github.andyglow" % "scala-xml-diff_2.11" % xmlDiffVersion % scope,
-        "org.scalacheck" %% "scalacheck" % scalacheckVersion % scope
+        "org.scalacheck" %% "scalacheck" % scalacheckVersion % scope,
+        "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % scope
       )
     }.test
   }

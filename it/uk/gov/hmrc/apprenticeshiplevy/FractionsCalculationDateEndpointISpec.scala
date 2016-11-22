@@ -18,9 +18,10 @@ import com.github.tomakehurst.wiremock.http.Fault
 
 import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatestplus.play._
 
 @DoNotDiscover
-class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
+class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
   describe("Fractions Calculation Date Endpoint") {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>
@@ -54,7 +55,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely closed"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -72,7 +73,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: GET of 'http://localhost:8080/apprenticeship-levy/fraction-calculation-date' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: GET of 'http://localhost:8080/apprenticeship-levy/fraction-calculation-date' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -90,7 +91,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely closed"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }

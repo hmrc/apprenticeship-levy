@@ -12,7 +12,11 @@ import scala.io.Source
 import java.io.File
 
 trait IntegrationTestConfig {
+  System.setProperty("logger.resource","logback-test.xml")
+
   def fileToStr(filename: String): String = Source.fromFile(new File(s"$filename")).getLines.mkString("\n")
+  def dStr(str: String): String = Crypto.decryptAES(str,aesKey)
+  def eStr(str: String): String = Crypto.encryptAES(str,aesKey)
   def dFileToStr(filename: String, k: String): String = Crypto.decryptAES(fileToStr(filename),k)
   def eFileToStr(filename: String, k: String): String = Crypto.encryptAES(fileToStr(filename),k)
   def dFileToStr(filename: String): String = dFileToStr(filename, aesKey)
@@ -26,18 +30,22 @@ trait IntegrationTestConfig {
 
   // val wireMockUrl = s"http://$stubHost:$stubPort"
   // apprenticeship-levy
-  def host = sys.props.getOrElse("MICROSERVICE_HOST", "localhost")
-  def port = sys.props.getOrElse("MICROSERVICE_PORT", "9001").toInt
-  def localMicroserviceUrl = s"http://$host:$port"
-  def microserviceUrl = sys.props.getOrElse("MICROSERVICE_URL", s"http://localhost:$port")
+  def test_host = sys.props.getOrElse("MICROSERVICE_HOST", "localhost")
+  def test_port = sys.props.getOrElse("MICROSERVICE_PORT", "9001").toInt
+  def localMicroserviceUrl = s"http://$test_host:$test_port"
+  def microserviceUrl = sys.props.getOrElse("MICROSERVICE_URL", s"http://localhost:$test_port")
+
+  val controllerSettings = Seq("LiveLevyDeclarationController",
+                               "LiveRootController",
+                               "LiveEmprefController",
+                               "LiveFractionsController",
+                               "LiveFractionsCalculationController",
+                               "LiveEmploymentCheckController").map(a=>(s"controllers.uk.gov.hmrc.apprenticeshiplevy.controllers.live.${a}.needsAuditing","false"))
+
   def additionalConfiguration: Map[String, Any] = Map(
         "ws.timeout.request" -> "500",
         "ws.timeout.connection" -> "500",
-        "http.port" -> port,
-        "logger.root" -> "OFF",
-        "logger.play" -> "OFF",
-        "logger.application" -> "OFF",
-        "logger.connector" -> "OFF",
+        "http.port" -> test_port,
         "auditing.enabled" -> "false",
         "microservice.private-mode" -> "true",
         "appName" -> "application-name",
@@ -58,5 +66,6 @@ trait IntegrationTestConfig {
         "microservice.services.des.port" -> stubPort,
         "microservice.services.auth.host" -> stubHost,
         "microservice.services.auth.port" -> stubPort,
-        "microservice.whitelisted-applications" -> "myappid")
+        "microservice.whitelisted-applications" -> "myappid"
+        ) ++ Map(controllerSettings: _*)
 }

@@ -8,6 +8,10 @@
         "empRef":"123/AB12345"
       }},
       "credentialStrength":"weak",
-      "confidenceLevel":50
+      "confidenceLevel":50,
+      "userDetailsLink":"/user-details/1234567890",
+      "enrolments":"/auth/oid/1234567890/enrolments",
+      "ids":"/auth/oid/1234567890/ids",
+      "legacyOid":"12345"
   }
 }

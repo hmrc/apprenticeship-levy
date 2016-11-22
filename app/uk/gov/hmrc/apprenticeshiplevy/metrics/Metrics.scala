@@ -18,12 +18,13 @@ package uk.gov.hmrc.apprenticeshiplevy.metrics
 
 import java.util.concurrent.TimeUnit
 import com.codahale.metrics._
-import com.kenshoo.play.metrics.MetricsRegistry
 import scala.concurrent.{duration, Await}
 import scala.concurrent.duration._
 import play.api.Logger
 import java.util.concurrent.TimeUnit
 import play.api.Play
+import play.api.Play._
+import com.kenshoo.play.metrics.{MetricsImpl, MetricsFilter, MetricsFilterImpl}
 
 sealed trait MetricEvent {
   def metric(): String
@@ -47,7 +48,7 @@ trait Metrics {
 trait GraphiteMetrics extends Metrics {
   Logger.info("[Metrics] Registering metrics...")
 
-  def registry(): Option[MetricRegistry] = if (Play.maybeApplication.isDefined) Some(MetricsRegistry.defaultRegistry) else None
+  val registry: Option[MetricRegistry] = maybeApplication.map(_.injector.instanceOf[MetricsImpl].defaultRegistry)
 
   val AUTH_SERVICE_REQUEST = "auth-service"
   val DES_EMP_CHECK_REQUEST = "des-emp-check"
@@ -81,21 +82,21 @@ trait GraphiteMetrics extends Metrics {
 
   override def successfulRequest(event: MetricEvent): Unit = event match {
     case RequestEvent(name, Some(_)) => {
-      mark(s"success.${event.name}")
-      mark(s"success.${event.metric}")
+      mark(s"ala.success.${event.name}")
+      mark(s"ala.success.${event.metric}")
     }
-    case _ => mark(s"success.${event.metric}")
+    case _ => mark(s"ala.success.${event.metric}")
   }
 
   override def failedRequest(event: MetricEvent): Unit = event match {
     case RequestEvent(name, Some(_)) => {
-      mark(s"failed.${event.name}")
-      mark(s"failed.${event.metric}")
+      mark(s"ala.failed.${event.name}")
+      mark(s"ala.failed.${event.metric}")
     }
-    case _ => mark(s"failed.${event.metric}")
+    case _ => mark(s"ala.failed.${event.metric}")
   }
 
-  override def processRequest(event: TimerEvent): Unit = log(s"${event.metric}-timer", event.delta, event.timeUnit)
+  override def processRequest(event: TimerEvent): Unit = log(s"ala.timers.${event.metric}", event.delta, event.timeUnit)
 
   Logger.info("[Metrics] Completed metrics registration.")
 }

@@ -18,9 +18,10 @@ import com.github.tomakehurst.wiremock.http.Fault
 
 import uk.gov.hmrc.apprenticeshiplevy.util._
 import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatestplus.play._
 
 @DoNotDiscover
-class EmploymentRefEndpointISpec extends WiremockFunSpec  {
+class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
   describe("Empref Endpoint") {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>
@@ -108,7 +109,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely closed"}""")
           }
 
           it (s"should return 503 when response is empty") {
@@ -121,7 +122,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely Closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely closed"}""")
           }
 
           it (s"should return 408 when timed out") {
@@ -134,7 +135,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec  {
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES not responding error: GET of 'http://localhost:8080/epaye/777%2FAB12345/designatory-details' timed out with message 'Request timed out to localhost/127.0.0.1:8080 of 500 ms'"}""")
+            contentAsString(result) should include ("DES not responding error: GET of 'http://localhost:8080/epaye/777%2FAB12345/designatory-details' timed out with message")
           }
 
           it (s"should return 503 when DES returns 500") {
