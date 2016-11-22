@@ -104,7 +104,6 @@ annotationTypes:
             - successResponse:
                 successExample: !include examples/fraction-calculations-example-1.json
                 responseSchema: !include schemas/fraction-calculations.json
-                #responseSchema: !include schemas/employer-levy-declarations.json
           (scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
           queryParameters:
@@ -128,7 +127,11 @@ annotationTypes:
           get:
             displayName: Get employment status
             description: Checks the employment status of an individual in a payroll scheme.
-            is: [headers.acceptHeader]
+            is:
+              - headers.acceptHeader
+              - successResponse:
+                  successExample: !include examples/employment-check-example-1.json
+                  responseSchema: !include schemas/employment-check.json
             (scope): "read:apprenticeship-levy"
             securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
             queryParameters:
@@ -142,13 +145,6 @@ annotationTypes:
                 type: date-only
                 example: 2016-01-31
                 required: true
-            responses:
-              200:
-                body:
-                  application/json:
-                    examples:
-                      example-1:
-                        value: !include examples/employment-check-example-1.json
   /fraction-calculation-date:
     get:
       displayName: Get latest fraction calculation date
