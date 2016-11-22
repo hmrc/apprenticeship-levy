@@ -1,11 +1,11 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Employer Levy Declarations",
+    "description": "Employer Levy Declarations.",
     "type": "object",
     "properties": {
         "empref": {
             "type": "string",
-            "description": "The PAYE Reference for the employer. This will be the same as provided in the URL",
+            "description": "The PAYE Reference for the employer. This will be the same as provided in the URL.",
             "example": "123/AB12345"
         },
         "declarations": {
@@ -15,35 +15,35 @@
                 "properties": {
                     "id": {
                         "type": "number", 
-                        "description": "A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed",
+                        "description": "A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed.",
                         "example": "12345684"
                     },
                     "dateCeased": {
                         "type": "string", 
                         "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-                        "description": "If present, indicates the date that the payroll scheme was ceased",
+                        "description": "If present, indicates the date that the payroll scheme was ceased.",
                         "example": "2016–03–17"
                     },
                     "inactiveFrom": {
                         "type": "string",
                         "pattern": "^\\d{4}-\\d{2}-06$",
-                        "description": "Indicates the the payroll scheme will be inactive starting from this date. Should always be the 6th of the month of the first inactive payroll period",
+                        "description": "Indicates the the payroll scheme will be inactive starting from this date. Should always be the 6th of the month of the first inactive payroll period.",
                         "example": "2016–06–06"
                     },
                     "inactiveTo": {
                         "type": "string",
                         "pattern": "^\\d{4}-\\d{2}-05$",
-                        "description": "The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period",
+                        "description": "The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period.",
                         "example": "2016–09–05"
                     },
                     "noPaymentForPeriod": {
                         "type": "boolean",
-                        "description": "If present, will always have the value true and indicates that no declaration was necessary for this period. This can be interpreted to mean that the YTD levy balance is unchanged from the previous submitted value",
+                        "description": "If present, will always have the value true and indicates that no declaration was necessary for this period. This can be interpreted to mean that the YTD levy balance is unchanged from the previous submitted value.",
                         "example": "true"
                     },
                     "submissionTime": {
                         "type": "string",
-                        "description": "The time at which the EPS submission that this declaration relates to was received by HMRC",
+                        "description": "The time at which the EPS submission that this declaration relates to was received by HMRC.",
                         "example": "2016–02–21T16:05:23.000.000"
                     },
                     "payrollPeriod": {
@@ -51,24 +51,24 @@
                         "properties": {
                             "year": {
                                 "type": "string",
-                                "description": "The tax year of the payroll period against which the declaration was made",
+                                "description": "The tax year of the payroll period against which the declaration was made.",
                                 "example": "15-16"
                             },
                             "month": {
                                 "type": "number",
-                                "description": "The tax month of the payroll period against which the declaration was made. Month 1 is April",
+                                "description": "The tax month of the payroll period against which the declaration was made. Month 1 is April.",
                                 "example": "1"
                             }
                         }
                     },
                     "levyDueYTD": {
                         "type": "number",
-                        "description": "The amount of apprenticeship levy that was declared in the payroll month",
+                        "description": "The amount of apprenticeship levy that was declared in the payroll month.",
                         "example": "600.20"
                     },
                     "allowance": {
                         "type": "number",
-                        "description": "The annual amount of apprenticeship levy allowance that has been allocated to this payroll scheme. If absent then the value can be taken as 0. The maximum value in the 2017/18 will be 15,000",
+                        "description": "The annual amount of apprenticeship levy allowance that has been allocated to this payroll scheme. If absent then the value can be taken as 0. The maximum value in the 2017/18 will be 15,000.",
                         "example": "15000"
                     }
                 }
