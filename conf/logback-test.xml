@@ -46,6 +46,8 @@
     <logger name="uk.gov" level="OFF"/>
 
     <logger name="com.google.inject" level="OFF"/>
+    <logger name="org" level="OFF"/>
+    <logger name="akka" level="OFF"/>
 
     <logger name="application" level="DEBUG"/>
 
