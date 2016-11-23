@@ -1,1 +1,15 @@
-2-O5jV10Gsm0b5XVf4mb3uvJew0Kr1w+6nUGARJVwq+/LXvj9AaJniZQyGaaUcS3y7NRTaDif23+b0hvWEcfUl8f2SskzaOGJczBAdWs9NqOGk9RZF7CmP/5cI9/pAHRY8i7gUg2yXHaB5tAPmqIq3G8ItxTgvTIbV752iBSCejjf07QcFyb5pZtNT1cZs2UShqR4tUghd1ke/4LWB11pQJbbAQjoQvJL0/NYnyr/e31swV25xchdcvZFzxg3sE1QRi84wxc4x6FEEDW0PZ4Ao1HE2lSUL92deIA4VILI5x5/1ke12QQnUIfF8vPoKLH6Ig34yrXpGZLc4B2OWO9NHnnPvJ6eV0VzOxSUpTAN3v6RRLRgiv81eh8fEQ7wVkPY6Tc982rR0R+kl9r/EIVmAbFjrinmMyP5wzwQANpe8nPSaX4vvryM40uKH
+{
+  "uri":"",
+  "accounts": {
+    "epaye": {
+      "link":"",
+      "empRef":"123/AB12345"
+    }
+  },
+  "credentialStrength":"weak",
+  "confidenceLevel":50,
+  "userDetailsLink":"/user-details/1234567890",
+  "enrolments":"/auth/oid/1234567890/enrolments",
+  "ids":"/auth/oid/1234567890/ids",
+  "legacyOid":"12345"
+}
