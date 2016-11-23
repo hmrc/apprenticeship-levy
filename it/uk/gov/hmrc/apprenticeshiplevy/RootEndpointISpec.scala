@@ -32,6 +32,10 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           it (s"should return links for each empref") {
             // set up
             val response = dFileToStr("./it/resources/data/input/mapping_body")
+            println(response)
+            println(s"'${aesKey}'")
+            println(s"'${eStr(response)}'")
+            println(s"'${dStr(eStr(response))}'")
             stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withBody(response)))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
