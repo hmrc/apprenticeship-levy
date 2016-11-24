@@ -21,6 +21,7 @@ trait MicroService {
 
   val defaultPort : Int
 
+  lazy val AcceptanceTest = config("ac") extend(Test)
   lazy val appDependencies : Seq[ModuleID] = ???
   lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala)
   lazy val compileScalastyle = taskKey[Unit]("compileScalastyle")
@@ -64,11 +65,20 @@ trait MicroService {
       unmanagedResourceDirectories in IntegrationTest <+= baseDirectory (_ / "public"),
       addTestReportOption(IntegrationTest, "int-test-reports"),
       parallelExecution in IntegrationTest := false)
+    .configs(AcceptanceTest)
+    .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
+    .settings(
+      Keys.fork in AcceptanceTest := false,
+      unmanagedSourceDirectories in AcceptanceTest <<= (baseDirectory in AcceptanceTest)(base => Seq(base / "ac")),
+      unmanagedResourceDirectories in AcceptanceTest <+= baseDirectory (_ / "public"),
+      addTestReportOption(AcceptanceTest, "ac-test-reports"),
+      parallelExecution in AcceptanceTest := false)
     .settings(resolvers += Resolver.bintrayRepo("hmrc", "releases"))
     .settings(
        resolvers += Resolver.bintrayRepo("hmrc", "releases"),
        resolvers += Resolver.jcenterRepo
      )
+    .settings(testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))
 }
 
 private object TestPhases {

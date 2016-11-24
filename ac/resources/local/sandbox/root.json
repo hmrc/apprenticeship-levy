@@ -1,0 +1,13 @@
+{
+  "_links": {
+    "self": {
+      "href": "/sandbox"
+    },
+    "123/AB12345": {
+      "href": "/sandbox/epaye/123%2FAB12345"
+    }
+  },
+  "emprefs": [
+    "123/AB12345"
+  ]
+}
