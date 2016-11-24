@@ -35,6 +35,8 @@ private object AppDependencies {
   private val scalacheckVersion = "1.12.5"
   private val playAuditingVersion = "2.4.0"
   private val domainVersion = "4.0.0"
+  private val httpVerbsVersion= "3.3.0"
+  private val scalajHttpVersion = "2.3.0"
 
   val compile = Seq(
     ws,
@@ -89,6 +91,18 @@ private object AppDependencies {
     }.test
   }
 
-  def apply() = compile ++ Test() ++ IntegrationTest()
+  object AcceptanceTest {
+    def apply() = new TestDependencies {
+      override lazy val scope: String = "ac"
+      override lazy val test = Seq(
+        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
+        "org.scalatest" %% "scalatest" % "2.2.6" % scope,
+        "org.pegdown" % "pegdown" % "1.5.0" % scope,
+        "org.scalaj" %% "scalaj-http" % scalajHttpVersion,
+        "uk.gov.hmrc" %% "http-verbs" % httpVerbsVersion % scope
+      )
+    }.test
+  }
+  def apply() = compile ++ Test() ++ IntegrationTest() ++ AcceptanceTest()
 }
 
