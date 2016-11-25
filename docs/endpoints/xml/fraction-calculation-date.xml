@@ -2,8 +2,8 @@
 <endpoint>
   <versions>
     <version level="1.0">
-      <name>Get all employers</name>
-      <description>Returns a list of valid links indexed by empref in HAL format</description>
+      <name>Get latest fraction calculation date</name>
+      <description>Returns the date of the most recent fraction calculation batch run.</description>
       <secured>
         <method>sec.oauth_2_0</method>
         <type>USER</type>
@@ -13,8 +13,8 @@
       </secured>
       <throttlingTier>UNLIMITED</throttlingTier>
       <request>
-        <path><![CDATA[/]]></path>
-        <params></params>
+        <path><![CDATA[/fraction-calculation-date]]></path>
+        <params/>
         <method>GET</method>
         <headers>
           <header>
@@ -28,40 +28,16 @@
         </headers>
       </request>
       <responses>
-        <http status="200" msg="OK">
+        <http status="200">
           <description>Successful call</description>
           <body>
-            <content-type mimeType="application/json"><![CDATA[{
-    "_links": {
-        "self": {
-            "href": "/"
-        },
-        "123/AB12345": {
-            "href": "/epaye/123%2FAB12345"
-        }
-    },
-    "emprefs": [
-        "123/AB12345"
-    ]
-}]]></content-type>
+            <content-type mimeType="application/json"><![CDATA["2016-04-05"]]></content-type>
             <description>
               <field>
-                <name>_links.self</name>
-                <type>URL</type>
-                <example><![CDATA[/]]></example>
-                <description>The url to this endpoint</description>
-              </field>
-              <field>
-                <name>_links.{empref}</name>
-                <type>URL</type>
-                <example><![CDATA[/epaye/123%2FAB12345]]></example>
-                <description>The url to an endpoint that provides more information about the empref</description>
-              </field>
-              <field>
-                <name>emprefs[]</name>
-                <type>String[]</type>
-                <example><![CDATA[["123/AB12345"]]]></example>
-                <description>A list of emprefs for which links are provided</description>
+                <name>Date</name>
+                <type>String</type>
+                <example><![CDATA["2016-04-05"]]></example>
+                <description>Year-Month-Day date of last calculation of fraction values.</description>
               </field>
             </description>
           </body>
@@ -70,8 +46,8 @@
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "AUTH_ERROR",
-  "message": "Auth unauthorised error: GET of 'http://localhost:8080/auth/authority' returned 401. Response body: ''"
+  "code": "DES_ERROR",
+  "message": "Auth unauthorised error: GET of '...' returned 401. Response body: ''"
 }]]></content-type>
           </body>
         </http>
@@ -79,8 +55,8 @@
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "AUTH_ERROR",
-  "message": "Auth forbidden error: GET of 'http://localhost:8080/auth/authority' returned 403. Response body: ''"
+  "code": "DES_ERROR",
+  "message": "Auth forbidden error: GET of '...' returned 403. Response body: ''"
 }]]></content-type>
           </body>
         </http>
@@ -88,17 +64,26 @@
           <description>Endpoint or internal system has become unavailable.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "AUTH_ERROR",
-  "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
-}]]></content-type>
+              "code":"DES_ERROR",
+              "message":"DES endpoint not found: Not found"
+            }]]></content-type>
           </body>
         </http>
         <http status="408" msg="Request Time-out">
           <description>Endpoint or internal system has become unresponsive.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "AUTH_ERROR",
-  "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
+  "code": "DES_ERROR",
+  "message": "DES not responding error: Not responding"
+}]]></content-type>
+          </body>
+        </http>
+        <http status="429" msg="Too Many Requests">
+          <description>Too many requests have been made to the back-end systems.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR",
+  "message": "DES too many requests: ...''"
 }]]></content-type>
           </body>
         </http>
@@ -106,7 +91,7 @@
           <description>Endpoint or internal system has experienced an internal error.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "AUTH_ERROR",
+  "code": "DES_ERROR",
   "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
 }]]></content-type>
           </body>

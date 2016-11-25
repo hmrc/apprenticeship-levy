@@ -41,13 +41,20 @@ object DocGeneration {
 
     val files = new File(base, "docs/endpoints/xml").listFiles.filter(_.getName.endsWith(".xml"))
 
-    val tuples = Map("root.xml" -> "root.xml")
+    val v1DocDir = "/public/documentation/1.0/"
+    val tuples = Map("root.xml" -> s"${base.getAbsolutePath()}${v1DocDir}root.xml",
+                     "employment-check.xml" -> s"${base.getAbsolutePath()}${v1DocDir}employment-check.xml",
+                     "empref.xml" -> s"${base.getAbsolutePath()}${v1DocDir}empref.xml",
+                     "levy-declarations.xml" -> s"${base.getAbsolutePath()}${v1DocDir}levy-declarations.xml",
+                     "fraction-calculation-date.xml" -> s"${base.getAbsolutePath()}${v1DocDir}fraction-calculation-date.xml",
+                     "fraction-calculations.xml" -> s"${base.getAbsolutePath()}${v1DocDir}fraction-calculations.xml")
     val processes = files.flatMap { case (file)=>
       val in = file.getAbsolutePath()
 
-      Seq("test.xslt").flatMap { case (xslFilename) =>
+      Seq("doc-v1.xslt").flatMap { case (xslFilename) =>
         val xsl = s"./docs/endpoints/xml/xsl/${xslFilename}"
         val out = tuples(file.getName())
+        log.info(out)
         val p = Process("java" :: "-jar" :: s"${classpath(0)}" :: s"-s:$in" :: s"-xsl:$xsl" :: s"-o:$out" :: args.toList, base)
         List(p)
       }

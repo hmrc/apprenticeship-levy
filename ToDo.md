@@ -1,17 +1,19 @@
 
 ## General
 
-- [x] Connectors failing backend tests
-- [ ] Why is live responding differently with same requests as sandbox e.g. 401 v 404?
-- [x] Prune unused code
-- [ ] Add caching to documentation controller
-- [x] Consider converting config to be updatable on the fly (AppContext)
-- [x] :question: Confirm useage of headercarrier
-- [v] Write tests for bindable local date
-- [x] Consider consolidating data/domain classes into single package hierarchy
+- [ ] Check pence values in declarations
+- [ ] Update error codes
 - [ ] Unit tests where integration tests aren't in place
 - [ ] Add date filtering to sandbox data endpoint
 - [ ] Update configuration for service manager to retire apprenticeship-levy-stub
+- [ ] Add caching to documentation controller
+- [ ] Remove play 2.5 warnings
+- [x] Connectors failing backend tests
+- [x] Prune unused code
+- [x] Consider converting config to be updatable on the fly (AppContext)
+- [x] :question: Confirm useage of headercarrier
+- [x] Write tests for bindable local date
+- [x] Consider consolidating data/domain classes into single package hierarchy
 - [x] scalastyle
 - [x] possibly remove ala stub and serve data from a sandbox data endpoint in case api platform requests stub to be removed
 
@@ -41,11 +43,13 @@
   - [x] api definition
 
 ## Documentation to RAML
-- [ ] Convert xmls to single xml source
+- [x] Convert xmls to single xml source
 - [ ] XSLT to produce definition.json
-- [ ] XSLT to produce endpoint xmls
-- [ ] XSLT to produce RAML
+- [x] XSLT to produce endpoint xmls
+- [ ] XSLT to produce RAML files
+- [ ] XSLT to produce MD files
 
 ## Metrics
-- [ ] Add tests for audit events
-- [ ] Add tests for metric events
+- [x] Add tests for audit events
+- [x] Add tests for metric events
+
