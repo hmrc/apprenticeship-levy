@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Employer emprefs",
+  "type": "object",
+  "properties": {
+    "_links": {
+      "type": "object",
+      "properties": {
+        "self": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The link to this endpoint."
+            }
+          }
+        },
+        "declarations": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The link to the endpoint that returns information on levy declarations for the empref."
+            }
+          }
+        },
+        "fractions": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The link to the endpoint that returns information on fraction calculations for the empref."
+            }
+          }
+        },
+        "employment-check": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The link to the endpoint that returns information whether an employee was employed at a specific time by the empref." 
+            }
+          }
+        }
+      }
+    },
+    "empref": {
+      "type": "string",
+      "description": "The PAYE Reference for the employer. This will be the same as provided in the URL.",
+      "example": "123/AB12345"
+    },
+    "employer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "object",
+          "properties": {
+            "nameLine1": {
+              "type": "string",
+              "description": "The name associated to this empref.",
+              "example": "Foo Bar Ltd."
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
