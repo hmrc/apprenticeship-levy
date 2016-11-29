@@ -6,7 +6,7 @@
       <description>Returns the date of the most recent fraction calculation batch run.</description>
       <secured>
         <method>sec.oauth_2_0</method>
-        <type>USER</type>
+        <type>APPLICATION</type>
         <scopes>
           <scope>read:apprenticeship-levy</scope>
         </scopes>
@@ -36,7 +36,7 @@
               <field>
                 <name>Date</name>
                 <type>String</type>
-                <example><![CDATA["2016-04-05"]]></example>
+                <example><![CDATA["2017-04-06"]]></example>
                 <description>Year-Month-Day date of last calculation of fraction values.</description>
               </field>
             </description>

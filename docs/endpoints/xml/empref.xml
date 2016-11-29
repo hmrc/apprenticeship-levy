@@ -83,13 +83,13 @@
               <field>
                 <name>_links.employment-check</name>
                 <type>URL</type>
-                <example><![CDATA[[/epaye/123%2FAB12345/employed]]]></example>
+                <example><![CDATA[/epaye/123%2FAB12345/employed]]]></example>
                 <description>The link to the endpoint that returns information whether an employee was employed at a specific time by the empref</description>
               </field>
               <field>
                 <name>employer.name.nameLine1</name>
                 <type>String</type>
-                <example><![CDATA[[Foo Bar Ltd.]]]></example>
+                <example><![CDATA[Foo Bar Ltd.]]></example>
                 <description>The name associated to this empref</description>
               </field>
             </description>
@@ -103,6 +103,7 @@
   "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
 }]]></content-type>
           </body>
+          <code>EPAYE_EMPREF_INVALID</code>
         </http>
         <http status="401" msg="Unauthorized">
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
@@ -130,6 +131,7 @@
   "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
 }]]></content-type>
           </body>
+          <code>EPAYE_EMPREF_UNKNOWN</code>
         </http>
         <http status="408" msg="Request Time-out">
           <description>Endpoint or internal system has become unresponsive.</description>

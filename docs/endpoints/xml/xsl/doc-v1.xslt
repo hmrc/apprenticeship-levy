@@ -107,7 +107,7 @@
     <row>
         <cell><xsl:value-of select="./description"/></cell>
         <cell><code><xsl:value-of select="@status"/> (<xsl:value-of select="@msg"/>)</code></cell>
-        <cell><code></code></cell>
+        <cell><code><xsl:value-of select="./code"/></code></cell>
     </row>
   </xsl:template>
 
@@ -143,7 +143,7 @@
         <cell><code><xsl:value-of select="./name"/></code></cell>
         <cell><code><xsl:value-of select="./dataType"/></code></cell>
         <cell><code><xsl:value-of select="./example"/></code></cell>
-        <cell><xsl:value-of select="./description"/></cell>
+        <cell><xsl:value-of select="./value"/></cell>
     </row>
   </xsl:template>
 
@@ -156,7 +156,7 @@
         <cell></cell>
         <cell><code><nowrap><xsl:value-of select="./example"/></nowrap></code></cell>
         <cell>Yes</cell>
-        <cell><xsl:value-of select="./description"/></cell>
+        <cell><xsl:value-of select="./value"/></cell>
     </row>
   </xsl:template>
 

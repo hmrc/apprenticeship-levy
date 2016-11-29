@@ -13,7 +13,7 @@
       </secured>
       <throttlingTier>UNLIMITED</throttlingTier>
       <request>
-        <path><![CDATA[/epaye/{empref}/declarations]]></path>
+        <path><![CDATA[/epaye/{empref}/declarations?fromDate={from}&toDate={to}]]></path>
         <params>
           <param>
             <name>empref</name>
@@ -134,19 +134,19 @@
               <field>
                 <name>declarations[].dateCeased</name>
                 <type>Date</type>
-                <example><![CDATA[[2016–03–17]]></example>
+                <example><![CDATA[2016–03–17]]></example>
                 <description>If present, indicates the date that the payroll scheme was ceased</description>
               </field>
               <field>
                 <name>declarations[].inactiveFrom</name>
                 <type>Date</type>
-                <example><![CDATA[[2016–09–05]]></example>
+                <example><![CDATA[2016–09–05]]></example>
                 <description>The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period</description>
               </field>
               <field>
                 <name>declarations[].inactiveTo</name>
                 <type>Date</type>
-                <example><![CDATA[[2016–09–05]]></example>
+                <example><![CDATA[2016–09–05]]></example>
                 <description>The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period</description>
               </field>
               <field>
@@ -158,31 +158,31 @@
               <field>
                 <name>declarations[].submissionTime</name>
                 <type>DateTime</type>
-                <example><![CDATA[[2016–02–21T16:05:23.000.000]]></example>
+                <example><![CDATA[2016–02–21T16:05:23.000.000]]></example>
                 <description>the time at which the EPS submission that this declaration relates to was received by HMRC</description>
               </field>
               <field>
                 <name>declarations[].payrollPeriod.year</name>
                 <type>String</type>
-                <example><![CDATA[[15-16]]></example>
+                <example><![CDATA[15-16]]></example>
                 <description>The tax year of the payroll period against which the declaration was made</description>
               </field>
               <field>
                 <name>declarations[].payrollPeriod.month</name>
                 <type>Number</type>
-                <example><![CDATA[[1]]></example>
+                <example><![CDATA[1]]></example>
                 <description>The tax month of the payroll period against which the declaration was made. Month 1 is April.</description>
               </field>
               <field>
                 <name>declarations[].levyDueYTD</name>
                 <type>Number</type>
-                <example><![CDATA[[600.20]]></example>
+                <example><![CDATA[600.20]]></example>
                 <description>The amount of apprenticeship levy that was declared in the payroll month.</description>
               </field>
               <field>
                 <name>declarations[].allowance</name>
                 <type>Number</type>
-                <example><![CDATA[[15000]]></example>
+                <example><![CDATA[15000]]></example>
                 <description>The annual amount of apprenticeship levy allowance that has been allocated to this payroll scheme. If absent then the value can be taken as 0. The maximum value in the 2017/18 will be 15,000</description>
               </field>
             </description>
@@ -196,6 +196,7 @@
   "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
 }]]></content-type>
           </body>
+          <code>EPAYE_EMPREF_INVALID</code>
         </http>
         <http status="401" msg="Unauthorized">
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
@@ -223,6 +224,7 @@
   "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
 }]]></content-type>
           </body>
+          <code>EPAYE_EMPREF_UNKNOWN</code>
         </http>
         <http status="408" msg="Request Time-out">
           <description>Endpoint or internal system has become unresponsive.</description>

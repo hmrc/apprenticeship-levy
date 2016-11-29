@@ -1,5 +1,5 @@
 <endpoint>
-    <name>Fraction Calculation Date</name>
+    <name>Get latest fraction calculation date</name>
     <description>Returns the date of the most recent fraction calculation batch run.</description>
     <section id="resource">
         <title>Resource</title>
@@ -23,6 +23,94 @@
     <section id="response">
         <title>Response</title>
         <httpStatus>200 (OK)</httpStatus>
-        <json><![CDATA["2017-04-06"]]></json>
+        <json><![CDATA["2016-04-05"]]></json>
+        <table>
+            <headings>
+                <cell>Name</cell>
+                <cell>Type</cell>
+                <cell>Example</cell>
+                <cell>Description</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell>
+                        <code>Date</code>
+                    </cell>
+                    <cell>
+                        <code>String</code>
+                    </cell>
+                    <cell>
+                        <code>"2017-04-06"</code>
+                    </cell>
+                    <cell>Year-Month-Day date of last calculation of fraction values.</cell>
+                </row>
+            </rows>
+        </table>
+    </section>
+    <section id="error-scenarios">
+        <title>Error Scenarios</title>
+        <table>
+            <headings>
+                <cell>Error Scenario</cell>
+                <cell>HTTP Status</cell>
+                <cell>Code</cell>
+            </headings>
+            <rows>
+                <row>
+                    <cell>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</cell>
+                    <cell>
+                        <code>401 (Unauthorized)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
+                </row>
+                <row>
+                    <cell>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</cell>
+                    <cell>
+                        <code>403 (Forbidden)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint or internal system has become unavailable.</cell>
+                    <cell>
+                        <code>404 (Not Found)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint or internal system has become unresponsive.</cell>
+                    <cell>
+                        <code>408 (Request Time-out)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Too many requests have been made to the back-end systems.</cell>
+                    <cell>
+                        <code>429 (Too Many Requests)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint or internal system has experienced an internal error.</cell>
+                    <cell>
+                        <code>503 (Service Unavailable)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
+                </row>
+            </rows>
+        </table>
     </section>
 </endpoint>
