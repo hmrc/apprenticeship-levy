@@ -8,7 +8,7 @@
     <section id="authorisation">
         <title>Authorisation</title>
         <authorisation>
-            <type>APPLICATION</type>
+            <type>USER</type>
             <scope>read:apprenticeship-levy</scope>
         </authorisation>
     </section>

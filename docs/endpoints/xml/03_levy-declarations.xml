@@ -28,6 +28,7 @@
             <dataType>Date</dataType>
             <example>2015-08-09</example>
             <value>The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.</value>
+            <required>false</required>
           </param>
           <param>
             <name>toDate</name>
@@ -35,6 +36,7 @@
             <dataType>Date</dataType>
             <example>2015-08-09</example>
             <value>The date of the latest record to return.</value>
+            <required>false</required>
           </param>
         </params>
         <method>GET</method>

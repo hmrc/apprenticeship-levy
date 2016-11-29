@@ -6,7 +6,7 @@
       <description>Returns the date of the most recent fraction calculation batch run.</description>
       <secured>
         <method>sec.oauth_2_0</method>
-        <type>APPLICATION</type>
+        <type>USER</type>
         <scopes>
           <scope>read:apprenticeship-levy</scope>
         </scopes>

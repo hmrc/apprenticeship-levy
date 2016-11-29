@@ -2,8 +2,8 @@
 <endpoint>
   <versions>
     <version level="1.0">
-      <name>Get employer fraction calculations</name>
-      <description>Returns a list of fraction calculations for a given employer reference.</description>
+      <name>Get employment status</name>
+      <description>Checks the employment status of an individual in a payroll scheme.</description>
       <secured>
         <method>sec.oauth_2_0</method>
         <type>USER</type>
@@ -13,7 +13,7 @@
       </secured>
       <throttlingTier>UNLIMITED</throttlingTier>
       <request>
-        <path><![CDATA[/epaye/{empref}/fractions?fromDate={from}&toDate={to}]]></path>
+        <path><![CDATA[/epaye/{empref}/employed/{nino}?fromDate={date}& toDate={date}]]></path>
         <params>
           <param>
             <name>empref</name>
@@ -23,18 +23,27 @@
             <value>A valid (URL encoded) employer reference for the PAYE scheme.</value>
           </param>
           <param>
+            <name>nino</name>
+            <type>path</type>
+            <dataType>String</dataType>
+            <example>XY654321Z</example>
+            <value>A valid National Insurance Number (nino) for the individual being checked.</value>
+          </param>
+          <param>
             <name>fromDate</name>
             <type>query</type>
             <dataType>Date</dataType>
-            <example>2015-08-09</example>
-            <value>The date of the earliest calculation to return.</value>
+            <example>2016-01-31</example>
+            <value>Starting date of the period to check employment for.</value>
+            <required>true</required>
           </param>
           <param>
             <name>toDate</name>
             <type>query</type>
             <dataType>Date</dataType>
-            <example>2015-08-09</example>
-            <value>The date of the latest calculation to return.</value>
+            <example>2016-01-31</example>
+            <value>Ending date of the period to check employment for.</value>
+            <required>true</required>
           </param>
         </params>
         <method>GET</method>
@@ -54,27 +63,13 @@
           <description>Successful call</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-        “empref”: “123/AB12345”,
-        “fractionCalculations”: [
-            {
-                “calculatedAt”: “2016-03-15”,
-                “fractions”: [
-                    {
-                        “region”: “England”,
-                        “value”: “0.83”
-                    }
-                ]
-            },
-            {
-                “calculatedAt”: “2015-11-18”,
-                “fractions”: [
-                    {
-                        “region”: “England”,
-                        “value”: “0.78”
-                    }
-                ]
+                "empref" : "123/AB12345",
+                "nino" : "XY654321Z",
+                "fromDate" : "2016-03-06",
+                "toDate" : "2016-04-05",
+                "employed" : true
             }
-          ]
+    ]
 }]]></content-type>
             <description>
               <field>
@@ -84,22 +79,28 @@
                 <description>The PAYE Reference for the employer. This will be the same as provided in the URL.</description>
               </field>
               <field>
-                <name>fractionCalculations[].calculatedAt</name>
-                <type>Date</type>
-                <example><![CDATA[2015–11–18]]></example>
-                <description>The date that the fractions were calculated</description>
-              </field>
-              <field>
-                <name>fractionCalculations[].fractions[].region</name>
+                <name>nino</name>
                 <type>String</type>
-                <example><![CDATA[England]]></example>
-                <description>The region the specific fraction applies to. Will always be England for the forseeable future.</description>
+                <example><![CDATA[XY654321Z]]></example>
+                <description>The NINO of the individual being checked. This will be the same as provided in the URL.</description>
               </field>
               <field>
-                <name>fractionCalculations[].fractions[].value</name>
-                <type>Number</type>
-                <example><![CDATA[0.83]]></example>
-                <description>The fraction calculated for the region. Will be a decimal in the range 0 to 1.</description>
+                <name>fromDate</name>
+                <type>Date</type>
+                <example><![CDATA[[2016-03-06]]]></example>
+                <description>The start date of the range the check should be made for.</description>
+              </field>
+              <field>
+                <name>toDate</name>
+                <type>Date</type>
+                <example><![CDATA[[2016-04-05]]]></example>
+                <description>The end date of the range the check should be made for.</description>
+              </field>
+              <field>
+                <name>employed</name>
+                <type>Boolean</type>
+                <example><![CDATA[[true]]]></example>
+                <description>Whether or not the individual was employed in the scheme at any time with the date range.</description>
               </field>
             </description>
           </body>
@@ -113,6 +114,16 @@
 }]]></content-type>
           </body>
           <code>EPAYE_EMPREF_INVALID</code>
+        </http>
+        <http status="400" msg="Bad Request">
+          <description>A request parameter is incorrect or unknown, or from date is after to date.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR",
+  "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
+}]]></content-type>
+          </body>
+          <code>EPAYE_NINO_INVALID</code>
         </http>
         <http status="401" msg="Unauthorized">
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
@@ -141,6 +152,16 @@
 }]]></content-type>
           </body>
           <code>EPAYE_EMPREF_UNKNOWN</code>
+        </http>
+        <http status="404" msg="Not Found">
+          <description>Ninoe unknown.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR",
+  "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
+}]]></content-type>
+          </body>
+          <code>EPAYE_NINO_UNKNOWN</code>
         </http>
         <http status="408" msg="Request Time-out">
           <description>Endpoint or internal system has become unresponsive.</description>
