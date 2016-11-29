@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "All Employers",
+  "type": "object",
+  "properties": {
+    "_links": {
+      "type": "object",
+      "properties": {
+        "self": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The link to this endpoint."
+            }
+          }
+        }
+      },
+      "patternProperties": {
+        "^\\d{3}/\\w{7}$": {
+          "type": "object",
+          "title": "{empRef}",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "A link to an endpoint that provides more information about the empref."
+            }
+          }
+        }
+      }
+    },
+    "emprefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "A list of emprefs for which links are provided."
+      }
+    }
+  }
+}
+
