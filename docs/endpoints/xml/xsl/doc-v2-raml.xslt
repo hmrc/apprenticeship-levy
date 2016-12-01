@@ -203,6 +203,7 @@
       <body>
         <mimeType><xsl:value-of select="./body/content-type/@mimeType"/></mimeType>
         <example>
+          <title><xsl:value-of select="@status"/> (Error *<xsl:value-of select="./code"/>*)</title>
           <code><xsl:value-of select="./code"/><xsl:text> </xsl:text><xsl:value-of select="./description"/></code>
         </example>
       </body>
@@ -467,7 +468,7 @@ annotationTypes:
     </xsl:call-template>
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 2) * 2"/>
-      <xsl:with-param name="str"><xsl:text>type: !include.... schema</xsl:text><xsl:text>&#x0a;</xsl:text></xsl:with-param>
+      <xsl:with-param name="str"><xsl:text>type: !include schemas/error.json</xsl:text><xsl:text>&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 2) * 2"/>
@@ -487,7 +488,7 @@ annotationTypes:
     </xsl:call-template>
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 4) * 2"/>
-      <xsl:with-param name="str"><xsl:text>value: </xsl:text><xsl:value-of select="../example/json"/><xsl:text>&#x0a;</xsl:text></xsl:with-param>
+      <xsl:with-param name="str"><xsl:text>value: !include examples/error.json&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
   </xsl:template>
 

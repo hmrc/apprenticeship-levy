@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Error Response",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "A string referring to the type of error that has occured to be taken into consideration with the http response status.",
+      "example": "DES_ERROR"
+    },
+    "message": {
+      "type": "string",
+      "description": "A string describing the error condition.",
+      "example": "DES endpoint not found: Received request...."
+    },
+  }
+}
