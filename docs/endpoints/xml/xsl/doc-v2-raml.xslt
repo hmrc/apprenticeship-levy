@@ -338,7 +338,7 @@ annotationTypes:
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="10"/>
       <xsl:with-param name="str">
-        <xsl:text>description:&#x0a;</xsl:text>
+        <xsl:text>description: A valid (URL encoded) employer reference for the PAYE scheme.&#x0a;</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
     <xsl:call-template name="indent">

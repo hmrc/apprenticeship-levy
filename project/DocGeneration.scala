@@ -62,7 +62,8 @@ object DocGeneration {
     log.info(s"${base.getAbsolutePath()}/public/api/definition.json")
     log.info(s"${base.getAbsolutePath()}/application.raml")
     processes ++= Seq(Process("java" :: "-jar" :: s"${classpath(0)}" :: s"-it:main" :: s"-xsl:./docs/endpoints/xml/xsl/doc-v1-def.xslt" :: s"-o:${base.getAbsolutePath()}/public/api/definition.json" :: args.toList, base),
-                      Process("java" :: "-jar" :: s"${classpath(0)}" :: s"-it:main" :: s"-xsl:./docs/endpoints/xml/xsl/doc-v2-raml.xslt" :: s"-o:${base.getAbsolutePath()}/application.raml" :: args.toList, base))
+                      Process("java" :: "-jar" :: s"${classpath(0)}" :: s"-it:main" :: s"-xsl:./docs/endpoints/xml/xsl/doc-v2-raml.xslt" :: s"-o:${base.getAbsolutePath()}/application.raml" :: args.toList, base),
+                      Process("mv":: s"${base.getAbsolutePath()}/application.raml" :: s"${base.getAbsolutePath()}/public/api/conf/1.0/application.raml":: args.toList))
 
     val echo = Process("echo" :: "'Starting API documentation generation'" :: List.empty[String], base)
     val pipeline = processes.foldLeft(echo) { case (pipe,process) =>
