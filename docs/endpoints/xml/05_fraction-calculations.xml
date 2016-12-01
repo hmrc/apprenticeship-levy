@@ -56,23 +56,23 @@
           <description>Successful call</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-        “empref”: “123/AB12345”,
-        “fractionCalculations”: [
+        "empref": "123/AB12345",
+        "fractionCalculations": [
             {
-                “calculatedAt”: “2016-03-15”,
-                “fractions”: [
+                "calculatedAt": "2016-03-15",
+                "fractions": [
                     {
-                        “region”: “England”,
-                        “value”: “0.83”
+                        "region": "England",
+                        "value": "0.83"
                     }
                 ]
             },
             {
-                “calculatedAt”: “2015-11-18”,
-                “fractions”: [
+                "calculatedAt": "2015-11-18",
+                "fractions": [
                     {
-                        “region”: “England”,
-                        “value”: “0.78”
+                        "region": "England",
+                        "value": "0.78"
                     }
                 ]
             }
