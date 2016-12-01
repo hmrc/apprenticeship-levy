@@ -17,7 +17,7 @@
         "endpoints": [
           {
             "uriPattern": "/",
-            "endpointName": "Get all employers",
+            "endpointName": "root",
             "method": "GET",
             "authType": "USER",
             "throttlingTier": "UNLIMITED",
@@ -26,7 +26,7 @@
           },
           {
             "uriPattern": "/epaye/{empref}",
-            "endpointName": "Get employer details",
+            "endpointName": "empref",
             "method": "GET",
             "authType": "USER",
             "throttlingTier": "UNLIMITED",
@@ -35,7 +35,7 @@
           },
           {
             "uriPattern": "/epaye/{empref}/declarations",
-            "endpointName": "Get employer levy declarations",
+            "endpointName": "levy-declarations",
             "method": "GET",
             "authType": "USER",
             "throttlingTier": "UNLIMITED",
@@ -53,7 +53,7 @@
           },
           {
             "uriPattern": "/epaye/{empref}/employed/{nino}",
-            "endpointName": "Get employment status",
+            "endpointName": "employment-check",
             "method": "GET",
             "authType": "USER",
             "throttlingTier": "UNLIMITED",
@@ -71,7 +71,7 @@
           },
           {
             "uriPattern": "/epaye/{empref}/fractions",
-            "endpointName": "Get employer fraction calculations",
+            "endpointName": "fraction-calculations",
             "method": "GET",
             "authType": "USER",
             "throttlingTier": "UNLIMITED",
@@ -89,7 +89,7 @@
           },
           {
             "uriPattern": "/fraction-calculation-date",
-            "endpointName": "Get latest fraction calculation date",
+            "endpointName": "fraction-calculation-date",
             "method": "GET",
             "authType": "USER",
             "throttlingTier": "UNLIMITED",

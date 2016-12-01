@@ -1,5 +1,5 @@
 <endpoint>
-    <name>Details for an Empref</name>
+    <name>Get employer details</name>
     <description>Returns more details about an empref including details about the employer and a list of available endpoints that apply to the empref.</description>
     <section id="resource">
         <title>Resource</title>
@@ -16,9 +16,15 @@
             </headings>
             <rows>
                 <row>
-                    <cell><code>empref</code></cell>
-                    <cell><code>String</code></cell>
-                    <cell><code>123/AB12345</code></cell>
+                    <cell>
+                        <code>empref</code>
+                    </cell>
+                    <cell>
+                        <code>String</code>
+                    </cell>
+                    <cell>
+                        <code>123/AB12345</code>
+                    </cell>
                     <cell>A valid (URL encoded) employer reference for the PAYE scheme.</cell>
                 </row>
             </rows>
@@ -42,8 +48,7 @@
     <section id="response">
         <title>Response</title>
         <httpStatus>200 (OK)</httpStatus>
-        <json><![CDATA[
-    {
+        <json><![CDATA[{
         "_links": {
             "self": {
                 "href": "/epaye/123%2FAB12345"
@@ -64,8 +69,7 @@
                 "nameLine1": "Foo Bar Ltd."
             }
         }
-    }
-]]></json>
+    }]]></json>
         <table>
             <headings>
                 <cell>Name</cell>
@@ -75,33 +79,63 @@
             </headings>
             <rows>
                 <row>
-                    <cell><code>_links.self</code></cell>
-                    <cell><code>URL</code></cell>
-                    <cell><code>/epaye/123%2FAB12345</code></cell>
+                    <cell>
+                        <code>_links.self</code>
+                    </cell>
+                    <cell>
+                        <code>URL</code>
+                    </cell>
+                    <cell>
+                        <code>/epaye/123%2FAB12345</code>
+                    </cell>
                     <cell>The link to this endpoint</cell>
                 </row>
                 <row>
-                    <cell><code>_links.declarations</code></cell>
-                    <cell><code>URL</code></cell>
-                    <cell><code>/epaye/123%2FAB12345/declarations</code></cell>
+                    <cell>
+                        <code>_links.declarations</code>
+                    </cell>
+                    <cell>
+                        <code>URL</code>
+                    </cell>
+                    <cell>
+                        <code>/epaye/123%2FAB12345/declarations</code>
+                    </cell>
                     <cell>The link to the endpoint that returns information on levy declarations for the empref</cell>
                 </row>
                 <row>
-                    <cell><code>_links.fractions</code></cell>
-                    <cell><code>URL</code></cell>
-                    <cell><code>/epaye/123%2FAB12345/fractions</code></cell>
+                    <cell>
+                        <code>_links.fractions</code>
+                    </cell>
+                    <cell>
+                        <code>URL</code>
+                    </cell>
+                    <cell>
+                        <code>[/epaye/123%2FAB12345/fractions]</code>
+                    </cell>
                     <cell>The link to the endpoint that returns information on fraction calculations for the empref</cell>
                 </row>
                 <row>
-                    <cell><code>_links.employment-check</code></cell>
-                    <cell><code>URL</code></cell>
-                    <cell><code>/epaye/123%2FAB12345/employed</code></cell>
+                    <cell>
+                        <code>_links.employment-check</code>
+                    </cell>
+                    <cell>
+                        <code>URL</code>
+                    </cell>
+                    <cell>
+                        <code>/epaye/123%2FAB12345/employed]</code>
+                    </cell>
                     <cell>The link to the endpoint that returns information whether an employee was employed at a specific time by the empref</cell>
                 </row>
                 <row>
-                    <cell><code>employer.name.nameLine1</code></cell>
-                    <cell><code>String</code></cell>
-                    <cell><code>Foo Bar Ltd.</code></cell>
+                    <cell>
+                        <code>employer.name.nameLine1</code>
+                    </cell>
+                    <cell>
+                        <code>String</code>
+                    </cell>
+                    <cell>
+                        <code>Foo Bar Ltd.</code>
+                    </cell>
                     <cell>The name associated to this empref</cell>
                 </row>
             </rows>
@@ -117,14 +151,67 @@
             </headings>
             <rows>
                 <row>
-                    <cell>Invalid EMPREF</cell>
-                    <cell><code>400 (Bad Request)</code></cell>
-                    <cell><code>EPAYE_EMPREF_INVALID</code></cell>
+                    <cell>A request parameter is incorrect.</cell>
+                    <cell>
+                        <code>400 (Bad Request)</code>
+                    </cell>
+                    <cell>
+                        <code>EPAYE_EMPREF_INVALID</code>
+                    </cell>
                 </row>
                 <row>
-                    <cell>Unknown EMPREF</cell>
-                    <cell><code>404 (Not Found)</code></cell>
-                    <cell><code>EPAYE_EMPREF_UNKNOWN</code></cell>
+                    <cell>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</cell>
+                    <cell>
+                        <code>401 (Unauthorized)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
+                </row>
+                <row>
+                    <cell>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</cell>
+                    <cell>
+                        <code>403 (Forbidden)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Employer reference is unknown or endpoint not found.</cell>
+                    <cell>
+                        <code>404 (Not Found)</code>
+                    </cell>
+                    <cell>
+                        <code>EPAYE_EMPREF_UNKNOWN</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint or internal system has become unresponsive.</cell>
+                    <cell>
+                        <code>408 (Request Time-out)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Too many requests have been made to this endpoint</cell>
+                    <cell>
+                        <code>429 (Too many requests)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint or internal system has experienced an internal error.</cell>
+                    <cell>
+                        <code>503 (Service Unavailable)</code>
+                    </cell>
+                    <cell>
+                        <code/>
+                    </cell>
                 </row>
             </rows>
         </table>

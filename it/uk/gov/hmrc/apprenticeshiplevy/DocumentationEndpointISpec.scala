@@ -48,8 +48,8 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
         }
 
         val definitionFile = new File(s"./public/api/conf/$version/application.raml")
-        val includes = Source.fromFile(definitionFile).getLines.filter(_.contains("!include")).map((line)=>line.substring(line.indexOf("!include "))).toList.filterNot(_.matches(".*(errors|versioning).md"))
-        includes.foreach { case (include) =>
+        val includes = Source.fromFile(definitionFile).getLines.filter(_.contains("!include")).map((line)=>line.substring(line.indexOf("!include "))).toList.filterNot(_.matches(".*(errors|versioning).md")).toSet
+        includes.zipWithIndex.foreach { case (include, i) =>
           it (s"and serve file for $include") {
             // set up
             val file = include.substring(9)
