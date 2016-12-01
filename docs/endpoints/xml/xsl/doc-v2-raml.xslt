@@ -183,11 +183,13 @@
         <xsl:otherwise><xsl:value-of select="lower-case(./dataType)"/></xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <name><xsl:value-of select="./name"/></name>
-    <description><xsl:value-of select="./value"/></description>
-    <type><xsl:value-of select="$type"/></type>
-    <example><xsl:value-of select="./example"/></example>
-    <required><xsl:value-of select="./required"/></required>
+    <xsl:variable name="elementName"><xsl:value-of select="./name"/></xsl:variable>
+    <xsl:element name="{$elementName}">
+      <description><xsl:value-of select="./value"/></description>
+      <type><xsl:value-of select="$type"/></type>
+      <example><xsl:value-of select="./example"/></example>
+      <required><xsl:value-of select="./required"/></required>
+    </xsl:element>
   </xsl:template>
 
   <xsl:template match="http[@status = 200]">
@@ -426,7 +428,7 @@ annotationTypes:
     <xsl:apply-templates select="./*" mode="xmlToYaml"/>
   </xsl:template>
 
-  <xsl:template match="displayName|endpoint/description|is|responses" mode="xmlToYaml">
+  <xsl:template match="displayName|endpoint/description|is|responses|queryParameters|queryParameters/*|queryParameters/*/description|queryParameters/*/type|queryParameters/*/example|queryParameters/*/required" mode="xmlToYaml">
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 1) * 2"/>
       <xsl:with-param name="str">
