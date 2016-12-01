@@ -52,6 +52,24 @@
             ]
           },
           {
+            "uriPattern": "/epaye/{empref}/employed/{nino}",
+            "endpointName": "Get employment status",
+            "method": "GET",
+            "authType": "USER",
+            "throttlingTier": "UNLIMITED",
+            "scope": "read:apprenticeship-levy",
+            "queryParameters": [
+              {
+                "name": "fromDate",
+                "required": true
+              },
+              {
+                "name": "toDate",
+                "required": true
+              }
+            ]
+          },
+          {
             "uriPattern": "/epaye/{empref}/fractions",
             "endpointName": "Get employer fraction calculations",
             "method": "GET",
@@ -77,24 +95,6 @@
             "throttlingTier": "UNLIMITED",
             "scope": "read:apprenticeship-levy",
             "queryParameters": []
-          },
-          {
-            "uriPattern": "/epaye/{empref}/employed/{nino}",
-            "endpointName": "Get employment status",
-            "method": "GET",
-            "authType": "USER",
-            "throttlingTier": "UNLIMITED",
-            "scope": "read:apprenticeship-levy",
-            "queryParameters": [
-              {
-                "name": "fromDate",
-                "required": true
-              },
-              {
-                "name": "toDate",
-                "required": true
-              }
-            ]
           }
         ]
       }

@@ -43,11 +43,11 @@ object DocGeneration {
 
     val v1DocDir = "/public/documentation/1.0/"
     val tuples = Map("01_root.xml" -> s"${base.getAbsolutePath()}${v1DocDir}root.xml",
-                     "06_employment-check.xml" -> s"${base.getAbsolutePath()}${v1DocDir}employment-check.xml",
+                     "04_employment-check.xml" -> s"${base.getAbsolutePath()}${v1DocDir}employment-check.xml",
                      "02_empref.xml" -> s"${base.getAbsolutePath()}${v1DocDir}empref.xml",
                      "03_levy-declarations.xml" -> s"${base.getAbsolutePath()}${v1DocDir}levy-declarations.xml",
-                     "05_fraction-calculation-date.xml" -> s"${base.getAbsolutePath()}${v1DocDir}fraction-calculation-date.xml",
-                     "04_fraction-calculations.xml" -> s"${base.getAbsolutePath()}${v1DocDir}fraction-calculations.xml")
+                     "06_fraction-calculation-date.xml" -> s"${base.getAbsolutePath()}${v1DocDir}fraction-calculation-date.xml",
+                     "05_fraction-calculations.xml" -> s"${base.getAbsolutePath()}${v1DocDir}fraction-calculations.xml")
     var processes = files.flatMap { case (file)=>
       val in = file.getAbsolutePath()
 
