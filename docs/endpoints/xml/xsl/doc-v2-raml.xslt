@@ -100,18 +100,13 @@
     <method><xsl:value-of select="lower-case($endpointNode/request/method)"/></method>
     <displayName><xsl:value-of select="$endpointNode/name"/></displayName>
     <description><xsl:value-of select="$endpointNode/description"/></description>
-    <is>
-      <traits>
-        <trait>headers.acceptHeader</trait>
-        <trait><schemas>employment-check.json</schemas></trait>
-        <trait><example>employment-check-example-1.json</example></trait>
-      </traits>
-    </is>
+    <is>[headers.acceptHeader]</is>
     <scope><xsl:value-of select="$endpointNode/secured/scopes/scope[1]"/></scope>
     <secured>
       <method><xsl:value-of select="$endpointNode/secured/method"/></method>
       <scope><xsl:value-of select="$endpointNode/secured/scopes/scope[1]"/></scope>
     </secured>
+    <xsl:copy-of select="$endpointNode/request/headers"/>
   </xsl:template>
 
   <xsl:template match="version[@level='1.0']">
@@ -428,7 +423,7 @@ annotationTypes:
     <xsl:apply-templates select="./*" mode="xmlToYaml"/>
   </xsl:template>
 
-  <xsl:template match="displayName|endpoint/description|is|responses|queryParameters|queryParameters/*|queryParameters/*/description|queryParameters/*/type|queryParameters/*/example|queryParameters/*/required" mode="xmlToYaml">
+  <xsl:template match="displayName|endpoint/description|is|responses|queryParameters|queryParameters/*|queryParameters/*/description|queryParameters/*/type|queryParameters/*/example|queryParameters/*/required|headers" mode="xmlToYaml">
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 1) * 2"/>
       <xsl:with-param name="str">
@@ -515,6 +510,17 @@ annotationTypes:
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*)) * 2"/>
       <xsl:with-param name="str"><xsl:value-of select="."/><xsl:text>:&#x0a;</xsl:text></xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="header[./name != 'Accept']" mode="xmlToYaml">
+    <xsl:call-template name="indent">
+      <xsl:with-param name="length" select="(count(ancestor::*) + 1) * 2"/>
+      <xsl:with-param name="str"><xsl:value-of select="./name"/><xsl:text>:&#x0a;</xsl:text></xsl:with-param>
+    </xsl:call-template>
+    <xsl:call-template name="indent">
+      <xsl:with-param name="length" select="(count(ancestor::*) + 2) * 2"/>
+      <xsl:with-param name="str"><xsl:text>example: </xsl:text><xsl:value-of select="./value"/><xsl:text>&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
   </xsl:template>
 
