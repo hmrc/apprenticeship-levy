@@ -192,7 +192,8 @@
       <status><xsl:value-of select="@status"/></status>
       <body>
         <mimeType><xsl:value-of select="./body/content-type/@mimeType"/></mimeType>
-        <example><xsl:value-of select="'!include examples/employment-check-example-1.json'"/></example>
+        <schema>!include schemas/<xsl:value-of select="replace(lower-case(normalize-space(ancestor::version/name)), '\s', '-')"/>.json</schema>
+        <example>!include examples/<xsl:value-of select="replace(lower-case(normalize-space(ancestor::version/name)), '\s', '-')"/>.json</example>
       </body>
     </response>
   </xsl:template>
@@ -453,7 +454,7 @@ annotationTypes:
     </xsl:call-template>
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 2) * 2"/>
-      <xsl:with-param name="str"><xsl:text>type: !include.... schema</xsl:text><xsl:text>&#x0a;</xsl:text></xsl:with-param>
+      <xsl:with-param name="str"><xsl:text>type: </xsl:text><xsl:value-of select="../schema"/><xsl:text>&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 2) * 2"/>
