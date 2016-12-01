@@ -12,6 +12,6 @@
       "type": "string",
       "description": "A string describing the error condition.",
       "example": "DES endpoint not found: Received request...."
-    },
+    }
   }
 }
