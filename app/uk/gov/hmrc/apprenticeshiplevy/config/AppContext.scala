@@ -58,10 +58,16 @@ object AppContext extends ServicesConfig {
   // $COVERAGE-ON$
 
   def desUrl: String = Try {
+    Logger.info("DES URL 1")
     val url = baseUrl("des")
+    Logger.info("DES URL 2")
     val path = getString(current.configuration)("microservice.services.des.path")
+    Logger.info("DES URL 3")
     val baseurl = if (current.mode == Mode.Prod && !url.contains("localhost")) appUrl else url
-    if (path == "") url else s"${baseurl}${path}"
+    Logger.info("DES URL 4")
+    val u = if (path == "") url else s"${baseurl}${path}"
+    Logger.info("DES URL 4")
+    u
     }.getOrElse(baseUrl("des"))
 
   def stubURL(name: String) = Try {
@@ -76,7 +82,7 @@ object AppContext extends ServicesConfig {
   def stubAuthUrl: String = stubURL("auth")
 
   // $COVERAGE-OFF$
-  Logger.info(s"""\nStub DES URL: ${stubDesUrl}\nStub Auth URL: ${stubAuthUrl}\n""")
+  Logger.info(s"""\nStub DES URL: ${stubDesUrl}\nStub Auth URL: ${stubAuthUrl}\nDES URL: ${desUrl}""")
   // $COVERAGE-ON$
 
   def datePattern(): String = getString(current.configuration)("microservice.dateRegex")

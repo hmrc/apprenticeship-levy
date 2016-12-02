@@ -63,20 +63,20 @@ trait GraphiteMetrics extends Metrics {
   private val log = (name: String, delta: Long, timeUnit: TimeUnit) => {
     timer(name) match {
       case Some(tmr) => {
-        Logger.debug(s"[Metrics][${name}] ${delta} ${timeUnit}")
+        Logger.trace(s"[Metrics][${name}] ${delta} ${timeUnit}")
         tmr.update(delta, timeUnit)
       }
-      case _ => Logger.debug(s"[Metrics][${name}] Not enabled")
+      case _ => Logger.trace(s"[Metrics][${name}] Not enabled")
     }
   }
 
   private val mark = (name: String) => {
     meter(name) match {
       case Some(mtr) => {
-        Logger.debug(s"[Metrics][${name}] ${mtr.getCount()}")
+        Logger.trace(s"[Metrics][${name}] ${mtr.getCount()}")
         mtr.mark
       }
-      case _ => Logger.debug(s"[Metrics][${name}] Not enabled")
+      case _ => Logger.trace(s"[Metrics][${name}] Not enabled")
     }
   }
 
