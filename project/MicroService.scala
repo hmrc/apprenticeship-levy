@@ -21,6 +21,26 @@ trait MicroService {
 
   val defaultPort : Int
 
+  val XsltConfig = config("api-docs")
+  val generateAPIDocs = TaskKey[Unit]("api-docs", "Generates HMRC API Documentation files")
+  managedClasspath in generateAPIDocs := {
+      // these are the types of artifacts to include
+      val artifactTypes: Set[String] = (classpathTypes in generateAPIDocs).value
+      Classpaths.managedJars(XsltConfig, artifactTypes, update.value)
+  }
+  val generateAPIDocsTask = generateAPIDocs := {
+    val artifactTypes = Set("jar")
+    val cp: Seq[java.io.File] = Classpaths.managedJars(XsltConfig, artifactTypes, update.value).map(_.data)
+    val log = ConsoleLogger(ConsoleOut.systemOut, true, true, ConsoleLogger.noSuppressedMessage)
+    val logger = new ProcessLogger() {
+      def buffer[T](f: => T): T = { f }
+      def error(s: => String): Unit = { log.error(s) }
+      def info(s: => String): Unit = {  }
+    }
+    val userDir = new File(System.getProperty("user.dir"))
+    DocGeneration.generateAPIDocs(userDir, cp) ! logger
+  }
+
   lazy val AcceptanceTest = config("ac") extend(Test)
   lazy val appDependencies : Seq[ModuleID] = ???
   lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala)
@@ -28,7 +48,6 @@ trait MicroService {
   lazy val compileScalastyleTask = org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask("")
   lazy val playSettings : Seq[Setting[_]] = Seq(routesImport ++= Seq("uk.gov.hmrc.apprenticeshiplevy.config.QueryBinders._", "org.joda.time.LocalDate",
                                                                      "uk.gov.hmrc.apprenticeshiplevy.config.PathBinders._", "uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference","uk.gov.hmrc.apprenticeshiplevy.data.api.Nino"))
-                                                //compile in Compile <<= (compile in Compile) dependsOn compileScalastyleTask)
   lazy val scoverageSettings = {
     import scoverage.ScoverageKeys
     Seq(
@@ -49,12 +68,15 @@ trait MicroService {
     .settings(
       targetJvm := "jvm-1.8",
       scalaVersion := "2.11.8",
+      ivyConfigurations += XsltConfig,
       libraryDependencies ++= appDependencies,
+      libraryDependencies += "net.sourceforge.saxon" % "saxon" % "9.1.0.8" % XsltConfig.name,
       parallelExecution in Test := false,
       fork in Test := false,
       fork in IntegrationTest := false,
       retrieveManaged := true,
       evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
+      generateAPIDocsTask,
       routesGenerator := StaticRoutesGenerator
     )
     .configs(IntegrationTest)
