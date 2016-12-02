@@ -68,8 +68,6 @@
                 "fromDate" : "2016-03-06",
                 "toDate" : "2016-04-05",
                 "employed" : true
-            }
-    ]
 }]]></content-type>
             <description>
               <field>
@@ -115,16 +113,6 @@
           </body>
           <code>EPAYE_EMPREF_INVALID</code>
         </http>
-        <http status="400" msg="Bad Request">
-          <description>A request parameter is incorrect or unknown, or from date is after to date.</description>
-          <body>
-            <content-type mimeType="application/json"><![CDATA[{
-  "code": "DES_ERROR",
-  "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
-}]]></content-type>
-          </body>
-          <code>EPAYE_NINO_INVALID</code>
-        </http>
         <http status="401" msg="Unauthorized">
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
           <body>
@@ -152,16 +140,6 @@
 }]]></content-type>
           </body>
           <code>EPAYE_EMPREF_UNKNOWN</code>
-        </http>
-        <http status="404" msg="Not Found">
-          <description>Ninoe unknown.</description>
-          <body>
-            <content-type mimeType="application/json"><![CDATA[{
-  "code": "DES_ERROR",
-  "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
-}]]></content-type>
-          </body>
-          <code>EPAYE_NINO_UNKNOWN</code>
         </http>
         <http status="408" msg="Request Time-out">
           <description>Endpoint or internal system has become unresponsive.</description>

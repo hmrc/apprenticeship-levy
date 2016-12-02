@@ -113,8 +113,6 @@
                 "fromDate" : "2016-03-06",
                 "toDate" : "2016-04-05",
                 "employed" : true
-            }
-    ]
 }]]></json>
         <table>
             <headings>
@@ -206,15 +204,6 @@
                     </cell>
                 </row>
                 <row>
-                    <cell>A request parameter is incorrect or unknown, or from date is after to date.</cell>
-                    <cell>
-                        <code>400 (Bad Request)</code>
-                    </cell>
-                    <cell>
-                        <code>EPAYE_NINO_INVALID</code>
-                    </cell>
-                </row>
-                <row>
                     <cell>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</cell>
                     <cell>
                         <code>401 (Unauthorized)</code>
@@ -239,15 +228,6 @@
                     </cell>
                     <cell>
                         <code>EPAYE_EMPREF_UNKNOWN</code>
-                    </cell>
-                </row>
-                <row>
-                    <cell>Ninoe unknown.</cell>
-                    <cell>
-                        <code>404 (Not Found)</code>
-                    </cell>
-                    <cell>
-                        <code>EPAYE_NINO_UNKNOWN</code>
                     </cell>
                 </row>
                 <row>
