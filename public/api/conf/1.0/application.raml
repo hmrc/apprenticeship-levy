@@ -60,46 +60,41 @@ annotationTypes:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 401 (Error **)
-                  description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                  value: !include examples/error.json
+                displayName: 401 (Error **)
+                description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                value: !include examples/error.json
         403:
           body:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 403 (Error **)
-                  description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                  value: !include examples/error.json
+                displayName: 403 (Error **)
+                description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                value: !include examples/error.json
         404:
           body:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 404 (Error **)
-                  description:  Endpoint or internal system has become unavailable.
-                  value: !include examples/error.json
+                displayName: 404 (Error **)
+                description:  Endpoint or internal system has become unavailable.
+                value: !include examples/error.json
         408:
           body:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 408 (Error **)
-                  description:  Endpoint or internal system has become unresponsive.
-                  value: !include examples/error.json
+                displayName: 408 (Error **)
+                description:  Endpoint or internal system has become unresponsive.
+                value: !include examples/error.json
         503:
           body:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 503 (Error **)
-                  description:  Endpoint or internal system has experienced an internal error.
-                  value: !include examples/error.json
+                displayName: 503 (Error **)
+                description:  Endpoint or internal system has experienced an internal error.
+                value: !include examples/error.json
   /epaye:
     /{empref}:
       uriParameters:
@@ -127,64 +122,57 @@ annotationTypes:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 400 (Error *EPAYE_EMPREF_INVALID*)
-                      description: EPAYE_EMPREF_INVALID A request parameter is incorrect.
-                      value: !include examples/error.json
+                    displayName: 400 (Error *EPAYE_EMPREF_INVALID*)
+                    description: EPAYE_EMPREF_INVALID A request parameter is incorrect.
+                    value: !include examples/error.json
             401:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 401 (Error **)
-                      description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                      value: !include examples/error.json
+                    displayName: 401 (Error **)
+                    description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                    value: !include examples/error.json
             403:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 403 (Error **)
-                      description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                      value: !include examples/error.json
+                    displayName: 403 (Error **)
+                    description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                    value: !include examples/error.json
             404:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 404 (Error *EPAYE_EMPREF_UNKNOWN*)
-                      description: EPAYE_EMPREF_UNKNOWN Employer reference is unknown or endpoint not found.
-                      value: !include examples/error.json
+                    displayName: 404 (Error *EPAYE_EMPREF_UNKNOWN*)
+                    description: EPAYE_EMPREF_UNKNOWN Employer reference is unknown or endpoint not found.
+                    value: !include examples/error.json
             408:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 408 (Error **)
-                      description:  Endpoint or internal system has become unresponsive.
-                      value: !include examples/error.json
+                    displayName: 408 (Error **)
+                    description:  Endpoint or internal system has become unresponsive.
+                    value: !include examples/error.json
             429:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 429 (Error **)
-                      description:  Too many requests have been made to this endpoint
-                      value: !include examples/error.json
+                    displayName: 429 (Error **)
+                    description:  Too many requests have been made to this endpoint
+                    value: !include examples/error.json
             503:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 503 (Error **)
-                      description:  Endpoint or internal system has experienced an internal error.
-                      value: !include examples/error.json
+                    displayName: 503 (Error **)
+                    description:  Endpoint or internal system has experienced an internal error.
+                    value: !include examples/error.json
       /declarations:
         get:
           displayName: Get employer levy declarations
@@ -206,64 +194,57 @@ annotationTypes:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 400 (Error *EPAYE_EMPREF_INVALID*)
-                      description: EPAYE_EMPREF_INVALID A request parameter is incorrect.
-                      value: !include examples/error.json
+                    displayName: 400 (Error *EPAYE_EMPREF_INVALID*)
+                    description: EPAYE_EMPREF_INVALID A request parameter is incorrect.
+                    value: !include examples/error.json
             401:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 401 (Error **)
-                      description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                      value: !include examples/error.json
+                    displayName: 401 (Error **)
+                    description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                    value: !include examples/error.json
             403:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 403 (Error **)
-                      description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                      value: !include examples/error.json
+                    displayName: 403 (Error **)
+                    description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                    value: !include examples/error.json
             404:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 404 (Error *EPAYE_EMPREF_UNKNOWN*)
-                      description: EPAYE_EMPREF_UNKNOWN Employer reference is unknown or endpoint not found.
-                      value: !include examples/error.json
+                    displayName: 404 (Error *EPAYE_EMPREF_UNKNOWN*)
+                    description: EPAYE_EMPREF_UNKNOWN Employer reference is unknown or endpoint not found.
+                    value: !include examples/error.json
             408:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 408 (Error **)
-                      description:  Endpoint or internal system has become unresponsive.
-                      value: !include examples/error.json
+                    displayName: 408 (Error **)
+                    description:  Endpoint or internal system has become unresponsive.
+                    value: !include examples/error.json
             429:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 429 (Error **)
-                      description:  Too many requests have been made to this endpoint
-                      value: !include examples/error.json
+                    displayName: 429 (Error **)
+                    description:  Too many requests have been made to this endpoint
+                    value: !include examples/error.json
             503:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 503 (Error **)
-                      description:  Endpoint or internal system has experienced an internal error.
-                      value: !include examples/error.json
+                    displayName: 503 (Error **)
+                    description:  Endpoint or internal system has experienced an internal error.
+                    value: !include examples/error.json
           queryParameters: 
             fromDate: 
               description: The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.
@@ -296,64 +277,57 @@ annotationTypes:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 400 (Error *EPAYE_EMPREF_INVALID*)
-                      description: EPAYE_EMPREF_INVALID A request parameter is incorrect or unknown, or from date is after to date.
-                      value: !include examples/error.json
+                    displayName: 400 (Error *EPAYE_EMPREF_INVALID*)
+                    description: EPAYE_EMPREF_INVALID A request parameter is incorrect or unknown, or from date is after to date.
+                    value: !include examples/error.json
             401:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 401 (Error **)
-                      description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                      value: !include examples/error.json
+                    displayName: 401 (Error **)
+                    description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                    value: !include examples/error.json
             403:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 403 (Error **)
-                      description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                      value: !include examples/error.json
+                    displayName: 403 (Error **)
+                    description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                    value: !include examples/error.json
             404:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 404 (Error *EPAYE_EMPREF_UNKNOWN*)
-                      description: EPAYE_EMPREF_UNKNOWN Endpoint or internal system has become unavailable.
-                      value: !include examples/error.json
+                    displayName: 404 (Error *EPAYE_EMPREF_UNKNOWN*)
+                    description: EPAYE_EMPREF_UNKNOWN Endpoint or internal system has become unavailable.
+                    value: !include examples/error.json
             408:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 408 (Error **)
-                      description:  Endpoint or internal system has become unresponsive.
-                      value: !include examples/error.json
+                    displayName: 408 (Error **)
+                    description:  Endpoint or internal system has become unresponsive.
+                    value: !include examples/error.json
             429:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 429 (Error **)
-                      description:  Too many requests have been made to this endpoint
-                      value: !include examples/error.json
+                    displayName: 429 (Error **)
+                    description:  Too many requests have been made to this endpoint
+                    value: !include examples/error.json
             503:
               body:
                 application/json:
                   type: !include schemas/error.json
                   example:
-                    value:
-                      displayName: 503 (Error **)
-                      description:  Endpoint or internal system has experienced an internal error.
-                      value: !include examples/error.json
+                    displayName: 503 (Error **)
+                    description:  Endpoint or internal system has experienced an internal error.
+                    value: !include examples/error.json
           queryParameters: 
             fromDate: 
               description: The date of the earliest calculation to return.
@@ -392,64 +366,57 @@ annotationTypes:
                   application/json:
                     type: !include schemas/error.json
                     example:
-                      value:
-                        displayName: 400 (Error *EPAYE_EMPREF_INVALID*)
-                        description: EPAYE_EMPREF_INVALID A request parameter is incorrect or unknown, or from date is after to date.
-                        value: !include examples/error.json
+                      displayName: 400 (Error *EPAYE_EMPREF_INVALID*)
+                      description: EPAYE_EMPREF_INVALID A request parameter is incorrect or unknown, or from date is after to date.
+                      value: !include examples/error.json
               401:
                 body:
                   application/json:
                     type: !include schemas/error.json
                     example:
-                      value:
-                        displayName: 401 (Error **)
-                        description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                        value: !include examples/error.json
+                      displayName: 401 (Error **)
+                      description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                      value: !include examples/error.json
               403:
                 body:
                   application/json:
                     type: !include schemas/error.json
                     example:
-                      value:
-                        displayName: 403 (Error **)
-                        description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                        value: !include examples/error.json
+                      displayName: 403 (Error **)
+                      description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                      value: !include examples/error.json
               404:
                 body:
                   application/json:
                     type: !include schemas/error.json
                     example:
-                      value:
-                        displayName: 404 (Error *EPAYE_EMPREF_UNKNOWN*)
-                        description: EPAYE_EMPREF_UNKNOWN Endpoint or internal system has become unavailable.
-                        value: !include examples/error.json
+                      displayName: 404 (Error *EPAYE_EMPREF_UNKNOWN*)
+                      description: EPAYE_EMPREF_UNKNOWN Endpoint or internal system has become unavailable.
+                      value: !include examples/error.json
               408:
                 body:
                   application/json:
                     type: !include schemas/error.json
                     example:
-                      value:
-                        displayName: 408 (Error **)
-                        description:  Endpoint or internal system has become unresponsive.
-                        value: !include examples/error.json
+                      displayName: 408 (Error **)
+                      description:  Endpoint or internal system has become unresponsive.
+                      value: !include examples/error.json
               429:
                 body:
                   application/json:
                     type: !include schemas/error.json
                     example:
-                      value:
-                        displayName: 429 (Error **)
-                        description:  Too many requests have been made to this endpoint
-                        value: !include examples/error.json
+                      displayName: 429 (Error **)
+                      description:  Too many requests have been made to this endpoint
+                      value: !include examples/error.json
               503:
                 body:
                   application/json:
                     type: !include schemas/error.json
                     example:
-                      value:
-                        displayName: 503 (Error **)
-                        description:  Endpoint or internal system has experienced an internal error.
-                        value: !include examples/error.json
+                      displayName: 503 (Error **)
+                      description:  Endpoint or internal system has experienced an internal error.
+                      value: !include examples/error.json
             queryParameters: 
               fromDate: 
                 description: Starting date of the period to check employment for.
@@ -482,52 +449,46 @@ annotationTypes:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 401 (Error **)
-                  description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                  value: !include examples/error.json
+                displayName: 401 (Error **)
+                description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                value: !include examples/error.json
         403:
           body:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 403 (Error **)
-                  description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
-                  value: !include examples/error.json
+                displayName: 403 (Error **)
+                description:  The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                value: !include examples/error.json
         404:
           body:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 404 (Error **)
-                  description:  Endpoint or internal system has become unavailable.
-                  value: !include examples/error.json
+                displayName: 404 (Error **)
+                description:  Endpoint or internal system has become unavailable.
+                value: !include examples/error.json
         408:
           body:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 408 (Error **)
-                  description:  Endpoint or internal system has become unresponsive.
-                  value: !include examples/error.json
+                displayName: 408 (Error **)
+                description:  Endpoint or internal system has become unresponsive.
+                value: !include examples/error.json
         429:
           body:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 429 (Error **)
-                  description:  Too many requests have been made to the back-end systems.
-                  value: !include examples/error.json
+                displayName: 429 (Error **)
+                description:  Too many requests have been made to the back-end systems.
+                value: !include examples/error.json
         503:
           body:
             application/json:
               type: !include schemas/error.json
               example:
-                value:
-                  displayName: 503 (Error **)
-                  description:  Endpoint or internal system has experienced an internal error.
-                  value: !include examples/error.json
+                displayName: 503 (Error **)
+                description:  Endpoint or internal system has experienced an internal error.
+                value: !include examples/error.json

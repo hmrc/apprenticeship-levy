@@ -477,18 +477,18 @@ annotationTypes:
     </xsl:call-template>
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 3) * 2"/>
-      <xsl:with-param name="str"><xsl:text>value:&#x0a;</xsl:text></xsl:with-param>
-    </xsl:call-template>
-    <xsl:call-template name="indent">
-      <xsl:with-param name="length" select="(count(ancestor::*) + 4) * 2"/>
       <xsl:with-param name="str"><xsl:text>displayName: </xsl:text><xsl:value-of select="../example/title"/><xsl:text>&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
     <xsl:call-template name="indent">
-      <xsl:with-param name="length" select="(count(ancestor::*) + 4) * 2"/>
+      <xsl:with-param name="length" select="(count(ancestor::*) + 3) * 2"/>
       <xsl:with-param name="str"><xsl:text>description: </xsl:text><xsl:value-of select="../example/code"/><xsl:text>&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
+    <!--xsl:call-template name="indent">
+      <xsl:with-param name="length" select="(count(ancestor::*) + 3) * 2"/>
+      <xsl:with-param name="str"><xsl:text>value:&#x0a;</xsl:text></xsl:with-param>
+    </xsl:call-template-->
     <xsl:call-template name="indent">
-      <xsl:with-param name="length" select="(count(ancestor::*) + 4) * 2"/>
+      <xsl:with-param name="length" select="(count(ancestor::*) + 3) * 2"/>
       <xsl:with-param name="str"><xsl:text>value: !include examples/error.json&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
   </xsl:template>
