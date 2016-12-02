@@ -19,16 +19,6 @@ mediaType: [ application/json, application/hal+json ]
 uses:
   sec: http://api-documentation-raml-frontend.service/api-documentation/assets/common/modules/securitySchemes.raml
   headers: http://api-documentation-raml-frontend.service/api-documentation/assets/common/modules/headers.raml
-traits:
-  successResponse:
-    responses:
-      200:
-        body:
-          application/json:
-            type: <<responseSchema>>
-            examples:
-              example-1:
-                value: <<successExample>>
 
 annotationTypes:
   config: object
