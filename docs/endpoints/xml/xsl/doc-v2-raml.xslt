@@ -388,7 +388,7 @@ annotationTypes:
   <xsl:template match="employed" mode="xmlToYaml">
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="6"/>
-      <xsl:with-param name="str"><xsl:text>employed:</xsl:text></xsl:with-param>
+      <xsl:with-param name="str"><xsl:text>/employed:</xsl:text></xsl:with-param>
     </xsl:call-template>
     <xsl:apply-templates select="./endpoint" mode="xmlToYaml"/>
   </xsl:template>

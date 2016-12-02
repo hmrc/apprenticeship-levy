@@ -365,7 +365,7 @@ annotationTypes:
               type: date-only
               example: 2015-08-09
               required: false
-      employed:
+      /employed:
         /{nino}:
           uriParameters:
             nino:
@@ -396,15 +396,6 @@ annotationTypes:
                         displayName: 400 (Error *EPAYE_EMPREF_INVALID*)
                         description: EPAYE_EMPREF_INVALID A request parameter is incorrect or unknown, or from date is after to date.
                         value: !include examples/error.json
-              400:
-                body:
-                  application/json:
-                    type: !include schemas/error.json
-                    example:
-                      value:
-                        displayName: 400 (Error *EPAYE_NINO_INVALID*)
-                        description: EPAYE_NINO_INVALID A request parameter is incorrect or unknown, or from date is after to date.
-                        value: !include examples/error.json
               401:
                 body:
                   application/json:
@@ -431,15 +422,6 @@ annotationTypes:
                       value:
                         displayName: 404 (Error *EPAYE_EMPREF_UNKNOWN*)
                         description: EPAYE_EMPREF_UNKNOWN Endpoint or internal system has become unavailable.
-                        value: !include examples/error.json
-              404:
-                body:
-                  application/json:
-                    type: !include schemas/error.json
-                    example:
-                      value:
-                        displayName: 404 (Error *EPAYE_NINO_UNKNOWN*)
-                        description: EPAYE_NINO_UNKNOWN Ninoe unknown.
                         value: !include examples/error.json
               408:
                 body:
