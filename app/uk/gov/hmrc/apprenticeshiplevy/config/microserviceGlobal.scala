@@ -19,6 +19,8 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
 import play.api._
+import play.api.mvc.EssentialFilter
+import play.filters.headers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors.ServiceLocatorConnector
 import uk.gov.hmrc.play.audit.filters.AuditFilter
 import uk.gov.hmrc.play.auth.controllers.AuthParamsControllerConfig
@@ -88,4 +90,6 @@ object MicroserviceGlobal extends DefaultMicroserviceGlobal with ServiceLocatorR
   override implicit val hc: HeaderCarrier = HeaderCarrier()
   override lazy val registrationEnabled = AppContext.registrationEnabled
   override lazy val slConnector = ServiceLocatorConnector
+
+  override protected lazy val defaultMicroserviceFilters: Seq[EssentialFilter] = super.defaultMicroserviceFilters ++ Seq(new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(Play.current.configuration)))
 }
