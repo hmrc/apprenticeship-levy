@@ -56,7 +56,7 @@ object SandboxAuthConnector extends AuthConnector with ServicesConfig {
 }
 
 object LiveAuthConnector extends AuthConnector with ServicesConfig {
-  override def authBaseUrl: String = baseUrl("auth")
+  override def authBaseUrl: String = AppContext.authUrl
   override def http: HttpGet = WSHttp
   protected def auditConnector: Option[AuditConnector] = Some(MicroserviceAuditFilter.auditConnector)
 }
