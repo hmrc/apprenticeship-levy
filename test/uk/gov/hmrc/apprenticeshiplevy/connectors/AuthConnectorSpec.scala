@@ -50,7 +50,7 @@ class AuthConnectorSpec extends UnitSpec with MockitoSugar {
         implicit val ec = defaultContext
 
         // test
-        stubAuditConnector.sendEvent(event.toDataEvent)(hc,ec)
+        stubAuditConnector.sendEvent(event.toDataEvent(true))(hc,ec)
 
         // check
         val auditEvent = eventCaptor.getValue
