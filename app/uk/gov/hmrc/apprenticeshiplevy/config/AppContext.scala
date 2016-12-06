@@ -81,7 +81,7 @@ object AppContext extends ServicesConfig {
   def stubAuthUrl: String = stubURL("auth")
 
   // $COVERAGE-OFF$
-  Logger.info(s"""\nStub DES URL: ${stubDesUrl}\nStub Auth URL: ${stubAuthUrl}\nDES URL: ${desUrl}""")
+  Logger.info(s"""\nStub DES URL: ${stubDesUrl}\nStub Auth URL: ${stubAuthUrl}\nDES URL: ${desUrl}\nAUTH URL: ${authUrl}""")
   // $COVERAGE-ON$
 
   def datePattern(): String = getString(current.configuration)("microservice.dateRegex")

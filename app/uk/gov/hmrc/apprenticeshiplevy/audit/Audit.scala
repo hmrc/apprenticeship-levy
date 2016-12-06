@@ -29,7 +29,7 @@ trait Auditor  {
     block andThen {
       case Success(v) => auditConnector.map(_.sendEvent(event.toDataEvent(true)))
       case Failure(t) => {
-        auditConnector.map(_.sendEvent(event.toDataEvent(false)))
+        auditConnector.map(_.sendEvent(event.toDataEvent(false, t.getMessage())))
         Logger.error(s"Failed to '${event.name}' ${t.getMessage()}",t)
       }
     }

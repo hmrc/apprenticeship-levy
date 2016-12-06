@@ -21,8 +21,8 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.audit.AuditExtensions._
 
 case class ALAEvent(name: String, empref: String = "", nino: String = "", dateRange: String = "") {
-  def toDataEvent(success: Boolean)(implicit hc: HeaderCarrier): DataEvent = DataEvent("ala-api",
+  def toDataEvent(success: Boolean, msg: String = "")(implicit hc: HeaderCarrier): DataEvent = DataEvent("ala-api",
                                            "ServiceReceivedRequest",
                                            tags = hc.toAuditTags(name, ""),
-                                           detail = Map("empref" -> empref, "nino" -> nino, "dateRange" -> dateRange, "success" -> s"$success"))
+                                           detail = Map("empref" -> empref, "nino" -> nino, "dateRange" -> dateRange, "success" -> s"$success", "msg" -> msg))
 }
