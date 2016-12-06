@@ -64,6 +64,7 @@ trait IntegrationTestConfig {
         "microservice.services.stub-des.path" -> "",
         "microservice.services.des.host" -> stubHost,
         "microservice.services.des.port" -> stubPort,
+        "microservice.services.des.path" -> "",
         "microservice.services.auth.host" -> stubHost,
         "microservice.services.auth.port" -> stubPort,
         "microservice.services.auth.path" -> "",

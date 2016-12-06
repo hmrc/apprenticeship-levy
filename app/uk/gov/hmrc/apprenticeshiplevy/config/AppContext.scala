@@ -57,6 +57,9 @@ object AppContext extends ServicesConfig {
   Logger.info(s"""\n${"*" * 80}\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
   // $COVERAGE-ON$
 
+  def desEnvironment: String = getString(current.configuration)(s"microservice.services.des.env")
+  def desToken: String = getString(current.configuration)(s"microservice.services.des.token")
+
   def getURL(name: String) = Try {
       val url = baseUrl(name)
       val path = getString(current.configuration)(s"microservice.services.${name}.path")

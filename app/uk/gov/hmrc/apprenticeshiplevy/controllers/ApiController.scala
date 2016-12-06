@@ -29,6 +29,8 @@ import java.io.IOException
 import scala.util.Try
 import scala.util.matching.Regex
 import java.net.URLDecoder
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import uk.gov.hmrc.play.http.logging.Authorization
 
 trait ApiController extends BaseController with HeaderValidator {
 
@@ -36,11 +38,14 @@ trait ApiController extends BaseController with HeaderValidator {
     def result: Result = Status(er.httpStatusCode)(Json.toJson(er))
   }
 
-  override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = super.hc(rh).withExtraHeaders(rh.headers
-                                                                                          .toSimpleMap
-                                                                                          .filterKeys(_ == "Environment")
-                                                                                          .headOption
-                                                                                          .getOrElse(("Environment","clone")))
+  protected def defaultDESEnvironment: String = AppContext.desEnvironment
+
+  protected def defaultDESToken: String = AppContext.desToken
+
+  override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
+    val hc = super.hc(rh).withExtraHeaders((("Environment",rh.headers.toSimpleMap.getOrElse("Environment",defaultDESEnvironment))))
+    hc.copy(authorization=Some(Authorization(s"Bearer ${defaultDESToken}")))
+  }
 
   val withValidAcceptHeader: ActionBuilder[Request] = validateAccept(acceptHeaderValidationRules)
 
