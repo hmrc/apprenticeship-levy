@@ -44,30 +44,29 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
       case _ => Logger.warn(s"play.crypto.secret system property not set. Tests will fail.")
     }
 
-    val log = Logger.of("test-config")
-    Try(dFileToStr("./it/resources/data/input/mapping_url_1")).foreach { (validReadURL1) =>
+    Try("/authorise/read/epaye/AB12345?confidenceLevel=50&privilegedAccess=\\*").foreach { (validReadURL1) =>
       stubFor(get(urlEqualTo(validReadURL1)).withId(auuid1).atPriority(1).willReturn(aResponse().withStatus(200)))
-      log.info("validReadURL1: " + validReadURL1)
+      System.err.println("validReadURL1: " + validReadURL1)
     }
 
-    Try(dFileToStr("./it/resources/data/input/mapping_url_2")).foreach { (validReadURL2) =>
+    Try("/authorise/read/epaye/123%2FAB12345?confidenceLevel=50&privilegedAccess=\\*").foreach { (validReadURL2) =>
       stubFor(get(urlEqualTo(validReadURL2)).withId(auuid2).atPriority(1).willReturn(aResponse().withStatus(200)))
-      log.info("validReadURL2: " + validReadURL2)
+      System.err.println("validReadURL2: " + validReadURL2)
     }
 
-    Try(dFileToStr("./it/resources/data/input/mapping_url_3")).foreach { (faultURL1) =>
+    Try("/authorise/read/epaye/malformed?confidenceLevel=50&privilegedAccess=\\*").foreach { (faultURL1) =>
       stubFor(get(urlEqualTo(faultURL1)).withId(auuid3).atPriority(3).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
-      log.info("faultURL1: " + faultURL1)
+      System.err.println("faultURL1: " + faultURL1)
     }
 
-    Try(dFileToStr("./it/resources/data/input/mapping_url_4")).foreach { (invalidReadURL1) =>
+    Try("/authorise/read/epaye/(400|401|403|404|500|503|empty|malformed|timeout)%2FAB12345\\?confidenceLevel=50&privilegedAccess=\\*").foreach { (invalidReadURL1) =>
       stubFor(get(urlMatching(invalidReadURL1)).withId(auuid4).atPriority(1).willReturn(aResponse().withStatus(200)))
-      log.info("invalidReadURL1: " + invalidReadURL1)
+      System.err.println("invalidReadURL1: " + invalidReadURL1)
     }
 
-    Try(dFileToStr("./it/resources/data/input/mapping_url_5")).foreach { (validRead) =>
+    Try("/authorise/read/epaye/(.*)\\?confidenceLevel=50&privilegedAccess=\\*").foreach { (validRead) =>
       stubFor(get(urlMatching(validRead)).withId(auuid5).atPriority(1).willReturn(aResponse().withStatus(200)))
-      log.info("validRead: " + validRead)
+      System.err.println("validRead: " + validRead)
     }
   }
 
