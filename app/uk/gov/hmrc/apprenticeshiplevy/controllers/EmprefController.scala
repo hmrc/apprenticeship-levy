@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-trait EmprefController extends ApiController {
+trait EmprefController extends DesController {
   def desConnector: DesConnector
 
   def declarationsUrl(empref: EmploymentReference): String

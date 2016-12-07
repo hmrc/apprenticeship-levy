@@ -49,6 +49,6 @@ object TestDesConnector extends DesConnector {
   protected def auditConnector: Option[AuditConnector] = None
 }
 
-object TestLevyDeclarationController extends LevyDeclarationController with ApiController {
+object TestLevyDeclarationController extends LevyDeclarationController with DesController {
   override def desConnector: DesConnector = TestDesConnector
 }

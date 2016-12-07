@@ -47,7 +47,7 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(stubHttpGet.GET[Fractions](anyString())(any(), headerCarrierCaptor.capture()))
            .thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
-      val controller = new FractionsController() with ApiController {
+      val controller = new FractionsController() with DesController {
         def desConnector: DesConnector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet
@@ -78,7 +78,7 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
       when(stubHttpGet.GET[Fractions](anyString())(any(), headerCarrierCaptor.capture()))
            .thenReturn(Future.successful(Fractions("123AB12345",
                                                    List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
-      val controller = new FractionsController() with ApiController {
+      val controller = new FractionsController() with DesController {
         def desConnector: DesConnector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpGet: HttpGet = stubHttpGet

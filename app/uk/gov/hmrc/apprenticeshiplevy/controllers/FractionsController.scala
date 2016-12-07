@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.http._
 import scala.concurrent.Future
 
 trait FractionsController {
-  self: ApiController =>
+  self: DesController =>
   def desConnector: DesConnector
 
   // scalastyle:off
@@ -47,7 +47,7 @@ trait FractionsController {
   * the calculation date endpoint doesn't
   */
 trait FractionsCalculationDateController {
-  self: ApiController =>
+  self: DesController =>
   def desConnector: DesConnector
 
   // scalastyle:off
