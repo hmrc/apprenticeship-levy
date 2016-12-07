@@ -22,18 +22,29 @@ import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.play.audit.EventKeys._
 import scala.util.{Success, Failure, Try}
 import play.api.Logger
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http._
+import java.io.IOException
 
 trait Auditor  {
   def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = {
     block andThen {
-      case Success(v) => auditConnector.map(_.sendEvent(event.toDataEvent(true)))
+      case Success(v) => auditConnector.map(_.sendEvent(event.toDataEvent(200)))
       case Failure(t) => {
-        auditConnector.map(_.sendEvent(event.toDataEvent(false, t.getMessage())))
-        Logger.error(s"Failed to '${event.name}' ${t.getMessage()}",t)
+        val httpStatus = exceptionToMessage(t)
+        auditConnector.map(_.sendEvent(event.toDataEvent(httpStatus)))
+        Logger.error(s"Failed to '${event.name}' Server ${httpStatus}: ${t.getMessage()}",t)
       }
     }
   }
 
   protected def auditConnector: Option[AuditConnector]
+  protected val exceptionToMessage: PartialFunction[Throwable, Int] = {
+        case e: BadRequestException => 400
+        case e: IOException => 444
+        case e: GatewayTimeoutException => 408
+        case e: NotFoundException => 404
+        case e: Upstream5xxResponse => e.upstreamResponseCode
+        case e: Upstream4xxResponse => e.upstreamResponseCode
+        case e => 500
+    }
 }

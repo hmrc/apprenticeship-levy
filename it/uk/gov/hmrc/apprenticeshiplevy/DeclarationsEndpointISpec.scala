@@ -179,7 +179,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 400
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"Bad request error: Bad request"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error: Bad request"}""")
           }
 
           it (s"should return http status 401 when DES returns 401") {
@@ -192,7 +192,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result)
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES unauthorised error: Not Authorized"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error: Not Authorized"}""")
           }
 
           it (s"should return http status 403 when DES returns 403") {
@@ -205,7 +205,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 403
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES forbidden error: Forbidden"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error: Forbidden"}""")
           }
 
           it (s"DES HTTP 404") {
@@ -245,7 +245,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error: Remotely closed"}""")
           }
 
           it (s"should return http status 503 when empty response") {
@@ -258,7 +258,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error: Remotely closed"}""")
           }
 
           it (s"should return http status 408 when timed out") {
@@ -271,7 +271,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsString(result) should include ("""{"code":"DES_ERROR","message":"DES not responding error: GET of """)
+            contentAsString(result) should include ("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error: GET of """)
           }
 
           it (s"should return http status 503 when DES HTTP 500") {
@@ -284,7 +284,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: DES internal error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error: DES internal error"}""")
           }
 
           it (s"should return http status 503 when DES HTTP 503") {
@@ -297,7 +297,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: Backend system error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error: Backend system error"}""")
           }
         }
       }
