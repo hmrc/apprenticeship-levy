@@ -144,7 +144,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             status(result) shouldBe 400
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"Bad request error: a backend error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error: a backend error"}""")
           }
 
           it (s"should return http status 401 when DES HTTP 401") {
@@ -158,7 +158,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             status(result) shouldBe 401
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES unauthorised error: a backend error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error: a backend error"}""")
           }
 
           it (s"should return http status 403 when DES HTTP 403") {
@@ -172,7 +172,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             status(result) shouldBe 403
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES forbidden error: a backend error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error: a backend error"}""")
           }
 
           it (s"should return http status 404 when DES HTTP 404") {
@@ -186,7 +186,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             status(result) shouldBe 404
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES endpoint not found: a backend error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint not found: a backend error"}""")
           }
 
           it (s"should return 400 when to date is before from date") {
@@ -216,7 +216,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error: Remotely closed"}""")
           }
 
           it (s"should return http status 408 when timed out") {
@@ -244,7 +244,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES connection error: Remotely closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error: Remotely closed"}""")
           }
 
           it (s"should return http status 503 when DES HTTP 500") {
@@ -258,7 +258,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: a backend error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error: a backend error"}""")
           }
 
           it (s"should return http status 503 when DES HTTP 503") {
@@ -271,7 +271,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR","message":"DES 5xx error: a backend error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error: a backend error"}""")
           }
         }
       }

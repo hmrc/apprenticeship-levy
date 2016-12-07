@@ -59,7 +59,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             // check
             status(result) shouldBe 401
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth unauthorised error: GET of 'http://localhost:8080/auth/authority' returned 401. Response body: ''"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_UNAUTHORIZED","message":"Auth unauthorised error: GET of 'http://localhost:8080/auth/authority' returned 401. Response body: ''"}""")
           }
 
           it (s"should return 403 when Auth returns 403") {
@@ -73,7 +73,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             // check
             status(result) shouldBe 403
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth forbidden error: GET of 'http://localhost:8080/auth/authority' returned 403. Response body: ''"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_FORBIDDEN","message":"Auth forbidden error: GET of 'http://localhost:8080/auth/authority' returned 403. Response body: ''"}""")
           }
 
           it (s"HTTP 404") {
@@ -87,7 +87,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             // check
             status(result) shouldBe 404
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth endpoint not found: GET of 'http://localhost:8080/auth/authority' returned 404 (Not Found). Response body: ''"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_NOT_FOUND","message":"Auth endpoint not found: GET of 'http://localhost:8080/auth/authority' returned 404 (Not Found). Response body: ''"}""")
           }
         }
 
@@ -103,7 +103,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth connection error: Remotely closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_IO","message":"Auth connection error: Remotely closed"}""")
           }
 
           it (s"should return 503 when returning empty response and connection closed") {
@@ -117,7 +117,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth connection error: Remotely closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_IO","message":"Auth connection error: Remotely closed"}""")
           }
 
           it (s"should return 408 when timed out") {
@@ -131,7 +131,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth not responding error: GET of 'http://localhost:8080/auth/authority' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_GATEWAY_TIMEOUT","message":"Auth not responding error: GET of 'http://localhost:8080/auth/authority' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"}""")
           }
 
           it (s"should return 503 when Auth returns 500") {
@@ -145,7 +145,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth 5xx error: GET of 'http://localhost:8080/auth/authority' returned 500. Response body: ''"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_BACKEND_FAILURE","message":"Auth 5xx error: GET of 'http://localhost:8080/auth/authority' returned 500. Response body: ''"}""")
           }
 
           it (s"should return 503 when Auth returns 503") {
@@ -159,7 +159,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR","message":"Auth 5xx error: GET of 'http://localhost:8080/auth/authority' returned 503. Response body: ''"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_BACKEND_FAILURE","message":"Auth 5xx error: GET of 'http://localhost:8080/auth/authority' returned 503. Response body: ''"}""")
           }
         }
       }
