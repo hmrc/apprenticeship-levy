@@ -21,8 +21,10 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.audit.AuditExtensions._
 
 case class ALAEvent(name: String, empref: String = "", nino: String = "", dateRange: String = "") {
-  def toDataEvent(success: Boolean, msg: String = "")(implicit hc: HeaderCarrier): DataEvent = DataEvent("ala-api",
-                                           "ServiceReceivedRequest",
-                                           tags = hc.toAuditTags(name, ""),
-                                           detail = Map("empref" -> empref, "nino" -> nino, "dateRange" -> dateRange, "success" -> s"$success", "msg" -> msg))
+  protected lazy val data: Map[String, String] = Seq(("empref",empref), ("nino",nino), ("dateRange",dateRange)).filterNot(_._2.isEmpty).toMap
+
+  def toDataEvent(httpStatus: Int)(implicit hc: HeaderCarrier): DataEvent = DataEvent("ala-api",
+     "ServiceReceivedRequest",
+     tags = hc.toAuditTags(name, ""),
+     detail = data ++ Map("upstream_http_status"->httpStatus.toString))
 }
