@@ -46,7 +46,7 @@ trait FractionsController {
   * This needs to be a separate trait as the fractions endpoint needs to have auth enabled, but
   * the calculation date endpoint doesn't
   */
-trait FractionsCalculationController {
+trait FractionsCalculationDateController {
   self: ApiController =>
   def desConnector: DesConnector
 

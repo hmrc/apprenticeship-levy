@@ -69,14 +69,15 @@ trait EmploymentCheckEndpoint extends Timer {
 
   def check(empref: String, nino: String, dateRange: ClosedDateRange)
            (implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[EmploymentCheckStatus] = {
-    val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?${dateRange.paramString}"
+    val dateParams = dateRange.toParams.getOrElse("")
+    val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?${dateParams}"
 
     // $COVERAGE-OFF$
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
     timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
-      audit(new ALAEvent("employmentCheck", empref, nino, s"daterange=${dateRange.toParams}")) {
+      audit(new ALAEvent("employmentCheck", empref, nino, dateParams)) {
         des.httpGet.GET[EmploymentCheckStatus](url).recover { case notFound: NotFoundException => NinoUnknown }
       }
     }
@@ -87,6 +88,7 @@ trait FractionsEndpoint extends Timer {
   des: DesConnector =>
 
   def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[Fractions] = {
+    val dateParams = dateRange.toParams.getOrElse("")
     val url = (s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions", dateRange.toParams) match {
       case (u, Some(params)) => s"$u?$params"
       case (u, None) => u
@@ -97,7 +99,7 @@ trait FractionsEndpoint extends Timer {
     // $COVERAGE-ON$
 
     timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
-      audit(new ALAEvent("readFractions", empref, "", s"daterange=${dateRange.toParams}")) {
+      audit(new ALAEvent("readFractions", empref, "", dateParams)) {
         des.httpGet.GET[Fractions](url)
       }
     }
@@ -122,6 +124,7 @@ trait LevyDeclarationsEndpoint extends Timer {
   des: DesConnector =>
 
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[EmployerPaymentsSummary] = {
+    val dateParams = dateRange.toParams.getOrElse("")
     val url = (s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary", dateRange.toParams) match {
       case (u, None) => u
       case (u, Some(ps)) => s"$u?$ps"
@@ -132,7 +135,7 @@ trait LevyDeclarationsEndpoint extends Timer {
     // $COVERAGE-ON$
 
     timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
-      audit(new ALAEvent("readLevyDeclarations", empref, "", s"daterange=${dateRange.toParams}")) {
+      audit(new ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
         des.httpGet.GET[EmployerPaymentsSummary](url)
       }
     }

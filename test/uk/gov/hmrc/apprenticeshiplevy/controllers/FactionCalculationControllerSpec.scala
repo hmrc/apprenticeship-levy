@@ -41,7 +41,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
   "getting fraction calculations" should {
-    "propogate authorization and environment headers on to connector" in {
+    "propogate environment but not authorization headers on to connector" in {
       // set up
       val stubHttpGet = mock[HttpGet]
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
@@ -53,6 +53,9 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
           def httpGet: HttpGet = stubHttpGet
           protected def auditConnector: Option[AuditConnector] = None
         }
+        override protected def defaultDESEnvironment: String = "clone"
+
+        override protected def defaultDESToken: String = "ABC"
       }
 
       // test
@@ -63,7 +66,7 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
-      val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer dsfda9080")))
+      val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
       actualHeaderCarrier.extraHeaders.head shouldBe (("Environment","clone"))
     }
@@ -81,6 +84,9 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
           def httpGet: HttpGet = stubHttpGet
           protected def auditConnector: Option[AuditConnector] = None
         }
+        override protected def defaultDESEnvironment: String = "clone"
+
+        override protected def defaultDESToken: String = "ABC"
       }
 
       // test
@@ -90,7 +96,7 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
-      val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer dsfda9080")))
+      val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
       actualHeaderCarrier.extraHeaders.head shouldBe (("Environment","clone"))
     }

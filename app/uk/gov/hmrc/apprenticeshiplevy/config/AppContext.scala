@@ -57,18 +57,20 @@ object AppContext extends ServicesConfig {
   Logger.info(s"""\n${"*" * 80}\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
   // $COVERAGE-ON$
 
-  def desUrl: String = Try {
-    Logger.info("DES URL 1")
-    val url = baseUrl("des")
-    Logger.info("DES URL 2")
-    val path = getString(current.configuration)("microservice.services.des.path")
-    Logger.info("DES URL 3")
-    val baseurl = if (current.mode == Mode.Prod && !url.contains("localhost")) appUrl else url
-    Logger.info("DES URL 4")
-    val u = if (path == "") url else s"${baseurl}${path}"
-    Logger.info("DES URL 4")
-    u
-    }.getOrElse(baseUrl("des"))
+  def desEnvironment: String = getString(current.configuration)(s"microservice.services.des.env")
+  def desToken: String = getString(current.configuration)(s"microservice.services.des.token")
+
+  def getURL(name: String) = Try {
+      val url = baseUrl(name)
+      val path = getString(current.configuration)(s"microservice.services.${name}.path")
+      val baseurl = if (current.mode == Mode.Prod && !url.contains("localhost")) appUrl else url
+      val u = if (path == "") url else s"${baseurl}${path}"
+      u
+    }.getOrElse(baseUrl(name))
+
+  def authUrl: String = getURL("auth")
+
+  def desUrl: String = getURL("des")
 
   def stubURL(name: String) = Try {
     val stubUrl = baseUrl(s"stub-${name}")
@@ -82,7 +84,7 @@ object AppContext extends ServicesConfig {
   def stubAuthUrl: String = stubURL("auth")
 
   // $COVERAGE-OFF$
-  Logger.info(s"""\nStub DES URL: ${stubDesUrl}\nStub Auth URL: ${stubAuthUrl}\nDES URL: ${desUrl}""")
+  Logger.info(s"""\nStub DES URL: ${stubDesUrl}\nStub Auth URL: ${stubAuthUrl}\nDES URL: ${desUrl}\nAUTH URL: ${authUrl}""")
   // $COVERAGE-ON$
 
   def datePattern(): String = getString(current.configuration)("microservice.dateRegex")

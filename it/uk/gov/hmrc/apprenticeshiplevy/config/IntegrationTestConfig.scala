@@ -39,7 +39,7 @@ trait IntegrationTestConfig {
                                "LiveRootController",
                                "LiveEmprefController",
                                "LiveFractionsController",
-                               "LiveFractionsCalculationController",
+                               "LiveFractionsCalculationDateController",
                                "LiveEmploymentCheckController").map(a=>(s"controllers.uk.gov.hmrc.apprenticeshiplevy.controllers.live.${a}.needsAuditing","false"))
 
   def additionalConfiguration: Map[String, Any] = Map(
@@ -64,8 +64,10 @@ trait IntegrationTestConfig {
         "microservice.services.stub-des.path" -> "",
         "microservice.services.des.host" -> stubHost,
         "microservice.services.des.port" -> stubPort,
+        "microservice.services.des.path" -> "",
         "microservice.services.auth.host" -> stubHost,
         "microservice.services.auth.port" -> stubPort,
+        "microservice.services.auth.path" -> "",
         "microservice.whitelisted-applications" -> "myappid"
         ) ++ Map(controllerSettings: _*)
 }

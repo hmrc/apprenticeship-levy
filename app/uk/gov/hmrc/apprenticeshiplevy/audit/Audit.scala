@@ -27,8 +27,11 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 trait Auditor  {
   def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = {
     block andThen {
-      case Success(v) => auditConnector.map(_.sendEvent(event.toDataEvent))
-      case Failure(t) => Logger.error(s"Failed to '${event.name}' ${t.getMessage()}",t)
+      case Success(v) => auditConnector.map(_.sendEvent(event.toDataEvent(true)))
+      case Failure(t) => {
+        auditConnector.map(_.sendEvent(event.toDataEvent(false, t.getMessage())))
+        Logger.error(s"Failed to '${event.name}' ${t.getMessage()}",t)
+      }
     }
   }
 

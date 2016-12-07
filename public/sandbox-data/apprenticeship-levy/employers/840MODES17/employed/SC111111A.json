@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "840MODES17",
+    "nino": "SC111111A",
+    "fromDate": "2014-03-06",
+    "toDate": "2014-04-05",
+    "employed": true
+  }
+}
