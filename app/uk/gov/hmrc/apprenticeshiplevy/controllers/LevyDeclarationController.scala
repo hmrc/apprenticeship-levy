@@ -33,7 +33,7 @@ import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import scala.concurrent.Future
 
 trait LevyDeclarationController {
-  self: ApiController =>
+  self: DesController =>
 
   def desConnector: DesConnector
 

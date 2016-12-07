@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
 import play.api.mvc.Result
 
-trait EmploymentCheckController extends ApiController {
+trait EmploymentCheckController extends DesController {
 
   def desConnector: DesConnector
 
