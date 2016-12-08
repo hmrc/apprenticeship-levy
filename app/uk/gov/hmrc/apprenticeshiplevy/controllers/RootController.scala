@@ -58,6 +58,9 @@ trait RootController extends ApiController {
             case _ => ServiceUnavailable(Json.toJson(AuthError(e.reportAs, "OTHER", s"Auth 4xx error: ${extractReason(e.getMessage())}")))
           }
         }
+        case e: uk.gov.hmrc.play.http.JsValidationException => {
+          Unauthorized(Json.toJson(AuthError(498, "WRONG_TOKEN", s"Auth unauthorised error: OAUTH 2 User Token Required not TOTP")))
+        }
         case e => {
           InternalServerError(Json.toJson(DESError(INTERNAL_SERVER_ERROR, "API", s"API or Auth internal server error: ${extractReason(e.getMessage())}")))
         }
