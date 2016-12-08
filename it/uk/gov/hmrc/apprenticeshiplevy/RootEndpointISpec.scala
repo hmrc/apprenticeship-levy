@@ -25,6 +25,21 @@ import org.scalatestplus.play._
 @DoNotDiscover
 class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
   describe("Root Endpoint") {
+    it(s"when accessed via privileged should return 401") {
+        // set up
+        val response = """{"uri":"/auth/session/xxxxx","confidenceLevel":500,"credentialStrength":"none","legacyOid":"N/A","currentLoginTime":"2016-12-08T09:28:42.155Z","enrolments":"/auth/session/xxxxx/enrolments","clientId":"yyyy","ttl":4}"""
+        stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withBody(response)))
+        val request = FakeRequest(GET, s"/").withHeaders(standardDesHeaders: _*)
+
+        // test
+        val result = route(request).get
+
+        // check
+        status(result) shouldBe 401
+        contentType(result) shouldBe Some("application/json")
+        contentAsString(result) shouldBe """{"code":"AUTH_ERROR_WRONG_TOKEN","message":"Auth unauthorised error: OAUTH 2 User Token Required not TOTP"}"""
+    }
+
     val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>
       describe (s"should when calling ${localMicroserviceUrl}$context/") {
