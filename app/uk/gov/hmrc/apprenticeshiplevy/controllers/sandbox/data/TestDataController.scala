@@ -25,16 +25,19 @@ import uk.gov.hmrc.play.microservice.controller.Utf8MimeTypes
 import java.net.URLDecoder
 import play.api.Play.current
 import scala.io.Source
-import java.io.{File,InputStream}
+import java.io.{File,InputStream,FileInputStream}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 
 trait TestDataController extends Controller with Utf8MimeTypes {
   protected def retrieve(file: String): Option[InputStream] = {
-    if (current.mode == Mode.Prod) {
-      // $COVERAGE-OFF$
-      current.resourceAsStream(file)
-      // $COVERAGE-ON$
-    } else {
-      current.getExistingFile(file).map(new java.io.FileInputStream(_))
+    AppContext.maybeApp.flatMap { app =>
+      if (app.mode == Mode.Prod) {
+        // $COVERAGE-OFF$
+        app.resourceAsStream(file)
+        // $COVERAGE-ON$
+      } else {
+        app.getExistingFile(file).map(new FileInputStream(_))
+      }
     }
   }
 

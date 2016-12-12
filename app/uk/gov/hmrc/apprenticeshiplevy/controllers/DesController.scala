@@ -59,7 +59,7 @@ trait DesController extends ApiController {
           e.upstreamResponseCode match {
             case FORBIDDEN => Forbidden(Json.toJson(DESError(e.reportAs, "FORBIDDEN", s"DES forbidden error: ${extractReason(e.getMessage())}")))
             case UNAUTHORIZED => Unauthorized(Json.toJson(DESError(e.reportAs, "UNAUTHORIZED", s"DES unauthorised error: ${extractReason(e.getMessage())}")))
-            case TOO_MANY_REQUEST => TooManyRequest(Json.toJson(DESError(TOO_MANY_REQUEST, "TOO_MANY_REQUESTS", s"DES too many requests: ${extractReason(e.getMessage())}")))
+            case TOO_MANY_REQUESTS => TooManyRequests(Json.toJson(DESError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"DES too many requests: ${extractReason(e.getMessage())}")))
             case REQUEST_TIMEOUT => RequestTimeout(Json.toJson(DESError(REQUEST_TIMEOUT, "TIMEOUT", s"DES not responding error: ${extractReason(e.getMessage())}")))
             case _ => ServiceUnavailable(Json.toJson(DESError(e.reportAs, "OTHER", s"DES 4xx error: ${extractReason(e.getMessage())}")))
           }

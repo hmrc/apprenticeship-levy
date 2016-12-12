@@ -25,6 +25,9 @@ import java.util.concurrent.TimeUnit
 import play.api.Play
 import play.api.Play._
 import com.kenshoo.play.metrics.{MetricsImpl, MetricsFilter, MetricsFilterImpl}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import play.api.inject.NewInstanceInjector
+import scala.util.Try
 
 sealed trait MetricEvent {
   def metric(): String
@@ -48,7 +51,7 @@ trait Metrics {
 trait GraphiteMetrics extends Metrics {
   Logger.info("[Metrics] Registering metrics...")
 
-  val registry: Option[MetricRegistry] = maybeApplication.map(_.injector.instanceOf[MetricsImpl].defaultRegistry)
+  val registry: Option[MetricRegistry] = if (AppContext.metricsEnabled) Try(Some(NewInstanceInjector.instanceOf[MetricsImpl].defaultRegistry)).getOrElse(None) else None
 
   val AUTH_SERVICE_REQUEST = "auth-service"
   val DES_EMP_CHECK_REQUEST = "des-emp-check"
@@ -98,5 +101,8 @@ trait GraphiteMetrics extends Metrics {
 
   override def processRequest(event: TimerEvent): Unit = log(s"ala.timers.${event.metric}", event.delta, event.timeUnit)
 
-  Logger.info("[Metrics] Completed metrics registration.")
+  registry match {
+    case Some(_) => Logger.info("[Metrics] Completed metrics registration.")
+    case None => Logger.info("[Metrics] Metrics disabled either 'microservice.metrics.graphite.enabled' has been set to false or no Play Application started.")
+  }
 }

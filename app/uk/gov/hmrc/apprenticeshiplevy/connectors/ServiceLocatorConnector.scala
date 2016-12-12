@@ -47,10 +47,15 @@ trait ServiceLocatorConnector {
         Success(())
       }
       .recover { case NonFatal(e) =>
-        // $COVERAGE-OFF$
-        Logger.error(s"Service could not register on the service locator", e)
-        // $COVERAGE-ON$
-        Failure(e)
+          // $COVERAGE-OFF$
+          Logger.error(s"Service could not register on the service locator", e)
+          // $COVERAGE-ON$
+          Failure(e)
+        case e: RuntimeException =>
+          // $COVERAGE-OFF$
+          Logger.error(s"Service could not register on the service locator", e)
+          // $COVERAGE-ON$
+          Failure(e)
       }
 }
 

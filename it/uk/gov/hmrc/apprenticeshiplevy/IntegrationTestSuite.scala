@@ -39,6 +39,8 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
   lazy val auuid5 = randomUUID()
 
   override def beforeAll(cm: ConfigMap) {
+    System.err.println("Starting Play...")
+
     sys.props.get("play.crypto.secret") match {
       case Some(_) => Logger.info(s"play.crypto.secret system property set.")
       case _ => Logger.warn(s"play.crypto.secret system property not set. Tests will fail.")
