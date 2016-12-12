@@ -119,9 +119,6 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
         describe ("with invalid parameters") {
           Seq("fromDate", "toDate").foreach { case (param) =>
             it (s"should return 400 when $param param is invalid") {
-              info("Waiting for Play to upgrade Akka library to 10")
-              pending
-              /*
               // set up
               val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
 
@@ -143,14 +140,11 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
                   contentAsString(result) should include ("""date parameter is in the wrong format. Should be ('^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where data is yyyy-MM-dd and year is 2000 or later""")
                 }
               }
-              */
             }
           }
 
           it (s"should return 400 when empref is unknown") {
-            info("Waiting for Play to upgrade Akka library to 10")
-            pending
-            /*/ set up
+            // set up
             val emprefs = for { empref <- genEmpref } yield empref
 
             forAll(emprefs) { (empref: String) =>
@@ -166,7 +160,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
                 contentType(result) shouldBe Some("application/json")
                 contentAsString(result) should include ("""is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$"""")
               }
-            }*/
+            }
           }
 
           it (s"should return 400 when DES returns 400") {

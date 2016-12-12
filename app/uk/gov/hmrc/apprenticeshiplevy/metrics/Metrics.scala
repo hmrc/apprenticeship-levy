@@ -103,6 +103,6 @@ trait GraphiteMetrics extends Metrics {
 
   registry match {
     case Some(_) => Logger.info("[Metrics] Completed metrics registration.")
-    case None => Logger.info("[Metrics] Metrics disabled either 'microservice.metrics.graphite.enabled' has been set to false or no Play Application started.")
+    case None => Logger.warn("[Metrics] Metrics disabled either 'microservice.metrics.graphite.enabled' has been set to false or no Play Application started.")
   }
 }

@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
 import play.api._
-import play.api.mvc.EssentialFilter
+import play.api.mvc._
 import play.filters.headers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors.ServiceLocatorConnector
 import uk.gov.hmrc.play.audit.filters.AuditFilter
@@ -30,6 +30,8 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
 import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
+import scala.util.{Try, Success, Failure}
+import play.Logger
 
 object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = AppContext.maybeConfiguration.map(_.underlying.as[Config]("controllers")).getOrElse(throw new RuntimeException())
@@ -39,11 +41,21 @@ object AuthParamsControllerConfiguration extends AuthParamsControllerConfig {
   lazy val controllerConfigs = ControllerConfiguration.controllerConfigs
 }
 
-object MicroserviceAuditFilter extends AuditFilter with AppName with MicroserviceFilterSupport {
+object MicroserviceAuditFilter extends AuditFilter with AppName with MicroserviceFilterSupport with RunMode {
   override val auditConnector = MicroserviceAuditConnector
 
   override def controllerNeedsAuditing(controllerName: String): Boolean =
     ControllerConfiguration.paramsForController(controllerName).needsAuditing
+
+  override protected def needsAuditing(request: RequestHeader): Boolean = if (runMode == "Test") false else super.needsAuditing(request)
+
+  protected lazy val runMode = Try(env) match {
+    case Success(m) => m
+    case Failure(_) => {
+      Logger.warn("Run mode not set. Is Play Application running?")
+      "Dev"
+    }
+  }
 }
 
 object MicroserviceLoggingFilter extends LoggingFilter with MicroserviceFilterSupport {
@@ -74,5 +86,13 @@ object MicroserviceGlobal extends DefaultMicroserviceGlobal with RunMode {
 
   override val authFilter = Some(MicroserviceAuthFilter)
 
-  override protected lazy val defaultMicroserviceFilters: Seq[EssentialFilter] = super.defaultMicroserviceFilters ++ Seq(new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(AppContext.maybeConfiguration.get)))
+  override protected lazy val defaultMicroserviceFilters: Seq[EssentialFilter] = Try {
+    super.defaultMicroserviceFilters ++ Seq(new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(AppContext.maybeConfiguration.get)))
+    } match {
+      case Success(v) => v
+      case Failure(e) => {
+        Logger.error(s"Failed to initialise filters. ${e.getMessage}")
+        Seq.empty
+      }
+    }
 }
