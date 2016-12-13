@@ -53,7 +53,7 @@ trait RootController extends ApiController {
           e.upstreamResponseCode match {
             case FORBIDDEN => Forbidden(Json.toJson(AuthError(e.reportAs, "FORBIDDEN", s"Auth forbidden error: ${extractReason(e.getMessage())}")))
             case UNAUTHORIZED => Unauthorized(Json.toJson(AuthError(e.reportAs, "UNAUTHORIZED", s"Auth unauthorised error: ${extractReason(e.getMessage())}")))
-            case TOO_MANY_REQUEST => TooManyRequest(Json.toJson(AuthError(TOO_MANY_REQUEST, "TOO_MANY_REQUESTS", s"Auth too many requests: ${extractReason(e.getMessage())}")))
+            case TOO_MANY_REQUESTS => TooManyRequests(Json.toJson(AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"Auth too many requests: ${extractReason(e.getMessage())}")))
             case REQUEST_TIMEOUT => RequestTimeout(Json.toJson(AuthError(REQUEST_TIMEOUT, "TIMEOUT", s"Auth not responding error: ${extractReason(e.getMessage())}")))
             case _ => ServiceUnavailable(Json.toJson(AuthError(e.reportAs, "OTHER", s"Auth 4xx error: ${extractReason(e.getMessage())}")))
           }

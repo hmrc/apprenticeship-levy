@@ -46,7 +46,7 @@ class DocumentationControllerSpec extends UnitSpec with Inside {
 }
 
 class TestDocumentationController extends DocumentationController {
-  override implicit lazy val current = Play.current
+  override implicit lazy val current = Some(Play.current)
   override lazy val whitelistedApplicationIds = Seq(
     "f0e2611e-2f45-4326-8cd2-6eefebec77b7",
     "cafebabe-2f45-4326-8cd2-6eefebec77b7"

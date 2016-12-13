@@ -63,7 +63,6 @@
     <logger name="root-endpoint" level="DEBUG"/>
 
     <logger name="connector" level="DEBUG">
-        <appender-ref ref="STDOUT"/>
     </logger>
 
     <root level="WARN">

@@ -16,22 +16,55 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config
 
-import play.api.Play._
-import play.api.{Configuration, Logger, Mode}
+import play.api.Play
+import play.api.{Configuration, Logger, Mode, Application}
 import uk.gov.hmrc.play.config.ServicesConfig
+import scala.util.{Try, Success, Failure}
+import uk.gov.hmrc.play.config.RunMode
+import uk.gov.hmrc.apprenticeshiplevy.connectors.ServiceLocatorConnector
+import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.util.Try
+trait ServiceLocatorRegistration extends RunMode {
+  def registrationEnabled: Boolean
+  val slConnector: ServiceLocatorConnector
 
-object AppContext extends ServicesConfig {
+  // replacing GlobalSettings.onStart
+  registrationEnabled match {
+    case true => {
+      AppContext.maybeApp.map { app =>
+        slConnector.register(HeaderCarrier())
+      }.orElse{
+        Logger.error("Registration in Service Locator is disabled due to no app started")
+        None
+      }
+    }
+    case false => Logger.warn("Registration in Service Locator is disabled")
+  }
+}
+
+object AppContext extends ServicesConfig with ServiceLocatorRegistration {
   Logger.info(s"""\n${"*" * 80}\n""")
 
-  def appName: String =
-    current.configuration.getString("appName").getOrElse(throw new RuntimeException("appName is not configured"))
-  def appUrl: String =
-    current.configuration.getString("appUrl").getOrElse(throw new RuntimeException("appUrl is not configured"))
-  def serviceLocatorUrl: String = baseUrl("service-locator")
-  def registrationEnabled: Boolean =
-    current.configuration.getString("microservice.services.service-locator.enabled")
+  override lazy val slConnector = ServiceLocatorConnector
+
+  def maybeApp: Option[Application] = Try(Play.maybeApplication).getOrElse(None)
+
+  def maybeConfiguration: Option[Configuration] = maybeApp.map(_.configuration)
+
+  def appName: String = maybeString("appName").getOrElse{
+    Logger.error("appName is not configured")
+    ""
+  }
+
+  def appUrl: String = maybeString("appUrl").getOrElse{
+    Logger.error("appUrl is not configured")
+    ""
+  }
+
+  def serviceLocatorUrl: String = maybeBaseURL("service-locator").getOrElse("")
+
+  override def registrationEnabled: Boolean =
+    maybeString("microservice.services.service-locator.enabled")
       .flatMap(flag => Try(flag.toBoolean).toOption)
       .getOrElse {
         // $COVERAGE-OFF$
@@ -40,7 +73,7 @@ object AppContext extends ServicesConfig {
         true
       }
 
-  def privateModeEnabled: Boolean = current.configuration.getString("microservice.private-mode")
+  def privateModeEnabled: Boolean = maybeString("microservice.private-mode")
     .flatMap(flag => Try(flag.toBoolean).toOption)
     .getOrElse {
       // $COVERAGE-OFF$
@@ -49,35 +82,36 @@ object AppContext extends ServicesConfig {
       true
     }
 
-  def whitelistedApplicationIds: Seq[String] = current.configuration.getString("microservice.whitelisted-applications")
-    .map { applicationIds => applicationIds.split(",").toSeq }
-    .getOrElse(Seq.empty)
+  def whitelistedApplicationIds: Seq[String] = maybeString("microservice.whitelisted-applications")
+    .map { applicationIds => applicationIds.split(",").toSeq }.getOrElse(Seq.empty)
 
   // $COVERAGE-OFF$
   Logger.info(s"""\n${"*" * 80}\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
   // $COVERAGE-ON$
 
-  def desEnvironment: String = getString(current.configuration)(s"microservice.services.des.env")
-  def desToken: String = getString(current.configuration)(s"microservice.services.des.token")
+  def desEnvironment: String = maybeString("microservice.services.des.env").getOrElse("")
+
+  def desToken: String = maybeString("microservice.services.des.token").getOrElse("")
+
+  def metricsEnabled: Boolean = maybeString("microservice.metrics.graphite.enabled").flatMap(flag => Try(flag.toBoolean).toOption).getOrElse(false)
 
   def getURL(name: String) = Try {
-      val url = baseUrl(name)
-      val path = getString(current.configuration)(s"microservice.services.${name}.path")
-      val baseurl = if (current.mode == Mode.Prod && !url.contains("localhost")) appUrl else url
-      val u = if (path == "") url else s"${baseurl}${path}"
-      u
-    }.getOrElse(baseUrl(name))
+      val url = maybeBaseURL(name).getOrElse("")
+      val path = maybeString(s"microservice.services.${name}.path").getOrElse("")
+      val baseurl = if (maybeApp.map(_.mode).getOrElse(Mode.Test) == Mode.Prod && !url.contains("localhost")) appUrl else url
+      if (path == "") url else s"${baseurl}${path}"
+    }.getOrElse(maybeBaseURL(name).getOrElse(""))
 
   def authUrl: String = getURL("auth")
 
   def desUrl: String = getURL("des")
 
   def stubURL(name: String) = Try {
-    val stubUrl = baseUrl(s"stub-${name}")
-    val path = getString(current.configuration)(s"microservice.services.stub-${name}.path")
-    val baseurl = if (current.mode == Mode.Prod && !stubUrl.contains("localhost")) appUrl else stubUrl
-    s"${baseurl}${path}"
-    }.getOrElse(baseUrl(s"stub-${name}"))
+      val stubUrl = maybeBaseURL(s"stub-${name}").getOrElse("")
+      val path = maybeString(s"microservice.services.stub-${name}.path").getOrElse("")
+      val baseurl = if (maybeApp.map(_.mode).getOrElse(Mode.Test) == Mode.Prod && !stubUrl.contains("localhost")) appUrl else stubUrl
+      s"${baseurl}${path}"
+    }.getOrElse(maybeBaseURL(s"stub-${name}").getOrElse(""))
 
   def stubDesUrl: String = stubURL("des")
 
@@ -87,21 +121,29 @@ object AppContext extends ServicesConfig {
   Logger.info(s"""\nStub DES URL: ${stubDesUrl}\nStub Auth URL: ${stubAuthUrl}\nDES URL: ${desUrl}\nAUTH URL: ${authUrl}""")
   // $COVERAGE-ON$
 
-  def datePattern(): String = getString(current.configuration)("microservice.dateRegex")
-  def employerReferencePattern(): String = getString(current.configuration)("microservice.emprefRegex")
-  def ninoPattern(): String = getString(current.configuration)("microservice.ninoRegex")
+  def datePattern(): String = maybeString("microservice.dateRegex").getOrElse("")
+
+  def employerReferencePattern(): String = maybeString("microservice.emprefRegex").getOrElse("")
+
+  def ninoPattern(): String = maybeString("microservice.ninoRegex").getOrElse("")
 
   // $COVERAGE-OFF$
   Logger.info(s"""\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n""")
   // $COVERAGE-ON$
 
   // scalastyle:off
-  def defaultNumberOfDeclarationYears: Int =
-    current.configuration.getString("microservice.defaultNumberOfDeclarationYears").map(_.toInt).getOrElse(6)
+  def defaultNumberOfDeclarationYears: Int = maybeString("microservice.defaultNumberOfDeclarationYears").map(_.toInt).getOrElse(6)
   // scalastyle:on
 
-  private def getString(config: Configuration)(id: String): String = config.getString(id)
-    .getOrElse(throw new RuntimeException(s"Unable to read whitelisted application (value '$id' not found)"))
+  private def maybeString(id: String): Option[String] = maybeConfiguration.flatMap(_.getString(id))
+
+  private def maybeBaseURL(name: String): Option[String] = Try(baseUrl(name)) match {
+        case Success(v) => Some(v)
+        case Failure(e) => {
+          Logger.error(s"Unable to get baseUrl for ${name}. Error: ${e.getMessage()}")
+          None
+        }
+      }
 
   Logger.info(s"""\n${"*" * 80}\n""")
 }

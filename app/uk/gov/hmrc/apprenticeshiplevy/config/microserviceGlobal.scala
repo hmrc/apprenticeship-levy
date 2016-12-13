@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
 import play.api._
-import play.api.mvc.EssentialFilter
+import play.api.mvc._
 import play.filters.headers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors.ServiceLocatorConnector
 import uk.gov.hmrc.play.audit.filters.AuditFilter
@@ -30,35 +30,32 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.filters.LoggingFilter
 import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
 import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
-
-trait ServiceLocatorRegistration extends GlobalSettings with RunMode {
-
-  val registrationEnabled: Boolean
-  val slConnector: ServiceLocatorConnector
-  implicit val hc: HeaderCarrier
-
-  override def onStart(app: Application): Unit = {
-    super.onStart(app)
-    registrationEnabled match {
-      case true => slConnector.register
-      case false => Logger.warn("Registration in Service Locator is disabled")
-    }
-  }
-}
+import scala.util.{Try, Success, Failure}
+import play.Logger
 
 object ControllerConfiguration extends ControllerConfig {
-  lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
+  lazy val controllerConfigs = AppContext.maybeConfiguration.map(_.underlying.as[Config]("controllers")).getOrElse(throw new RuntimeException())
 }
 
 object AuthParamsControllerConfiguration extends AuthParamsControllerConfig {
   lazy val controllerConfigs = ControllerConfiguration.controllerConfigs
 }
 
-object MicroserviceAuditFilter extends AuditFilter with AppName with MicroserviceFilterSupport {
+object MicroserviceAuditFilter extends AuditFilter with AppName with MicroserviceFilterSupport with RunMode {
   override val auditConnector = MicroserviceAuditConnector
 
   override def controllerNeedsAuditing(controllerName: String): Boolean =
     ControllerConfiguration.paramsForController(controllerName).needsAuditing
+
+  override protected def needsAuditing(request: RequestHeader): Boolean = if (runMode == "Test") false else super.needsAuditing(request)
+
+  protected lazy val runMode = Try(env) match {
+    case Success(m) => m
+    case Failure(_) => {
+      Logger.warn("Run mode not set. Is Play Application running?")
+      "Dev"
+    }
+  }
 }
 
 object MicroserviceLoggingFilter extends LoggingFilter with MicroserviceFilterSupport {
@@ -74,7 +71,9 @@ object MicroserviceAuthFilter extends AuthorisationFilter with MicroserviceFilte
     ControllerConfiguration.paramsForController(controllerName).needsAuth
 }
 
-object MicroserviceGlobal extends DefaultMicroserviceGlobal with ServiceLocatorRegistration with RunMode {
+object MicroserviceGlobal extends DefaultMicroserviceGlobal with RunMode {
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   override val auditConnector = MicroserviceAuditConnector
 
@@ -87,9 +86,13 @@ object MicroserviceGlobal extends DefaultMicroserviceGlobal with ServiceLocatorR
 
   override val authFilter = Some(MicroserviceAuthFilter)
 
-  override implicit val hc: HeaderCarrier = HeaderCarrier()
-  override lazy val registrationEnabled = AppContext.registrationEnabled
-  override lazy val slConnector = ServiceLocatorConnector
-
-  override protected lazy val defaultMicroserviceFilters: Seq[EssentialFilter] = super.defaultMicroserviceFilters ++ Seq(new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(Play.current.configuration)))
+  override protected lazy val defaultMicroserviceFilters: Seq[EssentialFilter] = Try {
+    super.defaultMicroserviceFilters ++ Seq(new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(AppContext.maybeConfiguration.get)))
+    } match {
+      case Success(v) => v
+      case Failure(e) => {
+        Logger.error(s"Failed to initialise filters. ${e.getMessage}")
+        Seq.empty
+      }
+    }
 }

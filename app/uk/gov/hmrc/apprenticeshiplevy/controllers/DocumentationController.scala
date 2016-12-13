@@ -33,17 +33,19 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 trait AssetsController extends BaseController {
-  implicit def current: Application
+  implicit def current: Option[Application]
 
   private val AbsolutePath = """^(/|[a-zA-Z]:\\).*""".r
 
   protected def retrieve(rootPath: String, file: String): Option[InputStream] = {
-    if (current.mode == Mode.Prod) {
-      // $COVERAGE-OFF$
-      current.resourceAsStream(s"${rootPath}/${file}")
-      // $COVERAGE-ON$
-    } else {
-      current.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
+    current.flatMap { app =>
+      if (app.mode == Mode.Prod) {
+        // $COVERAGE-OFF$
+        app.resourceAsStream(s"${rootPath}/${file}")
+        // $COVERAGE-ON$
+      } else {
+        app.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
+      }
     }
   }
 
@@ -115,5 +117,5 @@ trait DocumentationController extends AssetsController {
 }
 
 object DocumentationController extends DocumentationController {
-  override implicit val current = Play.current
+  override implicit val current = AppContext.maybeApp
 }

@@ -25,6 +25,8 @@ import org.joda.time.LocalDate
 import org.joda.time.DateTimeConstants.{APRIL, MAY}
 import org.joda.time.{LocalDate, LocalDateTime}
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import scala.util.{Try, Success, Failure}
 
 class EmployerPaymentSummarySpec extends UnitSpec {
   "convertToDeclaration" should {
@@ -34,6 +36,10 @@ class EmployerPaymentSummarySpec extends UnitSpec {
     val relatedTaxYear = "16-17"
 
     "convert a terminated payroll scheme" in {
+      Try(AppContext.metricsEnabled) match {
+        case Success(v) => info(s"Metrics enabled: ${v}")
+        case Failure(e) => e.printStackTrace()
+      }
       val schemeCeasedDate = submissionTime.minusDays(1).toLocalDate
       val eps = EmployerPaymentSummary(id,
                                        submissionTime,
