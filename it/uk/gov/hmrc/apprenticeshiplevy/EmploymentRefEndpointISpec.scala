@@ -29,7 +29,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
         describe (s"with valid parameters") {
           it (s"should return the declarations and fractions link for each empref") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/840%2FMODES17").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(request).get
@@ -37,10 +37,11 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             contentType(result) shouldBe Some("application/hal+json")
             val json = contentAsJson(result)
-
-            (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/123%2FAB12345"
-            (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/123%2FAB12345/fractions"
-            (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/123%2FAB12345/declarations"
+            (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES17"
+            (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES17/fractions"
+            (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/840%2FMODES17/declarations"
+            (json \ "employer" \ "name" \ "nameLine1").as[String] shouldBe "KILL-JOY PLC THE FUNERAL"
+            (json \ "communication" \ "name" \ "nameLine1").as[String] shouldBe "KILL-JOY PLC THE FUNERAL"
           }
         }
 
@@ -135,7 +136,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsString(result) should include ("DES not responding error: GET of 'http://localhost:8080/epaye/777%2FAB12345/designatory-details' timed out with message")
+            contentAsString(result) should include ("DES not responding error: GET of 'http://localhost:8080/paye/employer/777/AB12345/designatory-details' timed out with message")
           }
 
           it (s"should return 503 when DES returns 500") {

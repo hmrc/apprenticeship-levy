@@ -1,26 +1,27 @@
 {
-    "priority": 1,
-    "request": {
-        "method": "GET",
-        "url": "/epaye/123%2FAB12345/designatory-details",
-        "headers": {
-          "Authorization": {
-              "matches": "Bearer (.*)"
-          },
-          "Environment": {
-              "matches": "(isit|clone|live)"
-          }
-        }
-    },
-    "response": {
-        "status": 200,
-        "headers": { "Content-Type": "application/json; charset=utf-8" },
-        "jsonBody": {
-          "employer": {
-            "name": {
-              "nameLine1": "Foo Bar Ltd."
-            }
-          }
-        }
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "url": "/paye/employer/840/MODES17/designatory-details",
+    "headers": {
+      "Authorization": {
+        "matches": "Bearer (.*)"
+      },
+      "Environment": {
+        "matches": "(isit|clone|live|ist0)"
+      }
     }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    "jsonBody": {
+      "links": {
+        "employer": "/paye/employer/840/MODES17/designatory-details/employer",
+        "communication": "/paye/employer/840/MODES17/designatory-details/communication"
+      }
+    }
+  }
 }
