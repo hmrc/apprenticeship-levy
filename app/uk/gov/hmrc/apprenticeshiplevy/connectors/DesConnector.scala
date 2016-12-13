@@ -32,6 +32,8 @@ import uk.gov.hmrc.apprenticeshiplevy.config.MicroserviceAuditFilter
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.metrics._
+import java.net.URLDecoder
+import uk.gov.hmrc.apprenticeshiplevy.data.des.DesignatoryDetails._
 
 trait DesUrl {
   def baseUrl: String
@@ -49,8 +51,13 @@ trait EmployerDetailsEndpoint extends Timer {
   des: DesConnector =>
 
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] = {
+    val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
+    val (office, ref) = URLDecoder.decode(empref, "UTF-8") match {
+      case emprefParts(part1, _, part2) => (part1, part2)
+      case _ => throw new IllegalArgumentException(s"Empref is not valid.")
+    }
 
-    val url = s"${des.baseUrl}/epaye/${helper.urlEncode(empref)}/designatory-details"
+    val url = s"${des.baseUrl}/paye/employer/${office}/${ref}/designatory-details"
 
     // $COVERAGE-OFF$
     Logger.debug(s"Calling DES at $url")
@@ -58,10 +65,35 @@ trait EmployerDetailsEndpoint extends Timer {
 
     timer(RequestEvent(DES_EMPREF_DETAILS_REQUEST, Some(empref))) {
       audit(new ALAEvent("readEmprefDetails", empref)) {
-        des.httpGet.GET[DesignatoryDetails](url).map(_.copy(empref = Some(empref)))(ec)
+        des.httpGet.GET[HodDesignatoryDetailsLinks](url).flatMap { response =>
+          val details = DesignatoryDetails(Some(empref))
+
+          response.links.map { links =>
+            Logger.debug((links.employer ++ links.communication).mkString(" "))
+
+            (links.employer, links.communication) match {
+              case (Some(url1),Some(url2)) =>
+                for {
+                  e <- getDetails(url1)
+                  c <- getDetails(url2)
+                } yield (details.copy(employer=Some(e), communication=Some(c)))
+              case (None, Some(url)) =>
+                for {
+                  c <- getDetails(url)
+                } yield (details.copy(communication=Some(c)))
+              case (Some(url), None) =>
+                for {
+                  e <- getDetails(url)
+                } yield (details.copy(employer=Some(e)))
+              case _ => Future.successful(details)
+            }
+          }.getOrElse(Future.successful(details))
+        }(ec)
       }
     }
   }
+
+  protected def getDetails(path: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetailsData] = des.httpGet.GET[DesignatoryDetailsData](s"${des.baseUrl}${path}")
 }
 
 trait EmploymentCheckEndpoint extends Timer {

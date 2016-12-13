@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "url": "/epaye/503%2FAB12345/designatory-details"
+        "url": "/paye/employer/503/AB12345/designatory-details"
     },
     "response": {
         "status": 503,

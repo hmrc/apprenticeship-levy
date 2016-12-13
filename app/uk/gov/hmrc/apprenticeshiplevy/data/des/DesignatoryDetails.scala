@@ -39,6 +39,10 @@ case class DesignatoryDetailsData(name: Option[HodName] = None, address: Option[
 
 case class DesignatoryDetails(empref:Option[String], employer: Option[DesignatoryDetailsData] = None, communication: Option[DesignatoryDetailsData] = None)
 
+case class DesignatoryDetailsLinks(employer: Option[String], communication: Option[String])
+
+case class HodDesignatoryDetailsLinks(links: Option[DesignatoryDetailsLinks])
+
 object DesignatoryDetails {
   implicit val hnformat = Json.format[HodName]
   implicit val haformat = Json.format[HodAddress]
@@ -46,7 +50,10 @@ object DesignatoryDetails {
   implicit val heformat = Json.format[HodEmail]
   implicit val hcformat = Json.format[HodContact]
   implicit val dddformat = Json.format[DesignatoryDetailsData]
+  implicit val ddlformat = Json.format[DesignatoryDetailsLinks]
 
   implicit val readDesignatoryDetailsFormat = Json.reads[DesignatoryDetails]
   implicit val writeDesignatoryDetailsFormat = Json.writes[DesignatoryDetails]
+  implicit val readDesignatoryDetailsLinksFormat = Json.reads[HodDesignatoryDetailsLinks]
+  implicit val writeDesignatoryDetailsLinksFormat = Json.writes[HodDesignatoryDetailsLinks]
 }
