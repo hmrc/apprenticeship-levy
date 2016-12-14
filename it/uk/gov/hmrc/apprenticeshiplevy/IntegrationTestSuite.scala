@@ -23,7 +23,8 @@ class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
                                            new EmploymentRefEndpointISpec,
                                            new FractionsEndpointISpec,
                                            new FractionsCalculationDateEndpointISpec,
-                                           new RootEndpointISpec)
+                                           new RootEndpointISpec,
+                                           new TestDataEndpointISpec)
   with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite {
 
   WiremockService.start()
