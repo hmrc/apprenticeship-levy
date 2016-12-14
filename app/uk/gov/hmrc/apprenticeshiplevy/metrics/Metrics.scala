@@ -66,7 +66,9 @@ trait GraphiteMetrics extends Metrics {
   private val log = (name: String, delta: Long, timeUnit: TimeUnit) => {
     timer(name) match {
       case Some(tmr) => {
+        // $COVERAGE-OFF$
         Logger.trace(s"[Metrics][${name}] ${delta} ${timeUnit}")
+        // $COVERAGE-ON$
         tmr.update(delta, timeUnit)
       }
       case _ => Logger.trace(s"[Metrics][${name}] Not enabled")
@@ -76,10 +78,15 @@ trait GraphiteMetrics extends Metrics {
   private val mark = (name: String) => {
     meter(name) match {
       case Some(mtr) => {
+        // $COVERAGE-OFF$
         Logger.trace(s"[Metrics][${name}] ${mtr.getCount()}")
+        // $COVERAGE-ON$
         mtr.mark
       }
-      case _ => Logger.trace(s"[Metrics][${name}] Not enabled")
+      case _ =>
+        // $COVERAGE-OFF$
+        Logger.trace(s"[Metrics][${name}] Not enabled")
+        // $COVERAGE-ON$
     }
   }
 
@@ -102,7 +109,13 @@ trait GraphiteMetrics extends Metrics {
   override def processRequest(event: TimerEvent): Unit = log(s"ala.timers.${event.metric}", event.delta, event.timeUnit)
 
   registry match {
-    case Some(_) => Logger.info("[Metrics] Completed metrics registration.")
-    case None => Logger.warn("[Metrics] Metrics disabled either 'microservice.metrics.graphite.enabled' has been set to false or no Play Application started.")
+    case Some(_) =>
+      // $COVERAGE-OFF$
+      Logger.info("[Metrics] Completed metrics registration.")
+      // $COVERAGE-ON$
+    case None =>
+      // $COVERAGE-OFF$
+      Logger.warn("[Metrics] Metrics disabled either 'microservice.metrics.graphite.enabled' has been set to false or no Play Application started.")
+      // $COVERAGE-ON$
   }
 }

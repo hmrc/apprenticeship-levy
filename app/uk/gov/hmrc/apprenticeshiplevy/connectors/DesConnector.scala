@@ -84,7 +84,9 @@ trait EmployerDetailsEndpoint extends Timer {
 
   protected val errorHandler: PartialFunction[Throwable, Option[DesignatoryDetailsData]] = {
         case e => {
+          // $COVERAGE-OFF$
           Logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
+          // $COVERAGE-ON$
           None
         }
     }
