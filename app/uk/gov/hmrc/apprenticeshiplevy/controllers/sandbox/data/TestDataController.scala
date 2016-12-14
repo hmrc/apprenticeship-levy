@@ -44,24 +44,29 @@ trait TestDataController extends Controller with Utf8MimeTypes {
   def serve(req: String) = Action.async { implicit request =>
     Logger.debug(s"Request was received for path ${req}")
     val path = URLDecoder.decode(req, "UTF-8")
-    val prefix = "public/sandbox-data"
-    val filename = s"${prefix}/${path}.json"
-    Logger.debug(s"Looking for file ${filename}")
-    val data = retrieve(filename).flatMap { is =>
-      Logger.debug(s"Found file ${filename} trying to read")
-      val jsonStr = Source.fromInputStream(is).getLines().mkString("\n")
-      Logger.debug(s"Parsing to json")
-      Some(Json.parse(jsonStr))
-    }
-    data match {
-      case Some(json) => {
-        val result = new Status((json \ "status").as[Int])
-        (json \ "jsonBody").toOption match {
-          case Some(jsonOutStr) => Future.successful(result(jsonOutStr))
-          case _ => Future.successful(result("{}"))
-        }
+
+    if (path.startsWith("authorise/read")) {
+      Future.successful(Ok(""))
+    } else {
+      val prefix = "public/sandbox-data"
+      val filename = s"${prefix}/${path}.json"
+      Logger.debug(s"Looking for file ${filename}")
+      val data = retrieve(filename).flatMap { is =>
+        Logger.debug(s"Found file ${filename} trying to read")
+        val jsonStr = Source.fromInputStream(is).getLines().mkString("\n")
+        Logger.debug(s"Parsing to json")
+        Some(Json.parse(jsonStr))
       }
-      case None => Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file found at '${filename}'"}"""))
+      data match {
+        case Some(json) => {
+          val result = new Status((json \ "status").as[Int])
+          (json \ "jsonBody").toOption match {
+            case Some(jsonOutStr) => Future.successful(result(jsonOutStr))
+            case _ => Future.successful(result("{}"))
+          }
+        }
+        case None => Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file found at '${filename}'"}"""))
+      }
     }
   }
 }

@@ -97,9 +97,16 @@ object AppContext extends ServicesConfig with ServiceLocatorRegistration {
 
   def getURL(name: String) = Try {
       val url = maybeBaseURL(name).getOrElse("")
+      val host = maybeString(s"microservice.services.${name}.host").getOrElse("")
       val path = maybeString(s"microservice.services.${name}.path").getOrElse("")
-      val baseurl = if (maybeApp.map(_.mode).getOrElse(Mode.Test) == Mode.Prod && !url.contains("localhost")) appUrl else url
-      if (path == "") url else s"${baseurl}${path}"
+      val port = maybeString(s"microservice.services.${name}.port").getOrElse("")
+      val protocol = maybeString(s"microservice.services.${name}.protocol").getOrElse("")
+      if (port.isEmpty) {
+        s"${protocol}://${host}"
+      } else {
+        val baseurl = if (maybeApp.map(_.mode).getOrElse(Mode.Test) == Mode.Prod && !url.contains("localhost")) appUrl else url
+        if (path == "") url else s"${baseurl}${path}"
+      }
     }.getOrElse(maybeBaseURL(name).getOrElse(""))
 
   def authUrl: String = getURL("auth")
@@ -118,7 +125,8 @@ object AppContext extends ServicesConfig with ServiceLocatorRegistration {
   def stubAuthUrl: String = stubURL("auth")
 
   // $COVERAGE-OFF$
-  Logger.info(s"""\nStub DES URL: ${stubDesUrl}\nStub Auth URL: ${stubAuthUrl}\nDES URL: ${desUrl}\nAUTH URL: ${authUrl}""")
+  Logger.info(s"""\nStub: DES URL: ${stubDesUrl}    Stub Auth URL: ${stubAuthUrl}""")
+  Logger.info(s"""\nDES URL: ${desUrl}    AUTH URL: ${authUrl}""")
   // $COVERAGE-ON$
 
   def datePattern(): String = maybeString("microservice.dateRegex").getOrElse("")

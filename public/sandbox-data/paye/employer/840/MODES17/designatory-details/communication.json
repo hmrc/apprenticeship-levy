@@ -1,0 +1,28 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "name": {
+      "nameLine1": "KILL-JOY PLC THE FUNERAL",
+      "nameLine2": "COMPANY"
+    },
+    "address": {
+      "addressLine1": "Foreign Address Line 1",
+      "addressLine2": "Foreign Address Line 2",
+      "addressLine3": "Foreign Address Line 3",
+      "addressLine4": "Foreign Address Line 4",
+      "addressLine5": "Foreign Address Line 5",
+      "postcode": null,
+      "foreignCountry": "France",
+      "additionalDeliveryInformation": "ADD DEL"
+    },
+    "contact": {
+      "telephone": {
+        "fax": null,
+        "telephoneNumber": null
+      },
+      "email": {
+        "primary": null
+      }
+    }
+  }
+}

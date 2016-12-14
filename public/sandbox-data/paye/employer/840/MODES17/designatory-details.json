@@ -1,0 +1,9 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "links": {
+      "employer": "/paye/employer/840/MODES17/designatory-details/employer",
+      "communication": "/paye/employer/840/MODES17/designatory-details/communication"
+    }
+  }
+}
