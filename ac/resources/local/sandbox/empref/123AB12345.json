@@ -16,21 +16,38 @@
   "empref": "123/AB12345",
   "employer": {
     "name": {
-      "nameLine1": "Employer for scenario 1 scheme 1"
+      "nameLine1": "KILL-JOY PLC THE FUNERAL",
+      "nameLine2": "COMPANY"
     },
     "address": {
-      "addressLine1": "Address Line 1",
-      "addressLine2": "Address Line 2",
-      "addressLine3": "Address Line 3",
-      "addressLine4": "Address Line 4",
-      "addressLine5": "Address Line 5",
-      "postcode": "NE3033G",
-      "foreignCountry": "UK"
+      "addressLine1": "Foreign Address Line 1",
+      "addressLine2": "Foreign Address Line 2",
+      "addressLine3": "Foreign Address Line 3",
+      "addressLine4": "Foreign Address Line 4",
+      "addressLine5": "Foreign Address Line 5",
+      "foreignCountry": "France"
     },
     "contact": {
-      "telephone": {
-        "telephoneNumber": "123"
-      }
+      "telephone": {},
+      "email": {}
+    }
+  },
+  "communication": {
+    "name": {
+      "nameLine1": "KILL-JOY PLC THE FUNERAL",
+      "nameLine2": "COMPANY"
+    },
+    "address": {
+      "addressLine1": "Foreign Address Line 1",
+      "addressLine2": "Foreign Address Line 2",
+      "addressLine3": "Foreign Address Line 3",
+      "addressLine4": "Foreign Address Line 4",
+      "addressLine5": "Foreign Address Line 5",
+      "foreignCountry": "France"
+    },
+    "contact": {
+      "telephone": {},
+      "email": {}
     }
   }
 }
