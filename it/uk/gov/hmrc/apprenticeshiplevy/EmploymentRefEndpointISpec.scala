@@ -164,6 +164,40 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error: Backend system error"}""")
           }
+
+          it (s"should return the declarations and fractions link for each empref when employment details does not respond") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/840%2FMODES18").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/hal+json")
+            val json = contentAsJson(result)
+            (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES18"
+            (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES18/fractions"
+            (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/840%2FMODES18/declarations"
+            (json \ "communication" \ "name" \ "nameLine1").as[String] shouldBe "KILL-JOY PLC THE FUNERAL"
+            (json \ "employer" ).asOpt[String] shouldBe None
+          }
+
+          it (s"should return the declarations and fractions link for each empref when communication details does not respond") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/840%2FMODES19").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(request).get
+
+            // check
+            contentType(result) shouldBe Some("application/hal+json")
+            val json = contentAsJson(result)
+            (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES19"
+            (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES19/fractions"
+            (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/840%2FMODES19/declarations"
+            (json \ "employer" \ "name" \ "nameLine1").as[String] shouldBe "KILL-JOY PLC THE FUNERAL"
+            (json \ "communication" ).asOpt[String] shouldBe None
+          }
         }
       }
     }

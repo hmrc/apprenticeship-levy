@@ -32,7 +32,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
         val request = FakeRequest(GET, s"/").withHeaders(standardDesHeaders: _*)
 
         // test
-        val result = route(request).get
+        val result = route(app, request).get
 
         // check
         status(result) shouldBe 401
@@ -51,7 +51,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe OK
@@ -69,7 +69,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 401
@@ -83,7 +83,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 403
@@ -97,7 +97,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 404
@@ -113,7 +113,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -127,7 +127,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -141,7 +141,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 408
@@ -155,7 +155,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -169,12 +169,68 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_BACKEND_FAILURE","message":"Auth 5xx error: GET of 'http://localhost:8080/auth/authority' returned 503. Response body: ''"}""")
+          }
+
+          it (s"should return http status 429 when Auth HTTP 429") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(429).withBody("""{"reason" : "Drowning in requests"}""")))
+            val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(app, request).get
+
+            // check
+            status(result) shouldBe 429
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_TOO_MANY_REQUESTS","message":"Auth too many requests: Drowning in requests"}""")
+          }
+
+          it (s"should return http status 503 when Auth HTTP 409") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(411).withBody("""{"reason" : "Some Auth 411 error"}""")))
+            val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(app, request).get
+
+            // check
+            status(result) shouldBe 503
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error: Some Auth 411 error"}""")
+          }
+
+          it (s"should return http status 408 when Auth HTTP 408") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(408).withBody("""{"reason" : "Not responding"}""")))
+            val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(app, request).get
+
+            // check
+            status(result) shouldBe 408
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_TIMEOUT","message":"Auth not responding error: Not responding"}""")
+          }
+
+          it (s"should return http status 400 when Auth HTTP 400") {
+            // set up
+            stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withStatus(400).withBody("""{"reason" : "Not responding"}""")))
+            val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(app, request).get
+
+            // check
+            status(result) shouldBe 400
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_BAD_REQUEST","message":"Bad request error: Not responding"}""")
           }
         }
       }

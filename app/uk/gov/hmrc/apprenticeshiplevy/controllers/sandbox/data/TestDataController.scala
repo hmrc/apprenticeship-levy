@@ -42,7 +42,9 @@ trait TestDataController extends Controller with Utf8MimeTypes {
   }
 
   def serve(req: String) = Action.async { implicit request =>
+    // $COVERAGE-OFF$
     Logger.debug(s"Request was received for path ${req}")
+    // $COVERAGE-ON$
     val path = URLDecoder.decode(req, "UTF-8")
 
     if (path.startsWith("authorise/read")) {
@@ -50,11 +52,17 @@ trait TestDataController extends Controller with Utf8MimeTypes {
     } else {
       val prefix = "public/sandbox-data"
       val filename = s"${prefix}/${path}.json"
+      // $COVERAGE-OFF$
       Logger.debug(s"Looking for file ${filename}")
+      // $COVERAGE-ON$
       val data = retrieve(filename).flatMap { is =>
+        // $COVERAGE-OFF$
         Logger.debug(s"Found file ${filename} trying to read")
+        // $COVERAGE-ON$
         val jsonStr = Source.fromInputStream(is).getLines().mkString("\n")
+        // $COVERAGE-OFF$
         Logger.debug(s"Parsing to json")
+        // $COVERAGE-ON$
         Some(Json.parse(jsonStr))
       }
       data match {

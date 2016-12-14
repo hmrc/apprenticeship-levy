@@ -67,33 +67,29 @@ trait EmployerDetailsEndpoint extends Timer {
       audit(new ALAEvent("readEmprefDetails", empref)) {
         des.httpGet.GET[HodDesignatoryDetailsLinks](url).flatMap { response =>
           val details = DesignatoryDetails(Some(empref))
-
           response.links.map { links =>
             Logger.debug((links.employer ++ links.communication).mkString(" "))
-
-            (links.employer, links.communication) match {
-              case (Some(url1),Some(url2)) =>
-                for {
-                  e <- getDetails(url1)
-                  c <- getDetails(url2)
-                } yield (details.copy(employer=Some(e), communication=Some(c)))
-              case (None, Some(url)) =>
-                for {
-                  c <- getDetails(url)
-                } yield (details.copy(communication=Some(c)))
-              case (Some(url), None) =>
-                for {
-                  e <- getDetails(url)
-                } yield (details.copy(employer=Some(e)))
-              case _ => Future.successful(details)
-            }
+            for {
+              e <- links.employer.map(getDetails(_)).getOrElse(Future.successful(None))
+              c <- links.communication.map(getDetails(_)).getOrElse(Future.successful(None))
+            } yield (details.copy(employer=e, communication=c))
           }.getOrElse(Future.successful(details))
         }(ec)
       }
     }
   }
 
-  protected def getDetails(path: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetailsData] = des.httpGet.GET[DesignatoryDetailsData](s"${des.baseUrl}${path}")
+  protected def getDetails(path: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] =
+    des.httpGet.GET[DesignatoryDetailsData](s"${des.baseUrl}${path}").map { data => Some(data) }.recover(errorHandler)
+
+  protected val errorHandler: PartialFunction[Throwable, Option[DesignatoryDetailsData]] = {
+        case e => {
+          // $COVERAGE-OFF$
+          Logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
+          // $COVERAGE-ON$
+          None
+        }
+    }
 }
 
 trait EmploymentCheckEndpoint extends Timer {

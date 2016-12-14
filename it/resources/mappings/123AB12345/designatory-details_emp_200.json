@@ -2,7 +2,7 @@
   "priority": 1,
   "request": {
     "method": "GET",
-    "url": "/paye/employer/840/MODES17/designatory-details/employer",
+    "urlPattern": "/paye/employer/840/MODES(17|19)/designatory-details/employer",
     "headers": {
       "Authorization": {
         "matches": "Bearer (.*)"
