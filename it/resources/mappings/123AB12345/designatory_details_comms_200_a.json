@@ -1,0 +1,24 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "url": "/paye/employer/840/MODES19/designatory-details/communication",
+    "headers": {
+      "Authorization": {
+        "matches": "Bearer (.*)"
+      },
+      "Environment": {
+        "matches": "(isit|clone|live|ist0)"
+      }
+    }
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    "jsonBody": {
+      "reason": "Bad request"
+    }
+  }
+}
