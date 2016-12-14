@@ -52,11 +52,10 @@
     <logger name="uk.gov" level="WARN"/>
 
     <logger name="com.google.inject" level="WARN"/>
+
     <logger name="org" level="WARN"/>
 
-    <logger name="application" level="DEBUG">
-        <appender-ref ref="STDOUT"/>
-    </logger>
+    <logger name="application" level="DEBUG"/>
 
     <logger name="test-config" level="OFF"/>
 
