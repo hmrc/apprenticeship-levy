@@ -52,7 +52,9 @@ object MicroserviceAuditFilter extends AuditFilter with AppName with Microservic
   protected lazy val runMode = Try(env) match {
     case Success(m) => m
     case Failure(_) => {
+      // $COVERAGE-OFF$
       Logger.warn("Run mode not set. Is Play Application running?")
+      // $COVERAGE-ON$
       "Dev"
     }
   }
@@ -91,7 +93,9 @@ object MicroserviceGlobal extends DefaultMicroserviceGlobal with RunMode {
     } match {
       case Success(v) => v
       case Failure(e) => {
+        // $COVERAGE-OFF$
         Logger.error(s"Failed to initialise filters. ${e.getMessage}")
+        // $COVERAGE-ON$
         Seq.empty
       }
     }

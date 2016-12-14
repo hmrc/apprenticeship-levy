@@ -15,7 +15,8 @@ import org.scalatestplus.play._
 import play.api.inject.guice._
 import play.api.test._
 
-class IntegrationTestsSuite extends Suites(new ServiceLocatorRegistrationISpec,
+class IntegrationTestsSuite extends Suites(new ConfigurationISpec,
+                                           new ServiceLocatorRegistrationISpec,
                                            new DeclarationsEndpointISpec,
                                            new DefinitionEndpointISpec,
                                            new DocumentationEndpointISpec,

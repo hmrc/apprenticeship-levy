@@ -34,16 +34,23 @@ trait ServiceLocatorRegistration extends RunMode {
       AppContext.maybeApp.map { app =>
         slConnector.register(HeaderCarrier())
       }.orElse{
+        // $COVERAGE-OFF$
         Logger.error("Registration in Service Locator is disabled due to no app started")
+        // $COVERAGE-ON$
         None
       }
     }
-    case false => Logger.warn("Registration in Service Locator is disabled")
+    case false =>
+      // $COVERAGE-OFF$
+      Logger.warn("Registration in Service Locator is disabled")
+      // $COVERAGE-ON$
   }
 }
 
 object AppContext extends ServicesConfig with ServiceLocatorRegistration {
-  Logger.info(s"""\n${"*" * 80}\n""")
+  // $COVERAGE-OFF$
+  Logger.info(s"""\n${"_" * 80}\n""")
+  // $COVERAGE-ON$
 
   override lazy val slConnector = ServiceLocatorConnector
 
@@ -52,12 +59,16 @@ object AppContext extends ServicesConfig with ServiceLocatorRegistration {
   def maybeConfiguration: Option[Configuration] = maybeApp.map(_.configuration)
 
   def appName: String = maybeString("appName").getOrElse{
+    // $COVERAGE-OFF$
     Logger.error("appName is not configured")
+    // $COVERAGE-ON$
     ""
   }
 
   def appUrl: String = maybeString("appUrl").getOrElse{
+    // $COVERAGE-OFF$
     Logger.error("appUrl is not configured")
+    // $COVERAGE-ON$
     ""
   }
 
@@ -148,10 +159,14 @@ object AppContext extends ServicesConfig with ServiceLocatorRegistration {
   private def maybeBaseURL(name: String): Option[String] = Try(baseUrl(name)) match {
         case Success(v) => Some(v)
         case Failure(e) => {
+          // $COVERAGE-OFF$
           Logger.error(s"Unable to get baseUrl for ${name}. Error: ${e.getMessage()}")
+          // $COVERAGE-ON$
           None
         }
       }
 
-  Logger.info(s"""\n${"*" * 80}\n""")
+  // $COVERAGE-OFF$
+  Logger.info(s"""\n${"_" * 80}\n""")
+  // $COVERAGE-ON$
 }
