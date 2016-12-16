@@ -65,28 +65,48 @@ annotationTypes:
         401:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                401_AUTH_ERROR:
+                        description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                        value:
+                                code: AUTH_ERROR
         403:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                403_AUTH_ERROR:
+                        description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                        value:
+                                code: AUTH_ERROR
         404:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                404_AUTH_ERROR:
+                        description: Endpoint or internal system has become unavailable.
+                        value:
+                                code: AUTH_ERROR
         408:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                408_AUTH_ERROR:
+                        description: Endpoint or internal system has become unresponsive.
+                        value:
+                                code: AUTH_ERROR
         503:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                503_AUTH_ERROR:
+                        description: Endpoint or internal system has experienced an internal error.
+                        value:
+                                code: AUTH_ERROR
   /epaye:
     /{empref}:
       uriParameters:
@@ -112,38 +132,66 @@ annotationTypes:
             400:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    400_EPAYE_EMPREF_INVALID:
+                              description: A request parameter is incorrect.
+                              value:
+                                        code: EPAYE_EMPREF_INVALID
             401:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    401_AUTH_ERROR:
+                              description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                              value:
+                                        code: AUTH_ERROR
             403:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    403_AUTH_ERROR:
+                              description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                              value:
+                                        code: AUTH_ERROR
             404:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    404_EPAYE_EMPREF_UNKNOWN:
+                              description: Employer reference is unknown or endpoint not found.
+                              value:
+                                        code: EPAYE_EMPREF_UNKNOWN
             408:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    408_AUTH_ERROR:
+                              description: Endpoint or internal system has become unresponsive.
+                              value:
+                                        code: AUTH_ERROR
             429:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    429_AUTH_ERROR:
+                              description: Too many requests have been made to this endpoint
+                              value:
+                                        code: AUTH_ERROR
             503:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    503_AUTH_ERROR:
+                              description: Endpoint or internal system has experienced an internal error.
+                              value:
+                                        code: AUTH_ERROR
       /declarations:
         get:
           displayName: Get employer levy declarations
@@ -163,38 +211,66 @@ annotationTypes:
             400:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    400_EPAYE_EMPREF_INVALID:
+                              description: A request parameter is incorrect.
+                              value:
+                                        code: EPAYE_EMPREF_INVALID
             401:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    401_AUTH_ERROR:
+                              description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                              value:
+                                        code: AUTH_ERROR
             403:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    403_AUTH_ERROR:
+                              description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                              value:
+                                        code: AUTH_ERROR
             404:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    404_EPAYE_EMPREF_UNKNOWN:
+                              description: Employer reference is unknown or endpoint not found.
+                              value:
+                                        code: EPAYE_EMPREF_UNKNOWN
             408:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    408_AUTH_ERROR:
+                              description: Endpoint or internal system has become unresponsive.
+                              value:
+                                        code: AUTH_ERROR
             429:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    429_AUTH_ERROR:
+                              description: Too many requests have been made to this endpoint
+                              value:
+                                        code: AUTH_ERROR
             503:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    503_AUTH_ERROR:
+                              description: Endpoint or internal system has experienced an internal error.
+                              value:
+                                        code: AUTH_ERROR
           queryParameters: 
             fromDate: 
               description: The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.
@@ -225,38 +301,66 @@ annotationTypes:
             400:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    400_EPAYE_EMPREF_INVALID:
+                              description: A request parameter is incorrect or unknown, or from date is after to date.
+                              value:
+                                        code: EPAYE_EMPREF_INVALID
             401:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    401_AUTH_ERROR:
+                              description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                              value:
+                                        code: AUTH_ERROR
             403:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    403_AUTH_ERROR:
+                              description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                              value:
+                                        code: AUTH_ERROR
             404:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    404_EPAYE_EMPREF_UNKNOWN:
+                              description: Endpoint or internal system has become unavailable.
+                              value:
+                                        code: EPAYE_EMPREF_UNKNOWN
             408:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    408_AUTH_ERROR:
+                              description: Endpoint or internal system has become unresponsive.
+                              value:
+                                        code: AUTH_ERROR
             429:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    429_AUTH_ERROR:
+                              description: Too many requests have been made to this endpoint
+                              value:
+                                        code: AUTH_ERROR
             503:
               body:
                 application/json:
-                  type: !include schemas/error.json
-                  example: !include examples/error.json
+                  type: types.errorResponse
+                  examples:
+                    503_AUTH_ERROR:
+                              description: Endpoint or internal system has experienced an internal error.
+                              value:
+                                        code: AUTH_ERROR
           queryParameters: 
             fromDate: 
               description: The date of the earliest calculation to return.
@@ -293,38 +397,66 @@ annotationTypes:
               400:
                 body:
                   application/json:
-                    type: !include schemas/error.json
-                    example: !include examples/error.json
+                    type: types.errorResponse
+                    examples:
+                      400_EPAYE_EMPREF_INVALID:
+                                 description: A request parameter is incorrect or unknown, or from date is after to date.
+                                 value:
+                                            code: EPAYE_EMPREF_INVALID
               401:
                 body:
                   application/json:
-                    type: !include schemas/error.json
-                    example: !include examples/error.json
+                    type: types.errorResponse
+                    examples:
+                      401_AUTH_ERROR:
+                                 description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                                 value:
+                                            code: AUTH_ERROR
               403:
                 body:
                   application/json:
-                    type: !include schemas/error.json
-                    example: !include examples/error.json
+                    type: types.errorResponse
+                    examples:
+                      403_AUTH_ERROR:
+                                 description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                                 value:
+                                            code: AUTH_ERROR
               404:
                 body:
                   application/json:
-                    type: !include schemas/error.json
-                    example: !include examples/error.json
+                    type: types.errorResponse
+                    examples:
+                      404_EPAYE_EMPREF_UNKNOWN:
+                                 description: Endpoint or internal system has become unavailable.
+                                 value:
+                                            code: EPAYE_EMPREF_UNKNOWN
               408:
                 body:
                   application/json:
-                    type: !include schemas/error.json
-                    example: !include examples/error.json
+                    type: types.errorResponse
+                    examples:
+                      408_AUTH_ERROR:
+                                 description: Endpoint or internal system has become unresponsive.
+                                 value:
+                                            code: AUTH_ERROR
               429:
                 body:
                   application/json:
-                    type: !include schemas/error.json
-                    example: !include examples/error.json
+                    type: types.errorResponse
+                    examples:
+                      429_AUTH_ERROR:
+                                 description: Too many requests have been made to this endpoint
+                                 value:
+                                            code: AUTH_ERROR
               503:
                 body:
                   application/json:
-                    type: !include schemas/error.json
-                    example: !include examples/error.json
+                    type: types.errorResponse
+                    examples:
+                      503_AUTH_ERROR:
+                                 description: Endpoint or internal system has experienced an internal error.
+                                 value:
+                                            code: AUTH_ERROR
             queryParameters: 
               fromDate: 
                 description: Starting date of the period to check employment for.
@@ -355,30 +487,54 @@ annotationTypes:
         401:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                401_AUTH_ERROR:
+                        description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                        value:
+                                code: AUTH_ERROR
         403:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                403_AUTH_ERROR:
+                        description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                        value:
+                                code: AUTH_ERROR
         404:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                404_AUTH_ERROR:
+                        description: Endpoint or internal system has become unavailable.
+                        value:
+                                code: AUTH_ERROR
         408:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                408_AUTH_ERROR:
+                        description: Endpoint or internal system has become unresponsive.
+                        value:
+                                code: AUTH_ERROR
         429:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                429_AUTH_ERROR:
+                        description: Too many requests have been made to the back-end systems.
+                        value:
+                                code: AUTH_ERROR
         503:
           body:
             application/json:
-              type: !include schemas/error.json
-              example: !include examples/error.json
+              type: types.errorResponse
+              examples:
+                503_AUTH_ERROR:
+                        description: Endpoint or internal system has experienced an internal error.
+                        value:
+                                code: AUTH_ERROR

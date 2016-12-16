@@ -201,7 +201,7 @@
                         <code>401 (Unauthorized)</code>
                     </cell>
                     <cell>
-                        <code/>
+                        <code>AUTH_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -210,7 +210,7 @@
                         <code>403 (Forbidden)</code>
                     </cell>
                     <cell>
-                        <code/>
+                        <code>AUTH_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -228,7 +228,7 @@
                         <code>408 (Request Time-out)</code>
                     </cell>
                     <cell>
-                        <code/>
+                        <code>AUTH_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -237,7 +237,7 @@
                         <code>429 (Too many requests)</code>
                     </cell>
                     <cell>
-                        <code/>
+                        <code>AUTH_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -246,7 +246,7 @@
                         <code>503 (Service Unavailable)</code>
                     </cell>
                     <cell>
-                        <code/>
+                        <code>AUTH_ERROR</code>
                     </cell>
                 </row>
             </rows>
