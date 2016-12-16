@@ -40,13 +40,12 @@ trait LevyDeclarationController {
   // scalastyle:off
   def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
   // scalastyle:on
-    if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get)) {
+    if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get))
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
-    } else {
+    else
       retrieveDeclarations(toDESFormat(ref.empref), toDateRange(fromDate, toDate))
         .map(ds => buildResult(ds.sortWith((first:LevyDeclaration,second:LevyDeclaration)=>first.submissionTime.isAfter(second.submissionTime)), ref.empref))
         .recover(desErrorHandler)
-    }
   }
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
@@ -62,11 +61,12 @@ trait LevyDeclarationController {
       }
   }
 
-  private[controllers] def toDateRange(fromDate: Option[LocalDate], toDate: Option[LocalDate]): DateRange = if (fromDate.isDefined && toDate.isDefined) {
-     DateRange(fromDate, toDate)
-   } else {
-     ClosedDateRange(new LocalDate().minusYears(AppContext.defaultNumberOfDeclarationYears), new LocalDate())
-   }
+  private[controllers] def toDateRange(fromDate: Option[LocalDate], toDate: Option[LocalDate]): DateRange = (fromDate, toDate) match {
+    case (None, None) => ClosedDateRange(new LocalDate().minusYears(AppContext.defaultNumberOfDeclarationYears), new LocalDate())
+    case (Some(from), Some(to)) => ClosedDateRange(from, to)
+    case (None, Some(to)) => ClosedDateRange(to.minusYears(AppContext.defaultNumberOfDeclarationYears), to)
+    case (Some(from), None) => ClosedDateRange(from, new LocalDate())
+  }
 
   private[controllers] def buildResult(ds: Seq[LevyDeclaration], empref: String): Result = {
     if (ds.nonEmpty) {

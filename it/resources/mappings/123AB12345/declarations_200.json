@@ -2,7 +2,7 @@
     "priority": 1,
     "request": {
         "method": "GET",
-        "urlPattern": "/rti/employers/123AB12345/employer-payment-summary\\?fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
+        "urlPattern": "/rti/employers/123AB12341/employer-payment-summary\\?fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
         "headers": {
           "Authorization": {
               "matches": "Bearer (.*)"
@@ -16,7 +16,7 @@
         "status": 200,
         "headers": { "Content-Type": "application/json; charset=utf-8" },
         "jsonBody": {
-  "empref": "123AB12345",
+  "empref": "123AB12341",
   "eps": [
     {
       "submissionId": 56774248741,
