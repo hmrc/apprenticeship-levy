@@ -1,19 +1,19 @@
 {
   "_links": {
     "fractions": {
-      "href": "/sandbox/epaye/123%2FAB12345/fractions"
+      "href": "/sandbox/epaye/840%2FMODES17/fractions"
     },
     "declarations": {
-      "href": "/sandbox/epaye/123%2FAB12345/declarations"
+      "href": "/sandbox/epaye/840%2FMODES17/declarations"
     },
     "employment-check": {
-      "href": "/sandbox/epaye/123%2FAB12345/employed/{nino}"
+      "href": "/sandbox/epaye/840%2FMODES17/employed/{nino}"
     },
     "self": {
-      "href": "/sandbox/epaye/123%2FAB12345"
+      "href": "/sandbox/epaye/840%2FMODES17"
     }
   },
-  "empref": "123/AB12345",
+  "empref": "840/MODES17",
   "employer": {
     "name": {
       "nameLine1": "KILL-JOY PLC THE FUNERAL",
