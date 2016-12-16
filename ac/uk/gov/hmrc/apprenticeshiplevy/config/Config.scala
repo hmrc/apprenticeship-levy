@@ -24,7 +24,7 @@ object Config {
   lazy val contexts = {
     val environmentProperty = System.getProperty("environment", "local").toLowerCase
     environmentProperty match {
-      case "local" => Seq(("/sandbox","sandbox"))
+      case "local" => Seq(("/sandbox","sandbox"),("","live"))
       case "dev" => Seq(("/sandbox","sandbox"))
       case "qa" => Seq(("/sandbox","sandbox"))
       case _ => throw new IllegalArgumentException(s"Environment '$environmentProperty' not known")
