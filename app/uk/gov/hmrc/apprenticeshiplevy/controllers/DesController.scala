@@ -34,7 +34,7 @@ import uk.gov.hmrc.play.http.logging.Authorization
 
 trait DesController extends ApiController {
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
-    val hc = super.hc(rh).withExtraHeaders((("Environment",rh.headers.toSimpleMap.getOrElse("Environment",defaultDESEnvironment))))
+    val hc = super.hc(rh).withExtraHeaders((("Environment",rh.headers.toSimpleMap.getOrElse("Environment",defaultDESEnvironment))),("25FG-API4","200"))
     hc.copy(authorization=Some(Authorization(s"Bearer ${defaultDESToken}")))
   }
 
