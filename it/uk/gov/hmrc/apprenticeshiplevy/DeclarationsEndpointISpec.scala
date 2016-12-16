@@ -38,7 +38,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
@@ -55,7 +55,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
@@ -71,7 +71,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
@@ -87,7 +87,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
@@ -103,7 +103,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
@@ -131,7 +131,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
                   val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders: _*)
 
                   // test
-                  val result = route(request).get
+                  val result = route(app, request).get
                   val httpStatus = status(result)
 
                   // check
@@ -152,7 +152,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
                 val request = FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/declarations").withHeaders(standardDesHeaders: _*)
 
                 // test
-                val result = route(request).get
+                val result = route(app, request).get
                 val httpStatus = status(result)
 
                 // check
@@ -168,7 +168,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 400
@@ -181,7 +181,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result)
@@ -194,7 +194,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 403
@@ -207,7 +207,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 404
@@ -218,7 +218,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations?fromDate=2015-06-03&toDate=2015-03-30").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
             val httpStatus = status(result)
 
             // check
@@ -234,7 +234,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -247,7 +247,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -260,7 +260,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 408
@@ -273,7 +273,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -286,7 +286,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503

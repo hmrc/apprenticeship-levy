@@ -34,7 +34,7 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
           val request = FakeRequest(GET, "/api/definition")
 
           // test
-          val result = route(request).get
+          val result = route(app, request).get
 
           // check
           status(result) shouldBe OK
@@ -45,7 +45,7 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
           val request = FakeRequest(GET, "/api/definition")
 
           // test
-          val result = route(request).get
+          val result = route(app, request).get
 
           // check
           contentType(result) shouldBe Some("application/json")
@@ -57,7 +57,7 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
           val request = FakeRequest(GET, "/api/definition")
 
           // test
-          val result = route(request).get
+          val result = route(app, request).get
 
           // check
           contentType(result) shouldBe Some("application/json")
@@ -72,7 +72,7 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
 }
 
 @DoNotDiscover
-class PublicDefinitionEndpointISpec extends UnitSpec with IntegrationTestConfig {
+class PublicDefinitionEndpointISpec extends UnitSpec with IntegrationTestConfig with ConfiguredServer {
   def asString(filename: String): String = {
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
   }
@@ -85,7 +85,7 @@ class PublicDefinitionEndpointISpec extends UnitSpec with IntegrationTestConfig 
           val request = FakeRequest(GET, "/api/definition")
 
           // test
-          val result = route(request).get
+          val result = route(app, request).get
 
           // check
           contentType(result) shouldBe Some("application/json")

@@ -26,7 +26,7 @@ class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
                       .withHeaders(standardDesHeaders: _*)
 
         // test
-        val result = route(request).get
+        val result = route(app, request).get
 
         // check
         status(result) shouldBe 200
@@ -40,7 +40,7 @@ class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
                       .withHeaders(standardDesHeaders: _*)
 
         // test
-        val result = route(request).get
+        val result = route(app, request).get
 
         // check
         status(result) shouldBe 200
@@ -53,7 +53,7 @@ class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
                       .withHeaders(standardDesHeaders: _*)
 
         // test
-        val result = route(request).get
+        val result = route(app, request).get
 
         // check
         status(result) shouldBe 404
@@ -65,7 +65,7 @@ class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
                       .withHeaders(standardDesHeaders: _*)
 
         // test
-        val result = route(request).get
+        val result = route(app, request).get
 
         // check
         status(result) shouldBe 200

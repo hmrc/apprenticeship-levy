@@ -32,7 +32,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES17").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/hal+json")
@@ -51,7 +51,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 400
@@ -64,7 +64,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 401
@@ -77,7 +77,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 403
@@ -90,7 +90,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 404
@@ -105,7 +105,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -118,7 +118,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -131,7 +131,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 408
@@ -144,7 +144,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -157,7 +157,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -170,7 +170,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES18").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/hal+json")
@@ -187,7 +187,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES19").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/hal+json")
