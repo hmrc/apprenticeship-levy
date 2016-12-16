@@ -35,7 +35,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
         describe (s"with valid paramters") {
           it (s"should return levy declarations") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(app, request).get
@@ -44,15 +44,66 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             contentType(result) shouldBe Some("application/json")
 
             val json = contentAsJson(result)
-            (json \ "empref").as[String] shouldBe "123/AB12345"
+            (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
             declarations.size shouldBe 9
+            info(declarations.mkString("\n"))
+          }
+
+          it (s"should return levy declarations where fromDate only specified") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12342/declarations?fromDate=2016-10-12").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(app, request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123/AB12342"
+            val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
+            declarations.size shouldBe 2
+            //info(declarations.mkString("\n"))
+          }
+
+          it (s"should return levy declarations where toDate only specified") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12343/declarations?toDate=2016-02-21").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(app, request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123/AB12343"
+            val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
+            declarations.size shouldBe 5
+            //info(declarations.mkString("\n"))
+          }
+
+          it (s"should return levy declarations where fromDate and toDate are specified") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12344/declarations?fromDate=2016-05-19&toDate=2016-05-21").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(app, request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123/AB12344"
+            val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
+            declarations.size shouldBe 1
             //info(declarations.mkString("\n"))
           }
 
           it (s"should handle no payment period") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(app, request).get
@@ -61,14 +112,14 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             contentType(result) shouldBe Some("application/json")
 
             val json = contentAsJson(result)
-            (json \ "empref").as[String] shouldBe "123/AB12345"
+            (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(1) shouldBe LevyDeclaration(56774248744L,new LocalDateTime(2016, 5, 20, 14, 25, 32),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true))
+            declarations(2) shouldBe LevyDeclaration(56774248741L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true))
           }
 
           it (s"should handle inactive period") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(app, request).get
@@ -77,14 +128,14 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             contentType(result) shouldBe Some("application/json")
 
             val json = contentAsJson(result)
-            (json \ "empref").as[String] shouldBe "123/AB12345"
+            (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(7) shouldBe LevyDeclaration(6573215455L,new LocalDateTime(2016,4,20,14,25,32),None,Some(new LocalDate(2016,8,6)),Some(new LocalDate(2016,11,5)))
+            declarations(7) shouldBe LevyDeclaration(6573215455L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,Some(LocalDate.parse("2016-08-06")),Some(LocalDate.parse("2016-11-05")),None,None,None,None)
           }
 
           it (s"should handle ceased trading") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(app, request).get
@@ -93,14 +144,14 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             contentType(result) shouldBe Some("application/json")
 
             val json = contentAsJson(result)
-            (json \ "empref").as[String] shouldBe "123/AB12345"
+            (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(6) shouldBe LevyDeclaration(56774248742L,new LocalDateTime(2016,4,20,14,25,32),Some(new LocalDate(2016,6,6)))
+            declarations(6) shouldBe LevyDeclaration(56774248742L,LocalDateTime.parse("2016-04-20T14:25:32.000"),Some(LocalDate.parse("2016-06-06")),None,None,None,None,None,None)
           }
 
           it (s"should handle levies") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(app, request).get
@@ -109,10 +160,12 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             contentType(result) shouldBe Some("application/json")
 
             val json = contentAsJson(result)
-            (json \ "empref").as[String] shouldBe "123/AB12345"
+            (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(0) shouldBe LevyDeclaration(56774248743L,new LocalDateTime(2016,5,20,14,25,32),None,None,None,Some(PayrollPeriod("16-17",2)),Some(98.64),Some(15000))
-            declarations(8) shouldBe LevyDeclaration(6573215455L,new LocalDateTime(2016,4,20,14,25,32),None,None,None,Some(PayrollPeriod("16-17",2)),Some(124.27),Some(15000))
+            declarations(0) shouldBe LevyDeclaration(56774248743L,LocalDateTime.parse("2016-05-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",2)),Some(98.64),Some(15000),None)
+            declarations(3) shouldBe LevyDeclaration(56774248741L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",11)),Some(24.27),Some(15000),None)
+            declarations(5) shouldBe LevyDeclaration(56774248742L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",11)),Some(24.27),Some(15000),None)
+            declarations(8) shouldBe LevyDeclaration(6573215455L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",2)),Some(124.27),Some(15000),None)
           }
         }
 
