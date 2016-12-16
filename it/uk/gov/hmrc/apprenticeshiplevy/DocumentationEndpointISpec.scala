@@ -40,7 +40,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
           val request = FakeRequest(GET, s"/api/conf/$version/application.raml")
 
           // test
-          val result = route(request).get
+          val result = route(app, request).get
 
           // check
           status(result) shouldBe 200
@@ -56,7 +56,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, s"/api/conf/$version/$file")
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 200
@@ -83,7 +83,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
                 val expectedXml = asXml(asString(s"${endpointName}.xml"))
 
                 // test
-                val documentationResult = route(request).get
+                val documentationResult = route(app, request).get
                 val httpStatus = status(documentationResult)
                 val xml = asXml(contentAsString(documentationResult))
                 val contenttype = contentType(documentationResult)
@@ -108,7 +108,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             val request = FakeRequest(GET, url)
 
             // test
-            val documentationResult = route(request).get
+            val documentationResult = route(app, request).get
             val httpStatus = status(documentationResult)
 
             // check
@@ -128,7 +128,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
               val request = FakeRequest(GET, url)
 
               // test
-              val documentationResult = route(request).get
+              val documentationResult = route(app, request).get
               val httpStatus = status(documentationResult)
 
               // check

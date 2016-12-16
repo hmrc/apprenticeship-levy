@@ -35,7 +35,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
@@ -55,7 +55,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
@@ -73,7 +73,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
@@ -91,7 +91,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             contentType(result) shouldBe Some("application/json")
@@ -119,7 +119,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                   val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders: _*)
 
                   // test
-                  val result = route(request).get
+                  val result = route(app, request).get
                   val httpStatus = status(result)
 
                   // check
@@ -137,7 +137,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 400
@@ -151,7 +151,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 401
@@ -165,7 +165,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 403
@@ -179,7 +179,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 404
@@ -192,7 +192,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2015-06-03&toDate=2015-03-30").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
             val httpStatus = status(result)
 
             // check
@@ -209,7 +209,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -223,7 +223,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 408
@@ -237,7 +237,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -251,7 +251,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
                           .withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -264,7 +264,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345/fractions")
                           .withHeaders(standardDesHeaders: _*)
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503

@@ -15,12 +15,6 @@ trait IntegrationTestConfig {
   System.setProperty("logger.resource","logback-test.xml")
 
   def fileToStr(filename: String): String = Source.fromFile(new File(s"$filename")).getLines.mkString("\n")
-  def dStr(str: String): String = Crypto.decryptAES(str,aesKey)
-  def eStr(str: String): String = Crypto.encryptAES(str,aesKey)
-  def dFileToStr(filename: String, k: String): String = Crypto.decryptAES(fileToStr(filename),k)
-  def eFileToStr(filename: String, k: String): String = Crypto.encryptAES(fileToStr(filename),k)
-  def dFileToStr(filename: String): String = dFileToStr(filename, aesKey)
-  def eFileToStr(filename: String): String = eFileToStr(filename, aesKey)
   def aesKey: String = sys.props.get("play.crypto.secret").map(_.substring(0, 16)).getOrElse("")
   def verboseWiremockOutput: Boolean = sys.props.getOrElse("WIREMOCK_VERBOSE_OUTPUT", "false").toBoolean
   def stubPort = sys.props.getOrElse("WIREMOCK_PORT", "8080").toInt

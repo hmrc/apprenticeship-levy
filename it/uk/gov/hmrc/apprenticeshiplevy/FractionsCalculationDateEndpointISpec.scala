@@ -32,7 +32,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe OK
@@ -50,7 +50,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -68,7 +68,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 408
@@ -86,7 +86,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -104,7 +104,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 404
@@ -122,7 +122,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -140,7 +140,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
@@ -158,7 +158,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 401
@@ -176,7 +176,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 403
@@ -194,7 +194,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 429
@@ -212,7 +212,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 408
@@ -230,7 +230,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
 
             // test
-            val result = route(request).get
+            val result = route(app, request).get
 
             // check
             status(result) shouldBe 503
