@@ -1,0 +1,17 @@
+{
+  "params": "?fromDate=2016-03-06&toDate=2016-04-05",
+  "response": {
+    "empref": "123AB456",
+    "fractionCalculations": [
+      {
+        "calculatedAt": "2016-10-05",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0
+          }
+        ]
+      }
+    ]
+  }
+}
