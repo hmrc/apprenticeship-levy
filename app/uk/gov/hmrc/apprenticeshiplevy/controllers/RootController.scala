@@ -62,7 +62,7 @@ trait RootController extends ApiController {
           Unauthorized(Json.toJson(AuthError(498, "WRONG_TOKEN", s"Auth unauthorised error: OAUTH 2 User Token Required not TOTP")))
         }
         case e => {
-          InternalServerError(Json.toJson(DESError(INTERNAL_SERVER_ERROR, "API", s"API or Auth internal server error: ${extractReason(e.getMessage())}")))
+          InternalServerError(Json.toJson(AuthError(INTERNAL_SERVER_ERROR, "API", s"API or Auth internal server error: ${extractReason(e.getMessage())}")))
         }
     }
 

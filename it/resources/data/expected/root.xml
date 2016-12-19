@@ -1,143 +1,198 @@
+<?xml version="1.0"?>
 <endpoint>
-    <name>Get all employers</name>
-    <description>Returns a list of valid links indexed by empref in HAL format</description>
-    <section id="resource">
-        <title>Resource</title>
-        <resource>GET /apprenticeship-levy/</resource>
-    </section>
-    <section id="authorisation">
-        <title>Authorisation</title>
-        <authorisation>
-            <type>USER</type>
-            <scope>read:apprenticeship-levy</scope>
-        </authorisation>
-    </section>
-    <section id="content-types">
-        <title>Accepted Media Types</title>
-        <list>
-            <item>
-                <code>application/vnd.hmrc.1.0+json</code>
-            </item>
-        </list>
-    </section>
-    <section id="response">
-        <title>Response</title>
-        <httpStatus>200 (OK)</httpStatus>
-        <json><![CDATA[{
-    "_links": {
-        "self": {
-            "href": "/"
-        },
-        "123/AB12345": {
-            "href": "/epaye/123%2FAB12345"
-        }
-    },
-    "emprefs": [
-        "123/AB12345"
-    ]
-}]]></json>
-        <table>
-            <headings>
-                <cell>Name</cell>
-                <cell>Type</cell>
-                <cell>Example</cell>
-                <cell>Description</cell>
-            </headings>
-            <rows>
-                <row>
-                    <cell>
-                        <code>_links.self</code>
-                    </cell>
-                    <cell>
-                        <code>URL</code>
-                    </cell>
-                    <cell>
-                        <code>/</code>
-                    </cell>
-                    <cell>The url to this endpoint</cell>
-                </row>
-                <row>
-                    <cell>
-                        <code>_links.{empref}</code>
-                    </cell>
-                    <cell>
-                        <code>URL</code>
-                    </cell>
-                    <cell>
-                        <code>/epaye/123%2FAB12345</code>
-                    </cell>
-                    <cell>The url to an endpoint that provides more information about the empref</cell>
-                </row>
-                <row>
-                    <cell>
-                        <code>emprefs[]</code>
-                    </cell>
-                    <cell>
-                        <code>String[]</code>
-                    </cell>
-                    <cell>
-                        <code>["123/AB12345"]</code>
-                    </cell>
-                    <cell>A list of emprefs for which links are provided</cell>
-                </row>
-            </rows>
-        </table>
-    </section>
-    <section id="error-scenarios">
-        <title>Error Scenarios</title>
-        <table>
-            <headings>
-                <cell>Error Scenario</cell>
-                <cell>HTTP Status</cell>
-                <cell>Code</cell>
-            </headings>
-            <rows>
-                <row>
-                    <cell>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</cell>
-                    <cell>
-                        <code>401 (Unauthorized)</code>
-                    </cell>
-                    <cell>
-                        <code/>
-                    </cell>
-                </row>
-                <row>
-                    <cell>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</cell>
-                    <cell>
-                        <code>403 (Forbidden)</code>
-                    </cell>
-                    <cell>
-                        <code/>
-                    </cell>
-                </row>
-                <row>
-                    <cell>Endpoint or internal system has become unavailable.</cell>
-                    <cell>
-                        <code>404 (Not Found)</code>
-                    </cell>
-                    <cell>
-                        <code/>
-                    </cell>
-                </row>
-                <row>
-                    <cell>Endpoint or internal system has become unresponsive.</cell>
-                    <cell>
-                        <code>408 (Request Time-out)</code>
-                    </cell>
-                    <cell>
-                        <code/>
-                    </cell>
-                </row>
-                <row>
-                    <cell>Endpoint or internal system has experienced an internal error.</cell>
-                    <cell>
-                        <code>503 (Service Unavailable)</code>
-                    </cell>
-                    <cell>
-                        <code/>
-                    </cell>
-                </row>
-            </rows>
-        </table>
-    </section>
+  <name>Get all employers</name>
+  <description>Returns a list of valid links indexed by empref in HAL format</description>
+  <section id="resource">
+    <title>Resource</title>
+    <resource>GET /apprenticeship-levy/</resource>
+  </section>
+  <section id="authorisation">
+    <title>Authorisation</title>
+    <authorisation>
+      <type>USER</type>
+      <scope>read:apprenticeship-levy</scope>
+    </authorisation>
+  </section>
+  <section id="content-types">
+    <title>Accepted Media Types</title>
+    <list>
+      <item>
+        <code>application/vnd.hmrc.1.0+json</code>
+      </item>
+    </list>
+  </section>
+  <section id="response">
+    <title>Response</title>
+    <httpStatus>200 (OK)</httpStatus>
+    <json>{
+             "_links": {
+                 "self": {
+                     "href": "/"
+                 },
+                 "123/AB12345": {
+                     "href": "/epaye/123%2FAB12345"
+                 }
+             },
+             "emprefs": [
+                 "123/AB12345"
+             ]
+         }</json>
+    <table>
+      <headings>
+        <cell>Name</cell>
+        <cell>Type</cell>
+        <cell>Example</cell>
+        <cell>Description</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell>
+            <code>_links.self</code>
+          </cell>
+          <cell>
+            <code>URL</code>
+          </cell>
+          <cell>
+            <code>/</code>
+          </cell>
+          <cell>The url to this endpoint</cell>
+        </row>
+        <row>
+          <cell>
+            <code>_links.{empref}</code>
+          </cell>
+          <cell>
+            <code>URL</code>
+          </cell>
+          <cell>
+            <code>/epaye/123%2FAB12345</code>
+          </cell>
+          <cell>The url to an endpoint that provides more information about the empref</cell>
+        </row>
+        <row>
+          <cell>
+            <code>emprefs[]</code>
+          </cell>
+          <cell>
+            <code>String[]</code>
+          </cell>
+          <cell>
+            <code>["123/AB12345"]</code>
+          </cell>
+          <cell>A list of emprefs for which links are provided</cell>
+        </row>
+      </rows>
+    </table>
+  </section>
+  <section id="error-scenarios">
+    <title>Error Scenarios</title>
+    <table>
+      <headings>
+        <cell>Error Scenario</cell>
+        <cell>HTTP Status</cell>
+        <cell>Code</cell>
+      </headings>
+      <rows>
+        <row>
+          <cell>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</cell>
+          <cell>
+            <code>401 (Unauthorized)</code>
+          </cell>
+          <cell>
+            <code>AUTH_ERROR_UNAUTHORIZED</code>
+          </cell>
+        </row>
+        <row>
+          <cell>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</cell>
+          <cell>
+            <code>403 (Forbidden)</code>
+          </cell>
+          <cell>
+            <code>AUTH_ERROR_FORBIDDEN</code>
+          </cell>
+        </row>
+        <row>
+          <cell>Endpoint or internal system has become unavailable.</cell>
+          <cell>
+            <code>404 (Not Found)</code>
+          </cell>
+          <cell>
+            <code>AUTH_ERROR_NOT_FOUND</code>
+          </cell>
+        </row>
+        <row>
+          <cell>Endpoint or internal system has become unresponsive.</cell>
+          <cell>
+            <code>408 (Request Time-out)</code>
+          </cell>
+          <cell>
+            <code>AUTH_ERROR_REQUEST_TIMEOUT</code>
+          </cell>
+        </row>
+        <row>
+          <cell>Endpoint or internal system has become unresponsive.</cell>
+          <cell>
+            <code>408 (Gateway Request Time-out)</code>
+          </cell>
+          <cell>
+            <code>AUTH_ERROR_GATEWAY_TIMEOUT</code>
+          </cell>
+        </row>
+        <row>
+          <cell>Endpoint or internal system has experienced an internal error.</cell>
+          <cell>
+            <code>503 (Service Unavailable)</code>
+          </cell>
+          <cell>
+            <code>AUTH_ERROR_BACKEND_FAILURE</code>
+          </cell>
+        </row>
+        <row>
+          <cell>Endpoint or internal system has experienced an internal error.</cell>
+          <cell>
+            <code>503 (Other backend system error with 4xx reponse.)</code>
+          </cell>
+          <cell>
+            <code>AUTH_ERROR_OTHER</code>
+          </cell>
+        </row>
+        <row>
+          <cell>Endpoint or internal system has experienced an internal error.</cell>
+          <cell>
+            <code>498 (Wrong token supplied.)</code>
+          </cell>
+          <cell>
+            <code/>
+          </cell>
+        </row>
+        <row>
+          <cell>Endpoint API has experienced an internal error.</cell>
+          <cell>
+            <code>500 (Internal API error)</code>
+          </cell>
+          <cell>
+            <code>AUTH_ERROR_INTERNAL_SERVER_ERROR</code>
+          </cell>
+        </row>
+        <row>
+          <cell>Endpoint API has experienced too many requests.</cell>
+          <cell>
+            <code>409 (Internal API error)</code>
+          </cell>
+          <cell>
+            <code>AUTH_ERROR_TOO_MANY_REQUESTS</code>
+          </cell>
+        </row>
+        <row>
+          <cell>Endpoint API has experienced IO failure</cell>
+          <cell>
+            <code>503 (Backend system IO failure)</code>
+          </cell>
+          <cell>
+            <code>AUTH_ERROR_IO</code>
+          </cell>
+        </row>
+      </rows>
+    </table>
+  </section>
 </endpoint>
