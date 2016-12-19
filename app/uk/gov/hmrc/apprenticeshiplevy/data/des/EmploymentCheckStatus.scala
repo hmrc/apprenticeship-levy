@@ -19,15 +19,25 @@ package uk.gov.hmrc.apprenticeshiplevy.data.des
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
+import scala.util.{Try, Success, Failure}
+import uk.gov.hmrc.play.http.JsValidationException
+import play.api.Logger
 
 sealed trait EmploymentCheckStatus
 
 object EmploymentCheckStatus {
-  implicit val reads: Reads[EmploymentCheckStatus] = (__ \ "employed").read[Boolean].map(isEmployed => EmploymentCheckStatus(isEmployed))
+  implicit val reads: Reads[EmploymentCheckStatus] = (__ \ "employed").read[Boolean]
+                                                      .orElse((__ \ "employed").read[String].map(_.toBoolean))
+                                                      .map(isEmployed => EmploymentCheckStatus(isEmployed))
 
   def apply(isEmployed: Boolean): EmploymentCheckStatus = isEmployed match {
     case true => Employed
     case false => NotEmployed
+  }
+
+  def apply(isEmployed: String): EmploymentCheckStatus = isEmployed match {
+    case "true" => Employed
+    case "false" => NotEmployed
   }
 }
 
