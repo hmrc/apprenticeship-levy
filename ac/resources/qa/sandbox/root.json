@@ -1,0 +1,13 @@
+{
+  "_links": {
+    "840/MODES17": {
+      "href": "/epaye/840%2FMODES17"
+    },
+    "self": {
+      "href": "/"
+    }
+  },
+  "emprefs": [
+    "840/MODES17"
+  ]
+}

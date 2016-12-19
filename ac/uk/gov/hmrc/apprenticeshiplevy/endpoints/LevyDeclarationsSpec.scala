@@ -12,6 +12,7 @@ class LevyDeclarationsSpec extends FunctionalSpec with Eventually with Integrati
   describe("Levy Declarations Endpoint") {
     contexts.foreach { case (pair) =>
       val context = pair._1
+      implicit val environment = pair._2
       val folder = s"$dir/${pair._2}/levy"
       info(s"Generating tests for ${folder}")
       val files = new File(folder).listFiles.filter(_.getName.endsWith(".json"))
@@ -25,7 +26,7 @@ class LevyDeclarationsSpec extends FunctionalSpec with Eventually with Integrati
         val expectedJson = Json.parse(expected)
         val params = (expectedJson \ "params").as[String]
 
-        it (s"should when calling ${url}$context/epaye/$empref/declarations$params return employer details") {
+        it (s"should when calling ${url}$context/epaye/$empref/declarations$params return employer details (${environment})") {
           // set up
 
           // test

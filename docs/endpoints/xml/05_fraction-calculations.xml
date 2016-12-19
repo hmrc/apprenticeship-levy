@@ -4,6 +4,7 @@
     <version level="1.0">
       <name>Get employer fraction calculations</name>
       <description>Returns a list of fraction calculations for a given employer reference.</description>
+      <details></details>
       <secured>
         <method>sec.oauth_2_0</method>
         <type>USER</type>
