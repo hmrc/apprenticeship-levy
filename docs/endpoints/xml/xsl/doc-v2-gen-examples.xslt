@@ -33,8 +33,7 @@
       <xsl:result-document method="text" href="{$path}">
         <xsl:value-of select="//endpoint/versions/version/description"/><xsl:text>
 
-        </xsl:text>
-        <xsl:value-of select="//endpoint/versions/version/details"/>
+</xsl:text><xsl:value-of select="//endpoint/versions/version/details"/>
       </xsl:result-document>
     </xsl:for-each>
   </xsl:template>
