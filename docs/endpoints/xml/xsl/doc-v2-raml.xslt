@@ -95,6 +95,35 @@
     </xsl:if>
   </xsl:template>
 
+  <xsl:template name="responses">
+    <xsl:param name="endpointNode"/>
+    <responses>
+      <xsl:for-each-group select="$endpointNode/responses/http" group-by="@status">
+        <xsl:sort select="@status" data-type="number" order="ascending"/>
+        <xsl:choose>
+          <xsl:when test="current-grouping-key() = '200'">
+            <xsl:for-each select="current-group()">
+              <xsl:apply-templates select="." mode="success"/>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>
+            <response>
+              <status><xsl:value-of select="@status"/></status>
+              <body>
+                <mimeType><xsl:value-of select="./body/content-type/@mimeType"/></mimeType>
+                <examples>
+                  <xsl:for-each select="current-group()">
+                    <xsl:apply-templates select="." mode="non-success"/>
+                  </xsl:for-each>
+                </examples>
+              </body>
+            </response>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each-group>
+    </responses>
+  </xsl:template>
+
   <xsl:template name="endpointDetails">
     <xsl:param name="endpointNode"/>
     <method><xsl:value-of select="lower-case($endpointNode/request/method)"/></method>
@@ -120,10 +149,8 @@
             <path>root</path>
             <xsl:call-template name="params"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
             <xsl:call-template name="endpointDetails"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
-            <responses>
-              <xsl:apply-templates select="./responses/http"/>
-            </responses>
             <xsl:call-template name="queryParams"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
+            <xsl:call-template name="responses"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
           </endpoint>
         </rootEndpoint>
       </xsl:when>
@@ -133,10 +160,8 @@
             <path><xsl:value-of select="$path" /></path>
             <xsl:call-template name="params"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
             <xsl:call-template name="endpointDetails"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
-            <responses>
-              <xsl:apply-templates select="./responses/http"/>
-            </responses>
             <xsl:call-template name="queryParams"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
+            <xsl:call-template name="responses"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
           </endpoint>
         </rootEndpoint>
       </xsl:when>
@@ -147,10 +172,8 @@
               <path><xsl:value-of select="$path" /></path>
               <xsl:call-template name="params"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
               <xsl:call-template name="endpointDetails"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
-              <responses>
-                <xsl:apply-templates select="./responses/http"/>
-              </responses>
               <xsl:call-template name="queryParams"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
+              <xsl:call-template name="responses"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
             </endpoint>
           </employedEndpoint>
         </epayeEndpoint>
@@ -161,10 +184,8 @@
             <path><xsl:value-of select="$path" /></path>
             <xsl:call-template name="params"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
             <xsl:call-template name="endpointDetails"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
-            <responses>
-              <xsl:apply-templates select="./responses/http"/>
-            </responses>
             <xsl:call-template name="queryParams"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
+            <xsl:call-template name="responses"><xsl:with-param name="endpointNode" select="."/></xsl:call-template>
           </endpoint>
         </epayeEndpoint>
       </xsl:otherwise>
@@ -187,7 +208,7 @@
     </xsl:element>
   </xsl:template>
 
-  <xsl:template match="http[@status = 200]">
+  <xsl:template match="http" mode="success">
     <response>
       <status><xsl:value-of select="@status"/></status>
       <body>
@@ -198,17 +219,13 @@
     </response>
   </xsl:template>
 
-  <xsl:template match="http[@status != 200]">
-    <response>
-      <status><xsl:value-of select="@status"/></status>
-      <body>
-        <mimeType><xsl:value-of select="./body/content-type/@mimeType"/></mimeType>
-        <example>
-          <title><xsl:value-of select="@status"/> (Error *<xsl:value-of select="./code"/>*)</title>
-          <code><xsl:value-of select="./code"/><xsl:text> </xsl:text><xsl:value-of select="./description"/></code>
-        </example>
-      </body>
-    </response>
+  <xsl:template match="http" mode="non-success">
+    <example>
+      <name><xsl:value-of select="@status"/>_<xsl:value-of select="./code"/></name>
+      <title><xsl:value-of select="@status"/> (Error *<xsl:value-of select="./code"/>*)</title>
+      <description><xsl:value-of select="./description"/></description>
+      <code><xsl:value-of select="./code"/></code>
+    </example>
   </xsl:template>
 
   <xsl:template match="param[descendant::type !='query']" mode="query"/>
@@ -259,6 +276,9 @@ mediaType: [ application/json, application/hal+json ]
 uses:
   sec: http://api-documentation-raml-frontend.service/api-documentation/assets/common/modules/securitySchemes.raml
   headers: http://api-documentation-raml-frontend.service/api-documentation/assets/common/modules/headers.raml
+  annotations: http://api-documentation-raml-frontend.service/api-documentation/assets/common/modules/annotations.raml
+  types: http://api-documentation-raml-frontend.service/api-documentation/assets/common/modules/types.raml
+
 traits:
   successResponse:
     responses:
@@ -476,28 +496,30 @@ annotationTypes:
     </xsl:call-template>
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 2) * 2"/>
-      <xsl:with-param name="str"><xsl:text>type: !include schemas/error.json</xsl:text><xsl:text>&#x0a;</xsl:text></xsl:with-param>
+      <xsl:with-param name="str"><xsl:text>type: types.errorResponse</xsl:text><xsl:text>&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
-    <!--xsl:call-template name="indent">
-      <xsl:with-param name="length" select="(count(ancestor::*) + 2) * 2"/>
-      <xsl:with-param name="str"><xsl:text>example:&#x0a;</xsl:text></xsl:with-param>
-    </xsl:call-template>
-    <xsl:call-template name="indent">
-      <xsl:with-param name="length" select="(count(ancestor::*) + 3) * 2"/>
-      <xsl:with-param name="str"><xsl:text>displayName: </xsl:text><xsl:value-of select="../example/title"/><xsl:text>&#x0a;</xsl:text></xsl:with-param>
-    </xsl:call-template>
-    <xsl:call-template name="indent">
-      <xsl:with-param name="length" select="(count(ancestor::*) + 3) * 2"/>
-      <xsl:with-param name="str"><xsl:text>description: </xsl:text><xsl:value-of select="../example/code"/><xsl:text>&#x0a;</xsl:text></xsl:with-param>
-    </xsl:call-template>
-    <xsl:call-template name="indent">
-      <xsl:with-param name="length" select="(count(ancestor::*) + 3) * 2"/>
-      <xsl:with-param name="str"><xsl:text>value:&#x0a;</xsl:text></xsl:with-param>
-    </xsl:call-template-->
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 2) * 2"/>
-      <xsl:with-param name="str"><xsl:text>example: !include examples/error.json&#x0a;</xsl:text></xsl:with-param>
+      <xsl:with-param name="str"><xsl:text>examples:&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
+    <xsl:for-each select="../examples/example">
+      <xsl:call-template name="indent">
+        <xsl:with-param name="length" select="(count(ancestor::*) + 2) * 2"/>
+        <xsl:with-param name="str"><xsl:value-of select="./name"/><xsl:text>:&#x0a;</xsl:text></xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="indent">
+        <xsl:with-param name="length" select="(count(ancestor::*) + 3) * 2"/>
+        <xsl:with-param name="str"><xsl:text>description: </xsl:text><xsl:value-of select="./description"/><xsl:text>&#x0a;</xsl:text></xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="indent">
+        <xsl:with-param name="length" select="(count(ancestor::*) + 3) * 2"/>
+        <xsl:with-param name="str"><xsl:text>value:&#x0a;</xsl:text></xsl:with-param>
+      </xsl:call-template>
+      <xsl:call-template name="indent">
+        <xsl:with-param name="length" select="(count(ancestor::*) + 4) * 2"/>
+        <xsl:with-param name="str"><xsl:text>code: </xsl:text><xsl:value-of select="./code"/><xsl:text>&#x0a;</xsl:text></xsl:with-param>
+      </xsl:call-template>
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template match="scope" mode="xmlToYaml">

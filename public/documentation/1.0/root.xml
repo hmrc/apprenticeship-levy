@@ -98,7 +98,7 @@
                         <code>401 (Unauthorized)</code>
                     </cell>
                     <cell>
-                        <code/>
+                        <code>AUTH_ERROR_UNAUTHORIZED</code>
                     </cell>
                 </row>
                 <row>
@@ -107,7 +107,7 @@
                         <code>403 (Forbidden)</code>
                     </cell>
                     <cell>
-                        <code/>
+                        <code>AUTH_ERROR_FORBIDDEN</code>
                     </cell>
                 </row>
                 <row>
@@ -116,7 +116,7 @@
                         <code>404 (Not Found)</code>
                     </cell>
                     <cell>
-                        <code/>
+                        <code>AUTH_ERROR_NOT_FOUND</code>
                     </cell>
                 </row>
                 <row>
@@ -125,7 +125,16 @@
                         <code>408 (Request Time-out)</code>
                     </cell>
                     <cell>
-                        <code/>
+                        <code>AUTH_ERROR_REQUEST_TIMEOUT</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint or internal system has become unresponsive.</cell>
+                    <cell>
+                        <code>408 (Gateway Request Time-out)</code>
+                    </cell>
+                    <cell>
+                        <code>AUTH_ERROR_GATEWAY_TIMEOUT</code>
                     </cell>
                 </row>
                 <row>
@@ -134,7 +143,52 @@
                         <code>503 (Service Unavailable)</code>
                     </cell>
                     <cell>
+                        <code>AUTH_ERROR_BACKEND_FAILURE</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint or internal system has experienced an internal error.</cell>
+                    <cell>
+                        <code>503 (Other backend system error with 4xx reponse.)</code>
+                    </cell>
+                    <cell>
+                        <code>AUTH_ERROR_OTHER</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint or internal system has experienced an internal error.</cell>
+                    <cell>
+                        <code>498 (Wrong token supplied.)</code>
+                    </cell>
+                    <cell>
                         <code/>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint API has experienced an internal error.</cell>
+                    <cell>
+                        <code>500 (Internal API error)</code>
+                    </cell>
+                    <cell>
+                        <code>AUTH_ERROR_INTERNAL_SERVER_ERROR</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint API has experienced too many requests.</cell>
+                    <cell>
+                        <code>409 (Internal API error)</code>
+                    </cell>
+                    <cell>
+                        <code>AUTH_ERROR_TOO_MANY_REQUESTS</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Endpoint API has experienced IO failure</cell>
+                    <cell>
+                        <code>503 (Backend system IO failure)</code>
+                    </cell>
+                    <cell>
+                        <code>AUTH_ERROR_IO</code>
                     </cell>
                 </row>
             </rows>

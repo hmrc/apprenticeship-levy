@@ -1,0 +1,10 @@
+{
+  "params": "?fromDate=2016-03-06&toDate=2016-04-05",
+  "response": {
+    "empref": "123/AA12200",
+    "nino": "AA123200",
+    "fromDate": "2016-03-06",
+    "toDate": "2016-04-05",
+    "employed": true
+  }
+}

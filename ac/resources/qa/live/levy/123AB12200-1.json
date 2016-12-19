@@ -1,0 +1,7 @@
+{
+  "params": "",
+  "response": {
+    "code": "NOT_FOUND",
+    "message": "Resource was not found"
+  }
+}

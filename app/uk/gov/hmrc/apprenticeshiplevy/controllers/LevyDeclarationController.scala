@@ -57,7 +57,10 @@ trait LevyDeclarationController {
         * We don't know which one it might be, so convert a 404 to an empty result. The controller can decide
         * if it wants to return a 404 if all calls to `charges` return no results.
          */
-        case t: NotFoundException => Seq.empty
+        case t: NotFoundException => {
+          Logger.info("DES returned 'Not Found'")
+          Seq.empty
+        }
       }
   }
 
@@ -73,6 +76,7 @@ trait LevyDeclarationController {
       Ok(Json.toJson(LevyDeclarations(empref, ds)))
     }
     else {
+      Logger.info("DES returned empty list of declarations")
       ErrorNotFound.result
     }
   }
