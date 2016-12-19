@@ -6,7 +6,7 @@ object Config {
     environmentProperty match {
       case "local" => "http://localhost:9470"
       case "dev" => "https://www-dev.tax.service.gov.uk/apprenticeship-levy"
-      case "qa" => "https://www-qa.tax.service.gov.uk/apprenticeship-levy"
+      case "qa" => "https://qa-api.tax.service.gov.uk/apprenticeship-levy"
       case _ => throw new IllegalArgumentException(s"Environment '$environmentProperty' not known")
     }
   }
@@ -25,8 +25,8 @@ object Config {
     val environmentProperty = System.getProperty("environment", "local").toLowerCase
     environmentProperty match {
       case "local" => Seq(("/sandbox","sandbox"),("","live"))
-      case "dev" => Seq(("/sandbox","sandbox"))
-      case "qa" => Seq(("/sandbox","sandbox"))
+      case "dev" => Seq(("","sandbox"),("","live"))
+      case "qa" => Seq(("","sandbox"),("","live"))
       case _ => throw new IllegalArgumentException(s"Environment '$environmentProperty' not known")
     }
   }

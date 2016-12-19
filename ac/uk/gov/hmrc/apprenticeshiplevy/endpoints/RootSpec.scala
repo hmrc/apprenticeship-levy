@@ -12,8 +12,9 @@ class RootSpec extends FunctionalSpec with Eventually with IntegrationPatience {
   describe("Root Endpoint") {
     contexts.foreach { case (pair) =>
       val context = pair._1
+      implicit val environment = pair._2
       val folder = s"$dir/${pair._2}"
-      it (s"should when calling ${url}$context/ return links for each empref") {
+      it (s"should when calling ${url}$context/ return links for each empref (${environment})") {
         // set up
         val expected = fileToStr(s"${folder}/root.json")
         val expectedJson = Json.parse(expected)

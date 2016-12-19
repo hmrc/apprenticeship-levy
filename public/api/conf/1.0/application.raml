@@ -52,9 +52,9 @@ annotationTypes:
 /apprenticeship-levy:
   get:
       displayName: Get all employers
-      description: Returns a list of valid links indexed by empref in HAL format
+      description: !include docs/get-all-employers.md
       is: [headers.acceptHeader]
-      (scope): "read:apprenticeship-levy"
+      (annotations.scope): "read:apprenticeship-levy"
       securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
       headers: 
         Authorization:
@@ -119,10 +119,10 @@ annotationTypes:
             application/json:
               type: types.errorResponse
               examples:
-                498_:
+                498_AUTH_ERROR_WRONG_TOKEN:
                   description: Endpoint or internal system has experienced an internal error.
                   value:
-                    code: 
+                    code: AUTH_ERROR_WRONG_TOKEN
         500:
           body:
             application/json:
@@ -158,9 +158,9 @@ annotationTypes:
           example: 123/AB12345
       get:
           displayName: Get employer details
-          description: Returns more details about an empref including details about the employer and a list of available endpoints that apply to the empref.
+          description: !include docs/get-employer-details.md
           is: [headers.acceptHeader]
-          (scope): "read:apprenticeship-levy"
+          (annotations.scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
           headers: 
             Authorization:
@@ -237,9 +237,9 @@ annotationTypes:
       /declarations:
         get:
           displayName: Get employer levy declarations
-          description: Returns a list of levy declarations for a given employer reference.
+          description: !include docs/get-employer-levy-declarations.md
           is: [headers.acceptHeader]
-          (scope): "read:apprenticeship-levy"
+          (annotations.scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
           headers: 
             Authorization:
@@ -327,9 +327,9 @@ annotationTypes:
       /fractions:
         get:
           displayName: Get employer fraction calculations
-          description: Returns a list of fraction calculations for a given employer reference.
+          description: !include docs/get-employer-fraction-calculations.md
           is: [headers.acceptHeader]
-          (scope): "read:apprenticeship-levy"
+          (annotations.scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
           headers: 
             Authorization:
@@ -423,9 +423,9 @@ annotationTypes:
               example: XY654321Z
           get:
             displayName: Get employment status
-            description: Checks the employment status of an individual in a payroll scheme.
+            description: !include docs/get-employment-status.md
             is: [headers.acceptHeader]
-            (scope): "read:apprenticeship-levy"
+            (annotations.scope): "read:apprenticeship-levy"
             securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
             headers: 
               Authorization:
@@ -513,9 +513,9 @@ annotationTypes:
   /fraction-calculation-date:
     get:
       displayName: Get latest fraction calculation date
-      description: Returns the date of the most recent fraction calculation batch run.
+      description: !include docs/get-latest-fraction-calculation-date.md
       is: [headers.acceptHeader]
-      (scope): "read:apprenticeship-levy"
+      (annotations.scope): "read:apprenticeship-levy"
       securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
       headers: 
         Authorization:
@@ -531,52 +531,69 @@ annotationTypes:
             application/json:
               type: types.errorResponse
               examples:
-                401_AUTH_ERROR:
+                401_DES_ERROR_UNAUTHORIZED:
                   description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                   value:
-                    code: AUTH_ERROR
+                    code: DES_ERROR_UNAUTHORIZED
         403:
           body:
             application/json:
               type: types.errorResponse
               examples:
-                403_AUTH_ERROR:
+                403_DES_ERROR_FORBIDDEN:
                   description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                   value:
-                    code: AUTH_ERROR
+                    code: DES_ERROR_FORBIDDEN
         404:
           body:
             application/json:
               type: types.errorResponse
               examples:
-                404_AUTH_ERROR:
+                404_DES_ERROR_NOT_FOUND:
                   description: Endpoint or internal system has become unavailable.
                   value:
-                    code: AUTH_ERROR
+                    code: DES_ERROR_NOT_FOUND
         408:
           body:
             application/json:
               type: types.errorResponse
               examples:
-                408_AUTH_ERROR:
+                408_DES_ERROR_REQUEST_TIMEOUT:
                   description: Endpoint or internal system has become unresponsive.
                   value:
-                    code: AUTH_ERROR
+                    code: DES_ERROR_REQUEST_TIMEOUT
         429:
           body:
             application/json:
               type: types.errorResponse
               examples:
-                429_AUTH_ERROR:
+                429_DES_ERROR_TOO_MANY_REQUESTS:
                   description: Too many requests have been made to the back-end systems.
                   value:
-                    code: AUTH_ERROR
+                    code: DES_ERROR_TOO_MANY_REQUESTS
+        500:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                500_DES_ERROR_API:
+                  description: API has experienced an internal error.
+                  value:
+                    code: DES_ERROR_API
         503:
           body:
             application/json:
               type: types.errorResponse
               examples:
-                503_AUTH_ERROR:
+                503_DES_ERROR_IO:
+                  description: Internal system has become unresponsive causing an IO error.
+                  value:
+                    code: DES_ERROR_IO
+                503_DES_ERROR_OTHER:
                   description: Endpoint or internal system has experienced an internal error.
                   value:
-                    code: AUTH_ERROR
+                    code: DES_ERROR_OTHER
+                503_DES_ERROR_BACKEND_FAILURE:
+                  description: Backend has experiences a server 5xx error.
+                  value:
+                    code: DES_ERROR_BACKEND_FAILURE
