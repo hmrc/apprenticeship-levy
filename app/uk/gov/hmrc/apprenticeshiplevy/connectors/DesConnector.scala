@@ -34,6 +34,7 @@ import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.metrics._
 import java.net.URLDecoder
 import uk.gov.hmrc.apprenticeshiplevy.data.des.DesignatoryDetails._
+import uk.gov.hmrc.apprenticeshiplevy.data.des.EmploymentCheckStatus._
 
 trait DesUrl {
   def baseUrl: String
@@ -69,9 +70,11 @@ trait EmployerDetailsEndpoint extends Timer {
           val details = DesignatoryDetails(Some(empref))
           response.links.map { links =>
             Logger.debug((links.employer ++ links.communication).mkString(" "))
+            val getEmployer = links.employer.map(getDetails(_)).getOrElse(Future.successful(None))
+            val getComms = links.communication.map(getDetails(_)).getOrElse(Future.successful(None))
             for {
-              e <- links.employer.map(getDetails(_)).getOrElse(Future.successful(None))
-              c <- links.communication.map(getDetails(_)).getOrElse(Future.successful(None))
+              e <- getEmployer
+              c <- getComms
             } yield (details.copy(employer=e, communication=c))
           }.getOrElse(Future.successful(details))
         }(ec)
