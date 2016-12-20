@@ -2,12 +2,12 @@
 ## General
 
 - [ ] Check pence values in declarations
-- [ ] Update error codes
+- [x] Update error codes
 - [ ] Unit tests where integration tests aren't in place
-- [ ] Add date filtering to sandbox data endpoint
-- [ ] Update configuration for service manager to retire apprenticeship-levy-stub
+- [x] Add date filtering to sandbox data endpoint
+- [x] Update configuration for service manager to retire apprenticeship-levy-stub
 - [ ] Add caching to documentation controller
-- [ ] Remove play 2.5 warnings
+- [x] Remove play 2.5 warnings
 - [x] Connectors failing backend tests
 - [x] Prune unused code
 - [x] Consider converting config to be updatable on the fly (AppContext)
@@ -44,9 +44,9 @@
 
 ## Documentation to RAML
 - [x] Convert xmls to single xml source
-- [ ] XSLT to produce definition.json
+- [x] XSLT to produce definition.json
 - [x] XSLT to produce endpoint xmls
-- [ ] XSLT to produce RAML files
+- [ ] XSLT to produce RAML files (mostly complete)
 - [ ] XSLT to produce MD files
 
 ## Metrics
