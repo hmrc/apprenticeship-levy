@@ -5,8 +5,8 @@ object Config {
     val environmentProperty = System.getProperty("environment", "local").toLowerCase
     environmentProperty match {
       case "local" => "http://localhost:9470"
-      case "dev" => "https://www-dev.tax.service.gov.uk/apprenticeship-levy"
-      case "qa" => ***REMOVED***
+      case "dev" => throw new IllegalArgumentException(s"Provide dev endpoint")
+      case "qa" => throw new IllegalArgumentException(s"Provide qa endpoint")
       case _ => throw new IllegalArgumentException(s"Environment '$environmentProperty' not known")
     }
   }
