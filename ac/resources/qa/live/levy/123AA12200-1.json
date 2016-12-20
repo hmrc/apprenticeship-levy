@@ -1,5 +1,5 @@
 {
-  "params": "",
+  "params": "?fromDate=2016-03-06&toDate=2016-04-05",
   "response": {
     "code": "NOT_FOUND",
     "message": "Resource was not found"

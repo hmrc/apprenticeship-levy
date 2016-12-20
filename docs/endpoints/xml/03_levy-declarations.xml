@@ -4,6 +4,7 @@
     <version level="1.0">
       <name>Get employer levy declarations</name>
       <description>Returns a list of levy declarations for a given employer reference.</description>
+      <details></details>
       <secured>
         <method>sec.oauth_2_0</method>
         <type>USER</type>

@@ -62,7 +62,7 @@
                         <code>401 (Unauthorized)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR_UNAUTHORIZED</code>
                     </cell>
                 </row>
                 <row>
@@ -71,7 +71,7 @@
                         <code>403 (Forbidden)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR_FORBIDDEN</code>
                     </cell>
                 </row>
                 <row>
@@ -80,7 +80,16 @@
                         <code>404 (Not Found)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR_NOT_FOUND</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Internal system has become unresponsive causing an IO error.</cell>
+                    <cell>
+                        <code>503 (Service Unavailable)</code>
+                    </cell>
+                    <cell>
+                        <code>DES_ERROR_IO</code>
                     </cell>
                 </row>
                 <row>
@@ -89,7 +98,7 @@
                         <code>408 (Request Time-out)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR_REQUEST_TIMEOUT</code>
                     </cell>
                 </row>
                 <row>
@@ -98,7 +107,7 @@
                         <code>429 (Too Many Requests)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR_TOO_MANY_REQUESTS</code>
                     </cell>
                 </row>
                 <row>
@@ -107,7 +116,25 @@
                         <code>503 (Service Unavailable)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR_OTHER</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>API has experienced an internal error.</cell>
+                    <cell>
+                        <code>500 (Internal server error)</code>
+                    </cell>
+                    <cell>
+                        <code>DES_ERROR_API</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Backend has experiences a server 5xx error.</cell>
+                    <cell>
+                        <code>503 (Service Unavailable)</code>
+                    </cell>
+                    <cell>
+                        <code>DES_ERROR_BACKEND_FAILURE</code>
                     </cell>
                 </row>
             </rows>

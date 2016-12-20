@@ -12,8 +12,9 @@ class FractionsSpec extends FunctionalSpec with Eventually with IntegrationPatie
   describe("Fractions Endpoints") {
     contexts.foreach { case (pair) =>
       val context = pair._1
+      implicit val environment = pair._2
       val baseDir = s"$dir/${pair._2}"
-      it (s"should when calling ${url}$context/fraction-calculation-date return date of last fraction calculation") {
+      it (s"should when calling ${url}$context/fraction-calculation-date return date of last fraction calculation  (${environment})") {
         // set up
         val expected = fileToStr(s"${baseDir}/fraction-calculation-date.json")
         val expectedJson = Json.parse(expected)
@@ -32,7 +33,7 @@ class FractionsSpec extends FunctionalSpec with Eventually with IntegrationPatie
       }
 
       val folder = s"${baseDir}/fraction"
-      info(s"Generating tests for ${folder}")
+      info(s"Generating tests for ${folder} (${environment})")
       val files = new File(folder).listFiles.filter(_.getName.endsWith(".json"))
 
       files.foreach { case (file) =>
@@ -43,7 +44,7 @@ class FractionsSpec extends FunctionalSpec with Eventually with IntegrationPatie
         val expected = fileToStr(file)
         val expectedJson = Json.parse(expected)
         val params = (expectedJson \ "params").as[String]
-        it (s"should when calling ${url}$context/epaye/$empref/fractions$params return fraction details") {
+        it (s"should when calling ${url}$context/epaye/$empref/fractions$params return fraction details (${environment})") {
           // set up
 
           // test

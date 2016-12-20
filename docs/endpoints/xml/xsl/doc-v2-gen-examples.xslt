@@ -15,12 +15,25 @@
   <xsl:template name="main">
     <xsl:variable name="files" select="collection('../../../../docs/endpoints/xml/?select=*.xml;recurse=no')"/>
 
+    <!-- examples -->
     <xsl:for-each select="$files">
       <xsl:variable name="filename" select="concat(replace(lower-case(normalize-space(//endpoint/versions/version/name)), '\s', '-'), '.json')"/>
       <xsl:variable name="path"><xsl:text>public/api/conf/1.0/examples/</xsl:text><xsl:value-of select="$filename"/></xsl:variable>
       <xsl:message>Generating <xsl:value-of select="$path"/></xsl:message>
       <xsl:result-document method="text" href="{$path}">
         <xsl:apply-templates select="//endpoint/versions/version/responses/http"/>
+      </xsl:result-document>
+    </xsl:for-each>
+
+    <!-- descriptions -->
+    <xsl:for-each select="$files">
+      <xsl:variable name="filename" select="concat(replace(lower-case(normalize-space(//endpoint/versions/version/name)), '\s', '-'), '.md')"/>
+      <xsl:variable name="path"><xsl:text>public/api/conf/1.0/docs/</xsl:text><xsl:value-of select="$filename"/></xsl:variable>
+      <xsl:message>Generating <xsl:value-of select="$path"/></xsl:message>
+      <xsl:result-document method="text" href="{$path}">
+        <xsl:value-of select="//endpoint/versions/version/description"/><xsl:text>
+
+</xsl:text><xsl:value-of select="//endpoint/versions/version/details"/>
       </xsl:result-document>
     </xsl:for-each>
   </xsl:template>

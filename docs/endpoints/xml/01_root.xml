@@ -4,6 +4,7 @@
     <version level="1.0">
       <name>Get all employers</name>
       <description>Returns a list of valid links indexed by empref in HAL format</description>
+      <details>Departmental Access with a Time-based One-Time Password (**TOTP**) in cases where the application needs to track amendments for schemes where the OAuth access token has expired is *NOT* applicable to this endpoint.</details>
       <secured>
         <method>sec.oauth_2_0</method>
         <type>USER</type>
@@ -144,6 +145,7 @@
   "message": "Auth unauthorised error: OAUTH 2 User Token Required not TOTP"
 }]]></content-type>
           </body>
+          <code>AUTH_ERROR_WRONG_TOKEN</code>
         </http>
         <http status="500" msg="Internal API error">
           <description>Endpoint API has experienced an internal error.</description>
