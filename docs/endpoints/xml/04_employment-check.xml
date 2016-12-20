@@ -4,6 +4,7 @@
     <version level="1.0">
       <name>Get employment status</name>
       <description>Checks the employment status of an individual in a payroll scheme.</description>
+      <details></details>
       <secured>
         <method>sec.oauth_2_0</method>
         <type>USER</type>

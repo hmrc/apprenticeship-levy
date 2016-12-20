@@ -128,7 +128,7 @@
     <xsl:param name="endpointNode"/>
     <method><xsl:value-of select="lower-case($endpointNode/request/method)"/></method>
     <displayName><xsl:value-of select="$endpointNode/name"/></displayName>
-    <description><xsl:value-of select="$endpointNode/description"/></description>
+    <description>!include docs/<xsl:value-of select="replace(lower-case(normalize-space($endpointNode/name)), '\s', '-')"/>.md</description>
     <is>[headers.acceptHeader]</is>
     <scope><xsl:value-of select="$endpointNode/secured/scopes/scope[1]"/></scope>
     <secured>
@@ -522,10 +522,17 @@ annotationTypes:
     </xsl:for-each>
   </xsl:template>
 
+  <xsl:template match="sandbox-data" mode="xmlToYaml">
+    <xsl:call-template name="indent">
+      <xsl:with-param name="length" select="(count(ancestor::*) + 1) * 2"/>
+      <xsl:with-param name="str"><xsl:text>(annotations.sandboxData): "</xsl:text><xsl:value-of select="."/><xsl:text>"&#x0a;</xsl:text></xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+
   <xsl:template match="scope" mode="xmlToYaml">
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 1) * 2"/>
-      <xsl:with-param name="str"><xsl:text>(scope): "</xsl:text><xsl:value-of select="."/><xsl:text>"&#x0a;</xsl:text></xsl:with-param>
+      <xsl:with-param name="str"><xsl:text>(annotations.scope): "</xsl:text><xsl:value-of select="."/><xsl:text>"&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
     <xsl:apply-templates select="./*" mode="xmlToYaml"/>
   </xsl:template>

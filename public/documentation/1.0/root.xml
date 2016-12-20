@@ -161,7 +161,7 @@
                         <code>498 (Wrong token supplied.)</code>
                     </cell>
                     <cell>
-                        <code/>
+                        <code>AUTH_ERROR_WRONG_TOKEN</code>
                     </cell>
                 </row>
                 <row>
