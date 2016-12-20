@@ -32,14 +32,27 @@ import uk.gov.hmrc.time.DateConverter
 import scala.util.{Try, Success, Failure}
 
 trait TestDataController extends Controller with Utf8MimeTypes {
+  val SANDBOX_DATA_DIR = "public/sandbox-data"
+
   protected def retrieve(file: String): Option[InputStream] = {
     AppContext.maybeApp.flatMap { app =>
-      if (app.mode == Mode.Prod) {
-        // $COVERAGE-OFF$
-        app.resourceAsStream(file)
-        // $COVERAGE-ON$
+      if (file.startsWith(SANDBOX_DATA_DIR)) {
+        if (app.mode == Mode.Prod) {
+          // $COVERAGE-OFF$
+          Logger.debug(s"Getting resource stream ${file}")
+          app.resourceAsStream(file)
+          // $COVERAGE-ON$
+        } else {
+          // $COVERAGE-OFF$
+          Logger.debug(s"Getting file input stream ${file}")
+          // $COVERAGE-ON$
+          app.getExistingFile(file).map(new FileInputStream(_))
+        }
       } else {
-        app.getExistingFile(file).map(new FileInputStream(_))
+          // $COVERAGE-OFF$
+          Logger.debug(s"Getting file input stream ${file}")
+          // $COVERAGE-ON$
+          Try(new FileInputStream(new File(file))).toOption
       }
     }
   }
@@ -53,17 +66,18 @@ trait TestDataController extends Controller with Utf8MimeTypes {
     if (path.startsWith("authorise/read")) {
       Future.successful(Ok(""))
     } else {
-      val prefix = "public/sandbox-data"
-      val filename = s"${prefix}/${path}.json"
-      // $COVERAGE-OFF$
-      Logger.debug(s"Looking for file ${filename}")
-      // $COVERAGE-ON$
-
-      getData(filename) match {
-        case Some(json) => filterByDate(path, json)
-        case None => Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file found at '${filename}'"}"""))
-      }
+      readJson(SANDBOX_DATA_DIR, path)
+        .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), path))
+        .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file '${path}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
     }
+  }
+
+  protected def readJson(dir: String, path: String)(implicit request: Request[_]): Option[Future[Result]] = {
+    val filename = s"${dir}/${path}.json"
+    // $COVERAGE-OFF$
+    Logger.debug(s"Looking for file ${filename}")
+    // $COVERAGE-ON$
+    getData(filename).map(json=>filterByDate(path, json))
   }
 
   protected def getData(filename: String): Option[JsValue] = retrieve(filename).flatMap { is =>
