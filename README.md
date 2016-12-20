@@ -8,6 +8,33 @@
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
 
+## Using this Service
+
+### Production
+For production usage register and log in on [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation). Create an application and notify HMRC of new application ID. 
+
+### Local Development
+For local development either download the preview release or clone this repository and run using the instructions below as a guide.
+
+You can use [curl](https://curl.haxx.se/) to send http requests directly to the service. There are six REST endpoints support GET requests on on http://127.0.0.1:9470/sandbox and http://127.0.0.1:9470/ which will return a JSON response object. Each endpoint will be documented in fully shortly here but full documentation is available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation).
+
+In brief however the endpoints are:
+
+* `/` which returns a list of valid 'empref' values used in the remaining 5 endpoints
+* `/epaye/<empref>` which returns a list of endpoints for the empref and employer contact details
+* `epaye/<empref>/declarations` which returns a list of Apprenticeship Levy amounts
+* `epaye/<empref>/fractions` which returns a list of employee location distributions
+* `epaye/<empref>/employed/<nino>` which returns true if employee is employed with the employer and false otherwise
+* `fraction-calculation-date` which returns the date the last time HMRC systems were updated with new fraction values
+
+#### Examples
+
+* `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470`
+* `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/epaye/840%2FMODES17`
+* `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/epaye/123%2FAB12345/declarations`
+* `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/epaye/123%2FAB12345/fractions`
+* `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/fraction-calculation-date`
+
 ## Running
 
 ### Running Preview Release
@@ -30,6 +57,8 @@ On a command line simply use `sbt clean dist` to create a distribution or `sbt c
 #### Run
 
 On a command line use `sbt run`
+
+A different port can be specified as follows `sbt "run 9010"` update [application.conf](https://github.com/hmrc/apprenticeship-levy/blob/master/conf/application.conf#L238) ports for various services defined where appropriate. 
 
 ##### Debugging
 
