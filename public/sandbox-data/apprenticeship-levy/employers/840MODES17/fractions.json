@@ -7,6 +7,15 @@
       "fractions": [{
         "region": "England",
         "value": "0.71"
+      },{
+        "region": "Wales",
+        "value": "0.1"
+      },{
+        "region": "Scotland",
+        "value": "0.1"
+      },{
+        "region": "Northern Ireland",
+        "value": "0.09"
       }]
     }]
   }
