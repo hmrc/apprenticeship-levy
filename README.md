@@ -11,7 +11,7 @@ This code is open source software licensed under the [Apache 2.0 License]("http:
 ## Using this Service
 
 ### Production
-For production usage register and log in on [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation). Create an application and notify HMRC of new application ID. 
+For production usage register and log in on [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation). Create an application and notify HMRC of new application ID.
 
 ### Local Development
 For local development either download the preview release or clone this repository and run using the instructions below as a guide.
@@ -58,7 +58,14 @@ On a command line simply use `sbt clean dist` to create a distribution or `sbt c
 
 On a command line use `sbt run`
 
-A different port can be specified as follows `sbt "run 9010"` update [application.conf](https://github.com/hmrc/apprenticeship-levy/blob/master/conf/application.conf#L238) ports for various services defined where appropriate. 
+A different port can be specified as follows `sbt "run 9010"` update [application.conf](https://github.com/hmrc/apprenticeship-levy/blob/master/conf/application.conf#L238) ports for various services defined where appropriate.
+
+### Running Demo Files
+
+* Host the two demo html files e.g. `python -m SimpleHTTPServer 9000`
+* Run web browser temporarily without cross site scripting security e.g. `chrome --disable-web-security --user-data-dir`
+* Update `demo.html` file with client id and secret
+* Open page in browser and follow on screen steps
 
 ##### Debugging
 
