@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.data.des
+package uk.gov.hmrc.apprenticeshiplevy.config
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
-import play.api.libs.json._
+import org.scalatest.{EitherValues, Matchers, WordSpec}
+import org.scalatestplus.play.OneAppPerSuite
 
-case class Fraction(region: String, value: BigDecimal)
+class NinoValidationTest extends WordSpec with EitherValues with Matchers with OneAppPerSuite {
 
-object Fraction {
-  implicit val formats = Json.format[Fraction]
+  "The validation of a nino" should {
+    "pass with 'KC' prefix" in {
+      PathBinders.isValid(PathBinders.NinoPattern, "KC745625A").right.value shouldBe "KC745625A"
+    }
+  }
 }
