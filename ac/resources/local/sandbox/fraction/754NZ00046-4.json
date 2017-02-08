@@ -1,0 +1,17 @@
+{
+  "params": "?fromDate=2008-07-01&toDate=2008-07-31",
+  "response": {
+    "empref": "754NZ00046",
+    "fractionCalculations": [
+      {
+        "calculatedAt": "2008-07-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.56125
+          }
+        ]
+      }
+    ]
+  }
+}
