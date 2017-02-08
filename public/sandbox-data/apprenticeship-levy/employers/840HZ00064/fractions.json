@@ -1,0 +1,44 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "840HZ00064",
+    "fractionCalculations": [
+      {
+        "calculatedAt": "2016-05-07",
+        "fractions": [
+          {
+            "region": "England",
+            "value": "0.65612"
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2016-08-07",
+        "fractions": [
+          {
+            "region": "England",
+            "value": "0.68605"
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2016-11-09",
+        "fractions": [
+          {
+            "region": "England",
+            "value": "0.69511"
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2017-02-08",
+        "fractions": [
+          {
+            "region": "England",
+            "value": "0.72405"
+          }
+        ]
+      }
+    ]
+  }
+}
