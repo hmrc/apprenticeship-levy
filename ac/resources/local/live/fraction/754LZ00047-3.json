@@ -1,0 +1,17 @@
+{
+  "params": "?fromDate=2016-08-01&toDate=2016-08-31",
+  "response": {
+    "empref": "754LZ00047",
+    "fractionCalculations": [
+      {
+        "calculatedAt": "2016-08-11",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.12525
+          }
+        ]
+      }
+    ]
+  }
+}

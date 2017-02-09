@@ -1,0 +1,341 @@
+{
+  "params": "",
+  "response": {
+    "empref": "754NZ00046",
+    "fractionCalculations": [
+      {
+        "calculatedAt": "2008-01-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.60145
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2008-04-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.55243
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2008-07-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.56125
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2008-10-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.56125
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2009-01-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.57654
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2009-04-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.56464
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2009-07-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.53992
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2009-10-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.54123
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2010-01-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.54356
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2010-04-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.51467
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2010-07-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.52345
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2010-10-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.53456
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2011-01-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.56464
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2011-04-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.45675
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2011-07-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.51225
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2011-10-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.51346
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2012-01-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.51467
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2012-04-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.44511
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2012-07-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.44511
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2012-10-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.44628
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2013-01-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.45675
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2013-04-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.42345
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2013-07-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.43566
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2013-10-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.43566
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2014-01-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.44511
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2014-04-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.41015
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2014-07-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.41015
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2014-10-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.41015
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2015-01-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.42064
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2015-04-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.34585
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2015-07-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.34595
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2015-10-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.34588
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2016-01-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.36785
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2016-04-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.34567
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2016-07-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.34567
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2016-10-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.34585
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2017-01-21",
+        "fractions": [
+          {
+            "region": "England",
+            "value": 0.34585
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -32,6 +32,7 @@ import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
 import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import scala.util.{Try, Success, Failure}
 import play.Logger
+import uk.gov.hmrc.apprenticeshiplevy.config.filters._
 
 object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = AppContext.maybeConfiguration.map(_.underlying.as[Config]("controllers")).getOrElse(throw new RuntimeException())
@@ -59,6 +60,8 @@ object MicroserviceAuditFilter extends AuditFilter with AppName with Microservic
     }
   }
 }
+
+object MicroserviceAPIHeaderCaptureFilter extends APIHeaderCaptureFilter with AppName with MicroserviceFilterSupport with RunMode
 
 object MicroserviceLoggingFilter extends LoggingFilter with MicroserviceFilterSupport {
   override def controllerNeedsLogging(controllerName: String): Boolean =
@@ -89,7 +92,8 @@ object MicroserviceGlobal extends DefaultMicroserviceGlobal with RunMode {
   override val authFilter = Some(MicroserviceAuthFilter)
 
   override protected lazy val defaultMicroserviceFilters: Seq[EssentialFilter] = Try {
-    super.defaultMicroserviceFilters ++ Seq(new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(AppContext.maybeConfiguration.get)))
+    super.defaultMicroserviceFilters ++ Seq(new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(AppContext.maybeConfiguration.get)),
+                                            MicroserviceAPIHeaderCaptureFilter)
     } match {
       case Success(v) => v
       case Failure(e) => {
