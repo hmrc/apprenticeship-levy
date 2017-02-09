@@ -19,6 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.metrics
 import java.util.concurrent.TimeUnit
 import scala.concurrent.{Future, ExecutionContext}
 import scala.util.{Success, Failure, Try}
+import play.api.Logger
 
 trait Timer {
   metrics: GraphiteMetrics =>
@@ -31,6 +32,9 @@ trait Timer {
         metrics.processRequest(TimerEvent(event.name, System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS))
       }
       case Failure(t) => {
+        // $COVERAGE-OFF$
+        Logger.warn(s"Call AUTH/DES failed (details: $event).")
+        // $COVERAGE-ON$
         metrics.failedRequest(event)
         metrics.processRequest(TimerEvent(event.name, System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS))
       }
