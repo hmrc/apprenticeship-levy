@@ -1,0 +1,44 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "923YZ00062",
+    "fractionCalculations": [
+      {
+        "calculatedAt": "2016-06-12",
+        "fractions": [
+          {
+            "region": "England",
+            "value": "1"
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2016-09-12",
+        "fractions": [
+          {
+            "region": "England",
+            "value": "1"
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2016-12-12",
+        "fractions": [
+          {
+            "region": "England",
+            "value": "1"
+          }
+        ]
+      },
+      {
+        "calculatedAt": "2017-03-12",
+        "fractions": [
+          {
+            "region": "England",
+            "value": "1"
+          }
+        ]
+      }
+    ]
+  }
+}
