@@ -9,6 +9,8 @@ import play.api.libs.json.Json
 
 @DoNotDiscover
 class RootSpec extends FunctionalSpec with Eventually with IntegrationPatience {
+  info(s"Using bearer token ${System.getProperty("bearer.token."+System.getProperty("environment", "local").toLowerCase)}.")
+
   describe("Root Endpoint") {
     contexts.foreach { case (pair) =>
       val context = pair._1
@@ -20,6 +22,8 @@ class RootSpec extends FunctionalSpec with Eventually with IntegrationPatience {
         val expectedJson = Json.parse(expected)
 
         // test
+        info(standardHeaders.mkString(" "))
+
         val result = eventually {
           Http(s"$url$context/")
             .headers(standardHeaders)
