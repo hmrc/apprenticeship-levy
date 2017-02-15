@@ -19,16 +19,14 @@ package uk.gov.hmrc.apprenticeshiplevy.config.filters
 import play.api._
 import play.api.mvc._
 import play.filters.headers._
-import play.Logger
+import org.slf4j.MDC
 
 import play.api.mvc.{Filter, RequestHeader, Result}
 import scala.concurrent.Future
 
 trait APIHeaderCaptureFilter extends Filter {
   def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
-    // $COVERAGE-OFF$
-    Logger.info(s"""API Request Token: ${rh.headers.getAll("X-Client-Authorization-Token").mkString(" ")} Application ID: ${rh.headers.getAll("X-Client-ID").mkString(" ")}""")
-    // $COVERAGE-ON$
+    MDC.put("X-Client-ID",rh.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller"))
     next(rh)
   }
 }
