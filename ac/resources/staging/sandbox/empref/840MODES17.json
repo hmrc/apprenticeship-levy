@@ -1,0 +1,58 @@
+{
+  "_links": {
+    "declarations": {
+      "href": "/epaye/840%2FMODES17/declarations"
+    },
+    "employment-check": {
+      "href": "/epaye/840%2FMODES17/employed/{nino}"
+    },
+    "fractions": {
+      "href": "/epaye/840%2FMODES17/fractions"
+    },
+    "self": {
+      "href": "/epaye/840%2FMODES17"
+    }
+  },
+  "communication": {
+    "address": {
+      "addressLine1": "Foreign Address Line 1",
+      "addressLine2": "Foreign Address Line 2",
+      "addressLine3": "Foreign Address Line 3",
+      "addressLine4": "Foreign Address Line 4",
+      "addressLine5": "Foreign Address Line 5",
+      "foreignCountry": "France",
+      "postcode": "NE30 4XX"
+    },
+    "contact": {
+      "email": {
+        "primary": "someone@hmrc.gov.uk"
+      },
+      "telephone": {
+        "telephoneNumber": "0123 456789"
+      }
+    },
+    "name": {
+      "nameLine1": "KILL-JOY PLC THE FUNERAL",
+      "nameLine2": "COMPANY"
+    }
+  },
+  "employer": {
+    "address": {
+      "addressLine1": "Foreign Address Line 1",
+      "addressLine2": "Foreign Address Line 2",
+      "addressLine3": "Foreign Address Line 3",
+      "addressLine4": "Foreign Address Line 4",
+      "addressLine5": "Foreign Address Line 5",
+      "foreignCountry": "France"
+    },
+    "contact": {
+      "email": {},
+      "telephone": {}
+    },
+    "name": {
+      "nameLine1": "KILL-JOY PLC THE FUNERAL",
+      "nameLine2": "COMPANY"
+    }
+  },
+  "empref": "840/MODES17"
+}

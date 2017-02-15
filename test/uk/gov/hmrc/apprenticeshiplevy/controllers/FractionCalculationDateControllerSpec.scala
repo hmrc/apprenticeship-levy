@@ -66,7 +66,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       val actualHeaderCarrier = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders.head shouldBe (("Environment","clone"))
+      actualHeaderCarrier.extraHeaders shouldBe List(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
     }
 
     "not fail if environment header not supplied" in {
@@ -94,7 +94,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       val actualHeaderCarrier = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders.head shouldBe (("Environment","clone"))
+      actualHeaderCarrier.extraHeaders shouldBe List(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
     }
 
     "recover from exceptions" in {

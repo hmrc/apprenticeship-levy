@@ -30,6 +30,7 @@ import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import org.joda.time._
 import uk.gov.hmrc.time.DateConverter
 import scala.util.{Try, Success, Failure}
+import org.slf4j.MDC
 
 trait TestDataController extends Controller with Utf8MimeTypes {
   val SANDBOX_DATA_DIR = "public/sandbox-data"
@@ -58,6 +59,8 @@ trait TestDataController extends Controller with Utf8MimeTypes {
   }
 
   def serve(req: String) = Action.async { implicit request =>
+    MDC.put("X-Client-ID",request.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller"))
+
     // $COVERAGE-OFF$
     Logger.debug(s"Request was received for path ${req}")
     // $COVERAGE-ON$
