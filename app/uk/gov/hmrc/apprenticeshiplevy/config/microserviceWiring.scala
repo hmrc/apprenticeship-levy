@@ -38,6 +38,5 @@ object MicroserviceAuditConnector extends AuditConnector with RunMode {
 
 object MicroserviceAuthConnector extends AuthConnector with ServicesConfig {
   override val authBaseUrl = AppContext.authUrl
-
   def http: HttpGet = WSHttp
 }

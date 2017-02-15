@@ -118,7 +118,7 @@ trait EmploymentCheckEndpoint extends Timer {
 trait FractionsEndpoint extends Timer {
   des: DesConnector =>
 
-  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[Fractions] = {
+  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Fractions] = {
     val dateParams = dateRange.toParams.getOrElse("")
     val url = (s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions", dateRange.toParams) match {
       case (u, Some(params)) => s"$u?$params"
@@ -136,7 +136,7 @@ trait FractionsEndpoint extends Timer {
     }
   }
 
-  def fractionCalculationDate(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[LocalDate] = {
+  def fractionCalculationDate(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
     val url = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
 
     // $COVERAGE-OFF$
@@ -154,7 +154,7 @@ trait FractionsEndpoint extends Timer {
 trait LevyDeclarationsEndpoint extends Timer {
   des: DesConnector =>
 
-  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[EmployerPaymentsSummary] = {
+  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams.getOrElse("")
     val url = (s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary", dateRange.toParams) match {
       case (u, None) => u

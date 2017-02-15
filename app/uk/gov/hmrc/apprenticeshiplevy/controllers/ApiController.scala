@@ -31,6 +31,7 @@ import scala.util.matching.Regex
 import java.net.URLDecoder
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.http.logging.Authorization
+import org.slf4j.MDC
 
 trait ApiController extends BaseController with HeaderValidator {
 
@@ -38,11 +39,25 @@ trait ApiController extends BaseController with HeaderValidator {
     def result: Result = Status(er.httpStatusCode)(Json.toJson(er))
   }
 
-  override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = super.hc(rh)
+  override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
+    val hc = super.hc(rh)
+    updateMDC
+    val clientId = rh.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller")
+    val user = rh.headers.toSimpleMap.getOrElse("X-Client-Authorization-Token","Unknown caller")
+    val extendedHc = hc.copy(extraHeaders = Seq(("X-Client-ID",clientId),("X-Client-Authorization-Token",user)) ++ hc.extraHeaders)
+    extendedHc
+  }
 
   def selfLink(url: String): HalLink = HalLink("self", url)
 
   def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).as("application/hal+json")
+
+  protected def updateMDC(implicit rh: RequestHeader): Unit = {
+    val clientId = rh.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller")
+    val user = rh.headers.toSimpleMap.getOrElse("X-Client-Authorization-Token","Unknown caller")
+    MDC.put("X-Client-ID",clientId)
+    MDC.put("Authorization",user)
+  }
 
   protected val withValidAcceptHeader: ActionBuilder[Request] = validateAccept(acceptHeaderValidationRules)
 
