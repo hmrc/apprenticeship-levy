@@ -28,12 +28,12 @@ You can use [curl](https://curl.haxx.se/) to send http requests directly to the 
 
 In brief however the endpoints are:
 
-* `/` which returns a list of valid 'empref' values used in the remaining 5 endpoints
-* `/epaye/<empref>` which returns a list of endpoints for the empref and employer contact details
-* `epaye/<empref>/declarations` which returns a list of Apprenticeship Levy amounts
-* `epaye/<empref>/fractions` which returns a list of employee location distributions
-* `epaye/<empref>/employed/<nino>` which returns true if employee is employed with the employer and false otherwise
-* `fraction-calculation-date` which returns the date the last time HMRC systems were updated with new fraction values
+* [/](./docs/get-all-employers.bak.md) which returns a list of valid 'empref' values used in the remaining 5 endpoints
+* [/epaye/<empref>](./docs/get-employer-details.bak.md) which returns a list of endpoints for the empref and employer contact details
+* [epaye/<empref>/declarations](./docs/get-employer-levy-declarations.bak.md) which returns a list of Apprenticeship Levy amounts
+* [epaye/<empref>/fractions](./docs/get-employer-fraction-calculations.bak.md) which returns a list of employee location distributions
+* [epaye/<empref>/employed/<nino>](./docs/get-employment-status.bak.md) which returns true if employee is employed with the employer and false otherwise
+* [fraction-calculation-date](./docs/get-latest-fraction-calculation-date.bak.md) which returns the date the last time HMRC systems were updated with new fraction values
 
 #### Examples
 
