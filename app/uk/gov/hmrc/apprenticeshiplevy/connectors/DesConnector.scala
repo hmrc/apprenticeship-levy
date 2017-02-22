@@ -129,9 +129,15 @@ trait FractionsEndpoint extends Timer {
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
+    val EMPREF = "(\\d\\d\\d)([\\/]*)([a-zA-Z0-9]{7})".r
     timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
       audit(new ALAEvent("readFractions", empref, "", dateParams)) {
-        des.httpGet.GET[Fractions](url)
+        des.httpGet.GET[Fractions](url).map { fraction =>
+          fraction.empref match {
+            case EMPREF(taxOffice,_,ref) => fraction.copy(empref = s"$taxOffice/$ref")
+            case _ => fraction
+          }
+        }
       }
     }
   }
