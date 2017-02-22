@@ -40,7 +40,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             contentType(result) shouldBe Some("application/json")
             val json = contentAsJson(result)
-            (json \ "empref").as[String] shouldBe "123AB12345"
+            (json \ "empref").as[String] shouldBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
@@ -60,7 +60,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             contentType(result) shouldBe Some("application/json")
             val json = contentAsJson(result)
-            (json \ "empref").as[String] shouldBe "123AB12345"
+            (json \ "empref").as[String] shouldBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
@@ -78,7 +78,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             contentType(result) shouldBe Some("application/json")
             val json = contentAsJson(result)
-            (json \ "empref").as[String] shouldBe "123AB12345"
+            (json \ "empref").as[String] shouldBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
@@ -96,7 +96,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             // check
             contentType(result) shouldBe Some("application/json")
             val json = contentAsJson(result)
-            (json \ "empref").as[String] shouldBe "123AB12345"
+            (json \ "empref").as[String] shouldBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
