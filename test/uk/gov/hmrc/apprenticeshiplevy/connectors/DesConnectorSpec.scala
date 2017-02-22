@@ -79,7 +79,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
       "when EDH not failing return fractions" in {
         // set up
         val stubHttpGet = mock[HttpGet]
-        val expected = Fractions("123AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))
+        val expected = Fractions("123/AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))
         when(stubHttpGet.GET[Fractions](anyString())(any(), any()))
            .thenReturn(Future.successful(expected))
         val connector = new DesConnector() {
@@ -89,7 +89,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
         }
 
         // test
-        val futureResult = connector.fractions("123AB12345", OpenDateRange)(HeaderCarrier(),defaultContext)
+        val futureResult = connector.fractions("123/AB12345", OpenDateRange)(HeaderCarrier(),defaultContext)
 
         // check
         await[Fractions](futureResult) shouldBe expected
