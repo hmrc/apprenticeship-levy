@@ -1,0 +1,13 @@
+{
+  "_links": {
+    "840/MODES17": {
+      "href": "/sandbox/epaye/840%2FMODES17"
+    },
+    "self": {
+      "href": "/sandbox"
+    }
+  },
+  "emprefs": [
+    "840/MODES17"
+  ]
+}
