@@ -1,7 +1,7 @@
 {
   "params": "?fromDate=2009-07-01&toDate=2009-07-31",
   "response": {
-    "empref": "754NZ00046",
+    "empref": "754/NZ00046",
     "fractionCalculations": [
       {
         "calculatedAt": "2009-07-21",

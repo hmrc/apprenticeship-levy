@@ -1,7 +1,7 @@
 {
   "params": "?fromDate=2017-03-01&toDate=2017-03-31",
   "response": {
-    "empref": "923YZ00062",
+    "empref": "923/YZ00062",
     "fractionCalculations": [
       {
         "calculatedAt": "2017-03-12",
