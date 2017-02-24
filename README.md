@@ -94,7 +94,7 @@ directory.
 
 ##### Acceptance Testing (Separate from internal A/C testing)
 
-Run using `sbt ac:test`
+Run using `sbt -Denvironment=qa -Dbearer.token.qa=<your token here> ac:test`
 
 ##### Integration Testing
 
