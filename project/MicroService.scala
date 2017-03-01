@@ -42,7 +42,7 @@ trait MicroService {
   }
 
   lazy val AcceptanceTest = config("ac") extend(Test)
-  lazy val appDependencies : Seq[ModuleID] = ???
+  lazy val appDependencies : Seq[ModuleID] = Seq.empty
   lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala)
   lazy val compileScalastyle = taskKey[Unit]("compileScalastyle")
   lazy val compileScalastyleTask = org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask("")
@@ -52,7 +52,7 @@ trait MicroService {
     import scoverage.ScoverageKeys
     Seq(
       ScoverageKeys.coverageExcludedPackages :=  "<empty>;Reverse.*;sandbox.Routes.*;app.Routes.*;views.*;prod.*;.*assets.*;testOnlyDoNotUseInAppConf.*;uk.gov.hmrc.BuildInfo",
-      ScoverageKeys.coverageMinimum := 90,
+      ScoverageKeys.coverageMinimum := 85,
       ScoverageKeys.coverageFailOnMinimum := false,
       ScoverageKeys.coverageHighlighting := true,
       parallelExecution in Test := false
