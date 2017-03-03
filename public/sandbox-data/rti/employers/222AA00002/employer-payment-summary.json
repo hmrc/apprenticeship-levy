@@ -1,7 +1,7 @@
 {
   "status": 200,
   "jsonBody": {
-    "empref": "222AA00002",
+    "empref": "222/AA00002",
     "eps": [{
         "submissionId": 22200000201,
         "hmrcSubmissionTime": "2017-05-15T12:00:00",

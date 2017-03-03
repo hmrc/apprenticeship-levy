@@ -1,7 +1,7 @@
 {
   "status": 200,
   "jsonBody": {
-    "empref":"111AA00001",
+    "empref":"111/AA00001",
     "employer":{
       "name":{
         "nameLine1":"Employer for scenario 1 scheme 1"

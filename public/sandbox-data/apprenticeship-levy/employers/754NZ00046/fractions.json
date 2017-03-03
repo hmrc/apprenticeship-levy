@@ -1,7 +1,7 @@
 {
   "status": 200,
   "jsonBody": {
-    "empref": "754NZ00046",
+    "empref": "754/NZ00046",
     "fractionCalculations": [
       {
         "calculatedAt": "2016-04-21",

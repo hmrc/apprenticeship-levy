@@ -1,7 +1,7 @@
 {
   "status": 200,
   "jsonBody": {
-  "empref": "123AB12345",
+  "empref": "123/AB12345",
   "eps": [
     {
       "submissionId": 12345678,

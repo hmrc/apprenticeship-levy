@@ -1,7 +1,7 @@
 {
   "status": 200,
   "jsonBody": {
-    "empref": "840MODES17",
+    "empref": "840/MODES17",
     "fractionCalculations": [{
       "calculatedAt": "2017-03-15",
       "fractions": [{
