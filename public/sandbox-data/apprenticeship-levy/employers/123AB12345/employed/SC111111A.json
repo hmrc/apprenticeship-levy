@@ -1,7 +1,7 @@
 {
   "status": 200,
   "jsonBody": {
-    "empref": "123AB12345",
+    "empref": "123/AB12345",
     "nino": "SC111111A",
     "fromDate": "2016-03-06",
     "toDate": "2016-04-05",
