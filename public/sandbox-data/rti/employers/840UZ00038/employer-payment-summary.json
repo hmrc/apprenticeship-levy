@@ -1,0 +1,28 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "840UZ00038",
+    "eps": [
+      {
+        "submissionId": 29442,
+        "hmrcSubmissionTime": "2014-04-28T12:22:33",
+        "rtiSubmissionTime": "2014-02-28T09:51:32",
+        "taxYear": "14-15",
+        "employmentAllowanceInd": true,
+        "finalSubmission": {
+          "schemeCeased": true,
+          "schemeCeasedDate": "2014-04-06",
+          "forYear": true
+        },
+        "questionsAndDeclarations": {
+          "freeOfTaxPaymentsMadeToEmployee": false,
+          "expensesVouchersOrBenefitsFromOthers": false,
+          "personEmployedOutsideUKWorkedFor30DaysOrMore": false,
+          "payToSomeoneElse": false,
+          "p11DFormsDue": false,
+          "serviceCompany": false
+        }
+      }
+    ]
+  }
+}

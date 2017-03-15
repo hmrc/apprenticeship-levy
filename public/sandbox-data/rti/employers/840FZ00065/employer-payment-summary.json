@@ -1,0 +1,171 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "840FZ00065",
+    "eps": [
+      {
+        "submissionId": 55259,
+        "hmrcSubmissionTime": "2014-12-05T14:54:26",
+        "rtiSubmissionTime": "2014-12-05T15:06:40",
+        "taxYear": "14-15",
+        "inactivePeriod": {
+          "from": "2014-12-06",
+          "to": "2015-08-05"
+        },
+        "noPaymentPeriod": {
+          "from": "2014-08-06",
+          "to": "2014-10-05"
+        },
+        "finalSubmission": {
+          "schemeCeased": true,
+          "schemeCeasedDate": "2014-05-05",
+          "forYear": true
+        },
+        "questionsAndDeclarations": {
+          "freeOfTaxPaymentsMadeToEmployee": true,
+          "expensesVouchersOrBenefitsFromOthers": true,
+          "personEmployedOutsideUKWorkedFor30DaysOrMore": true,
+          "payToSomeoneElse": true,
+          "p11DFormsDue": true,
+          "serviceCompany": true
+        }
+      },
+      {
+        "submissionId": 55260,
+        "hmrcSubmissionTime": "2014-12-05T15:16:19",
+        "rtiSubmissionTime": "2014-12-05T15:26:30",
+        "taxYear": "14-15",
+        "inactivePeriod": {
+          "from": "2014-12-06",
+          "to": "2015-09-05"
+        }
+      },
+      {
+        "submissionId": 55261,
+        "hmrcSubmissionTime": "2014-12-05T15:16:19",
+        "rtiSubmissionTime": "2014-12-05T15:26:30",
+        "taxYear": "14-15",
+        "inactivePeriod": {
+          "from": "2014-12-06",
+          "to": "2015-09-05"
+        }
+      },
+      {
+        "submissionId": 55262,
+        "hmrcSubmissionTime": "2014-12-05T15:16:21",
+        "rtiSubmissionTime": "2014-12-05T15:26:31",
+        "taxYear": "14-15",
+        "inactivePeriod": {
+          "from": "2014-12-06",
+          "to": "2015-08-05"
+        }
+      },
+      {
+        "submissionId": 55263,
+        "hmrcSubmissionTime": "2014-12-05T15:16:23",
+        "rtiSubmissionTime": "2014-12-05T15:26:31",
+        "taxYear": "14-15",
+        "inactivePeriod": {
+          "from": "2014-12-06",
+          "to": "2015-09-05"
+        }
+      },
+      {
+        "submissionId": 55264,
+        "hmrcSubmissionTime": "2014-12-05T15:16:23",
+        "rtiSubmissionTime": "2014-12-05T15:26:32",
+        "taxYear": "14-15",
+        "inactivePeriod": {
+          "from": "2014-12-06",
+          "to": "2015-08-05"
+        },
+        "noPaymentPeriod": {
+          "from": "2014-08-06",
+          "to": "2014-10-05"
+        },
+        "finalSubmission": {
+          "schemeCeased": true,
+          "schemeCeasedDate": "2014-06-10",
+          "forYear": true
+        },
+        "questionsAndDeclarations": {
+          "freeOfTaxPaymentsMadeToEmployee": true,
+          "expensesVouchersOrBenefitsFromOthers": true,
+          "personEmployedOutsideUKWorkedFor30DaysOrMore": true,
+          "payToSomeoneElse": true,
+          "p11DFormsDue": true,
+          "serviceCompany": true
+        }
+      },
+      {
+        "submissionId": 55265,
+        "hmrcSubmissionTime": "2014-12-05T15:16:24",
+        "rtiSubmissionTime": "2014-12-05T15:26:33",
+        "taxYear": "14-15",
+        "inactivePeriod": {
+          "from": "2014-12-06",
+          "to": "2015-08-05"
+        }
+      },
+      {
+        "submissionId": 55266,
+        "hmrcSubmissionTime": "2014-12-05T15:16:26",
+        "rtiSubmissionTime": "2014-12-05T15:26:34",
+        "taxYear": "14-15",
+        "inactivePeriod": {
+          "from": "2014-12-06",
+          "to": "2015-09-05"
+        }
+      },
+      {
+        "submissionId": 88443,
+        "hmrcSubmissionTime": "2013-04-06T12:22:33",
+        "rtiSubmissionTime": "2016-03-21T15:58:20",
+        "taxYear": "13-14",
+        "finalSubmission": {
+          "schemeCeased": true,
+          "schemeCeasedDate": "2013-04-06",
+          "forYear": true
+        },
+        "questionsAndDeclarations": {
+          "freeOfTaxPaymentsMadeToEmployee": false,
+          "expensesVouchersOrBenefitsFromOthers": false,
+          "personEmployedOutsideUKWorkedFor30DaysOrMore": false,
+          "payToSomeoneElse": false,
+          "p11DFormsDue": false,
+          "serviceCompany": false
+        }
+      },
+      {
+        "submissionId": 88470,
+        "hmrcSubmissionTime": "2013-04-06T12:22:33",
+        "rtiSubmissionTime": "2016-03-22T10:55:42",
+        "taxYear": "13-14",
+        "finalSubmission": {
+          "schemeCeased": true,
+          "schemeCeasedDate": "2013-04-06",
+          "forYear": true
+        },
+        "questionsAndDeclarations": {
+          "freeOfTaxPaymentsMadeToEmployee": false,
+          "expensesVouchersOrBenefitsFromOthers": false,
+          "personEmployedOutsideUKWorkedFor30DaysOrMore": false,
+          "payToSomeoneElse": false,
+          "p11DFormsDue": false,
+          "serviceCompany": false
+        }
+      },
+      {
+        "submissionId": 92435,
+        "hmrcSubmissionTime": "2017-04-20T11:30:50",
+        "rtiSubmissionTime": "2017-02-21T11:17:24",
+        "taxYear": "17-18",
+        "apprenticeshipLevy": {
+          "taxMonth": "1",
+          "amountDue": 700,
+          "amountAllowance": 1000
+        }
+      }
+    ]
+  }
+}
