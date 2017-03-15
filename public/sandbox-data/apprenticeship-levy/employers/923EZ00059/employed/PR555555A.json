@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "923/EZ00059",
+    "nino": "PR555555A",
+    "fromDate": "2015-09-01",
+    "toDate": "2015-10-01",
+    "employed": false
+  }
+}
