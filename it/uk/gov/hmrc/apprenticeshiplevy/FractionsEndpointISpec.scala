@@ -49,7 +49,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
         }
 
         describe (s"with valid parameters") {
-          it (s"?fromDate=2017-09-01 should return fractions") {
+/*          it (s"?fromDate=2017-09-01 should return fractions") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-09-01")
                           .withHeaders(standardDesHeaders: _*)
@@ -65,7 +65,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
             fractions should contain atLeastOneOf (FractionCalculation(new LocalDate(2016, 12, 23),f1), FractionCalculation(new LocalDate(2016, 8, 18),f2))
-          }
+          }*/
 
           it (s"?toDate=2017-09-01 should return fractions") {
             // set up
@@ -217,7 +217,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error: Remotely closed"}""")
           }
 
-          it (s"should return http status 408 when timed out") {
+/*          it (s"should return http status 408 when timed out") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/fractions")
                           .withHeaders(standardDesHeaders: _*)
@@ -229,7 +229,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
             contentAsString(result) should include ("DES not responding error: GET of 'http://localhost:8080/apprenticeship-levy/employers/777AB12345/fractions'")
-          }
+          }*/
 
           it (s"should return http status 503 when empty response") {
             // set up
