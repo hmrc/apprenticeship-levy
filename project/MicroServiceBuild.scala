@@ -83,7 +83,7 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % "2.2.6" % scope,
         "org.pegdown" % "pegdown" % "1.5.0" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "com.github.tomakehurst" % "wiremock" % "2.1.12" % scope,
+        "com.github.tomakehurst" % "wiremock" % "2.5.1" % scope,
         "org.scala-lang" % "scala-xml" % scalaXMLVersion % scope,
         "com.github.andyglow" % "scala-xml-diff_2.11" % xmlDiffVersion % scope,
         "org.scalacheck" %% "scalacheck" % scalacheckVersion % scope,
