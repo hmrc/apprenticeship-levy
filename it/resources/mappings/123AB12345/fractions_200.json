@@ -1,42 +1,52 @@
 {
-    "priority": 1,
-    "request": {
-        "method": "GET",
-        "url": "/apprenticeship-levy/employers/123AB12345/fractions",
-        "headers": {
-          "Authorization": {
-              "matches": "Bearer (.*)"
-          },
-          "Environment": {
-              "matches": "(isit|clone|live)"
-          }
-        }
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/apprenticeship-levy/employers/123AB12345/fractions",
+    "queryParameters": {
+      "fromDate": {
+        "matches": "^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$"
+      },
+      "toDate": {
+        "matches": "^[0-9]{4}-(((0[13578]|(10|12))-(0[1-9]|[1-2][0-9]|3[0-1]))|(02-(0[1-9]|[1-2][0-9]))|((0[469]|11)-(0[1-9]|[1-2][0-9]|30)))$"
+      }
     },
-    "response": {
-        "status": 200,
-        "headers": { "Content-Type": "application/json; charset=utf-8" },
-        "jsonBody": {
-  "empref": "123AB12345",
-  "fractionCalculations": [
-    {
-      "calculatedAt": "2016-12-23",
-      "fractions": [
-        {
-          "region": "England",
-          "value": 0.83
-        }
-      ]
+    "headers": {
+      "Authorization": {
+        "matches": "Bearer (.*)"
+      },
+      "Environment": {
+        "matches": "(isit|clone|live)"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8"
     },
-    {
-      "calculatedAt": "2016-08-18",
-      "fractions": [
+    "jsonBody": {
+      "empref": "123AB12345",
+      "fractionCalculations": [
         {
-          "region": "England",
-          "value": 0.78
+          "calculatedAt": "2016-12-23",
+          "fractions": [
+            {
+              "region": "England",
+              "value": 0.83
+            }
+          ]
+        },
+        {
+          "calculatedAt": "2016-08-18",
+          "fractions": [
+            {
+              "region": "England",
+              "value": 0.78
+            }
+          ]
         }
       ]
     }
-  ]
-}
-    }
+  }
 }
