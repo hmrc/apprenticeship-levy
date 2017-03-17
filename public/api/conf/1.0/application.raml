@@ -340,11 +340,13 @@ annotationTypes:
               type: date-only
               example: 2015-08-09
               required: false
+              default: 72 months prior to current date
             toDate: 
               description: The date of the latest calculation to return.
               type: date-only
               example: 2015-08-09
               required: false
+              default: current date
           responses: 
             200:
               body:
