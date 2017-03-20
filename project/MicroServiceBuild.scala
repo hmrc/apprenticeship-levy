@@ -20,23 +20,24 @@ private object AppDependencies {
   import play.sbt.PlayImport._
   import play.core.PlayVersion
 
-  private val microserviceBootstrapVersion = "5.8.0"
-  private val playAuthVersion = "4.2.0"
+  private val microserviceBootstrapVersion = "5.13.0"
+  private val playAuthVersion = "4.3.0"
   private val playAuthFrontendVersion = "6.2.0"
-  private val playHealthVersion = "2.0.0"
+  private val playHealthVersion = "2.1.0"
   private val logbackJsonLoggerVersion = "3.1.0"
-  private val playUrlBindersVersion = "2.0.0"
-  private val playConfigVersion = "3.0.0"
+  private val playUrlBindersVersion = "2.1.0"
+  private val playConfigVersion = "4.3.0"
   private val playHmrcApiVersion = "1.2.0"
-  private val hmrcTestVersion = "2.1.0"
+  private val hmrcTestVersion = "2.3.0"
   private val playHalVersion = "1.1.0"
   private val scalaXMLVersion = "2.11.0-M4"
   private val xmlDiffVersion = "2.0.2"
   private val scalacheckVersion = "1.12.5"
   private val playAuditingVersion = "2.4.0"
   private val domainVersion = "4.0.0"
-  private val httpVerbsVersion= "3.3.0"
+  private val httpVerbsVersion = "3.3.0"
   private val scalajHttpVersion = "2.3.0"
+  private val pegdownVersion = "1.6.0"
 
   val compile = Seq(
     ws,
@@ -65,7 +66,7 @@ private object AppDependencies {
         "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % "2.2.6" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.pegdown" % "pegdown" % "1.5.0" % scope,
+        "org.pegdown" % "pegdown" % pegdownVersion % scope,
         "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % scope,
         "org.mockito" % "mockito-all" % "1.9.5" % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % scope
