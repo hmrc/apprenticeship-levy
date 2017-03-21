@@ -28,6 +28,8 @@
     <xsl:variable name="content">
       <doc>
         <xsl:for-each select="$files">
+          <xsl:sort select="tokenize(document-uri(.), '/')[last()]"></xsl:sort>
+          <xsl:message select="tokenize(document-uri(.), '/')[last()]"></xsl:message>
           <xsl:apply-templates select="//endpoint/versions/version"/>
         </xsl:for-each>
       </doc>
