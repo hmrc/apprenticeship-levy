@@ -129,7 +129,7 @@ trait FractionsEndpoint extends Timer {
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    val EMPREF = "(\\d\\d\\d)([\\/]*)([a-zA-Z0-9]{7})".r
+    val EMPREF = "([0-9]{3})([\\/]*)([a-zA-Z0-9]+)".r
     timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
       audit(new ALAEvent("readFractions", empref, "", dateParams)) {
         des.httpGet.GET[Fractions](url).map { fraction =>

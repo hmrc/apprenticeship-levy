@@ -46,6 +46,19 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             val f2 = List(Fraction("England", BigDecimal(0.78)))
             fractions should contain atLeastOneOf(FractionCalculation(new LocalDate(2016, 12, 23), f1), FractionCalculation(new LocalDate(2015, 8, 18), f2))
           }
+
+          it(s"should return fractions with correct empref values") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/864%2FTZ00000/fractions").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(app, request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "864/TZ123"
+          }
         }
 
         describe(s"with valid parameters") {
