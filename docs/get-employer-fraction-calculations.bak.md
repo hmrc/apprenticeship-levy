@@ -32,8 +32,8 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/fractions
 #### Query Parameters
 | Name | Type | Value | Example |
 | --- | --- | --- | --- |
-|fromDate|Date|The date of the earliest calculation to return.|`2015-08-09`|
-|toDate|Date|The date of the latest calculation to return.|`2015-08-09`|
+|fromDate|Date|The date of the earliest calculation to return. Defaults to 72 months prior to current date.|`2015-08-09`|
+|toDate|Date|The date of the latest calculation to return. Defaults to current date.|`2015-08-09`|
 
 
 ### Response
