@@ -43,7 +43,7 @@ trait IntegrationTestConfig {
         "auditing.enabled" -> "false",
         "microservice.private-mode" -> "true",
         "appName" -> "application-name",
-        "appUrl" -> "http://microservice-name.service",
+        "appUrl" -> "http://microservice-name",
         "microservice.metrics.graphite.enabled" -> "false",
         "Test.microservice.services.service-locator.host" -> stubHost,
         "Test.microservice.services.service-locator.port" -> stubPort,
