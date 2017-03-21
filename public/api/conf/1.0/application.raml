@@ -336,17 +336,15 @@ annotationTypes:
               example: Bearer [token here]
           queryParameters: 
             fromDate: 
-              description: The date of the earliest calculation to return.
+              description: The date of the earliest calculation to return. Defaults to 72 months prior to current date.
               type: date-only
               example: 2015-08-09
               required: false
-              default: 72 months prior to current date
             toDate: 
-              description: The date of the latest calculation to return.
+              description: The date of the latest calculation to return. Defaults to current date.
               type: date-only
               example: 2015-08-09
               required: false
-              default: current date
           responses: 
             200:
               body:
