@@ -100,10 +100,22 @@ trait TestDataController extends Controller with Utf8MimeTypes {
     LocalDate.parse(dateStr).toDateTime(time, zone).toInstant()
   }
 
+  protected def toInstant(dateStr: String, days: Int): Instant = {
+    val time = LocalTime.MIDNIGHT
+    val zone = DateTimeZone.getDefault()
+    LocalDate.parse(dateStr).plusDays(days).toDateTime(time, zone).toInstant()
+  }
+
   protected def toInstant(json: JsLookupResult): Instant = {
     val time = LocalTime.MIDNIGHT
     val zone = DateTimeZone.getDefault()
     Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{case e: Throwable => LocalDateTime.parse(json.as[String]).toDateTime().toInstant()}.get
+  }
+
+  protected def toInstant(json: JsLookupResult, days: Int): Instant = {
+    val time = LocalTime.MIDNIGHT
+    val zone = DateTimeZone.getDefault()
+    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{case e: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toDateTime().toInstant()}.get
   }
 
   protected def filterByDate(path: String, json: JsValue)(implicit request: Request[_]): Future[Result] = {
@@ -115,14 +127,14 @@ trait TestDataController extends Controller with Utf8MimeTypes {
           case (maybeFrom,maybeTo) if maybeFrom.isDefined && maybeTo.isDefined  => {
             Logger.debug(s"Filtering results to: ${maybeFrom} ${maybeTo}")
             val queryInterval = new Interval(maybeFrom.map(toInstant(_)).get,
-                                             maybeTo.map(toInstant(_)).get)
+                                             maybeTo.map(toInstant(_, 1)).get)
             val EmployedCheck = "([A-Za-z\\-/0-9]*)(employed)([A-Za-z\\-/0-9]*)".r
             val Fractions = "([A-Za-z\\-/0-9%]*)(fractions)".r
             val Declarations = "([A-Za-z\\-/0-9%]*)(employer-payment-summary)".r
             path match {
               case EmployedCheck(_,_,_) => {
                 val interval = new Interval(toInstant(json \ "jsonBody" \ "fromDate"),
-                                            toInstant(json \ "jsonBody" \ "toDate"))
+                                            toInstant(json \ "jsonBody" \ "toDate", 1))
                 if (interval.overlap(queryInterval) != null) {
                   Future.successful(result(jsonOutStr))
                 } else {
