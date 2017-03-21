@@ -1,7 +1,7 @@
 {
   "status": 200,
   "jsonBody": {
-    "empref": "222/AA00002",
+    "empref": "222AA00002",
     "fractionCalculations": [{
         "calculatedAt": "2017-03-15",
         "fractions": [{
