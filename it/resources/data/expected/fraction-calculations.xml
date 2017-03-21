@@ -62,7 +62,7 @@
                         </code>
                     </cell>
                     <cell>Yes</cell>
-                    <cell>The date of the earliest calculation to return.</cell>
+                    <cell>The date of the earliest calculation to return. Defaults to 72 months prior to current date.</cell>
                 </row>
                 <row>
                     <cell>
@@ -78,7 +78,7 @@
                         </code>
                     </cell>
                     <cell>Yes</cell>
-                    <cell>The date of the latest calculation to return.</cell>
+                    <cell>The date of the latest calculation to return. Defaults to current date.</cell>
                 </row>
             </rows>
         </table>
