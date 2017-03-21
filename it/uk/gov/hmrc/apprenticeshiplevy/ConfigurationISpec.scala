@@ -20,7 +20,7 @@ class ConfigurationISpec extends WiremockFunSpec with ConfiguredServer {
       AppContext.appName shouldBe "application-name"
     }
     it ("should have an app url") {
-      AppContext.appUrl shouldBe "http://microservice-name.service"
+      AppContext.appUrl shouldBe "http://microservice-name"
     }
     it ("should have an service locator url") {
       AppContext.serviceLocatorUrl shouldBe "http://localhost:8080"

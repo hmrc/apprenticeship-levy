@@ -28,9 +28,9 @@ class ServiceLocatorRegistrationISpec
     "register itelf to service-locator" in new Setup {
       pending
       // Wiremock and Play started by IntegrationTestSuite so this test is simply to verify service registered on start up.
-      /*wiremockServer.verify(1, postRequestedFor(urlMatching("/registration")).
+      wiremockServer.verify(1, postRequestedFor(urlMatching("/registration")).
           withHeader("content-type", equalTo("application/json")).
-          withRequestBody(equalTo(regPayloadStringFor("application-name", additionalConfiguration.getOrElse("appUrl", "http://microservice-name.service").toString))))*/
+          withRequestBody(equalTo(regPayloadStringFor("application-name", additionalConfiguration.getOrElse("appUrl", "http://microservice-name").toString))))
     }
   }
 }
@@ -52,7 +52,7 @@ class ServiceLocatorRegistrationISpec2
       // Wiremock and Play started by IntegrationTestSuite so this test is simply to verify service registered on start up.
       wiremockServer.verify(0, postRequestedFor(urlMatching("/registration")).
           withHeader("content-type", equalTo("application/json")).
-          withRequestBody(equalTo(regPayloadStringFor("application-name", additionalConfiguration.getOrElse("appUrl", "http://microservice-name.service").toString))))
+          withRequestBody(equalTo(regPayloadStringFor("application-name", additionalConfiguration.getOrElse("appUrl", "http://microservice-name").toString))))
     }
   }
 }
