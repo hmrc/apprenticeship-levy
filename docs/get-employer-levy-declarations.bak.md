@@ -27,8 +27,8 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/declarati
 #### Query Parameters
 | Name | Type | Value | Example |
 | --- | --- | --- | --- |
-|fromDate|Date|The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.|`2015-08-09`|
-|toDate|Date|The date of the latest record to return.|`2015-08-09`|
+|fromDate|Date|The date of the earliest record to return. If no date is supplied the default date of current month/year - 6 years will be used.|`2015-08-09`|
+|toDate|Date|The date of the latest record to return. If no date is supplied the default date of 'now'/'today' will be used.|`2015-08-09`|
 
 
 ### Response
