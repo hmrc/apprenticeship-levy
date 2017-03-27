@@ -86,7 +86,7 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/employed/
   "statusCode": "400",
   "message": "DATE_INVALID: '.....' date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date is yyyy-MM-dd and year is 2000 or later."
 }</code></td></tr><tr><td>400 Bad Request</td>
-    <td>400</td>
+    <td>"400"</td>
     <td>A request parameter is missing.</td>
     <td><code>{
   "statusCode": "400",
