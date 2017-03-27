@@ -50,7 +50,7 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/fractions
                 "fractions": [
                     {
                         "region": "England",
-                        "value": "0.83"
+                        "value": 0.83
                     }
                 ]
             },
@@ -59,7 +59,7 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/fractions
                 "fractions": [
                     {
                         "region": "England",
-                        "value": "0.78"
+                        "value": 0.78
                     }
                 ]
             }
