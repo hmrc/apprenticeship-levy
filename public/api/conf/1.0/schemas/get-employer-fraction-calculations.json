@@ -30,7 +30,7 @@
                   "example": "England"
                 },
                 "value": {
-                  "type": "integer",
+                  "type": "number",
                   "description": "The fraction calculated for the region. Will be a decimal in the range 0 to 1.",
                   "example": "0.83"
                 }
