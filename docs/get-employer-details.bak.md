@@ -74,11 +74,23 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}
   </thead>
   <tbody>
 <tr><td>400 Bad Request</td>
+    <td>EMPREF_INVALID</td>
+    <td>A request parameter is incorrect.</td>
+    <td><code>{
+  "statusCode": "400",
+  "message": "EMPREF_INVALID: '...' is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."
+}</code></td></tr><tr><td>400 Bad Request</td>
     <td>EPAYE_EMPREF_INVALID</td>
     <td>A request parameter is incorrect.</td>
     <td><code>{
   "code": "DES_ERROR",
   "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
+}</code></td></tr><tr><td>401 Unauthorized</td>
+    <td>INVALID_CREDENTIALS</td>
+    <td>The request requires correct authentication headers with valid token.</td>
+    <td><code>{
+  "code": "INVALID_CREDENTIALS",
+  "message": "Invalid Authentication information provided"
 }</code></td></tr><tr><td>401 Unauthorized</td>
     <td>AUTH_ERROR</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>

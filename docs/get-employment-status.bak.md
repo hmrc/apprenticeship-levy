@@ -68,11 +68,41 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/employed/
   </thead>
   <tbody>
 <tr><td>400 Bad Request</td>
-    <td>EPAYE_EMPREF_INVALID</td>
+    <td>BAD_REQUEST</td>
     <td>A request parameter is incorrect or unknown, or from date is after to date.</td>
+    <td><code>{
+  "code": "BAD_REQUEST",
+  "message": "From date was after to date"
+}</code></td></tr><tr><td>400 Bad Request</td>
+    <td>EMPREF_INVALID</td>
+    <td>A request parameter is incorrect.</td>
+    <td><code>{
+  "statusCode": "400",
+  "message": "EMPREF_INVALID: '...' is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."
+}</code></td></tr><tr><td>400 Bad Request</td>
+    <td>DATE_INVALID</td>
+    <td>A request parameter is incorrect.</td>
+    <td><code>{
+  "statusCode": "400",
+  "message": "DATE_INVALID: '.....' date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date is yyyy-MM-dd and year is 2000 or later."
+}</code></td></tr><tr><td>400 Bad Request</td>
+    <td>400</td>
+    <td>A request parameter is missing.</td>
+    <td><code>{
+  "statusCode": "400",
+  "message": "Missing parameter: fromDate/toDate"
+}</code></td></tr><tr><td>400 Bad Request</td>
+    <td>EPAYE_EMPREF_INVALID</td>
+    <td>A request parameter is incorrect or unknown.</td>
     <td><code>{
   "code": "DES_ERROR",
   "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
+}</code></td></tr><tr><td>401 Unauthorized</td>
+    <td>INVALID_CREDENTIALS</td>
+    <td>The request requires correct authentication headers with valid token.</td>
+    <td><code>{
+  "code": "INVALID_CREDENTIALS",
+  "message": "Invalid Authentication information provided"
 }</code></td></tr><tr><td>401 Unauthorized</td>
     <td>AUTH_ERROR</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
@@ -86,11 +116,11 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/employed/
   "code": "DES_ERROR",
   "message": "Auth forbidden error: GET of '...' returned 403. Response body: ''"
 }</code></td></tr><tr><td>404 Not Found</td>
-    <td>EPAYE_EMPREF_UNKNOWN</td>
-    <td>Endpoint or internal system has become unavailable.</td>
+    <td>EPAYE_UNKNOWN</td>
+    <td>Endpoint or internal system has become unavailable or either NINO or EMPREF are not found. EPAYE_NINO_UNKNOWN and EPAYE_EMPREF_UNKNOWN have been withdrawn as backend systems will not distinguish 404 errors between unknown NINO or unknown EMPREF.</td>
     <td><code>{
-  "code": "DES_ERROR",
-  "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
+  "code": "EPAYE_UNKNOWN",
+  "message": "The provided NINO or EMPREF was not recognised'"
 }</code></td></tr><tr><td>408 Request Time-out</td>
     <td>AUTH_ERROR</td>
     <td>Endpoint or internal system has become unresponsive.</td>

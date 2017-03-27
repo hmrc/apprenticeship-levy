@@ -56,6 +56,12 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/
   </thead>
   <tbody>
 <tr><td>401 Unauthorized</td>
+    <td>INVALID_CREDENTIALS</td>
+    <td>The request requires correct authentication headers with valid token.</td>
+    <td><code>{
+  "code": "INVALID_CREDENTIALS",
+  "message": "Invalid Authentication information provided"
+}</code></td></tr><tr><td>401 Unauthorized</td>
     <td>AUTH_ERROR_UNAUTHORIZED</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{

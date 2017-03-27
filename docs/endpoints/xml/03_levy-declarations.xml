@@ -195,11 +195,41 @@
           <description>A request parameter is incorrect.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
+  "statusCode": "400",
+  "message": "EMPREF_INVALID: '...' is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."
+}]]></content-type>
+          </body>
+          <code>EMPREF_INVALID</code>
+        </http>
+        <http status="400" msg="Bad Request">
+          <description>A request parameter is incorrect.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "statusCode": "400",
+  "message": "DATE_INVALID: '.....' date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date is yyyy-MM-dd and year is 2000 or later."
+}]]></content-type>
+          </body>
+          <code>DATE_INVALID</code>
+        </http>
+        <http status="400" msg="Bad Request">
+          <description>A request parameter is incorrect.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
   "code": "DES_ERROR",
   "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
 }]]></content-type>
           </body>
           <code>EPAYE_EMPREF_INVALID</code>
+        </http>
+        <http status="401" msg="Unauthorized">
+          <description>The request requires correct authentication headers with valid token.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "INVALID_CREDENTIALS",
+  "message": "Invalid Authentication information provided"
+}]]></content-type>
+          </body>
+          <code>INVALID_CREDENTIALS</code>
         </http>
         <http status="401" msg="Unauthorized">
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>

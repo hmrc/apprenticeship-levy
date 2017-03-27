@@ -108,11 +108,61 @@
           <description>A request parameter is incorrect or unknown, or from date is after to date.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
+  "code": "BAD_REQUEST",
+  "message": "From date was after to date"
+}]]></content-type>
+          </body>
+          <code>BAD_REQUEST</code>
+        </http>
+        <http status="400" msg="Bad Request">
+          <description>A request parameter is incorrect.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "statusCode": "400",
+  "message": "EMPREF_INVALID: '...' is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."
+}]]></content-type>
+          </body>
+          <code>EMPREF_INVALID</code>
+        </http>
+        <http status="400" msg="Bad Request">
+          <description>A request parameter is incorrect.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "statusCode": "400",
+  "message": "DATE_INVALID: '.....' date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date is yyyy-MM-dd and year is 2000 or later."
+}]]></content-type>
+          </body>
+          <code>DATE_INVALID</code>
+        </http>
+        <http status="400" msg="Bad Request">
+          <description>A request parameter is missing.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "statusCode": "400",
+  "message": "Missing parameter: fromDate/toDate"
+}]]></content-type>
+          </body>
+          <code>400</code>
+        </http>
+        <http status="400" msg="Bad Request">
+          <description>A request parameter is incorrect or unknown.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
   "code": "DES_ERROR",
   "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
 }]]></content-type>
           </body>
           <code>EPAYE_EMPREF_INVALID</code>
+        </http>
+        <http status="401" msg="Unauthorized">
+          <description>The request requires correct authentication headers with valid token.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "INVALID_CREDENTIALS",
+  "message": "Invalid Authentication information provided"
+}]]></content-type>
+          </body>
+          <code>INVALID_CREDENTIALS</code>
         </http>
         <http status="401" msg="Unauthorized">
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
@@ -135,14 +185,14 @@
           <code>AUTH_ERROR</code>
         </http>
         <http status="404" msg="Not Found">
-          <description>Endpoint or internal system has become unavailable.</description>
+          <description>Endpoint or internal system has become unavailable or either NINO or EMPREF are not found. EPAYE_NINO_UNKNOWN and EPAYE_EMPREF_UNKNOWN have been withdrawn as backend systems will not distinguish 404 errors between unknown NINO or unknown EMPREF.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "DES_ERROR",
-  "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
+  "code": "EPAYE_UNKNOWN",
+  "message": "The provided NINO or EMPREF was not recognised'"
 }]]></content-type>
           </body>
-          <code>EPAYE_EMPREF_UNKNOWN</code>
+          <code>EPAYE_UNKNOWN</code>
         </http>
         <http status="408" msg="Request Time-out">
           <description>Endpoint or internal system has become unresponsive.</description>
