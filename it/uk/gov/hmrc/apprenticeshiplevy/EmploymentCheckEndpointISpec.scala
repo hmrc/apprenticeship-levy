@@ -47,7 +47,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             info(contentAsString(result))
             contentType(result) shouldBe Some("application/json")
             val json = contentAsJson(result)
-            json shouldBe Json.parse("""{"code":"EPAYE_NINO_UNKNOWN","message":"The provided NINO was not recognised"}""")
+            json shouldBe Json.parse("""{"code":"EPAYE_UNKNOWN","message":"The provided NINO or EMPREF was not recognised"}""")
           }
 
           it (s"?fromDate=2015-03-03&toDate=2015-06-30 should return 'not employed'") {
@@ -81,7 +81,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
                 // check
                 httpStatus shouldBe 400
                 contentType(result) shouldBe Some("application/json")
-                contentAsString(result) should include ("""is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$"""")
+                contentAsString(result) should include ("""is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."""")
               }
             }
           }
@@ -128,7 +128,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
                   // check
                   httpStatus shouldBe 400
                   contentType(result) shouldBe Some("application/json")
-                  contentAsString(result) should include ("""date parameter is in the wrong format. Should be ('^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where data is yyyy-MM-dd and year is 2000 or later""")
+                  contentAsString(result) should include ("""date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date is yyyy-MM-dd and year is 2000 or later.""")
                 }
               }
             }

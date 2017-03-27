@@ -192,12 +192,39 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
             </headings>
             <rows>
                 <row>
+                    <cell>A request parameter is incorrect.</cell>
+                    <cell>
+                        <code>400 (Bad Request)</code>
+                    </cell>
+                    <cell>
+                        <code>EMPREF_INVALID</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>A request parameter is incorrect.</cell>
+                    <cell>
+                        <code>400 (Bad Request)</code>
+                    </cell>
+                    <cell>
+                        <code>DATE_INVALID</code>
+                    </cell>
+                </row>
+                <row>
                     <cell>A request parameter is incorrect or unknown, or from date is after to date.</cell>
                     <cell>
                         <code>400 (Bad Request)</code>
                     </cell>
                     <cell>
                         <code>EPAYE_EMPREF_INVALID</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>The request requires correct authentication headers with valid token.</cell>
+                    <cell>
+                        <code>401 (Unauthorized)</code>
+                    </cell>
+                    <cell>
+                        <code>INVALID_CREDENTIALS</code>
                     </cell>
                 </row>
                 <row>
