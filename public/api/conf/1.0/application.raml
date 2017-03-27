@@ -246,12 +246,12 @@ annotationTypes:
               example: Bearer [token here]
           queryParameters: 
             fromDate: 
-              description: The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.
+              description: The date of the earliest record to return. If no date is supplied the default date of current month/year - 6 years will be used.
               type: date-only
               example: 2015-08-09
               required: false
             toDate: 
-              description: The date of the latest record to return.
+              description: The date of the latest record to return. If no date is supplied the default date of 'now'/'today' will be used.
               type: date-only
               example: 2015-08-09
               required: false
