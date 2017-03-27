@@ -142,7 +142,7 @@
   "message": "Missing parameter: fromDate/toDate"
 }]]></content-type>
           </body>
-          <code>"400"</code>
+          <code>_400</code>
         </http>
         <http status="400" msg="Bad Request">
           <description>A request parameter is incorrect or unknown.</description>
