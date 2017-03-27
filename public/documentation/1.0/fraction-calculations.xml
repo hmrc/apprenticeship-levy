@@ -108,7 +108,7 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
                 "fractions": [
                     {
                         "region": "England",
-                        "value": "0.83"
+                        "value": 0.83
                     }
                 ]
             },
@@ -117,7 +117,7 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
                 "fractions": [
                     {
                         "region": "England",
-                        "value": "0.78"
+                        "value": 0.78
                     }
                 ]
             }

@@ -6,7 +6,7 @@
                 "fractions": [
                     {
                         "region": "England",
-                        "value": "0.83"
+                        "value": 0.83
                     }
                 ]
             },
@@ -15,7 +15,7 @@
                 "fractions": [
                     {
                         "region": "England",
-                        "value": "0.78"
+                        "value": 0.78
                     }
                 ]
             }
