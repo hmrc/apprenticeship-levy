@@ -56,7 +56,7 @@
                         </code>
                     </cell>
                     <cell>Yes</cell>
-                    <cell>The date of the earliest record to return. Records that would fall into a tax year older than the current year - 6 will not be returned.</cell>
+                    <cell>The date of the earliest record to return. If no date is supplied the default date of current month/year - 6 years will be used.</cell>
                 </row>
                 <row>
                     <cell>
@@ -72,7 +72,7 @@
                         </code>
                     </cell>
                     <cell>Yes</cell>
-                    <cell>The date of the latest record to return.</cell>
+                    <cell>The date of the latest record to return. If no date is supplied the default date of 'now'/'today' will be used.</cell>
                 </row>
             </rows>
         </table>

@@ -32,7 +32,7 @@ trait Auditor  {
       case Failure(t) => {
         val httpStatus = exceptionToMessage(t)
         auditConnector.map(_.sendEvent(event.toDataEvent(httpStatus)))
-        Logger.error(s"Failed to '${event.name}' Server ${httpStatus}: ${t.getMessage()}",t)
+        Logger.warn(s"Failed to '${event.name}' Server ${httpStatus}: ${t.getMessage()}")
       }
     }
   }
