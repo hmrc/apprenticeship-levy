@@ -29,7 +29,7 @@ import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange,ClosedDateRange}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.play.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-
+import org.slf4j.MDC
 import scala.concurrent.Future
 
 trait LevyDeclarationController {
@@ -58,7 +58,7 @@ trait LevyDeclarationController {
         * if it wants to return a 404 if all calls to `charges` return no results.
          */
         case t: NotFoundException => {
-          Logger.info("DES returned 'Not Found'")
+          Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${t.getMessage()}, API returning empty sequence")
           Seq.empty
         }
       }
@@ -76,7 +76,7 @@ trait LevyDeclarationController {
       Ok(Json.toJson(LevyDeclarations(empref, ds)))
     }
     else {
-      Logger.info("DES returned empty list of declarations")
+      Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES returned empty list of declarations: API returning not found")
       ErrorNotFound.result
     }
   }

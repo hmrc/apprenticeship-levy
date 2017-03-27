@@ -26,7 +26,7 @@ import play.api.Play
 import play.api.Play._
 import com.kenshoo.play.metrics.{MetricsImpl, MetricsFilter, MetricsFilterImpl}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import play.api.inject.NewInstanceInjector
+import play.api.Play.current
 import scala.util.Try
 
 sealed trait MetricEvent {
@@ -51,7 +51,7 @@ trait Metrics {
 trait GraphiteMetrics extends Metrics {
   Logger.info("[Metrics] Registering metrics...")
 
-  val registry: Option[MetricRegistry] = if (AppContext.metricsEnabled) Try(Some(NewInstanceInjector.instanceOf[MetricsImpl].defaultRegistry)).getOrElse(None) else None
+  val registry: Option[MetricRegistry] = if (AppContext.metricsEnabled) Try (Some(current.injector.instanceOf[MetricsImpl].defaultRegistry)).getOrElse(None) else None
 
   val AUTH_SERVICE_REQUEST = "auth-service"
   val DES_EMP_CHECK_REQUEST = "des-emp-check"
