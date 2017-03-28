@@ -23,7 +23,7 @@ import uk.gov.hmrc.api.controllers.ErrorResponse
 
 package object sandbox {
   val NOT_FOUND_HTTP_STATUS = 404
-  case object ErrorNinoNotVisible extends ErrorResponse(NOT_FOUND_HTTP_STATUS, "EPAYE_NINO_UNKNOWN", "The provided NINO was not recognised")
+  case object ErrorNotVisible extends ErrorResponse(NOT_FOUND_HTTP_STATUS, "EPAYE_UNKNOWN", "The provided NINO or EMPREF was not recognised")
 
   implicit class ErrorResponseSyntax(er: ErrorResponse) {
     def toResult: Result = Status(er.httpStatusCode)(Json.toJson(er))

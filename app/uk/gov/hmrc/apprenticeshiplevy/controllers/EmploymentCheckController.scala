@@ -19,8 +19,8 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNinoNotVisible
-import uk.gov.hmrc.apprenticeshiplevy.data.des.{Employed, NinoUnknown, NotEmployed}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNotVisible
+import uk.gov.hmrc.apprenticeshiplevy.data.des.{Employed, Unknown, NotEmployed}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentCheck,EmploymentReference,Nino}
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
@@ -40,7 +40,7 @@ trait EmploymentCheckController extends DesController {
       desConnector.check(toDESFormat(ref.empref), ni.nino, ClosedDateRange(fromDate, toDate)).map {
         case Employed => Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = true)))
         case NotEmployed => Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = false)))
-        case NinoUnknown => ErrorNinoNotVisible.toResult
+        case Unknown => ErrorNotVisible.toResult
       } recover desErrorHandler
     }
   }

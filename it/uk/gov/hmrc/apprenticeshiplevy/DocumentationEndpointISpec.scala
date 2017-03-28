@@ -66,6 +66,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
     }
 
     describe (s"should when calling ${localMicroserviceUrl}/api/documentation/<version>/<endpoint>") {
+      /* DEPRECATED
       describe (s"with valid parameters") {
         val definitionFile = new File("./public/api/definition.json")
         val definitionContents = Source.fromFile(definitionFile).getLines.mkString
@@ -96,7 +97,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             }
           }
         }
-      }
+      }*/
 
       describe (s"with invalid parameters") {
         it (s"should return 404 when documentation version doesn't exist") {

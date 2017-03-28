@@ -108,7 +108,7 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
                 "fractions": [
                     {
                         "region": "England",
-                        "value": "0.83"
+                        "value": 0.83
                     }
                 ]
             },
@@ -117,7 +117,7 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
                 "fractions": [
                     {
                         "region": "England",
-                        "value": "0.78"
+                        "value": 0.78
                     }
                 ]
             }
@@ -197,7 +197,43 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
                         <code>400 (Bad Request)</code>
                     </cell>
                     <cell>
+                        <code>BAD_REQUEST</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Employer reference (EMPREF) request parameter is incorrect.</cell>
+                    <cell>
+                        <code>400 (Bad Request)</code>
+                    </cell>
+                    <cell>
+                        <code>EMPREF_INVALID</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Date(s) request parameter(s) is incorrect.</cell>
+                    <cell>
+                        <code>400 (Bad Request)</code>
+                    </cell>
+                    <cell>
+                        <code>DATE_INVALID</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>Employer reference (EMPREF) request parameter is unknown.</cell>
+                    <cell>
+                        <code>400 (Bad Request)</code>
+                    </cell>
+                    <cell>
                         <code>EPAYE_EMPREF_INVALID</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>The request requires correct authentication headers with valid token.</cell>
+                    <cell>
+                        <code>401 (Unauthorized)</code>
+                    </cell>
+                    <cell>
+                        <code>INVALID_CREDENTIALS</code>
                     </cell>
                 </row>
                 <row>

@@ -34,10 +34,10 @@ object QueryBinders {
         date match {
           case DatePattern(year, _*) if year.toInt >= 2000 => Right(DateConverter.parseToLocalDate(date))
           case _ =>
-            Left(s"'${date}' date parameter is in the wrong format. Should be ('${DatePattern.toString()}' where data is yyyy-MM-dd and year is 2000 or later)")
+            Left(s"DATE_INVALID: '${date}' date parameter is in the wrong format. Should be '${DatePattern.toString()}' where date is yyyy-MM-dd and year is 2000 or later.")
         }
       } recover {
-        case e: Exception => Left(s"date parameter is in the wrong format. Should be ('${DatePattern.toString()}' where data is yyyy-MM-dd)")
+        case e: Exception => Left(s"DATE_INVALID: date parameter is in the wrong format. Should be '${DatePattern.toString()}' where data is yyyy-MM-dd.")
       }).get
       }
     }
@@ -51,17 +51,23 @@ object PathBinders {
   val NinoPattern = AppContext.ninoPattern.r
 
   implicit def bindableEmploymentReference(implicit binder: PathBindable[String]): PathBindable[EmploymentReference] =
-    bindable[String,EmploymentReference](EmployerReferencePattern, str => EmploymentReference(str), b => URLEncoder.encode(b.empref, "UTF-8"))
+    bindable[String,EmploymentReference](EmployerReferencePattern,
+                                         str => EmploymentReference(str),
+                                         b => URLEncoder.encode(b.empref, "UTF-8"),
+                                         "EMPREF_INVALID")
 
   implicit def bindableNino(implicit binder: PathBindable[String]): PathBindable[Nino] =
-    bindable[String,Nino](NinoPattern, str => Nino(str), b => URLEncoder.encode(b.nino, "UTF-8"))
+    bindable[String,Nino](NinoPattern,
+                          str => Nino(str),
+                          b => URLEncoder.encode(b.nino, "UTF-8"),
+                          "NINO_INVALID")
 
-  private[config] def bindable[A,B](regex: Regex, convertToB: String => B, convertToA: B => A)
+  private[config] def bindable[A,B](regex: Regex, convertToB: String => B, convertToA: B => A, code: String)
                                    (implicit binder: PathBindable[A]): PathBindable[B] = new PathBindable[B] {
     override def bind(key: String, value: String): Either[String, B] = {
       for {
         theA <- binder.bind(key, value).right
-        bAsStr <- isValid(regex, URLDecoder.decode(theA.toString(), "UTF-8")).right
+        bAsStr <- isValid(regex, URLDecoder.decode(theA.toString(), "UTF-8"), code).right
       } yield convertToB(bAsStr)
     }
 
@@ -70,8 +76,8 @@ object PathBinders {
     }
   }
 
-  private[config] def isValid(regex: Regex, value: String): Either[String, String] = value match {
+  private[config] def isValid(regex: Regex, value: String, code: String): Either[String, String] = value match {
     case regex(_*) => Right(value)
-    case _ => Left(s"'${value}' is in the wrong format. Should be ${regex.toString()}")
+    case _ => Left(s"${code}: '${value}' is in the wrong format. Should be ${regex.toString()} and url encoded.")
   }
 }
