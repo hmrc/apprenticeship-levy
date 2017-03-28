@@ -93,6 +93,15 @@
             </headings>
             <rows>
                 <row>
+                    <cell>The request requires correct authentication headers with valid token.</cell>
+                    <cell>
+                        <code>401 (Unauthorized)</code>
+                    </cell>
+                    <cell>
+                        <code>INVALID_CREDENTIALS</code>
+                    </cell>
+                </row>
+                <row>
                     <cell>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</cell>
                     <cell>
                         <code>401 (Unauthorized)</code>

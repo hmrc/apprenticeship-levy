@@ -45,4 +45,4 @@ case object Employed extends EmploymentCheckStatus
 
 case object NotEmployed extends EmploymentCheckStatus
 
-case object NinoUnknown extends EmploymentCheckStatus
+case object Unknown extends EmploymentCheckStatus

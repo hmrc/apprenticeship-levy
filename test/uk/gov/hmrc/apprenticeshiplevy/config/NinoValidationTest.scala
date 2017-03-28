@@ -23,7 +23,7 @@ class NinoValidationTest extends WordSpec with EitherValues with Matchers with O
 
   "The validation of a nino" should {
     "pass with 'KC' prefix" in {
-      PathBinders.isValid(PathBinders.NinoPattern, "KC745625A").right.value shouldBe "KC745625A"
+      PathBinders.isValid(PathBinders.NinoPattern, "KC745625A", "ERRORCODE").right.value shouldBe "KC745625A"
     }
   }
 }

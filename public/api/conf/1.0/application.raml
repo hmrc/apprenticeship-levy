@@ -70,6 +70,10 @@ annotationTypes:
             application/json:
               type: types.errorResponse
               examples:
+                401_INVALID_CREDENTIALS:
+                  description: The request requires correct authentication headers with valid token.
+                  value:
+                    code: INVALID_CREDENTIALS
                 401_AUTH_ERROR_UNAUTHORIZED:
                   description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                   value:
@@ -176,6 +180,10 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
+                    400_EMPREF_INVALID:
+                      description: A request parameter is incorrect.
+                      value:
+                        code: EMPREF_INVALID
                     400_EPAYE_EMPREF_INVALID:
                       description: A request parameter is incorrect.
                       value:
@@ -185,6 +193,10 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
+                    401_INVALID_CREDENTIALS:
+                      description: The request requires correct authentication headers with valid token.
+                      value:
+                        code: INVALID_CREDENTIALS
                     401_AUTH_ERROR:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
@@ -266,8 +278,16 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
+                    400_EMPREF_INVALID:
+                      description: Employer reference (EMPREF) request parameter is incorrect.
+                      value:
+                        code: EMPREF_INVALID
+                    400_DATE_INVALID:
+                      description: Date(s) request parameter(s) is incorrect.
+                      value:
+                        code: DATE_INVALID
                     400_EPAYE_EMPREF_INVALID:
-                      description: A request parameter is incorrect.
+                      description: Employer reference (EMPREF) request parameter is incorrect.
                       value:
                         code: EPAYE_EMPREF_INVALID
             401:
@@ -275,6 +295,10 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
+                    401_INVALID_CREDENTIALS:
+                      description: The request requires correct authentication headers with valid token.
+                      value:
+                        code: INVALID_CREDENTIALS
                     401_AUTH_ERROR:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
@@ -356,8 +380,20 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    400_EPAYE_EMPREF_INVALID:
+                    400_BAD_REQUEST:
                       description: A request parameter is incorrect or unknown, or from date is after to date.
+                      value:
+                        code: BAD_REQUEST
+                    400_EMPREF_INVALID:
+                      description: Employer reference (EMPREF) request parameter is incorrect.
+                      value:
+                        code: EMPREF_INVALID
+                    400_DATE_INVALID:
+                      description: Date(s) request parameter(s) is incorrect.
+                      value:
+                        code: DATE_INVALID
+                    400_EPAYE_EMPREF_INVALID:
+                      description: Employer reference (EMPREF) request parameter is unknown.
                       value:
                         code: EPAYE_EMPREF_INVALID
             401:
@@ -365,6 +401,10 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
+                    401_INVALID_CREDENTIALS:
+                      description: The request requires correct authentication headers with valid token.
+                      value:
+                        code: INVALID_CREDENTIALS
                     401_AUTH_ERROR:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
@@ -452,8 +492,24 @@ annotationTypes:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      400_EPAYE_EMPREF_INVALID:
+                      400_BAD_REQUEST:
                         description: A request parameter is incorrect or unknown, or from date is after to date.
+                        value:
+                          code: BAD_REQUEST
+                      400_EMPREF_INVALID:
+                        description: Employer reference (EMPREF) request parameter is incorrect.
+                        value:
+                          code: EMPREF_INVALID
+                      400_DATE_INVALID:
+                        description: Date request parameter is incorrect.
+                        value:
+                          code: DATE_INVALID
+                      400__400:
+                        description: Date(s) request parameter(s) is missing.
+                        value:
+                          code: _400
+                      400_EPAYE_EMPREF_INVALID:
+                        description: A request parameter is incorrect.
                         value:
                           code: EPAYE_EMPREF_INVALID
               401:
@@ -461,6 +517,10 @@ annotationTypes:
                   application/json:
                     type: types.errorResponse
                     examples:
+                      401_INVALID_CREDENTIALS:
+                        description: The request requires correct authentication headers with valid token.
+                        value:
+                          code: INVALID_CREDENTIALS
                       401_AUTH_ERROR:
                         description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                         value:
@@ -479,10 +539,10 @@ annotationTypes:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      404_EPAYE_EMPREF_UNKNOWN:
-                        description: Endpoint or internal system has become unavailable.
+                      404_EPAYE_UNKNOWN:
+                        description: Endpoint or internal system has become unavailable or either NINO or EMPREF are not found. EPAYE_NINO_UNKNOWN and EPAYE_EMPREF_UNKNOWN have been withdrawn as backend systems will not distinguish 404 errors between unknown NINO or unknown EMPREF.
                         value:
-                          code: EPAYE_EMPREF_UNKNOWN
+                          code: EPAYE_UNKNOWN
               408:
                 body:
                   application/json:
@@ -531,6 +591,10 @@ annotationTypes:
             application/json:
               type: types.errorResponse
               examples:
+                401_INVALID_CREDENTIALS:
+                  description: The request requires correct authentication headers with valid token.
+                  value:
+                    code: INVALID_CREDENTIALS
                 401_DES_ERROR_UNAUTHORIZED:
                   description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                   value:
