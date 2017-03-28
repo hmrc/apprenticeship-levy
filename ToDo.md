@@ -6,7 +6,6 @@
 - [ ] Unit tests where integration tests aren't in place
 - [x] Add date filtering to sandbox data endpoint
 - [x] Update configuration for service manager to retire apprenticeship-levy-stub
-- [ ] Add caching to documentation controller
 - [x] Remove play 2.5 warnings
 - [x] Connectors failing backend tests
 - [x] Prune unused code
@@ -46,8 +45,8 @@
 - [x] Convert xmls to single xml source
 - [x] XSLT to produce definition.json
 - [x] XSLT to produce endpoint xmls
-- [ ] XSLT to produce RAML files (mostly complete)
-- [ ] XSLT to produce MD files
+- [x] XSLT to produce RAML files (mostly complete)
+- [x] XSLT to produce MD files
 
 ## Metrics
 - [x] Add tests for audit events
