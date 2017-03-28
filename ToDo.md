@@ -1,7 +1,6 @@
 
 ## General
 
-- [ ] Check pence values in declarations
 - [x] Update error codes
 - [ ] Unit tests where integration tests aren't in place
 - [x] Add date filtering to sandbox data endpoint
