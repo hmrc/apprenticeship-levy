@@ -9,7 +9,7 @@
 - [x] Connectors failing backend tests
 - [x] Prune unused code
 - [x] Consider converting config to be updatable on the fly (AppContext)
-- [x] :question: Confirm useage of headercarrier
+- [x] Confirm useage of headercarrier
 - [x] Write tests for bindable local date
 - [x] Consider consolidating data/domain classes into single package hierarchy
 - [x] scalastyle
