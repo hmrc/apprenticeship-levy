@@ -204,7 +204,7 @@
                     </cell>
                 </row>
                 <row>
-                    <cell>A request parameter is incorrect.</cell>
+                    <cell>Employer reference (EMPREF) request parameter is incorrect.</cell>
                     <cell>
                         <code>400 (Bad Request)</code>
                     </cell>
@@ -213,7 +213,7 @@
                     </cell>
                 </row>
                 <row>
-                    <cell>A request parameter is incorrect.</cell>
+                    <cell>Date request parameter is incorrect.</cell>
                     <cell>
                         <code>400 (Bad Request)</code>
                     </cell>
@@ -222,7 +222,7 @@
                     </cell>
                 </row>
                 <row>
-                    <cell>A request parameter is missing.</cell>
+                    <cell>Date(s) request parameter(s) is missing.</cell>
                     <cell>
                         <code>400 (Bad Request)</code>
                     </cell>
@@ -231,7 +231,7 @@
                     </cell>
                 </row>
                 <row>
-                    <cell>A request parameter is incorrect or unknown.</cell>
+                    <cell>A request parameter is incorrect.</cell>
                     <cell>
                         <code>400 (Bad Request)</code>
                     </cell>

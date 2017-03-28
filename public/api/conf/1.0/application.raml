@@ -279,15 +279,15 @@ annotationTypes:
                   type: types.errorResponse
                   examples:
                     400_EMPREF_INVALID:
-                      description: A request parameter is incorrect.
+                      description: Employer reference (EMPREF) request parameter is incorrect.
                       value:
                         code: EMPREF_INVALID
                     400_DATE_INVALID:
-                      description: A request parameter is incorrect.
+                      description: Date(s) request parameter(s) is incorrect.
                       value:
                         code: DATE_INVALID
                     400_EPAYE_EMPREF_INVALID:
-                      description: A request parameter is incorrect.
+                      description: Employer reference (EMPREF) request parameter is incorrect.
                       value:
                         code: EPAYE_EMPREF_INVALID
             401:
@@ -380,16 +380,20 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
+                    400_BAD_REQUEST:
+                      description: A request parameter is incorrect or unknown, or from date is after to date.
+                      value:
+                        code: BAD_REQUEST
                     400_EMPREF_INVALID:
-                      description: A request parameter is incorrect.
+                      description: Employer reference (EMPREF) request parameter is incorrect.
                       value:
                         code: EMPREF_INVALID
                     400_DATE_INVALID:
-                      description: A request parameter is incorrect.
+                      description: Date(s) request parameter(s) is incorrect.
                       value:
                         code: DATE_INVALID
                     400_EPAYE_EMPREF_INVALID:
-                      description: A request parameter is incorrect or unknown, or from date is after to date.
+                      description: Employer reference (EMPREF) request parameter is unknown.
                       value:
                         code: EPAYE_EMPREF_INVALID
             401:
@@ -493,19 +497,19 @@ annotationTypes:
                         value:
                           code: BAD_REQUEST
                       400_EMPREF_INVALID:
-                        description: A request parameter is incorrect.
+                        description: Employer reference (EMPREF) request parameter is incorrect.
                         value:
                           code: EMPREF_INVALID
                       400_DATE_INVALID:
-                        description: A request parameter is incorrect.
+                        description: Date request parameter is incorrect.
                         value:
                           code: DATE_INVALID
                       400__400:
-                        description: A request parameter is missing.
+                        description: Date(s) request parameter(s) is missing.
                         value:
                           code: _400
                       400_EPAYE_EMPREF_INVALID:
-                        description: A request parameter is incorrect or unknown.
+                        description: A request parameter is incorrect.
                         value:
                           code: EPAYE_EMPREF_INVALID
               401:

@@ -192,7 +192,7 @@
           </body>
         </http>
         <http status="400" msg="Bad Request">
-          <description>A request parameter is incorrect.</description>
+          <description>Employer reference (EMPREF) request parameter is incorrect.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "statusCode": "400",
@@ -202,7 +202,7 @@
           <code>EMPREF_INVALID</code>
         </http>
         <http status="400" msg="Bad Request">
-          <description>A request parameter is incorrect.</description>
+          <description>Date(s) request parameter(s) is incorrect.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "statusCode": "400",
@@ -212,7 +212,7 @@
           <code>DATE_INVALID</code>
         </http>
         <http status="400" msg="Bad Request">
-          <description>A request parameter is incorrect.</description>
+          <description>Employer reference (EMPREF) request parameter is incorrect.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "DES_ERROR",
