@@ -44,8 +44,12 @@ trait LevyDeclarationController {
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
     else
       retrieveDeclarations(toDESFormat(ref.empref), toDateRange(fromDate, toDate))
-        .map(ds => buildResult(ds.sortWith((first:LevyDeclaration,second:LevyDeclaration)=>first.submissionTime.isAfter(second.submissionTime)), ref.empref))
-        .recover(desErrorHandler)
+        .map { ds =>
+          val results = ds.sortWith{ (first:LevyDeclaration,second:LevyDeclaration) =>
+            first.submissionTime.isAfter(second.submissionTime) && first.id >= second.id
+          }
+          buildResult(results, ref.empref)
+        }.recover(desErrorHandler)
   }
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
