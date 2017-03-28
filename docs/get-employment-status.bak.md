@@ -75,25 +75,25 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/employed/
   "message": "From date was after to date"
 }</code></td></tr><tr><td>400 Bad Request</td>
     <td>EMPREF_INVALID</td>
-    <td>A request parameter is incorrect.</td>
+    <td>Employer reference (EMPREF) request parameter is incorrect.</td>
     <td><code>{
   "statusCode": "400",
   "message": "EMPREF_INVALID: '...' is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."
 }</code></td></tr><tr><td>400 Bad Request</td>
     <td>DATE_INVALID</td>
-    <td>A request parameter is incorrect.</td>
+    <td>Date request parameter is incorrect.</td>
     <td><code>{
   "statusCode": "400",
   "message": "DATE_INVALID: '.....' date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date is yyyy-MM-dd and year is 2000 or later."
 }</code></td></tr><tr><td>400 Bad Request</td>
     <td>_400</td>
-    <td>A request parameter is missing.</td>
+    <td>Date(s) request parameter(s) is missing.</td>
     <td><code>{
   "statusCode": "400",
   "message": "Missing parameter: fromDate/toDate"
 }</code></td></tr><tr><td>400 Bad Request</td>
     <td>EPAYE_EMPREF_INVALID</td>
-    <td>A request parameter is incorrect or unknown.</td>
+    <td>A request parameter is incorrect.</td>
     <td><code>{
   "code": "DES_ERROR",
   "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
