@@ -35,11 +35,42 @@ class EmployerPaymentSummarySpec extends UnitSpec {
     val rtiSubmissionTime = LocalDateTime.now()
     val relatedTaxYear = "16-17"
 
+    "create a unique id for levy declaration object" in {
+      val startNoPayment = new LocalDate("2016-05-06")
+      val endNoPayment = new LocalDate("2016-06-05")
+
+      val expectedTaxMonth = 2
+
+      val eps = EmployerPaymentSummary(id,
+                                       submissionTime,
+                                       rtiSubmissionTime,
+                                       relatedTaxYear,
+                                       Some(ClosedDateRange(startNoPayment, endNoPayment)))
+
+      val l1 = EmployerPaymentSummary.toDeclarations(eps)(0)
+      l1 shouldBe LevyDeclaration(1234560L, submissionTime,
+        noPaymentForPeriod = Some(true),
+        payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)),
+        submissionId = id)
+
+      val levyDueYTD = BigDecimal(500)
+      val allowance = BigDecimal(10000)
+      val taxMonth = 2
+      val eps2 = EmployerPaymentSummary(id,
+                                       submissionTime,
+                                       rtiSubmissionTime,
+                                       relatedTaxYear,
+                                       apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, allowance, taxMonth.toString())))
+
+      val l2 = EmployerPaymentSummary.toDeclarations(eps2)(0)
+      l2 shouldBe LevyDeclaration(1234562L, submissionTime,
+        payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
+        levyDueYTD = Some(levyDueYTD),
+        levyAllowanceForFullYear = Some(allowance),
+        submissionId = id)
+    }
+
     "convert a terminated payroll scheme" in {
-      Try(AppContext.metricsEnabled) match {
-        case Success(v) => info(s"Metrics enabled: ${v}")
-        case Failure(e) => e.printStackTrace()
-      }
       val schemeCeasedDate = submissionTime.minusDays(1).toLocalDate
       val eps = EmployerPaymentSummary(id,
                                        submissionTime,
@@ -47,7 +78,7 @@ class EmployerPaymentSummarySpec extends UnitSpec {
                                        relatedTaxYear,
                                        finalSubmission = Some(SchemeCeased(true, schemeCeasedDate, None)))
 
-      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(id, submissionTime, Some(schemeCeasedDate))
+      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(1234563L, submissionTime, Some(schemeCeasedDate), submissionId = id)
     }
 
     "convert an inactive submission" in {
@@ -59,7 +90,7 @@ class EmployerPaymentSummarySpec extends UnitSpec {
                                        relatedTaxYear,
                                        inactivePeriod = Some(ClosedDateRange(from = inactiveFrom, to = inactiveTo)))
 
-      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(id, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo))
+      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(1234561L, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo), submissionId = id)
     }
 
     "convert a submission" in {
@@ -72,10 +103,11 @@ class EmployerPaymentSummarySpec extends UnitSpec {
                                        relatedTaxYear,
                                        apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, allowance, taxMonth.toString())))
 
-      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(id, submissionTime,
+      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(1234562L, submissionTime,
         payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
         levyDueYTD = Some(levyDueYTD),
-        levyAllowanceForFullYear = Some(allowance))
+        levyAllowanceForFullYear = Some(allowance),
+        submissionId = id)
     }
 
     "convert a submission with no payment for period" in {
@@ -90,9 +122,10 @@ class EmployerPaymentSummarySpec extends UnitSpec {
                                        relatedTaxYear,
                                        Some(ClosedDateRange(startNoPayment, endNoPayment)))
 
-      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(id, submissionTime,
+      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(1234560L, submissionTime,
         noPaymentForPeriod = Some(true),
-        payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)))
+        payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)),
+        submissionId = id)
     }
   }
 
