@@ -107,7 +107,7 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/declarati
 | Name | Type | Description | Example |
 | ---  | ---  | ---         | ---     |
 |empref|String|The PAYE Reference for the employer. This will be the same as provided in the URL|`123/AB12345`|
-|declarations[].id|Number|A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed|`12345684`|
+|declarations[].id|Number|A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. Dividing this identifier by 10 (ignoring the remainder) gives the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed. Taking this identifier modulo 10 gives the type of entry: 0, no entry; 1, inactive; 2, levy declaration; 3, ceased.|`12345684`|
 |declarations[].dateCeased|Date|If present, indicates the date that the payroll scheme was ceased|`2016–03–17`|
 |declarations[].inactiveFrom|Date|The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period|`2016–09–05`|
 |declarations[].inactiveTo|Date|The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period|`2016–09–05`|

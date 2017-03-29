@@ -132,7 +132,7 @@
                 <name>declarations[].id</name>
                 <type>Number</type>
                 <example><![CDATA[12345684]]></example>
-                <description>A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed</description>
+                <description>A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. Dividing this identifier by 10 (ignoring the remainder) gives the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed. Taking this identifier modulo 10 gives the type of entry: 0, no entry; 1, inactive; 2, levy declaration; 3, ceased.</description>
               </field>
               <field>
                 <name>declarations[].dateCeased</name>

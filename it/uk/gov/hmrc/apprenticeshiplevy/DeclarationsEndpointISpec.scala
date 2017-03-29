@@ -114,7 +114,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(2) shouldBe LevyDeclaration(56774248741L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true))
+            declarations(2) shouldBe LevyDeclaration(567742487410L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true),56774248741L)
           }
 
           it (s"should handle inactive period") {
@@ -130,7 +130,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(7) shouldBe LevyDeclaration(6573215455L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,Some(LocalDate.parse("2016-08-06")),Some(LocalDate.parse("2016-11-05")),None,None,None,None)
+            declarations(7) shouldBe LevyDeclaration(65732154551L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,Some(LocalDate.parse("2016-08-06")),Some(LocalDate.parse("2016-11-05")),None,None,None,None,6573215455L)
           }
 
           it (s"should handle ceased trading") {
@@ -146,7 +146,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(6) shouldBe LevyDeclaration(56774248742L,LocalDateTime.parse("2016-04-20T14:25:32.000"),Some(LocalDate.parse("2016-06-06")),None,None,None,None,None,None)
+            declarations(6) shouldBe LevyDeclaration(567742487423L,LocalDateTime.parse("2016-04-20T14:25:32.000"),Some(LocalDate.parse("2016-06-06")),None,None,None,None,None,None,56774248742L)
           }
 
           it (s"should handle levies") {
@@ -162,10 +162,10 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(0) shouldBe LevyDeclaration(56774248743L,LocalDateTime.parse("2016-05-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",2)),Some(98.64),Some(15000),None)
-            declarations(3) shouldBe LevyDeclaration(56774248741L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",11)),Some(24.27),Some(15000),None)
-            declarations(5) shouldBe LevyDeclaration(56774248742L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",11)),Some(24.27),Some(15000),None)
-            declarations(8) shouldBe LevyDeclaration(6573215455L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",2)),Some(124.27),Some(15000),None)
+            declarations(0) shouldBe LevyDeclaration(567742487432L,LocalDateTime.parse("2016-05-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",2)),Some(98.64),Some(15000),None,56774248743L)
+            declarations(3) shouldBe LevyDeclaration(567742487412L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",11)),Some(24.27),Some(15000),None,56774248741L)
+            declarations(5) shouldBe LevyDeclaration(567742487422L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",11)),Some(24.27),Some(15000),None,56774248742L)
+            declarations(8) shouldBe LevyDeclaration(65732154552L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",2)),Some(124.27),Some(15000),None,6573215455L)
           }
         }
 

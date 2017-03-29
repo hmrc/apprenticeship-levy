@@ -38,60 +38,6 @@
             "value": 0
           }
         ]
-      },
-      {
-        "calculatedAt": "2017-06-10",
-        "fractions": [
-          {
-            "region": "England",
-            "value": 0.63857
-          }
-        ]
-      },
-      {
-        "calculatedAt": "2017-09-10",
-        "fractions": [
-          {
-            "region": "England",
-            "value": 0.68975
-          }
-        ]
-      },
-      {
-        "calculatedAt": "2017-12-10",
-        "fractions": [
-          {
-            "region": "England",
-            "value": 1
-          }
-        ]
-      },
-      {
-        "calculatedAt": "2018-03-10",
-        "fractions": [
-          {
-            "region": "England",
-            "value": 0
-          }
-        ]
-      },
-      {
-        "calculatedAt": "2018-06-10",
-        "fractions": [
-          {
-            "region": "England",
-            "value": 0
-          }
-        ]
-      },
-      {
-        "calculatedAt": "2018-09-10",
-        "fractions": [
-          {
-            "region": "England",
-            "value": 1
-          }
-        ]
       }
     ]
   }
