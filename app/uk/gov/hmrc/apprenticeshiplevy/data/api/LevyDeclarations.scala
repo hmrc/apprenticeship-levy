@@ -34,7 +34,8 @@ case class LevyDeclaration(id: Long,
                            payrollPeriod: Option[PayrollPeriod] = None,
                            levyDueYTD: Option[BigDecimal] = None,
                            levyAllowanceForFullYear: Option[BigDecimal] = None,
-                           noPaymentForPeriod: Option[Boolean] = None)
+                           noPaymentForPeriod: Option[Boolean] = None,
+                           submissionId: Long = 0L)
 
 
 object LevyDeclaration {
