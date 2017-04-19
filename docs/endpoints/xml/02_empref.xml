@@ -12,7 +12,7 @@
           <scope>read:apprenticeship-levy</scope>
         </scopes>
       </secured>
-      <throttlingTier>UNLIMITED</throttlingTier>
+      <throttlingTier>Silver</throttlingTier>
       <request>
         <path><![CDATA[/epaye/{empref}]]></path>
         <params>
@@ -164,7 +164,7 @@
   "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
 }]]></content-type>
           </body>
-          <code>AUTH_ERROR</code>
+          <code>DES_ERROR</code>
         </http>
         <http status="429" msg="Too many requests">
           <description>Too many requests have been made to this endpoint</description>
@@ -174,7 +174,7 @@
   "message": "Too many requests"
 }]]></content-type>
           </body>
-          <code>AUTH_ERROR</code>
+          <code>DES_ERROR</code>
         </http>
         <http status="503" msg="Service Unavailable">
           <description>Endpoint or internal system has experienced an internal error.</description>
@@ -184,7 +184,7 @@
   "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
 }]]></content-type>
           </body>
-          <code>AUTH_ERROR</code>
+          <code>DES_ERROR</code>
         </http>
       </responses>
     </version>

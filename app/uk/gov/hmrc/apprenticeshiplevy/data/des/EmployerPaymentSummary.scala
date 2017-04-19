@@ -103,9 +103,17 @@ object EmployerPaymentSummary {
 
   implicit val jodaDateTimeFormat = new Format[LocalDateTime] {
     val localDateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")
+    val DateTime = "(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}){1}(.*)".r
 
     override def reads(json: JsValue): JsResult[LocalDateTime] = implicitly[Reads[JsString]].reads(json).map { js =>
-      localDateTimeFormat.parseDateTime(js.value).toLocalDateTime
+      js.value match {
+        case DateTime(timestamp,_) => localDateTimeFormat.parseDateTime(timestamp).toLocalDateTime
+        case _ => {
+          play.api.Logger.warn(s"Bad date time value of '${js.value}' returned from DES so returning new LocalDateTime(0L)")
+          new LocalDateTime(0L)
+        }
+      }
+
     }
     // $COVERAGE-OFF$
     override def writes(date: LocalDateTime): JsValue = JsString(localDateTimeFormat.print(date))
