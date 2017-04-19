@@ -117,13 +117,13 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/fractions
   "code": "INVALID_CREDENTIALS",
   "message": "Invalid Authentication information provided"
 }</code></td></tr><tr><td>401 Unauthorized</td>
-    <td>AUTH_ERROR</td>
+    <td>DES_ERROR</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "DES_ERROR",
   "message": "Auth unauthorised error: GET of '...' returned 401. Response body: ''"
 }</code></td></tr><tr><td>403 Forbidden</td>
-    <td>AUTH_ERROR</td>
+    <td>DES_ERROR</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "DES_ERROR",
@@ -135,19 +135,19 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/fractions
   "code": "DES_ERROR",
   "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
 }</code></td></tr><tr><td>408 Request Time-out</td>
-    <td>AUTH_ERROR</td>
+    <td>DES_ERROR</td>
     <td>Endpoint or internal system has become unresponsive.</td>
     <td><code>{
   "code": "DES_ERROR",
   "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
 }</code></td></tr><tr><td>429 Too many requests</td>
-    <td>AUTH_ERROR</td>
+    <td>DES_ERROR</td>
     <td>Too many requests have been made to this endpoint</td>
     <td><code>{
   "code": "DES_ERROR",
   "message": "Too many requests"
 }</code></td></tr><tr><td>503 Service Unavailable</td>
-    <td>AUTH_ERROR</td>
+    <td>DES_ERROR</td>
     <td>Endpoint or internal system has experienced an internal error.</td>
     <td><code>{
   "code": "DES_ERROR",

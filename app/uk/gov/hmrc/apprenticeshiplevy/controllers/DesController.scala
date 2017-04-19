@@ -19,7 +19,6 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import play.api.hal.{HalLink, HalResource}
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import play.api.mvc.{ActionBuilder, Request, Result, Results, RequestHeader}
@@ -52,6 +51,14 @@ trait DesController extends ApiController {
   protected lazy val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
 
   protected val desErrorHandler: PartialFunction[Throwable, Result] = {
+        case e: JsValidationException => {
+          Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES returned bad json: ${e.getMessage()}, API returning  code ${INTERNAL_SERVER_ERROR}")
+          InternalServerError(Json.toJson(DESError(INTERNAL_SERVER_ERROR, "JSON_FAILURE", s"DES and/or BACKEND server returned bad json.")))
+        }
+        case e: IllegalArgumentException => {
+          Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES returned bad json: ${e.getMessage()}, API returning  code ${INTERNAL_SERVER_ERROR}")
+          InternalServerError(Json.toJson(DESError(INTERNAL_SERVER_ERROR, "JSON_FAILURE", s"DES and/or BACKEND server returned bad json.")))
+        }
         case e: BadRequestException => {
           Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning BadRequest with code ${SERVICE_UNAVAILABLE}")
           BadRequest(Json.toJson(DESError(SERVICE_UNAVAILABLE, "BAD_REQUEST", s"Bad request error: ${extractReason(e.getMessage())}")))

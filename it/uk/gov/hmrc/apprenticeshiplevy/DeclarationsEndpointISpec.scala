@@ -167,6 +167,22 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             declarations(5) shouldBe LevyDeclaration(567742487422L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",11)),Some(24.27),Some(15000),None,56774248742L)
             declarations(8) shouldBe LevyDeclaration(65732154552L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",2)),Some(124.27),Some(15000),None,6573215455L)
           }
+
+          it (s"should handle bad timestamps returned from DES in levies") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB88888/declarations").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(app, request).get
+
+            // check
+            contentType(result) shouldBe Some("application/json")
+
+            val json = contentAsJson(result)
+            (json \ "empref").as[String] shouldBe "123/AB88888"
+            val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
+            declarations(0) shouldBe LevyDeclaration(567742487410L,LocalDateTime.parse("2013-04-17T09:00:55"),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true),56774248741L)
+          }
         }
 
         describe ("with invalid parameters") {
@@ -345,6 +361,19 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error: Backend system error"}""")
+          }
+
+          it (s"should return http status 500 when empty json returned") {
+            // set up
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB99999/declarations").withHeaders(standardDesHeaders: _*)
+
+            // test
+            val result = route(app, request).get
+
+            // check
+            status(result) shouldBe 500
+            contentType(result) shouldBe Some("application/json")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_JSON_FAILURE","message":"DES and/or BACKEND server returned bad json."}""")
           }
         }
       }

@@ -22,11 +22,10 @@ import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange, ClosedDateRange}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, NotFoundException}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, NotFoundException,JsValidationException}
 import views.html.helper
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import scala.concurrent.{Future, ExecutionContext}
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.apprenticeshiplevy.config.MicroserviceAuditFilter
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
@@ -162,21 +161,41 @@ trait LevyDeclarationsEndpoint extends Timer {
 
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams.getOrElse("")
-    val url = (s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary", dateRange.toParams) match {
-      case (u, None) => u
-      case (u, Some(ps)) => s"$u?$ps"
-    }
+
+    val url = s"${desURL(empref)}${params(dateRange)}"
 
     // $COVERAGE-OFF$
-    Logger.debug(s"Calling DES at $url")
+    Logger.info(s"Calling DES at $url")
     // $COVERAGE-ON$
 
     timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
       audit(new ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
-        des.httpGet.GET[EmployerPaymentsSummary](url)
+        des.httpGet.GET[EmployerPaymentsSummary](url).recover {
+          case jsonError: JsValidationException => {
+            // $COVERAGE-OFF$
+            Logger.error(s"Calling DES resulted in json error: ${jsonError.getMessage}")
+            // $COVERAGE-ON$
+            throw jsonError
+          }
+        }
       }
     }
   }
+
+  protected[connectors] def isEpsOrigPathEnabled: Boolean = AppContext.epsOrigPathEnabled
+
+  protected[connectors] def params(dateRange: DateRange): String = dateRange.toParams match {
+      case None => {
+        val defaultRange = ClosedDateRange(new LocalDate().minusYears(AppContext.defaultNumberOfDeclarationYears), new LocalDate())
+        defaultRange.toParams.map(p=>s"?${p}").getOrElse("")
+      }
+      case Some(ps) => s"?${ps}"
+    }
+
+  protected[connectors] def desURL(empref: String): String = if (isEpsOrigPathEnabled)
+                                                          s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"
+                                                        else
+                                                          s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/declarations"
 }
 
 trait DesConnector extends DesUrl

@@ -16,7 +16,7 @@ The response will take the form of a date, in the standard `YYYY-MM-DD` format u
           <scope>read:apprenticeship-levy</scope>
         </scopes>
       </secured>
-      <throttlingTier>UNLIMITED</throttlingTier>
+      <throttlingTier>Silver</throttlingTier>
       <request>
         <path><![CDATA[/fraction-calculation-date]]></path>
         <params/>
