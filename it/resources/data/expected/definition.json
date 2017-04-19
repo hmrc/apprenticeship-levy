@@ -20,7 +20,7 @@
             "endpointName": "root",
             "method": "GET",
             "authType": "USER",
-            "throttlingTier": "UNLIMITED",
+            "throttlingTier": "Silver",
             "scope": "read:apprenticeship-levy",
             "queryParameters": []
           },
@@ -29,7 +29,7 @@
             "endpointName": "empref",
             "method": "GET",
             "authType": "USER",
-            "throttlingTier": "UNLIMITED",
+            "throttlingTier": "Silver",
             "scope": "read:apprenticeship-levy",
             "queryParameters": []
           },
@@ -38,7 +38,7 @@
             "endpointName": "levy-declarations",
             "method": "GET",
             "authType": "USER",
-            "throttlingTier": "UNLIMITED",
+            "throttlingTier": "Silver",
             "scope": "read:apprenticeship-levy",
             "queryParameters": [
               {
@@ -56,7 +56,7 @@
             "endpointName": "employment-check",
             "method": "GET",
             "authType": "USER",
-            "throttlingTier": "UNLIMITED",
+            "throttlingTier": "Silver",
             "scope": "read:apprenticeship-levy",
             "queryParameters": [
               {
@@ -74,7 +74,7 @@
             "endpointName": "fraction-calculations",
             "method": "GET",
             "authType": "USER",
-            "throttlingTier": "UNLIMITED",
+            "throttlingTier": "Silver",
             "scope": "read:apprenticeship-levy",
             "queryParameters": [
               {
@@ -92,7 +92,7 @@
             "endpointName": "fraction-calculation-date",
             "method": "GET",
             "authType": "USER",
-            "throttlingTier": "UNLIMITED",
+            "throttlingTier": "Silver",
             "scope": "read:apprenticeship-levy",
             "queryParameters": []
           }
