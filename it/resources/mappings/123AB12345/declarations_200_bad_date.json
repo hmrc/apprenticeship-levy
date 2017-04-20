@@ -1,0 +1,51 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "urlPattern": "/rti/employers/123AB88888/employer-payment-summary\\?fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live)"
+          }
+        }
+    },
+    "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json; charset=utf-8" },
+        "jsonBody": {
+  "empref": "123AB88888",
+  "eps": [
+    {
+      "submissionId": 56774248741,
+      "hmrcSubmissionTime": "2013-04-17T09:00:55Z",
+      "rtiSubmissionTime": "2016-04-20T14:31:02",
+      "taxYear": "16-17",
+      "noPaymentPeriod": {
+        "from": "2016-08-13",
+        "to": "2016-11-22"
+      },
+      "employmentAllowanceInd": true,
+      "apprenticeshipLevy": {
+        "amountDue": 24.27,
+        "taxMonth": "11",
+        "amountAllowance": 15000
+      },
+      "finalSubmission": {
+        "forYear": true
+      },
+      "questionsAndDeclarations": {
+        "freeOfTaxPaymentsMadeToEmployee": true,
+        "expensesVouchersOrBenefitsFromOthers": true,
+        "personEmployedOutsideUKWorkedFor30DaysOrMore": true,
+        "payToSomeoneElse": true,
+        "p11DFormsDue": true,
+        "serviceCompany": true
+      }
+    }
+  ]
+}
+    }
+}

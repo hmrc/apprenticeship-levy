@@ -242,7 +242,7 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
                         <code>401 (Unauthorized)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -251,7 +251,7 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
                         <code>403 (Forbidden)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -269,7 +269,7 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
                         <code>408 (Request Time-out)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -278,7 +278,7 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
                         <code>429 (Too many requests)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -287,7 +287,7 @@ This API endpoint will let DAS ask the HMRC system for the date that the most re
                         <code>503 (Service Unavailable)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR</code>
                     </cell>
                 </row>
             </rows>

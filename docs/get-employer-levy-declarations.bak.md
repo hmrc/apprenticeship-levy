@@ -112,7 +112,7 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/declarati
 |declarations[].inactiveFrom|Date|The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period|`2016–09–05`|
 |declarations[].inactiveTo|Date|The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period|`2016–09–05`|
 |declarations[].noPaymentForPeriod|Boolean|If present, will always have the value true and indicates that no declaration was necessary for this period. This can be interpreted to mean that the YTD levy balance is unchanged from the previous submitted value|`[true`|
-|declarations[].submissionTime|DateTime|the time at which the EPS submission that this declaration relates to was received by HMRC|`2016–02–21T16:05:23.000.000`|
+|declarations[].submissionTime|DateTime|The time at which the EPS submission that this declaration relates to was received by HMRC. If the backend systems return a bad date that can not be handled this will be set to 1970-01-01T01:00:00.000.|`2016–02–21T16:05:23.000.000`|
 |declarations[].payrollPeriod.year|String|The tax year of the payroll period against which the declaration was made|`15-16`|
 |declarations[].payrollPeriod.month|Number|The tax month of the payroll period against which the declaration was made. Month 1 is April.|`1`|
 |declarations[].levyDueYTD|Number|The amount of apprenticeship levy that was declared in the payroll month.|`600.20`|
@@ -155,13 +155,13 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/declarati
   "code": "INVALID_CREDENTIALS",
   "message": "Invalid Authentication information provided"
 }</code></td></tr><tr><td>401 Unauthorized</td>
-    <td>AUTH_ERROR</td>
+    <td>DES_ERROR</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "DES_ERROR",
   "message": "Auth unauthorised error: GET of '...' returned 401. Response body: ''"
 }</code></td></tr><tr><td>403 Forbidden</td>
-    <td>AUTH_ERROR</td>
+    <td>DES_ERROR</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "DES_ERROR",
@@ -173,19 +173,25 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/declarati
   "code": "DES_ERROR",
   "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
 }</code></td></tr><tr><td>408 Request Time-out</td>
-    <td>AUTH_ERROR</td>
+    <td>DES_ERROR</td>
     <td>Endpoint or internal system has become unresponsive.</td>
     <td><code>{
   "code": "DES_ERROR",
   "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
 }</code></td></tr><tr><td>429 Too many requests</td>
-    <td>AUTH_ERROR</td>
+    <td>DES_ERROR</td>
     <td>Too many requests have been made to this endpoint</td>
     <td><code>{
   "code": "DES_ERROR",
   "message": "Too many requests"
+}</code></td></tr><tr><td>500 Internal Server Error</td>
+    <td>DES_ERROR_JSON_FAILURE</td>
+    <td>DES or backend system has returned invalid json which can not be relayed to API caller.</td>
+    <td><code>{
+  "code": "DES_ERROR_JSON_FAILURE",
+  "message": "DES and/or BACKEND server returned bad json."
 }</code></td></tr><tr><td>503 Service Unavailable</td>
-    <td>AUTH_ERROR</td>
+    <td>DES_ERROR</td>
     <td>Endpoint or internal system has experienced an internal error.</td>
     <td><code>{
   "code": "DES_ERROR",

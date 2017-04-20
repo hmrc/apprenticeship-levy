@@ -1,16 +1,16 @@
 {
   "_links": {
     "fractions": {
-      "href": "/sandbox/epaye/840%2FMODES17/fractions"
+      "href": "/epaye/840%2FMODES17/fractions"
     },
     "declarations": {
-      "href": "/sandbox/epaye/840%2FMODES17/declarations"
+      "href": "/epaye/840%2FMODES17/declarations"
     },
     "employment-check": {
-      "href": "/sandbox/epaye/840%2FMODES17/employed/{nino}"
+      "href": "/epaye/840%2FMODES17/employed/{nino}"
     },
     "self": {
-      "href": "/sandbox/epaye/840%2FMODES17"
+      "href": "/epaye/840%2FMODES17"
     }
   },
   "empref": "840/MODES17",

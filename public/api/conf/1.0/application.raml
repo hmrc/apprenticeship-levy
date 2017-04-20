@@ -224,28 +224,28 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    408_AUTH_ERROR:
+                    408_DES_ERROR:
                       description: Endpoint or internal system has become unresponsive.
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
             429:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    429_AUTH_ERROR:
+                    429_DES_ERROR:
                       description: Too many requests have been made to this endpoint
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
             503:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    503_AUTH_ERROR:
+                    503_DES_ERROR:
                       description: Endpoint or internal system has experienced an internal error.
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
       /declarations:
         get:
           displayName: Get employer levy declarations
@@ -299,19 +299,19 @@ annotationTypes:
                       description: The request requires correct authentication headers with valid token.
                       value:
                         code: INVALID_CREDENTIALS
-                    401_AUTH_ERROR:
+                    401_DES_ERROR:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
             403:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    403_AUTH_ERROR:
+                    403_DES_ERROR:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
             404:
               body:
                 application/json:
@@ -326,28 +326,37 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    408_AUTH_ERROR:
+                    408_DES_ERROR:
                       description: Endpoint or internal system has become unresponsive.
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
             429:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    429_AUTH_ERROR:
+                    429_DES_ERROR:
                       description: Too many requests have been made to this endpoint
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
+            500:
+              body:
+                application/json:
+                  type: types.errorResponse
+                  examples:
+                    500_DES_ERROR_JSON_FAILURE:
+                      description: DES or backend system has returned invalid json which can not be relayed to API caller.
+                      value:
+                        code: DES_ERROR_JSON_FAILURE
             503:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    503_AUTH_ERROR:
+                    503_DES_ERROR:
                       description: Endpoint or internal system has experienced an internal error.
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
       /fractions:
         get:
           displayName: Get employer fraction calculations
@@ -405,19 +414,19 @@ annotationTypes:
                       description: The request requires correct authentication headers with valid token.
                       value:
                         code: INVALID_CREDENTIALS
-                    401_AUTH_ERROR:
+                    401_DES_ERROR:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
             403:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    403_AUTH_ERROR:
+                    403_DES_ERROR:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
             404:
               body:
                 application/json:
@@ -432,28 +441,28 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    408_AUTH_ERROR:
+                    408_DES_ERROR:
                       description: Endpoint or internal system has become unresponsive.
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
             429:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    429_AUTH_ERROR:
+                    429_DES_ERROR:
                       description: Too many requests have been made to this endpoint
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
             503:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    503_AUTH_ERROR:
+                    503_DES_ERROR:
                       description: Endpoint or internal system has experienced an internal error.
                       value:
-                        code: AUTH_ERROR
+                        code: DES_ERROR
       /employed:
         /{nino}:
           uriParameters:
@@ -521,19 +530,19 @@ annotationTypes:
                         description: The request requires correct authentication headers with valid token.
                         value:
                           code: INVALID_CREDENTIALS
-                      401_AUTH_ERROR:
+                      401_DES_ERROR:
                         description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                         value:
-                          code: AUTH_ERROR
+                          code: DES_ERROR
               403:
                 body:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      403_AUTH_ERROR:
+                      403_DES_ERROR:
                         description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                         value:
-                          code: AUTH_ERROR
+                          code: DES_ERROR
               404:
                 body:
                   application/json:
@@ -548,28 +557,28 @@ annotationTypes:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      408_AUTH_ERROR:
+                      408_DES_ERROR:
                         description: Endpoint or internal system has become unresponsive.
                         value:
-                          code: AUTH_ERROR
+                          code: DES_ERROR
               429:
                 body:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      429_AUTH_ERROR:
+                      429_DES_ERROR:
                         description: Too many requests have been made to this endpoint
                         value:
-                          code: AUTH_ERROR
+                          code: DES_ERROR
               503:
                 body:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      503_AUTH_ERROR:
+                      503_DES_ERROR:
                         description: Endpoint or internal system has experienced an internal error.
                         value:
-                          code: AUTH_ERROR
+                          code: DES_ERROR
   /fraction-calculation-date:
     get:
       displayName: Get latest fraction calculation date
