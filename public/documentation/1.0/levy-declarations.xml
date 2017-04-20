@@ -250,7 +250,7 @@
                     <cell>
                         <code>2016–02–21T16:05:23.000.000</code>
                     </cell>
-                    <cell>the time at which the EPS submission that this declaration relates to was received by HMRC</cell>
+                    <cell>The time at which the EPS submission that this declaration relates to was received by HMRC. If the backend systems return a bad date that can not be handled this will be set to 1970-01-01T01:00:00.000.</cell>
                 </row>
                 <row>
                     <cell>
@@ -354,7 +354,7 @@
                         <code>401 (Unauthorized)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -363,7 +363,7 @@
                         <code>403 (Forbidden)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -381,7 +381,7 @@
                         <code>408 (Request Time-out)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -390,7 +390,7 @@
                         <code>429 (Too many requests)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR</code>
                     </cell>
                 </row>
                 <row>
@@ -399,7 +399,16 @@
                         <code>503 (Service Unavailable)</code>
                     </cell>
                     <cell>
-                        <code>AUTH_ERROR</code>
+                        <code>DES_ERROR</code>
+                    </cell>
+                </row>
+                <row>
+                    <cell>DES or backend system has returned invalid json which can not be relayed to API caller.</cell>
+                    <cell>
+                        <code>500 (Internal Server Error)</code>
+                    </cell>
+                    <cell>
+                        <code>DES_ERROR_JSON_FAILURE</code>
                     </cell>
                 </row>
             </rows>

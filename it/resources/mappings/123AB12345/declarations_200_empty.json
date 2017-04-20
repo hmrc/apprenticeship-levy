@@ -1,0 +1,20 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "urlPattern": "/rti/employers/123AB99999/employer-payment-summary\\?fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live)"
+          }
+        }
+    },
+    "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json; charset=utf-8" },
+        "jsonBody": {}
+    }
+}

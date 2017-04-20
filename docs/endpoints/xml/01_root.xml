@@ -12,7 +12,7 @@
           <scope>read:apprenticeship-levy</scope>
         </scopes>
       </secured>
-      <throttlingTier>UNLIMITED</throttlingTier>
+      <throttlingTier>Silver</throttlingTier>
       <request>
         <path><![CDATA[/]]></path>
         <params></params>

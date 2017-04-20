@@ -146,6 +146,8 @@ object AppContext extends ServicesConfig with ServiceLocatorRegistration {
 
   def ninoPattern(): String = maybeString("microservice.ninoRegex").getOrElse("")
 
+  def epsOrigPathEnabled(): Boolean = maybeBoolean("microservice.epsOrigPathEnabled").getOrElse(true)
+
   // $COVERAGE-OFF$
   Logger.info(s"""\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n""")
   // $COVERAGE-ON$
@@ -153,6 +155,8 @@ object AppContext extends ServicesConfig with ServiceLocatorRegistration {
   // scalastyle:off
   def defaultNumberOfDeclarationYears: Int = maybeString("microservice.defaultNumberOfDeclarationYears").map(_.toInt).getOrElse(6)
   // scalastyle:on
+
+  private def maybeBoolean(id: String): Option[Boolean] = maybeConfiguration.flatMap(_.getBoolean(id))
 
   private def maybeString(id: String): Option[String] = maybeConfiguration.flatMap(_.getString(id))
 
