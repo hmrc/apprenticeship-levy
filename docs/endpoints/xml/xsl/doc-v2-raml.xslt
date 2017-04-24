@@ -137,6 +137,7 @@
       <method><xsl:value-of select="$endpointNode/secured/method"/></method>
       <scope><xsl:value-of select="$endpointNode/secured/scopes/scope[1]"/></scope>
     </secured>
+    <sandbox-data>!include sandbox/<xsl:value-of select="replace(lower-case(normalize-space($endpointNode/name)), '\s', '-')"/>.md</sandbox-data>
     <xsl:copy-of select="$endpointNode/request/headers"/>
   </xsl:template>
 
