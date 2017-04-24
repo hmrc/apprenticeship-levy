@@ -528,7 +528,7 @@ annotationTypes:
   <xsl:template match="sandbox-data" mode="xmlToYaml">
     <xsl:call-template name="indent">
       <xsl:with-param name="length" select="(count(ancestor::*) + 1) * 2"/>
-      <xsl:with-param name="str"><xsl:text>(annotations.sandboxData): "</xsl:text><xsl:value-of select="."/><xsl:text>"&#x0a;</xsl:text></xsl:with-param>
+      <xsl:with-param name="str"><xsl:text>(annotations.sandboxData): </xsl:text><xsl:value-of select="."/><xsl:text>&#x0a;</xsl:text></xsl:with-param>
     </xsl:call-template>
   </xsl:template>
 
