@@ -1,5 +1,5 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "Get all employers",
+  "description": "Fraction Calculation Date. Returns date the English percentage was last calculated. Unlikely to change more than once a quarter.",
   "type": "string"
 }

@@ -14,12 +14,12 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "number", 
-                        "description": "A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed.",
+                        "type": "number",
+                        "description": "A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed. Dividing this identifier by 10 (ignoring the remainder) gives the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed. Taking this identifier modulo 10 gives the type of entry: 0, no entry; 1, inactive; 2, levy declaration; 3, ceased.",
                         "example": "12345684"
                     },
                     "dateCeased": {
-                        "type": "string", 
+                        "type": "string",
                         "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
                         "description": "If present, indicates the date that the payroll scheme was ceased.",
                         "example": "2016–03–17"
@@ -43,7 +43,7 @@
                     },
                     "submissionTime": {
                         "type": "string",
-                        "description": "The time at which the EPS submission that this declaration relates to was received by HMRC.",
+                        "description": "The time at which the EPS submission that this declaration relates to was received by HMRC. If the backend systems return a bad date that can not be handled this will be set to 1970-01-01T01:00:00.000.",
                         "example": "2016–02–21T16:05:23.000.000"
                     },
                     "payrollPeriod": {

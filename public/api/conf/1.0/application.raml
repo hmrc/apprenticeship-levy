@@ -56,6 +56,7 @@ annotationTypes:
       is: [headers.acceptHeader]
       (annotations.scope): "read:apprenticeship-levy"
       securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
+      (annotations.sandboxData): "!include sandbox/get-all-employers.md"
       headers: 
         Authorization:
           example: Bearer [token here]
@@ -166,6 +167,7 @@ annotationTypes:
           is: [headers.acceptHeader]
           (annotations.scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
+          (annotations.sandboxData): "!include sandbox/get-employer-details.md"
           headers: 
             Authorization:
               example: Bearer [token here]
@@ -253,6 +255,7 @@ annotationTypes:
           is: [headers.acceptHeader]
           (annotations.scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
+          (annotations.sandboxData): "!include sandbox/get-employer-levy-declarations.md"
           headers: 
             Authorization:
               example: Bearer [token here]
@@ -364,6 +367,7 @@ annotationTypes:
           is: [headers.acceptHeader]
           (annotations.scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
+          (annotations.sandboxData): "!include sandbox/get-employer-fraction-calculations.md"
           headers: 
             Authorization:
               example: Bearer [token here]
@@ -476,6 +480,7 @@ annotationTypes:
             is: [headers.acceptHeader]
             (annotations.scope): "read:apprenticeship-levy"
             securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
+            (annotations.sandboxData): "!include sandbox/get-employment-status.md"
             headers: 
               Authorization:
                 example: Bearer [token here]
@@ -586,6 +591,7 @@ annotationTypes:
       is: [headers.acceptHeader]
       (annotations.scope): "read:apprenticeship-levy"
       securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
+      (annotations.sandboxData): "!include sandbox/get-latest-fraction-calculation-date.md"
       headers: 
         Authorization:
           example: Bearer [token here]
