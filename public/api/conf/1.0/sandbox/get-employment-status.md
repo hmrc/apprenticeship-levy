@@ -28,10 +28,10 @@
           </td>
         </tr>
         <tr>
-          <td>123/AB12345</td>
-          <td>SC111111A</td>
-          <td>2016-03-06</td>
-          <td>2016-04-05</td>
+          <td><code class="code--slim">123/AB12345</code></td>
+          <td><code class="code--slim">SC111111A</code></td>
+          <td><code class="code--slim">2016-03-06</code></td>
+          <td><code class="code--slim">2016-04-05</code></td>
           <td><pre class="code--block">{
   "empref": "111/AA00001",
   "nino": "AA123456C",
@@ -42,10 +42,10 @@
           </td>
         </tr>
         <tr>
-          <td>840/HZ00064</td>
-          <td>AS960509A</td>
-          <td>2016-05-01</td>
-          <td>2016-11-01</td>
+          <td><code class="code--slim">840/HZ00064</code></td>
+          <td><code class="code--slim">AS960509A</code></td>
+          <td><code class="code--slim">2016-05-01</code></td>
+          <td><code class="code--slim">2016-11-01</code></td>
           <td><pre class="code--block">{
   "empref": "840/HZ00064",
   "nino": "AS960509A",
@@ -56,10 +56,10 @@
           </td>
         </tr>
         <tr>
-          <td>840/MODES17</td>
-          <td>AA123456C</td>
-          <td>2015-03-06</td>
-          <td>2015-04-05</td>
+          <td><code class="code--slim">840/MODES17</code></td>
+          <td><code class="code--slim">AA123456C</code></td>
+          <td><code class="code--slim">2015-03-06</code></td>
+          <td><code class="code--slim">2015-04-05</code></td>
           <td><pre class="code--block">{
   "empref": "840/MODES17",
   "nino": "AA123456C",
@@ -70,10 +70,10 @@
           </td>
         </tr>
         <tr>
-          <td>840/MODES17</td>
-          <td>SC111111A</td>
-          <td>2014-03-06</td>
-          <td>2014-04-05</td>
+          <td><code class="code--slim">840/MODES17</code></td>
+          <td><code class="code--slim">SC111111A</code></td>
+          <td><code class="code--slim">2014-03-06</code></td>
+          <td><code class="code--slim">2014-04-05</code></td>
           <td><pre class="code--block">{
   "empref": "840/MODES17",
   "nino": "SC111111A",
@@ -84,10 +84,10 @@
           </td>
         </tr>
         <tr>
-          <td>923/EZ00059</td>
-          <td>PR555555A</td>
-          <td>2015-09-01</td>
-          <td>2015-10-01</td>
+          <td><code class="code--slim">923/EZ00059</code></td>
+          <td><code class="code--slim">PR555555A</code></td>
+          <td><code class="code--slim">2015-09-01</code></td>
+          <td><code class="code--slim">2015-10-01</code></td>
           <td><pre class="code--block">{
   "empref": "923/EZ00059",
   "nino": "PR555555A",
