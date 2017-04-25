@@ -7,7 +7,7 @@
     </thead>
     <tbody>
     <tr>
-      <td><code class='code--slim'>111%2FAA00001</code></td>
+      <td><code class='code--slim'>111/AA00001</code></td>
       <td><pre class='code--block'>
 {
 "empref": "111/AA00001",
@@ -27,7 +27,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>123%2FAB12345</code></td>
+      <td><code class='code--slim'>123/AB12345</code></td>
       <td><pre class='code--block'>
 {
 "empref": "123/AB12345",
@@ -56,7 +56,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>222%2FAA00001</code></td>
+      <td><code class='code--slim'>222/AA00001</code></td>
       <td><pre class='code--block'>
 {
 "empref": "222/AA00001",
@@ -76,7 +76,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>222%2FAA00002</code></td>
+      <td><code class='code--slim'>222/AA00002</code></td>
       <td><pre class='code--block'>
 {
 "empref": "222/AA00002",
@@ -96,7 +96,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>222%2FAA00003</code></td>
+      <td><code class='code--slim'>222/AA00003</code></td>
       <td><pre class='code--block'>
 {
 "empref": "222/AA00003",
@@ -116,7 +116,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>333%2FAA00001</code></td>
+      <td><code class='code--slim'>333/AA00001</code></td>
       <td><pre class='code--block'>
 {
 "empref": "333/AA00001",
@@ -136,7 +136,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>754%2FLZ00047</code></td>
+      <td><code class='code--slim'>754/LZ00047</code></td>
       <td><pre class='code--block'>
 {
 "empref": "754/LZ00047",
@@ -183,7 +183,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>754%2FNZ00046</code></td>
+      <td><code class='code--slim'>754/NZ00046</code></td>
       <td><pre class='code--block'>
 {
 "empref": "754/NZ00046",
@@ -401,7 +401,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>754%2FTZ00047</code></td>
+      <td><code class='code--slim'>754/TZ00047</code></td>
       <td><pre class='code--block'>
 {
 "empref": "754/TZ00047",
@@ -448,7 +448,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>754%2FTZ00058</code></td>
+      <td><code class='code--slim'>754/TZ00058</code></td>
       <td><pre class='code--block'>
 {
 "empref": "840/HZ00064",
@@ -495,7 +495,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>840%2FHZ00064</code></td>
+      <td><code class='code--slim'>840/HZ00064</code></td>
       <td><pre class='code--block'>
 {
 "empref": "840/HZ00064",
@@ -542,7 +542,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>840%2FMODES17</code></td>
+      <td><code class='code--slim'>840/MODES17</code></td>
       <td><pre class='code--block'>
 {
 "empref": "840/MODES17",
@@ -574,17 +574,7 @@
       </td>
     </tr>
     <tr>
-      <td><code class='code--slim'>923%2FEZ00059</code></td>
-      <td><pre class='code--block'>
-{
-"code": "DES_ERROR_NOT_FOUND",
-"message": "DES endpoint not found: Received request apprenticeship-levy/employers/923EZ00059/fractions but no file 'apprenticeship-levy/employers/923EZ00059/fractions' found in 'public/sandbox-data' or ''"
-}
-</pre>
-      </td>
-    </tr>
-    <tr>
-      <td><code class='code--slim'>923%2FYZ00062</code></td>
+      <td><code class='code--slim'>923/YZ00062</code></td>
       <td><pre class='code--block'>
 {
 "empref": "923/YZ00062",
