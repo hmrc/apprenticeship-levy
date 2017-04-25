@@ -14,10 +14,10 @@
     </thead>
     <tbody>
         <tr>
-          <td><code style="code--slim">111/AA00001</code></td>
-          <td><code style="code--slim">AA123456C</code></td>
-          <td><code style="code--slim">2016-03-12</code></td>
-          <td><code style="code--slim">2016-04-01</code></td>
+          <td><code class="code--slim">111/AA00001</code></td>
+          <td><code class="code--slim">AA123456C</code></td>
+          <td><code class="code--slim">2016-03-12</code></td>
+          <td><code class="code--slim">2016-04-01</code></td>
           <td><pre class="code--block">{
   "empref": "111/AA00001",
   "nino": "AA123456C",
