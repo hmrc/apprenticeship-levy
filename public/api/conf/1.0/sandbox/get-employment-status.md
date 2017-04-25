@@ -1,8 +1,8 @@
 <table>
     <thead>
         <tr>
-            <th style="width:55%" colspan="4">Parameters</th>
-            <th style="width:45%">Response</th>
+            <th style="width:63%" colspan="4">Parameters</th>
+            <th style="width:37%">Response</th>
         </tr>
         <tr>
             <th style="width:20%">Empref</th>
@@ -14,10 +14,10 @@
     </thead>
     <tbody>
         <tr>
-          <td>111/AA00001</td>
-          <td>AA123456C</td>
-          <td>2016-03-12</td>
-          <td>2016-04-01</td>
+          <td><code style="code--slim">111/AA00001</code></td>
+          <td><code style="code--slim">AA123456C</code></td>
+          <td><code style="code--slim">2016-03-12</code></td>
+          <td><code style="code--slim">2016-04-01</code></td>
           <td><pre class="code--block">{
   "empref": "111/AA00001",
   "nino": "AA123456C",
