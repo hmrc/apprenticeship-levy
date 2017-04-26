@@ -1,3 +1,5 @@
+Please ensure your parameters are URL encoded.
+
 <table>
     <thead>
         <tr>
