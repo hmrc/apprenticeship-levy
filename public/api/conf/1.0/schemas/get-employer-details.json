@@ -3,6 +3,270 @@
   "description": "Get employer's details",
   "type": "object",
   "properties": {
-
+    "_links": {
+      "type": "object",
+      "properties": {
+        "fractions": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The relative link to fetch English percentage for this employer reference",
+              "example": "/epaye/123%2FAB12345/fractions"
+            }
+          }
+        },
+        "declarations": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The relative link to fetch levy declarations for this employer reference",
+              "example": "/epaye/123%2FAB12345/declarations"
+            }
+          }
+        },
+        "employment-check": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The relative link to fetch employee employment status for this employer reference",
+              "example": "/epaye/123%2FAB12345/employed/{nino}"
+            }
+          }
+        },
+        "self": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The relative link to fetch contact details this employer reference",
+              "example": "/epaye/123%2FAB12345"
+            }
+          }
+        }
+      }
+    },
+    "empref": {
+      "type": "string",
+      "optional": true,
+      "description": "The PAYE Reference for the employer. This will be the same as provided in the URL.",
+      "example": "123/AB12345"
+    },
+    "employer": {
+      "type": "object",
+      "optional": true,
+      "properties": {
+        "name": {
+          "type": "object",
+          "properties": {
+            "nameLine1": {
+              "type": "string",
+              "optional": true,
+              "description": "The first line of the employer's name",
+              "example": "KILL-JOY PLC THE FUNERAL"
+            },
+            "nameLine2": {
+              "type": "string",
+              "optional": true,
+              "description": "The second line of the employer's name",
+              "example": "COMPANY"
+            }
+          }
+        },
+        "address": {
+          "type": "object",
+          "optional": true,
+          "properties": {
+            "addressLine1": {
+              "type": "string",
+              "optional": true,
+              "description": "The first line of the employer's address",
+              "example": "Foreign Address Line 1"
+            },
+            "addressLine2": {
+              "type": "string",
+              "optional": true,
+              "description": "The second line of the employer's address",
+              "example": "Foreign Address Line 2"
+            },
+            "addressLine3": {
+              "type": "string",
+              "optional": true,
+              "description": "The third line of the employer's address",
+              "example": "Foreign Address Line 3"
+            },
+            "addressLine4": {
+              "type": "string",
+              "optional": true,
+              "description": "The forth line of the employer's address",
+              "example": "Foreign Address Line 4"
+            },
+            "addressLine5": {
+              "type": "string",
+              "optional": true,
+              "description": "The fifth line of the employer's address",
+              "example": "Foreign Address Line 5"
+            },
+            "postcode": {
+              "type": "string",
+              "optional": true,
+              "description": "The fifth line of the employer's address",
+              "example": "NE30 4XX"
+            },
+            "foreignCountry": {
+              "type": "string",
+              "optional": true,
+              "description": "The country of the employer's address",
+              "example": "France"
+            }
+          }
+        },
+        "contact": {
+          "type": "object",
+          "optional": true,
+          "properties": {
+            "telephone": {
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "telephoneNumber": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The employer's main contact telephone number",
+                  "example": "0123 456789"
+                },
+                "fax": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The employer's main contact telephone number",
+                  "example": "0123 456789"
+                }
+              }
+            },
+            "email": {
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "primary": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The fifth line of the employer's address",
+                  "example": "someone@hmrc.gov.uk"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "communication": {
+      "type": "object",
+      "optional": true,
+      "properties": {
+        "name": {
+          "type": "object",
+          "properties": {
+            "nameLine1": {
+              "type": "string",
+              "optional": true,
+              "description": "The first line of the employer's name",
+              "example": "KILL-JOY PLC THE FUNERAL"
+            },
+            "nameLine2": {
+              "type": "string",
+              "optional": true,
+              "description": "The second line of the employer's name",
+              "example": "COMPANY"
+            }
+          }
+        },
+        "address": {
+          "type": "object",
+          "optional": true,
+          "properties": {
+            "addressLine1": {
+              "type": "string",
+              "optional": true,
+              "description": "The first line of the employer's address",
+              "example": "Foreign Address Line 1"
+            },
+            "addressLine2": {
+              "type": "string",
+              "optional": true,
+              "description": "The second line of the employer's address",
+              "example": "Foreign Address Line 2"
+            },
+            "addressLine3": {
+              "type": "string",
+              "optional": true,
+              "description": "The third line of the employer's address",
+              "example": "Foreign Address Line 3"
+            },
+            "addressLine4": {
+              "type": "string",
+              "optional": true,
+              "description": "The forth line of the employer's address",
+              "example": "Foreign Address Line 4"
+            },
+            "addressLine5": {
+              "type": "string",
+              "optional": true,
+              "description": "The fifth line of the employer's address",
+              "example": "Foreign Address Line 5"
+            },
+            "postcode": {
+              "type": "string",
+              "optional": true,
+              "description": "The fifth line of the employer's address",
+              "example": "NE30 4XX"
+            },
+            "foreignCountry": {
+              "type": "string",
+              "optional": true,
+              "description": "The country of the employer's address",
+              "example": "France"
+            }
+          }
+        },
+        "contact": {
+          "type": "object",
+          "optional": true,
+          "properties": {
+            "telephone": {
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "telephoneNumber": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The employer's main contact telephone number",
+                  "example": "0123 456789"
+                },
+                "fax": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The employer's main contact telephone number",
+                  "example": "0123 456789"
+                }
+              }
+            },
+            "email": {
+              "type": "object",
+              "optional": true,
+              "properties": {
+                "primary": {
+                  "type": "string",
+                  "optional": true,
+                  "description": "The fifth line of the employer's address",
+                  "example": "someone@hmrc.gov.uk"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

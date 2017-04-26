@@ -56,10 +56,11 @@ annotationTypes:
       is: [headers.acceptHeader]
       (annotations.scope): "read:apprenticeship-levy"
       securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
-      headers: 
+      (annotations.sandboxData): !include sandbox/get-all-employers.md
+      headers:
         Authorization:
           example: Bearer [token here]
-      responses: 
+      responses:
         200:
           body:
             application/json:
@@ -166,10 +167,11 @@ annotationTypes:
           is: [headers.acceptHeader]
           (annotations.scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
-          headers: 
+          (annotations.sandboxData): !include sandbox/get-employer-details.md
+          headers:
             Authorization:
               example: Bearer [token here]
-          responses: 
+          responses:
             200:
               body:
                 application/json:
@@ -253,21 +255,22 @@ annotationTypes:
           is: [headers.acceptHeader]
           (annotations.scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
-          headers: 
+          (annotations.sandboxData): !include sandbox/get-employer-levy-declarations.md
+          headers:
             Authorization:
               example: Bearer [token here]
-          queryParameters: 
-            fromDate: 
+          queryParameters:
+            fromDate:
               description: The date of the earliest record to return. If no date is supplied the default date of current month/year - 6 years will be used.
               type: date-only
               example: 2015-08-09
               required: false
-            toDate: 
+            toDate:
               description: The date of the latest record to return. If no date is supplied the default date of 'now'/'today' will be used.
               type: date-only
               example: 2015-08-09
               required: false
-          responses: 
+          responses:
             200:
               body:
                 application/json:
@@ -364,21 +367,22 @@ annotationTypes:
           is: [headers.acceptHeader]
           (annotations.scope): "read:apprenticeship-levy"
           securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
-          headers: 
+          (annotations.sandboxData): !include sandbox/get-employer-fraction-calculations.md
+          headers:
             Authorization:
               example: Bearer [token here]
-          queryParameters: 
-            fromDate: 
+          queryParameters:
+            fromDate:
               description: The date of the earliest calculation to return. Defaults to 72 months prior to current date.
               type: date-only
               example: 2015-08-09
               required: false
-            toDate: 
+            toDate:
               description: The date of the latest calculation to return. Defaults to current date.
               type: date-only
               example: 2015-08-09
               required: false
-          responses: 
+          responses:
             200:
               body:
                 application/json:
@@ -476,21 +480,22 @@ annotationTypes:
             is: [headers.acceptHeader]
             (annotations.scope): "read:apprenticeship-levy"
             securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
-            headers: 
+            (annotations.sandboxData): !include sandbox/get-employment-status.md
+            headers:
               Authorization:
                 example: Bearer [token here]
-            queryParameters: 
-              fromDate: 
+            queryParameters:
+              fromDate:
                 description: Starting date of the period to check employment for.
                 type: date-only
                 example: 2016-01-31
                 required: true
-              toDate: 
+              toDate:
                 description: Ending date of the period to check employment for.
                 type: date-only
                 example: 2016-01-31
                 required: true
-            responses: 
+            responses:
               200:
                 body:
                   application/json:
@@ -586,10 +591,11 @@ annotationTypes:
       is: [headers.acceptHeader]
       (annotations.scope): "read:apprenticeship-levy"
       securedBy: [ sec.oauth_2_0: { scopes: [ "read:apprenticeship-levy" ] } ]
-      headers: 
+      (annotations.sandboxData): !include sandbox/get-latest-fraction-calculation-date.md
+      headers:
         Authorization:
           example: Bearer [token here]
-      responses: 
+      responses:
         200:
           body:
             application/json:

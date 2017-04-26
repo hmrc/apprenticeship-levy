@@ -1,8 +1,40 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "description": "Get all employers",
+  "description": "Get all employer references",
   "type": "object",
   "properties": {
-
+    "_links": {
+      "type": "object",
+      "properties": {
+        "{empref}": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The relative link to fetch the details for this employer reference",
+              "example": "/epaye/840%2FMODES17"
+            }
+          }
+        },
+        "self": {
+          "type": "object",
+          "properties": {
+            "href": {
+              "type": "string",
+              "description": "The relative link to fetch this data",
+              "example": "/"
+            }
+          }
+        }
+      }
+    },
+    "emprefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "Employer's reference, consisting of 3 numbers of tax office and remaining string being employer's reference",
+        "pattern": "^\\d{3}/[A-Za-z0-9]+$"
+      }
+    }
   }
 }
