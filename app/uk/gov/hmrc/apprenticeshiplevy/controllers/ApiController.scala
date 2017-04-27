@@ -42,10 +42,14 @@ trait ApiController extends BaseController with HeaderValidator {
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
     val hc = super.hc(rh)
     updateMDC
-    val clientId = rh.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller")
-    val user = rh.headers.toSimpleMap.getOrElse("X-Client-Authorization-Token","Unknown caller")
-    val extendedHc = hc.copy(extraHeaders = Seq(("X-Client-ID",clientId),("X-Client-Authorization-Token",user)) ++ hc.extraHeaders)
-    extendedHc
+    val headersMap = rh.headers.toSimpleMap
+    val clientId = headersMap.getOrElse("X-Client-ID","Unknown caller")
+    val user = headersMap.getOrElse("X-Client-Authorization-Token","Unknown caller")
+
+    headersMap.get("OVERRIDE_EMPREF") match {
+      case Some(empref) => hc.copy(extraHeaders = Seq(("X-Client-ID",clientId),("X-Client-Authorization-Token",user),("OVERRIDE_EMPREF",empref)) ++ hc.extraHeaders)
+      case _ => hc.copy(extraHeaders = Seq(("X-Client-ID",clientId),("X-Client-Authorization-Token",user)) ++ hc.extraHeaders)
+    }
   }
 
   def selfLink(url: String): HalLink = HalLink("self", url)
@@ -53,10 +57,8 @@ trait ApiController extends BaseController with HeaderValidator {
   def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).as("application/hal+json")
 
   protected def updateMDC(implicit rh: RequestHeader): Unit = {
-    val clientId = rh.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller")
-    val user = rh.headers.toSimpleMap.getOrElse("X-Client-Authorization-Token","Unknown caller")
-    MDC.put("X-Client-ID",clientId)
-    MDC.put("Authorization",user)
+    MDC.put("X-Client-ID",rh.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller"))
+    MDC.put("Authorization",rh.headers.toSimpleMap.getOrElse("X-Client-Authorization-Token","Unknown caller"))
   }
 
   protected val withValidAcceptHeader: ActionBuilder[Request] = validateAccept(acceptHeaderValidationRules)
