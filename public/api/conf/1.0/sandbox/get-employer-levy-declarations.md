@@ -1,4 +1,4 @@
-## External Test Environment
+##### External Test Environment
 
 If accessing this endpoint via the new [external test environment](https://test-developer.service.hmrc.gov.uk/api-documentation) unfortunately
 the generated test user account can not be updated with replacement or additional
@@ -9,7 +9,7 @@ environment it's important to include an additional
 
 If using the original Sandbox environment please ensure your parameters are URL encoded.
 
-## Test Data
+##### Available Data
 <table>
     <thead>
         <tr>
