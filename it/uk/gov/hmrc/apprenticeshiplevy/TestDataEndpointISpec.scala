@@ -70,6 +70,35 @@ class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
         // check
         status(result) shouldBe 200
       }
+
+      describe("should return support OVERRIDE_EMPREF") {
+        it ("and return json file where it exists") {
+          // set up
+          val headers = standardDesHeaders :+ (("OVERRIDE_EMPREF"->"840/MODES17"))
+          val request = FakeRequest(GET, "/sandbox/data/paye/employer/000/ABC/designatory-details")
+                        .withHeaders(headers: _*)
+
+          // test
+          val result = route(app, request).get
+
+          // check
+          status(result) shouldBe 200
+          contentAsString(result) should include ("/paye/employer/840/MODES17/designatory-details/employer")
+        }
+
+        it ("and return NotFound where json file does not exist") {
+          // set up
+          val headers = standardDesHeaders :+ (("OVERRIDE_EMPREF"->"ZZZ%2FJKLJLJL"))
+          val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
+                        .withHeaders(headers: _*)
+
+          // test
+          val result = route(app, request).get
+
+          // check
+          status(result) shouldBe 404
+        }
+      }
     }
   }
 }
