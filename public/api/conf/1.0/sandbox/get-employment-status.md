@@ -1,5 +1,15 @@
-Please ensure parameters are URL encoded.
+##### External Test Environment
 
+If accessing this endpoint via the new [external test environment](https://test-developer.service.hmrc.gov.uk/api-documentation) unfortunately
+the generated test user account can not be updated with replacement or additional
+EPAYE employer references numbers and so no test data can be returned. In this
+environment it's important to include an additional
+<code style="code--slim">OVERRIDE_EMPREF</code> header with any requests and where the value is an empref (**not** URL encoded) e.g. 840/MODES17. Valid values are found in the table below. The URL's empref in this case must match the one associated with your uniquely generated test user's empref provided during the
+[test user creation](https://test-developer.service.hmrc.gov.uk/api-test-user). Please note this header is ignored in the production environment live endpoints.
+
+If using the original Sandbox environment please ensure your parameters are URL encoded.
+
+##### Available Data
 <table>
     <thead>
         <tr>
