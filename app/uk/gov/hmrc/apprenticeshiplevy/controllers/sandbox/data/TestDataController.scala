@@ -76,14 +76,17 @@ trait TestDataController extends Controller with Utf8MimeTypes {
             .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), newpath))
             .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request ${req} with OVERRIDE_EMPREF header of ${empref} but no file '${newpath}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
           }
-          case _ =>
+          case _ => {
+            Logger.warn(s"Resource path overridden by OVERRIDE_EMPREF header but unable to get new empref from ${path}.")
             Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file '${path}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}"""))
+          }
         }
       }
       case _ => {
         if (path.startsWith("authorise/read")) {
           Future.successful(Ok(""))
         } else {
+          Logger.info(s"""No override header found. Headers: ${request.headers.toSimpleMap.mkString(" ")}""")
           readJson(SANDBOX_DATA_DIR, path)
             .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), path))
             .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file '${path}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
