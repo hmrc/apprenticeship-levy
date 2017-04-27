@@ -68,7 +68,6 @@ trait TestDataController extends Controller with Utf8MimeTypes {
     val Empref = "(.*/)([a-zA-Z0-9]{3}/[a-zA-Z0-9]+)(/.*)".r
     request.headers.get("OVERRIDE_EMPREF") match {
       case Some(empref) => {
-        Logger.info(s"header")
         path match {
           case Empref(path1, old_empref, path2) => {
             val newpath = s"${path1}${empref}${path2}"
@@ -82,7 +81,6 @@ trait TestDataController extends Controller with Utf8MimeTypes {
         }
       }
       case _ => {
-        Logger.info(s"No header")
         if (path.startsWith("authorise/read")) {
           Future.successful(Ok(""))
         } else {
