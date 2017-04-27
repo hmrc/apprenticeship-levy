@@ -65,13 +65,32 @@ trait TestDataController extends Controller with Utf8MimeTypes {
     Logger.debug(s"Request was received for path ${req}")
     // $COVERAGE-ON$
     val path = URLDecoder.decode(req, "UTF-8")
-
-    if (path.startsWith("authorise/read")) {
-      Future.successful(Ok(""))
-    } else {
-      readJson(SANDBOX_DATA_DIR, path)
-        .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), path))
-        .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file '${path}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
+    val Empref = "(.*/)([a-zA-Z0-9]{3}/[a-zA-Z0-9]+)(/.*)".r
+    request.headers.get("OVERRIDE_EMPREF") match {
+      case Some(empref) => {
+        Logger.info(s"header")
+        path match {
+          case Empref(path1, old_empref, path2) => {
+            val newpath = s"${path1}${empref}${path2}"
+            Logger.info(s"Resource path overridden by OVERRIDE_EMPREF header. Now looking for ${newpath}")
+            readJson(SANDBOX_DATA_DIR, newpath)
+            .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), newpath))
+            .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request ${req} with OVERRIDE_EMPREF header of ${empref} but no file '${newpath}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
+          }
+          case _ =>
+            Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file '${path}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}"""))
+        }
+      }
+      case _ => {
+        Logger.info(s"No header")
+        if (path.startsWith("authorise/read")) {
+          Future.successful(Ok(""))
+        } else {
+          readJson(SANDBOX_DATA_DIR, path)
+            .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), path))
+            .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file '${path}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
+        }
+      }
     }
   }
 
