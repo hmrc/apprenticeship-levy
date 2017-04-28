@@ -46,6 +46,7 @@ trait ApiController extends BaseController with HeaderValidator {
     val clientId = headersMap.getOrElse("X-Client-ID","Unknown caller")
     val user = headersMap.getOrElse("X-Client-Authorization-Token","Unknown caller")
 
+    play.api.Logger(s"""Creating header carrier with ${rh} and headers are: ${headersMap.mkString(" ")}""")
     headersMap.get("OVERRIDE_EMPREF") match {
       case Some(empref) => hc.copy(extraHeaders = Seq(("X-Client-ID",clientId),("X-Client-Authorization-Token",user),("OVERRIDE_EMPREF",empref)) ++ hc.extraHeaders)
       case _ => hc.copy(extraHeaders = Seq(("X-Client-ID",clientId),("X-Client-Authorization-Token",user)) ++ hc.extraHeaders)
