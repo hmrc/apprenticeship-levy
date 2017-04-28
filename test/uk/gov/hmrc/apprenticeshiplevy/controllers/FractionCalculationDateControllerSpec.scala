@@ -97,41 +97,6 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       actualHeaderCarrier.extraHeaders shouldBe List(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
     }
 
-    "forward OVERRIDE_EMPREF header when supplied" in {
-      // set up
-      val stubHttpGet = mock[HttpGet]
-      val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture()))
-           .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
-      val controller = new FractionsCalculationDateController() with DesController {
-        def desConnector: DesConnector = new DesConnector() {
-          def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpGet: HttpGet = stubHttpGet
-          protected def auditConnector: Option[AuditConnector] = None
-        }
-        override protected def defaultDESEnvironment: String = "clone"
-
-        override protected def defaultDESToken: String = "ABC"
-      }
-
-      // test
-      val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                                    "Authorization"->"Bearer dsfda9080",
-                                                                                                    "Environment"->"clone",
-                                                                                                    "OVERRIDE_EMPREF" -> "THIS_IS_AN_EMP_REF"))
-
-      // check
-      val actualHeaderCarrier = headerCarrierCaptor.getValue
-      // this value is different from authorization header passed in above because
-      // DES authorization bearer token is different from user/client bearer token
-      val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
-      actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders shouldBe List(("X-Client-ID","Unknown caller"),
-                                                     ("X-Client-Authorization-Token","Unknown caller"),
-                                                     ("OVERRIDE_EMPREF","THIS_IS_AN_EMP_REF"),
-                                                     ("Environment","clone"))
-    }
-
     "recover from exceptions" in {
       // set up
       val stubHttpGet = mock[HttpGet]
