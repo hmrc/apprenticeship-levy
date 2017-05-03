@@ -1,14 +1,15 @@
-package uk.gov.hmrc.apprenticeshiplevy
+package uk.gov.hmrc.apprenticeshiplevy.config
 
 import org.scalatest._
 import org.scalatest.Matchers._
 
+import uk.gov.hmrc.apprenticeshiplevy._
 import uk.gov.hmrc.apprenticeshiplevy.util._
-import uk.gov.hmrc.apprenticeshiplevy.config._
 import org.scalatestplus.play._
 
 @DoNotDiscover
-class ConfigurationISpec extends WiremockFunSpec with ConfiguredServer {
+class ConfigurationISpec extends WiremockFunSpec
+with ConfiguredServer with EitherValues with Matchers {
   describe("Application Configuration") {
     it ("should have an running app") {
       AppContext.maybeApp.isDefined shouldBe true
@@ -72,6 +73,9 @@ class ConfigurationISpec extends WiremockFunSpec with ConfiguredServer {
     }
     it ("should have audit filter disabled for controllers (only for integration tests)") {
       MicroserviceAuditFilter.controllerNeedsAuditing("uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController") shouldBe false
+    }
+    it ("should support NINO's with 'KC' prefix") {
+      PathBinders.isValid(PathBinders.NinoPattern, "KC745625A", "ERRORCODE").right.value shouldBe "KC745625A"
     }
   }
 }

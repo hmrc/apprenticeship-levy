@@ -4,5 +4,3 @@ GET        /epaye/:empref/declarations          uk.gov.hmrc.apprenticeshiplevy.c
 GET        /epaye/:empref/fractions             uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxFractionsController.fractions(empref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate])
 GET        /fraction-calculation-date           uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxFractionsController.fractionCalculationDate
 GET        /epaye/:empref/employed/:nino        uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxEmploymentCheckController.check(empref: EmploymentReference, nino: Nino, fromDate: LocalDate, toDate: LocalDate)
-
-GET        /data/*req                           uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data.SandboxTestDataController.serve(req)

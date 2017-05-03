@@ -15,7 +15,7 @@ import org.scalatestplus.play._
 import play.api.inject.guice._
 import play.api.test._
 
-class IntegrationTestsSuite extends Suites(new ConfigurationISpec,
+class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.config.ConfigurationISpec,
                                            new ServiceLocatorRegistrationISpec,
                                            new DeclarationsEndpointISpec,
                                            new DefinitionEndpointISpec,
