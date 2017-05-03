@@ -43,16 +43,11 @@
       "addressLine3": "Foreign Address Line 3",
       "addressLine4": "Foreign Address Line 4",
       "addressLine5": "Foreign Address Line 5",
-      "postcode": "NE30 4XX",
       "foreignCountry": "France"
     },
     "contact": {
-      "telephone": {
-        "telephoneNumber": "0123 456789"
-      },
-      "email": {
-        "primary": "someone@hmrc.gov.uk"
-      }
+      "telephone": {},
+      "email": {}
     }
   }
 }
