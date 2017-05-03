@@ -7,7 +7,7 @@ object Config {
     environmentProperty match {
       case "local" => "http://localhost:9470"
       case "dev" => throw new IllegalArgumentException(s"Provide dev endpoint by replacing this exception with the url to the environment")
-      case "qa" => throw new IllegalArgumentException(s"Provide qa endpoint by replacing this exception with the url to the environment")
+      case "qa" => "https://qa-api.tax.service.gov.uk/apprenticeship-levy"
       case "staging" => throw new IllegalArgumentException(s"Provide staging endpoint by replacing this exception with the url to the environment")
       case "live" => throw new IllegalArgumentException(s"Provide live endpoint by replacing this exception with the url to the environment")
       case _ => throw new IllegalArgumentException(s"Environment '$environmentProperty' not known")
@@ -28,12 +28,58 @@ object Config {
 
   lazy val contexts = {
     val environmentProperty = System.getProperty("environment", "local").toLowerCase
+    val endpointsProp = System.getProperty("endpoints", "sandbox").toLowerCase
     environmentProperty match {
-      case "local" => Seq(("/sandbox","sandbox"),("","live"))
-      case "dev" => Seq(("","sandbox"),("","live"))
-      case "qa" => Seq(("","sandbox"),("","live"))
-      case "staging" => Seq(("","sandbox"))
-      case "live" => Seq(("","sandbox"))
+      case "local" => {
+        endpointsProp match {
+          case "both" =>
+            Seq(("/sandbox","sandbox"),("","live"))
+          case "live" =>
+            Seq(("","live"))
+          case "sandbox" =>
+            Seq(("/sandbox","sandbox"))
+          }
+      }
+      case "dev" => {
+        endpointsProp match {
+          case "both" =>
+            Seq(("","sandbox"),("","live"))
+          case "sandbox" =>
+            Seq(("","sandbox"))
+          case "live" =>
+            Seq(("","live"))
+          }
+      }
+      case "qa" => {
+        endpointsProp match {
+          case "both" =>
+            Seq(("","sandbox"),("","live"))
+          case "sandbox" =>
+            Seq(("","sandbox"))
+          case "live" =>
+            Seq(("","live"))
+          }
+      }
+      case "staging" => {
+        endpointsProp match {
+          case "both" =>
+            Seq(("","sandbox"))
+          case "sandbox" =>
+            Seq(("","sandbox"))
+          case "live" =>
+            Seq()
+          }
+      }
+      case "live" => {
+        endpointsProp match {
+          case "both" =>
+            Seq(("","sandbox"))
+          case "sandbox" =>
+            Seq(("","sandbox"))
+          case "live" =>
+            Seq()
+          }
+      }
       case _ => throw new IllegalArgumentException(s"Environment '$environmentProperty' not known")
     }
   }

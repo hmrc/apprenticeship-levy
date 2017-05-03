@@ -4,42 +4,6 @@
     "empref": "754/TZ00047",
     "fractionCalculations": [
       {
-        "calculatedAt": "2016-05-07",
-        "fractions": [
-          {
-            "region": "England",
-            "value": 0
-          }
-        ]
-      },
-      {
-        "calculatedAt": "2016-08-07",
-        "fractions": [
-          {
-            "region": "England",
-            "value": 0
-          }
-        ]
-      },
-      {
-        "calculatedAt": "2016-11-09",
-        "fractions": [
-          {
-            "region": "England",
-            "value": 0
-          }
-        ]
-      },
-      {
-        "calculatedAt": "2017-02-08",
-        "fractions": [
-          {
-            "region": "England",
-            "value": 0
-          }
-        ]
-      },
-      {
         "calculatedAt": "2017-06-10",
         "fractions": [
           {
