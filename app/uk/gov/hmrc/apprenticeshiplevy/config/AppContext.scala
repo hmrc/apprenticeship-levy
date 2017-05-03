@@ -93,6 +93,15 @@ object AppContext extends ServicesConfig with ServiceLocatorRegistration {
       true
     }
 
+  def externalTestModeEnabled: Boolean = maybeString("microservice.external-test-mode")
+    .flatMap(flag => Try(flag.toBoolean).toOption)
+    .getOrElse {
+      // $COVERAGE-OFF$
+      Logger.debug("A configuration value has not been provided for microservice.external-test-mode, defaulting to false")
+      // $COVERAGE-ON$
+      false
+    }
+
   def whitelistedApplicationIds: Seq[String] = maybeString("microservice.whitelisted-applications")
     .map { applicationIds => applicationIds.split(",").toSeq }.getOrElse(Seq.empty)
 
