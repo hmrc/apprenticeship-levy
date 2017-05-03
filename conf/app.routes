@@ -6,7 +6,3 @@ GET        /epaye/:empref/declarations                  uk.gov.hmrc.apprenticesh
 GET        /epaye/:empref/fractions                     uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsController.fractions(empref: EmploymentReference,fromDate: Option[LocalDate], toDate: Option[LocalDate])
 GET        /fraction-calculation-date                   uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsCalculationDateController.fractionCalculationDate
 GET        /epaye/:empref/employed/:nino                uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveEmploymentCheckController.check(empref: EmploymentReference, nino: Nino, fromDate: LocalDate, toDate: LocalDate)
-
-GET        /api/definition                              uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.definition
-GET        /api/documentation/:version/:endpoint        uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.documentation(version, endpoint)
-GET        /api/conf/:version/*file                     uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.conf(version, file)
