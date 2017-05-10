@@ -351,6 +351,10 @@ annotationTypes:
                       description: DES or backend system has returned invalid json which can not be relayed to API caller.
                       value:
                         code: DES_ERROR_JSON_FAILURE
+                    500_DES_ERROR_BACKEND_FAILURE:
+                      description: DES returned unexpected Json error response type on a HTTP 200 response.
+                      value:
+                        code: DES_ERROR_BACKEND_FAILURE
             503:
               body:
                 application/json:
