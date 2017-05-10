@@ -301,6 +301,16 @@
           </body>
           <code>DES_ERROR_JSON_FAILURE</code>
         </http>
+        <http status="500" msg="Internal Server Error">
+          <description>DES returned unexpected Json error response type on a HTTP 200 response.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_BACKEND_FAILURE",
+  "message": "DES backend error: DES returned error code object on HTTP 200 response (treating as error). DES error reason: '<message from RTI here>'."
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_BACKEND_FAILURE</code>
+        </http>
       </responses>
     </version>
   </versions>
