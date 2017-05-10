@@ -34,6 +34,12 @@ import uk.gov.hmrc.apprenticeshiplevy.metrics._
 import java.net.URLDecoder
 import uk.gov.hmrc.apprenticeshiplevy.data.des.DesignatoryDetails._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.EmploymentCheckStatus._
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads._
+import play.api.libs.json._
+import uk.gov.hmrc.play.http._
+import scala.util.{Try, Success, Failure}
+import play.api.http.Status._
 
 trait DesUrl {
   def baseUrl: String
@@ -45,6 +51,16 @@ trait DesSandboxUrl extends DesUrl {
 
 trait DesProductionUrl extends DesUrl {
   def baseUrl: String = AppContext.desUrl
+}
+
+trait DesUtils {
+  val EMPREF = "([0-9]{3})([\\/]*)([a-zA-Z0-9]+)".r
+
+  def convertEmpref(empref: String): String =
+    empref match {
+      case EMPREF(taxOffice,_,ref) => s"$taxOffice/$ref"
+      case _ => empref
+    }
 }
 
 trait EmployerDetailsEndpoint extends Timer {
@@ -114,7 +130,7 @@ trait EmploymentCheckEndpoint extends Timer {
   }
 }
 
-trait FractionsEndpoint extends Timer {
+trait FractionsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
   def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Fractions] = {
@@ -128,14 +144,10 @@ trait FractionsEndpoint extends Timer {
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    val EMPREF = "([0-9]{3})([\\/]*)([a-zA-Z0-9]+)".r
     timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
       audit(new ALAEvent("readFractions", empref, "", dateParams)) {
         des.httpGet.GET[Fractions](url).map { fraction =>
-          fraction.empref match {
-            case EMPREF(taxOffice,_,ref) => fraction.copy(empref = s"$taxOffice/$ref")
-            case _ => fraction
-          }
+          fraction.copy(empref=convertEmpref(fraction.empref))
         }
       }
     }
@@ -156,7 +168,7 @@ trait FractionsEndpoint extends Timer {
   }
 }
 
-trait LevyDeclarationsEndpoint extends Timer {
+trait LevyDeclarationsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
@@ -164,20 +176,63 @@ trait LevyDeclarationsEndpoint extends Timer {
 
     val url = s"${desURL(empref)}${params(dateRange)}"
 
-    // $COVERAGE-OFF$
-    Logger.info(s"Calling DES at $url")
-    // $COVERAGE-ON$
-
     timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
       audit(new ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
-        des.httpGet.GET[EmployerPaymentsSummary](url).recover {
-          case jsonError: JsValidationException => {
-            // $COVERAGE-OFF$
-            Logger.error(s"Calling DES resulted in json error: ${jsonError.getMessage}")
-            // $COVERAGE-ON$
-            throw jsonError
-          }
+        des.httpGet.GET[HttpResponse](url).map { response =>
+          val jsonStr = response.body
+          // This feels like generics and ClassTag should be used but hotfix for bad DES response required TODO
+          val responseTypes = Seq("EmployerPaymentsSummary", "EmployerPaymentsSummaryVersion0", "EmployerPaymentsError", "EmptyEmployerPayments")
+          responseTypes.map(toEmployerPaymentsSummary(_, jsonStr))
+            .flatten
+            .headOption
+            .map(eps=>eps.copy(empref=convertEmpref(empref)))
+            .getOrElse {
+              Logger.error(s""" |DES url ${url}
+                                |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
+                                |  Status: ${response.status}
+                                |  Headers: ${response.allHeaders.mkString(" ")}
+                                |  Body: '${jsonStr}'""".stripMargin('|'))
+              throw new IllegalArgumentException(s"DES returned unexpected JSON on 200 response: ${jsonStr}")
+            }
         }
+      }
+    }
+  }
+
+  protected[connectors] def toEmployerPaymentsSummary(className: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
+    import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsSummary._
+    import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsSummaryVersion0._
+    import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsError._
+    import uk.gov.hmrc.apprenticeshiplevy.data.des.EmptyEmployerPayments._
+
+    def toEPSResponse[A <: EPSResponse](jsResult: JsResult[A]): Option[EPSResponse] = jsResult match {
+      case JsSuccess(response,_) => Some[EPSResponse](response)
+      case JsError(_) => None
+    }
+
+    def maybe(className: String, jsonStr: String): Option[EPSResponse] = {
+      // As noted above this feels likes generics and ClassTag should be used but hotfix required
+      className match {
+        case "EmptyEmployerPayments" => Try(Json.parse(jsonStr).validate[EmptyEmployerPayments]).toOption.flatMap(toEPSResponse(_))
+        case "EmployerPaymentsSummary" => Try(Json.parse(jsonStr).validate[EmployerPaymentsSummary]).toOption.flatMap(toEPSResponse(_))
+        case "EmployerPaymentsSummaryVersion0" => Try(Json.parse(jsonStr).validate[EmployerPaymentsSummaryVersion0]).toOption.flatMap(toEPSResponse(_))
+        case "EmployerPaymentsError" => Try(Json.parse(jsonStr).validate[EmployerPaymentsError]).toOption.flatMap(toEPSResponse(_))
+        case _ => throw new IllegalArgumentException(("!"*10) + " PROGRAMMING ERROR: Fix className match above")
+      }
+    }
+
+    maybe(className, jsonStr) match {
+      case Some(EmployerPaymentsSummaryVersion0(empref, eps)) => Some(EmployerPaymentsSummary(empref, eps))
+      case Some(EmployerPaymentsError(reason)) => {
+        Logger.error(s"DES reported error reason '${reason}' on HTTP 200 response.")
+        throw new Upstream5xxResponse(s"DES returned error code object on HTTP 200 response (treating as error). DES error reason: '${reason}'.", PRECONDITION_FAILED, PRECONDITION_FAILED)
+      }
+      case Some(EmptyEmployerPayments(empref)) => Some(EmployerPaymentsSummary(empref, List.empty[EmployerPaymentSummary]))
+      case Some(EmployerPaymentsSummary(empref,eps)) => Some(EmployerPaymentsSummary(empref, eps))
+      case Some(_) => None
+      case None => {
+        val isEmpty = "^\\s*(\\{\\s*\\})\\s*$".r
+        isEmpty findFirstIn jsonStr map(_ => EmployerPaymentsSummary("", List.empty[EmployerPaymentSummary]))
       }
     }
   }

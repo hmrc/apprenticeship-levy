@@ -147,8 +147,28 @@ object EmployerPaymentSummary {
   )(EmployerPaymentSummary.apply _)
 }
 
-case class EmployerPaymentsSummary(empref: String, eps: List[EmployerPaymentSummary])
+abstract class EPSResponse {}
+
+case class EmployerPaymentsSummary(empref: String, eps: List[EmployerPaymentSummary]) extends EPSResponse
 
 object EmployerPaymentsSummary {
   implicit val format = Json.format[EmployerPaymentsSummary]
+}
+
+case class EmployerPaymentsSummaryVersion0(empref: String, declarations: List[EmployerPaymentSummary]) extends EPSResponse
+
+object EmployerPaymentsSummaryVersion0 {
+  implicit val format = Json.format[EmployerPaymentsSummaryVersion0]
+}
+
+case class EmptyEmployerPayments(empref: String) extends EPSResponse
+
+object EmptyEmployerPayments {
+  implicit val format = Json.format[EmptyEmployerPayments]
+}
+
+case class EmployerPaymentsError(reason: String) extends EPSResponse
+
+object EmployerPaymentsError {
+  implicit val format = Json.format[EmployerPaymentsError]
 }
