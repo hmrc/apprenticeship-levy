@@ -77,7 +77,10 @@ trait DesController extends ApiController {
         }
         case e: Upstream5xxResponse => {
           Logger.error(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning ServiceUnavailable with code ${e.reportAs}", e)
-          ServiceUnavailable(Json.toJson(DESError(e.reportAs, "BACKEND_FAILURE", s"DES 5xx error: ${extractReason(e.getMessage())}")))
+          e.upstreamResponseCode match {
+            case PRECONDITION_FAILED => InternalServerError(Json.toJson(DESError(420, "BACKEND_FAILURE", s"DES backend error: ${extractReason(e.getMessage())}")))
+            case _ => ServiceUnavailable(Json.toJson(DESError(e.reportAs, "BACKEND_FAILURE", s"DES 5xx error: ${extractReason(e.getMessage())}")))
+          }
         }
         case e: Upstream4xxResponse => {
           Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()} with ${e.upstreamResponseCode}, API returning code ${e.reportAs}", e)

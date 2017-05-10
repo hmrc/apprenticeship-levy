@@ -35,6 +35,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.EventKeys._
 import uk.gov.hmrc.play.audit.model.DataEvent
+import play.api.libs.json.Json
 
 class DesConnectorSpec extends UnitSpec with MockitoSugar {
   "DES Connector" should {
@@ -110,9 +111,11 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
 
     "support original endpoint url" in {
       // set up
-      val expected = EmployerPaymentsSummary("123AB12345", List[EmployerPaymentSummary]())
-      when(stubHttpGet.GET[EmployerPaymentsSummary](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"))(any(), any()))
-                      .thenReturn(Future.successful(expected))
+      val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
+      when(stubHttpGet.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"))(any(), any()))
+                      .thenReturn(Future.successful(
+                        HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
+                      ))
 
       // test
       val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,11,3)))(hc, ec)
@@ -123,9 +126,11 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
 
     "support new endpoint url" in {
       // set up
-      val expected = EmployerPaymentsSummary("123AB12345", List[EmployerPaymentSummary]())
-      when(stubHttpGet.GET[EmployerPaymentsSummary](startsWith("http://a.guide.to.nowhere/apprenticeship-levy/employers/123AB12345/declarations"))(any(), any()))
-                      .thenReturn(Future.successful(expected))
+      val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
+      when(stubHttpGet.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/apprenticeship-levy/employers/123AB12345/declarations"))(any(), any()))
+                      .thenReturn(Future.successful(
+                        HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
+                      ))
       val connector = new DesConnector() {
         def baseUrl: String = "http://a.guide.to.nowhere"
         def httpGet: HttpGet = stubHttpGet
@@ -142,9 +147,11 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
 
     "supply default dates when not specified" in {
       // set up
-      val expected = EmployerPaymentsSummary("123AB12345", List[EmployerPaymentSummary]())
-      when(stubHttpGet.GET[EmployerPaymentsSummary](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary?fromDate=20"))(any(), any()))
-                      .thenReturn(Future.successful(expected))
+      val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
+      when(stubHttpGet.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary?fromDate=20"))(any(), any()))
+                      .thenReturn(Future.successful(
+                        HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
+                      ))
 
       // test
       val futureResult = connector.eps("123AB12345", OpenDateRange)(hc, ec)
@@ -160,32 +167,26 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
 
       "convert invalid empty json to valid response" in {
         val url = "http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"
-        val expected = EmployerPaymentsSummary("123AB12345", List[EmployerPaymentSummary]())
-        when(stubHttpGet.GET[EmployerPaymentsSummary](startsWith(s"${url}?fromDate=20"))(any(), any()))
-                        .thenReturn(Future.failed{
-                          Json.parse("""{}""").validate[EmployerPaymentsSummary].fold(
-                              errs => new uk.gov.hmrc.play.http.JsValidationException("GET", url, EmployerPaymentsSummary.getClass, errs),
-                              valid => new IllegalArgumentException("test didn't fail")
-                            )
-                        })
+        val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
+        when(stubHttpGet.GET[HttpResponse](startsWith(s"${url}?fromDate=20"))(any(), any()))
+                .thenReturn(Future.successful(
+                  HttpResponse(200, Some(Json.parse("""{}""")))
+                ))
 
-        try {
-          // test
-          val futureResult = connector.eps("123AB12345", OpenDateRange)(hc, ec)
+        // test
+        val futureResult = connector.eps("123AB12345", OpenDateRange)(hc, ec)
 
-          // check
-          await[EmployerPaymentsSummary](futureResult) shouldBe expected
-        } catch {
-          case _ : uk.gov.hmrc.play.http.JsValidationException => info("received expected exception")
-        }
+        // check
+        await[EmployerPaymentsSummary](futureResult) shouldBe expected
       }
 
       "convert invalid bad date-time json values to valid date times" in {
         val url = "http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"
         val expected = EmployerPaymentsSummary("123/AB12345",
                         List(EmployerPaymentSummary(12345678L,new LocalDateTime("2016-07-14T16:05:44.000"),new LocalDateTime("2016-07-14T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(600.00),BigDecimal(15000),"11")))))
-        when(stubHttpGet.GET[EmployerPaymentsSummary](startsWith(s"${url}?fromDate=20"))(any(), any()))
-                        .thenReturn(Future.successful{
+        when(stubHttpGet.GET[HttpResponse](startsWith(s"${url}?fromDate=20"))(any(), any()))
+                        .thenReturn(Future.successful(
+                          HttpResponse(200, Some(
                           Json.parse("""{
                           "empref": "123/AB12345",
                           "eps": [
@@ -201,11 +202,8 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
                               }
                             }
                           ]
-                        }""").validate[EmployerPaymentsSummary].fold(
-                              errs => throw new uk.gov.hmrc.play.http.JsValidationException("GET", url, EmployerPaymentsSummary.getClass, errs),
-                              valid => valid
-                            )
-                        })
+                        }""")))
+                      ))
 
         // test
         val futureResult = connector.eps("123AB12345", OpenDateRange)(hc, ec)
@@ -224,8 +222,9 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
                              EmployerPaymentSummary(12345682L,new LocalDateTime("2016-06-15T16:20:23.000"),new LocalDateTime("2016-06-15T16:20:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(200.00),BigDecimal(15000),"2"))),
                              EmployerPaymentSummary(12345683L,new LocalDateTime("2016-07-15T16:05:23.000"),new LocalDateTime("2016-07-15T16:05:23.000"),"16-17",inactivePeriod=Some(ClosedDateRange(new LocalDate("2016-06-06"),new LocalDate("2016-09-05")))),
                              EmployerPaymentSummary(12345684L,new LocalDateTime("2016-10-15T16:05:23.000"),new LocalDateTime("2016-10-15T16:05:23.000"),"16-17",finalSubmission=Some(SchemeCeased(true,new LocalDate("2016-09-05"),None)))))
-        when(stubHttpGet.GET[EmployerPaymentsSummary](startsWith(s"${url}?fromDate=20"))(any(), any()))
+        when(stubHttpGet.GET[HttpResponse](startsWith(s"${url}?fromDate=20"))(any(), any()))
                         .thenReturn(Future.successful{
+                          HttpResponse(200, Some(
                           Json.parse("""{
                           "empref": "123/AB12345",
                           "eps": [
@@ -304,10 +303,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
                               }
                             }
                           ]
-                        }""").validate[EmployerPaymentsSummary].fold(
-                              errs => throw new uk.gov.hmrc.play.http.JsValidationException("GET", url, EmployerPaymentsSummary.getClass, errs),
-                              valid => valid
-                            )
+                        }""")))
                         })
 
         // test
