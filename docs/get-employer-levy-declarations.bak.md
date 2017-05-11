@@ -190,6 +190,12 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/declarati
     <td><code>{
   "code": "DES_ERROR_JSON_FAILURE",
   "message": "DES and/or BACKEND server returned bad json."
+}</code></td></tr><tr><td>500 Internal Server Error</td>
+    <td>DES_ERROR_BACKEND_FAILURE</td>
+    <td>DES returned unexpected Json error response type on a HTTP 200 response.</td>
+    <td><code>{
+  "code": "DES_ERROR_BACKEND_FAILURE",
+  "message": "DES backend error: DES returned error code object on HTTP 200 response (treating as error). DES error reason: '<message from RTI here>'."
 }</code></td></tr><tr><td>503 Service Unavailable</td>
     <td>DES_ERROR</td>
     <td>Endpoint or internal system has experienced an internal error.</td>
