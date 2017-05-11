@@ -179,24 +179,27 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
     timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
       audit(new ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
         des.httpGet.GET[HttpResponse](url).map { response =>
-          val jsonStr = response.body
-          // This feels like generics and ClassTag should be used but hotfix for bad DES response required TODO
-          val responseTypes = Seq("EmployerPaymentsSummary", "EmployerPaymentsSummaryVersion0", "EmployerPaymentsError", "EmptyEmployerPayments")
-          responseTypes.map(toEmployerPaymentsSummary(_, jsonStr))
-            .flatten
-            .headOption
-            .map(eps=>eps.copy(empref=convertEmpref(empref)))
-            .getOrElse {
-              Logger.error(s""" |DES url ${url}
-                                |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
-                                |  Status: ${response.status}
-                                |  Headers: ${response.allHeaders.mkString(" ")}
-                                |  Body: '${jsonStr}'""".stripMargin('|'))
-              throw new IllegalArgumentException(s"DES returned unexpected JSON on 200 response: ${jsonStr}")
-            }
+          marshall(empref, response.body).getOrElse {
+            Logger.error(s""" |DES url ${url}
+                              |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
+                              |  Status: ${response.status}
+                              |  Headers: ${response.allHeaders.mkString(" ")}
+                              |  Body: '${response.body}'""".stripMargin('|'))
+            throw new IllegalArgumentException(s"DES returned unexpected JSON on 200 response: ${response.body}")
+          }
         }
       }
     }
+  }
+
+  protected[connectors] def marshall(empref: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
+    // This feels like generics and ClassTag should be used but hotfix for bad DES response required TODO
+    val responseTypes = Seq("EmployerPaymentsSummary", "EmployerPaymentsSummaryVersion0", "EmployerPaymentsError", "EmptyEmployerPayments")
+    responseTypes
+      .find(toEmployerPaymentsSummary(_, jsonStr).isDefined)
+      .map(toEmployerPaymentsSummary(_, jsonStr))
+      .head
+      .map(eps=> if (eps.empref.isEmpty) eps.copy(empref=convertEmpref(empref)) else eps.copy(empref=convertEmpref(eps.empref)))
   }
 
   protected[connectors] def toEmployerPaymentsSummary(className: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
@@ -210,7 +213,7 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
       case JsError(_) => None
     }
 
-    def maybe(className: String, jsonStr: String): Option[EPSResponse] = {
+    def maybeEPSResponse(className: String, jsonStr: String): Option[EPSResponse] = {
       // As noted above this feels likes generics and ClassTag should be used but hotfix required
       className match {
         case "EmptyEmployerPayments" => Try(Json.parse(jsonStr).validate[EmptyEmployerPayments]).toOption.flatMap(toEPSResponse(_))
@@ -221,15 +224,21 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
       }
     }
 
-    maybe(className, jsonStr) match {
-      case Some(EmployerPaymentsSummaryVersion0(empref, eps)) => Some(EmployerPaymentsSummary(empref, eps))
+    maybeEPSResponse(className, jsonStr) match {
+      case Some(EmployerPaymentsSummaryVersion0(empref, eps)) =>
+        Some(EmployerPaymentsSummary(empref, eps))
       case Some(EmployerPaymentsError(reason)) => {
         Logger.error(s"DES reported error reason '${reason}' on HTTP 200 response.")
         throw new Upstream5xxResponse(s"DES returned error code object on HTTP 200 response (treating as error). DES error reason: '${reason}'.", PRECONDITION_FAILED, PRECONDITION_FAILED)
       }
-      case Some(EmptyEmployerPayments(empref)) => Some(EmployerPaymentsSummary(empref, List.empty[EmployerPaymentSummary]))
-      case Some(EmployerPaymentsSummary(empref,eps)) => Some(EmployerPaymentsSummary(empref, eps))
-      case Some(_) => None
+      case Some(EmptyEmployerPayments(empref)) =>
+        Some(EmployerPaymentsSummary(empref, List.empty[EmployerPaymentSummary]))
+      case Some(EmployerPaymentsSummary(empref,eps)) =>
+        Some(EmployerPaymentsSummary(empref, eps))
+      case Some(_) => {
+        Logger.error(s"Got Some(_) unknown type - unclear how to handle")
+        None
+      }
       case None => {
         val isEmpty = "^\\s*(\\{\\s*\\})\\s*$".r
         isEmpty findFirstIn jsonStr map(_ => EmployerPaymentsSummary("", List.empty[EmployerPaymentSummary]))
