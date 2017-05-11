@@ -298,6 +298,60 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
         }
 
         describe ("when backend systems failing") {
+          describe ("but not as per specification dated 07/11/2016") {
+            it (s"should return http status 404 when empty json returned") {
+              // set up
+              val request = FakeRequest(GET, s"$context/epaye/999%2FAB999999/declarations").withHeaders(standardDesHeaders: _*)
+
+              // test
+              val result = route(app, request).get
+
+              // check
+              status(result) shouldBe 404
+              contentType(result) shouldBe Some("application/json")
+              contentAsJson(result) shouldBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
+            }
+
+            it (s"should return http status 500 when error json object returned on Http Status 200") {
+              // set up
+              val request = FakeRequest(GET, s"$context/epaye/999%2FAB999998/declarations").withHeaders(standardDesHeaders: _*)
+
+              // test
+              val result = route(app, request).get
+
+              // check
+              status(result) shouldBe 500
+              contentType(result) shouldBe Some("application/json")
+              contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES backend error: DES returned error code object on HTTP 200 response (treating as error). DES error reason: 'DES oddity #2'."}""")
+            }
+
+            it (s"should return http status 404 when just empref field in Json object is returned") {
+              // set up
+              val request = FakeRequest(GET, s"$context/epaye/999%2FAB999997/declarations").withHeaders(standardDesHeaders: _*)
+
+              // test
+              val result = route(app, request).get
+
+              // check
+              status(result) shouldBe 404
+              contentType(result) shouldBe Some("application/json")
+              contentAsJson(result) shouldBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
+            }
+
+            it (s"should return eps if using old fieldname of 'declarations'") {
+              // set up
+              val request = FakeRequest(GET, s"$context/epaye/999%2FAB999996/declarations").withHeaders(standardDesHeaders: _*)
+
+              // test
+              val result = route(app, request).get
+
+              // check
+              status(result) shouldBe 200
+              contentType(result) shouldBe Some("application/json")
+              contentAsJson(result) shouldBe Json.parse("""{"empref":"999/AB999996","declarations":[{"id":65732154551,"submissionTime":"2016-10-20T14:25:32.000","inactiveFrom":"2016-08-06","inactiveTo":"2016-11-05","submissionId":6573215455},{"id":65732154552,"submissionTime":"2016-10-20T14:25:32.000","payrollPeriod":{"year":"16-17","month":1},"levyDueYTD":124.27,"levyAllowanceForFullYear":15000,"submissionId":6573215455}]}""")
+            }
+          }
+
           it (s"should return 503 when connection closed") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345/declarations").withHeaders(standardDesHeaders: _*)
@@ -363,7 +417,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error: Backend system error"}""")
           }
 
-          it (s"should return http status 500 when empty json returned") {
+          it (s"should return http status 404 when empty json returned") {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB99999/declarations").withHeaders(standardDesHeaders: _*)
 
@@ -371,9 +425,9 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 500
+            status(result) shouldBe 404
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_JSON_FAILURE","message":"DES and/or BACKEND server returned bad json."}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
           }
         }
       }

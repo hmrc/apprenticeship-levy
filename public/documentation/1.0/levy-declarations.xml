@@ -411,6 +411,15 @@
                         <code>DES_ERROR_JSON_FAILURE</code>
                     </cell>
                 </row>
+                <row>
+                    <cell>DES returned unexpected Json error response type on a HTTP 200 response.</cell>
+                    <cell>
+                        <code>500 (Internal Server Error)</code>
+                    </cell>
+                    <cell>
+                        <code>DES_ERROR_BACKEND_FAILURE</code>
+                    </cell>
+                </row>
             </rows>
         </table>
     </section>
