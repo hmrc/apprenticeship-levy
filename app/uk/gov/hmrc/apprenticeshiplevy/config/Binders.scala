@@ -47,27 +47,30 @@ object QueryBinders {
 }
 
 object PathBinders {
-  val EmployerReferencePattern = AppContext.employerReferencePattern.r
-  val NinoPattern = AppContext.ninoPattern.r
+  val emprefValidator = isValid(AppContext.employerReferencePattern.r) _
+  val ninoValidator = isValidNino _
 
   implicit def bindableEmploymentReference(implicit binder: PathBindable[String]): PathBindable[EmploymentReference] =
-    bindable[String,EmploymentReference](EmployerReferencePattern,
+    bindable[String,EmploymentReference](emprefValidator,
                                          str => EmploymentReference(str),
                                          b => URLEncoder.encode(b.empref, "UTF-8"),
                                          "EMPREF_INVALID")
 
   implicit def bindableNino(implicit binder: PathBindable[String]): PathBindable[Nino] =
-    bindable[String,Nino](NinoPattern,
+    bindable[String,Nino](ninoValidator,
                           str => Nino(str),
                           b => URLEncoder.encode(b.nino, "UTF-8"),
                           "NINO_INVALID")
 
-  private[config] def bindable[A,B](regex: Regex, convertToB: String => B, convertToA: B => A, code: String)
+  private[config] def bindable[A,B](validator: (String, String)=> Either[String, String],
+                                    convertToB: String => B,
+                                    convertToA: B => A,
+                                    code: String)
                                    (implicit binder: PathBindable[A]): PathBindable[B] = new PathBindable[B] {
     override def bind(key: String, value: String): Either[String, B] = {
       for {
         theA <- binder.bind(key, value).right
-        bAsStr <- isValid(regex, URLDecoder.decode(theA.toString(), "UTF-8"), code).right
+        bAsStr <- validator(URLDecoder.decode(theA.toString(), "UTF-8"), code).right
       } yield convertToB(bAsStr)
     }
 
@@ -76,8 +79,13 @@ object PathBinders {
     }
   }
 
-  private[config] def isValid(regex: Regex, value: String, code: String): Either[String, String] = value match {
+  private[config] def isValid(regex: Regex)(value: String, code: String): Either[String, String] = value match {
     case regex(_*) => Right(value)
     case _ => Left(s"${code}: '${value}' is in the wrong format. Should be ${regex.toString()} and url encoded.")
+  }
+
+  private[config] def isValidNino(value: String, code: String): Either[String, String] = Nino.isValid(value) match {
+    case true => Right(value)
+    case false => Left(s"${code}: '${value}' is in the wrong format. Should have a prefix (one of ${uk.gov.hmrc.domain.Nino.validPrefixes}) and suffix (one of ${uk.gov.hmrc.domain.Nino.validSuffixes}) and url encoded.")
   }
 }
