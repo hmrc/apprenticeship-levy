@@ -75,7 +75,7 @@ with ConfiguredServer with EitherValues with Matchers {
       MicroserviceAuditFilter.controllerNeedsAuditing("uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController") shouldBe false
     }
     it ("should support NINO's with 'KC' prefix") {
-      PathBinders.isValid(PathBinders.NinoPattern, "KC745625A", "ERRORCODE").right.value shouldBe "KC745625A"
+      PathBinders.isValidNino("KC745625A", "ERRORCODE").right.value shouldBe "KC745625A"
     }
   }
 }

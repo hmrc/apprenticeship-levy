@@ -102,7 +102,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
                 // check
                 httpStatus shouldBe 400
                 contentType(result) shouldBe Some("application/json")
-                contentAsString(result) should include ("""is in the wrong format. Should be""")
+                contentAsString(result) should include ("""is in the wrong format. Should have a prefix (one of """)
               }
             }
           }

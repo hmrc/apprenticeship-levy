@@ -34,7 +34,7 @@ private object AppDependencies {
   private val xmlDiffVersion = "2.0.2"
   private val scalacheckVersion = "1.12.5"
   private val playAuditingVersion = "2.4.0"
-  private val domainVersion = "4.0.0"
+  private val domainVersion = "4.1.0"
   private val httpVerbsVersion = "3.3.0"
   private val scalajHttpVersion = "2.3.0"
   private val pegdownVersion = "1.6.0"
@@ -107,4 +107,3 @@ private object AppDependencies {
   }
   def apply() = compile ++ Test() ++ IntegrationTest() ++ AcceptanceTest()
 }
-
