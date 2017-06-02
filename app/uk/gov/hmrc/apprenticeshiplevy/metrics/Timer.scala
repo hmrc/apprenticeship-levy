@@ -26,14 +26,8 @@ trait Timer {
   def timer[T](event: RequestEvent)(block: => Future[T])(implicit ec: ExecutionContext): Future[T] = {
     val startTime = System.currentTimeMillis()
     block andThen {
-      case Success(v) => {
-        metrics.successfulRequest(event)
-        metrics.processRequest(TimerEvent(event.name, System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS))
-      }
-      case Failure(t) => {
-        metrics.failedRequest(event)
-        metrics.processRequest(TimerEvent(event.name, System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS))
-      }
+      case Success(v) => metrics.processRequest(TimerEvent(event.name, System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS))
+      case Failure(t) => metrics.failedRequest(event)
     }
   }
 }

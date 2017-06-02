@@ -91,22 +91,16 @@ trait GraphiteMetrics extends Metrics {
   }
 
   override def successfulRequest(event: MetricEvent): Unit = event match {
-    case RequestEvent(name, Some(_)) => {
-      mark(s"ala.success.${event.name}")
-      mark(s"ala.success.${event.metric}")
-    }
-    case _ => mark(s"ala.success.${event.metric}")
+    case RequestEvent(name, Some(_)) => mark(s"ala.success.${name}")
+    case _ => mark(s"ala.success.${event.name}")
   }
 
   override def failedRequest(event: MetricEvent): Unit = event match {
-    case RequestEvent(name, Some(_)) => {
-      mark(s"ala.failed.${event.name}")
-      mark(s"ala.failed.${event.metric}")
-    }
-    case _ => mark(s"ala.failed.${event.metric}")
+    case RequestEvent(name, Some(_)) => mark(s"ala.failed.${name}")
+    case _ => mark(s"ala.failed.${event.name}")
   }
 
-  override def processRequest(event: TimerEvent): Unit = log(s"ala.timers.${event.metric}", event.delta, event.timeUnit)
+  override def processRequest(event: TimerEvent): Unit = log(s"ala.timers.${event.name}", event.delta, event.timeUnit)
 
   registry match {
     case Some(_) =>
