@@ -17,3 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.data.api
 
 case class Nino(nino: String)
+
+object Nino {
+  def isValid(nino: String) = uk.gov.hmrc.domain.Nino.isValid(nino)
+}
