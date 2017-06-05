@@ -19,15 +19,18 @@ package uk.gov.hmrc.apprenticeshiplevy.metrics
 import java.util.concurrent.TimeUnit
 import scala.concurrent.{Future, ExecutionContext}
 import scala.util.{Success, Failure, Try}
+import uk.gov.hmrc.play.http.NotFoundException
 
 trait Timer {
   metrics: GraphiteMetrics =>
 
   def timer[T](event: RequestEvent)(block: => Future[T])(implicit ec: ExecutionContext): Future[T] = {
-    val startTime = System.currentTimeMillis()
     block andThen {
-      case Success(v) => metrics.processRequest(TimerEvent(event.name, System.currentTimeMillis() - startTime, TimeUnit.MILLISECONDS))
-      case Failure(t) => metrics.failedRequest(event)
+      case Failure(t) => t match {
+        case e: NotFoundException => ;
+        case e => metrics.failedRequest(event)
+      }
+      case _ => ;
     }
   }
 }
