@@ -114,7 +114,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(2) shouldBe LevyDeclaration(567742487410L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true),56774248741L)
+            declarations(2) shouldBe LevyDeclaration(567742487410L,LocalDateTime.parse("2016-04-20T14:31:02.000"),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true),56774248741L)
           }
 
           it (s"should handle inactive period") {
@@ -162,8 +162,9 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(0) shouldBe LevyDeclaration(567742487432L,LocalDateTime.parse("2016-05-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",2)),Some(98.64),Some(15000),None,56774248743L)
-            declarations(3) shouldBe LevyDeclaration(567742487412L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",11)),Some(24.27),Some(15000),None,56774248741L)
+            info(declarations.mkString(" "))
+            declarations(1) shouldBe LevyDeclaration(567742487432L,LocalDateTime.parse("2016-05-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",2)),Some(98.64),Some(15000),None,56774248743L)
+            declarations(4) shouldBe LevyDeclaration(567742487412L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",11)),Some(24.27),Some(15000),None,56774248741L)
             declarations(5) shouldBe LevyDeclaration(567742487422L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",11)),Some(24.27),Some(15000),None,56774248742L)
             declarations(8) shouldBe LevyDeclaration(65732154552L,LocalDateTime.parse("2016-04-20T14:25:32.000"),None,None,None,Some(PayrollPeriod("16-17",2)),Some(124.27),Some(15000),None,6573215455L)
           }
@@ -181,7 +182,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB88888"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-            declarations(0) shouldBe LevyDeclaration(567742487410L,LocalDateTime.parse("2013-04-17T09:00:55"),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true),56774248741L)
+            declarations(0) shouldBe LevyDeclaration(567742487410L,LocalDateTime.parse("2016-04-20T14:31:02"),None,None,None,Some(PayrollPeriod("16-17",8)),None,None,Some(true),56774248741L)
           }
         }
 

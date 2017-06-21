@@ -54,7 +54,7 @@ object EmployerPaymentSummary {
   private[des] val toNoPayment: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
     case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, Some(dr), _, _, _, _, _) =>
       LevyDeclaration((id * 10L),
-                      hmrcSt,
+                      rtiSt,
                       payrollPeriod = Some(PayrollPeriod(ty, calculateTaxMonth(dr.to))),
                       noPaymentForPeriod = Some(true),
                       submissionId = id)
