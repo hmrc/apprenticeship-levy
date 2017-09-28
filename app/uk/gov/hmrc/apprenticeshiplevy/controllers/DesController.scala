@@ -29,9 +29,10 @@ import scala.util.Try
 import scala.util.matching.Regex
 import java.net.URLDecoder
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.play.http.logging.Authorization
 import org.slf4j.MDC
 import play.api.Logger
+import uk.gov.hmrc.http.{ BadRequestException, GatewayTimeoutException, HeaderCarrier, JsValidationException, NotFoundException, Upstream4xxResponse, Upstream5xxResponse }
+import uk.gov.hmrc.http.logging.Authorization
 
 trait DesController extends ApiController {
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {

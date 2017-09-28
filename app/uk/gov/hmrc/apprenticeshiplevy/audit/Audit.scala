@@ -24,6 +24,7 @@ import scala.util.{Success, Failure, Try}
 import play.api.Logger
 import uk.gov.hmrc.play.http._
 import java.io.IOException
+import uk.gov.hmrc.http.{ BadRequestException, GatewayTimeoutException, HeaderCarrier, NotFoundException, Upstream4xxResponse, Upstream5xxResponse }
 
 trait Auditor  {
   def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = {
