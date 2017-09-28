@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.metrics
 import java.util.concurrent.TimeUnit
 import scala.concurrent.{Future, ExecutionContext}
 import scala.util.{Success, Failure, Try}
-import uk.gov.hmrc.play.http.NotFoundException
+import uk.gov.hmrc.http.NotFoundException
 
 trait Timer {
   metrics: GraphiteMetrics =>

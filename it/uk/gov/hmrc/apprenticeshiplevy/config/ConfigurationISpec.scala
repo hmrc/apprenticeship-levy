@@ -17,9 +17,6 @@ with ConfiguredServer with EitherValues with Matchers {
     it ("should have an configuration") {
       AppContext.maybeConfiguration.isDefined shouldBe true
     }
-    it ("should have an app name") {
-      AppContext.appName shouldBe "application-name"
-    }
     it ("should have an app url") {
       AppContext.appUrl shouldBe "http://microservice-name"
     }

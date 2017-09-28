@@ -22,7 +22,6 @@ import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange, ClosedDateRange}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, NotFoundException,JsValidationException}
 import views.html.helper
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import scala.concurrent.{Future, ExecutionContext}
@@ -40,6 +39,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.play.http._
 import scala.util.{Try, Success, Failure}
 import play.api.http.Status._
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpResponse, NotFoundException, Upstream5xxResponse }
 
 trait DesUrl {
   def baseUrl: String

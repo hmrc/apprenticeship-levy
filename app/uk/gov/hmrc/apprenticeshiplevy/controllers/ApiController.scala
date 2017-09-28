@@ -19,7 +19,6 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import play.api.hal.{HalLink, HalResource}
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import play.api.mvc.{ActionBuilder, Request, Result, Results, RequestHeader}
@@ -30,8 +29,8 @@ import scala.util.Try
 import scala.util.matching.Regex
 import java.net.URLDecoder
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.play.http.logging.Authorization
 import org.slf4j.MDC
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait ApiController extends BaseController with HeaderValidator {
 

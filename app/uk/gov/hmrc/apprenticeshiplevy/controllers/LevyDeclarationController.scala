@@ -27,10 +27,10 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, LevyDeclaration
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange,ClosedDateRange}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import uk.gov.hmrc.play.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import org.slf4j.MDC
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, NotFoundException }
 
 trait LevyDeclarationController {
   self: DesController =>

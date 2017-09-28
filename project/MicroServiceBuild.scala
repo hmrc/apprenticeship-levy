@@ -20,14 +20,9 @@ private object AppDependencies {
   import play.sbt.PlayImport._
   import play.core.PlayVersion
 
-  private val microserviceBootstrapVersion = "5.14.0"
-  private val playAuthVersion = "4.3.0"
-  private val playAuthFrontendVersion = "6.2.0"
-  private val playHealthVersion = "2.1.0"
-  private val logbackJsonLoggerVersion = "3.1.0"
-  private val playUrlBindersVersion = "2.1.0"
-  private val playConfigVersion = "4.3.0"
-  private val playHmrcApiVersion = "1.2.0"
+  private val microserviceBootstrapVersion = "6.9.0"
+  private val playConfigVersion = "5.0.0"
+  private val playHmrcApiVersion = "1.4.0"
   private val hmrcTestVersion = "2.3.0"
   private val playHalVersion = "1.1.0"
   private val scalaXMLVersion = "2.11.0-M4"
@@ -35,23 +30,20 @@ private object AppDependencies {
   private val scalacheckVersion = "1.12.5"
   private val playAuditingVersion = "2.4.0"
   private val domainVersion = "4.1.0"
-  private val httpVerbsVersion = "3.3.0"
-  private val scalajHttpVersion = "2.3.0"
   private val pegdownVersion = "1.6.0"
+  private val scalajHttpVersion = "2.3.0"
+  private val playAuthVersion = "4.3.0"
+  private val playAuthFrontendVersion = "6.2.0"
 
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "microservice-bootstrap" % microserviceBootstrapVersion,
-    "uk.gov.hmrc" %% "play-authorisation" % playAuthVersion,
-    "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthFrontendVersion,
-    "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "play-config" % playConfigVersion,
-    "uk.gov.hmrc" %% "logback-json-logger" % logbackJsonLoggerVersion,
     "uk.gov.hmrc" %% "play-hmrc-api" % playHmrcApiVersion,
     "uk.gov.hmrc" %% "play-hal" % playHalVersion,
-    "uk.gov.hmrc" %% "play-auditing" % playAuditingVersion,
     "uk.gov.hmrc" %% "domain" % domainVersion,
-    "com.kenshoo" %% "metrics-play" % "2.4.0_0.4.1"
+    "uk.gov.hmrc" %% "play-authorisation" % playAuthVersion,
+    "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthFrontendVersion
   )
 
   trait TestDependencies {
@@ -99,8 +91,7 @@ private object AppDependencies {
         "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % "2.2.6" % scope,
         "org.pegdown" % "pegdown" % "1.5.0" % scope,
-        "org.scalaj" %% "scalaj-http" % scalajHttpVersion,
-        "uk.gov.hmrc" %% "http-verbs" % httpVerbsVersion % scope
+        "org.scalaj" %% "scalaj-http" % scalajHttpVersion
       )
     }.test
   }
