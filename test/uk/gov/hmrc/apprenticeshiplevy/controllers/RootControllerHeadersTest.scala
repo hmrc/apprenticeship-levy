@@ -59,7 +59,7 @@ class RootControllerHeadersTest extends UnitSpec with MockitoSugar {
                      None,
                      None,
                      "")
-    when(stubHttpGet.GET[Authority](anyString())(any(), headerCarrierCaptor.capture()))
+    when(stubHttpGet.GET[Authority](anyString())(any(), headerCarrierCaptor.capture(), any()))
          .thenReturn(Future.successful(authority))
     val controller = new RootController() {
       def authConnector: AuthConnector = new AuthConnector() {
