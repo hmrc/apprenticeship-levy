@@ -44,7 +44,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       // set up
       val stubHttpGet = mock[HttpGet]
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture()))
+      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture(), any()))
            .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
       val controller = new FractionsCalculationDateController() with DesController {
         def desConnector: DesConnector = new DesConnector() {
@@ -73,7 +73,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       // set up
       val stubHttpGet = mock[HttpGet]
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture()))
+      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture(), any()))
            .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
       val controller = new FractionsCalculationDateController() with DesController {
         def desConnector: DesConnector = new DesConnector() {
@@ -100,7 +100,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
     "recover from exceptions" in {
       // set up
       val stubHttpGet = mock[HttpGet]
-      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any()))
+      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any(), any()))
            .thenReturn(Future.failed(new Upstream5xxResponse("DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503. Response body: '{\"reason\" : \"Backend systems not working\"}'", 1, 2)))
       val controller = new FractionsCalculationDateController() with DesController {
         def desConnector: DesConnector = new DesConnector() {
