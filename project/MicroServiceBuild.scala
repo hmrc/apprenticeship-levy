@@ -28,7 +28,7 @@ private object AppDependencies {
   private val scalaXMLVersion = "2.11.0-M4"
   private val xmlDiffVersion = "2.0.2"
   private val scalacheckVersion = "1.12.5"
-  private val playAuditingVersion = "2.4.0"
+  private val playAuditingVersion = "3.2.0"
   private val domainVersion = "4.1.0"
   private val pegdownVersion = "1.6.0"
   private val scalajHttpVersion = "2.3.0"
