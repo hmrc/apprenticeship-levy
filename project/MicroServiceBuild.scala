@@ -32,8 +32,8 @@ private object AppDependencies {
   private val domainVersion = "4.1.0"
   private val pegdownVersion = "1.6.0"
   private val scalajHttpVersion = "2.3.0"
-  private val playAuthVersion = "4.3.0"
-  private val playAuthFrontendVersion = "6.2.0"
+  private val playAuthVersion = "5.1.0"
+  private val playAuthFrontendVersion = "7.0.0"
 
   val compile = Seq(
     ws,
