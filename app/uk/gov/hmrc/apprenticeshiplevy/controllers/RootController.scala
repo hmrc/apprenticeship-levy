@@ -27,6 +27,7 @@ import uk.gov.hmrc.play.http._
 import java.io.IOException
 import org.slf4j.MDC
 import play.api.Logger
+import uk.gov.hmrc.http.{ BadRequestException, GatewayTimeoutException, NotFoundException, Upstream4xxResponse, Upstream5xxResponse }
 
 trait RootController extends ApiController {
   def authConnector: AuthConnector
@@ -75,7 +76,7 @@ trait RootController extends ApiController {
             case _ => ServiceUnavailable(Json.toJson(AuthError(e.reportAs, "OTHER", s"Auth 4xx error: ${extractReason(e.getMessage())}")))
           }
         }
-        case e: uk.gov.hmrc.play.http.JsValidationException => {
+        case e: _root_.uk.gov.hmrc.http.JsValidationException => {
           Logger.error(s"Client ${MDC.get("X-Client-ID")} API error: ${e.getMessage()}, API returning Unauthorized 498, WRONG_TOKEN", e)
           Unauthorized(Json.toJson(AuthError(498, "WRONG_TOKEN", s"Auth unauthorised error: OAUTH 2 User Token Required not TOTP")))
         }

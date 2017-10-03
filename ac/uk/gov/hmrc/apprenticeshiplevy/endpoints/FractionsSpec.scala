@@ -44,7 +44,7 @@ class FractionsSpec extends FunctionalSpec with Eventually with IntegrationPatie
         val expected = fileToStr(file)
         val expectedJson = Json.parse(expected)
         val params = (expectedJson \ "params").as[String]
-        it (s"should when calling ${url}$context/epaye/$empref/fractions$params return fraction details (${environment})") {
+        it (s"should when calling ${url}$context/epaye/$empref/fractions$params return fraction details (env: ${environment}, file: ${name})") {
           // set up
 
           // test

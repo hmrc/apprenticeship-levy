@@ -67,7 +67,7 @@ trait MicroService {
     .settings(PlayKeys.playDefaultPort := defaultPort)
     .settings(
       targetJvm := "jvm-1.8",
-      scalaVersion := "2.11.8",
+      scalaVersion := "2.11.11",
       ivyConfigurations += XsltConfig,
       libraryDependencies ++= appDependencies,
       libraryDependencies += "net.sourceforge.saxon" % "saxon" % "9.1.0.8" % XsltConfig.name,

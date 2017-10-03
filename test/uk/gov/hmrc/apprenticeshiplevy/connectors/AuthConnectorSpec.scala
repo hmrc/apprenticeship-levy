@@ -22,12 +22,9 @@ import org.mockito._
 import org.mockito.Mockito._
 import org.mockito.Matchers._
 import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.play.http.HttpGet
 import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import scala.concurrent.Future
-import uk.gov.hmrc.play.http.{HeaderCarrier,HttpReads,HttpResponse}
-import uk.gov.hmrc.play.http.hooks.HttpHook
 import play.api.libs.concurrent.Execution.Implicits._
 import uk.gov.hmrc.apprenticeshiplevy.utils._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -37,6 +34,7 @@ import uk.gov.hmrc.play.audit.EventKeys._
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.domain._
 import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.http.HeaderCarrier
 
 class AuthConnectorSpec extends UnitSpec with MockitoSugar {
   "Auth Connector" should {
