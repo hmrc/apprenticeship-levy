@@ -31,7 +31,13 @@ import java.net.URLDecoder
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import org.slf4j.MDC
 import play.api.Logger
-import uk.gov.hmrc.http.{ BadRequestException, GatewayTimeoutException, HeaderCarrier, JsValidationException, NotFoundException, Upstream4xxResponse, Upstream5xxResponse }
+import uk.gov.hmrc.http.{ BadRequestException,
+                          GatewayTimeoutException,
+                          HeaderCarrier,
+                          JsValidationException,
+                          NotFoundException,
+                          Upstream4xxResponse,
+                          Upstream5xxResponse }
 import uk.gov.hmrc.http.logging.Authorization
 
 trait DesController extends ApiController {
@@ -79,7 +85,8 @@ trait DesController extends ApiController {
         case e: Upstream5xxResponse => {
           Logger.error(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning ServiceUnavailable with code ${e.reportAs}", e)
           e.upstreamResponseCode match {
-            case PRECONDITION_FAILED => InternalServerError(Json.toJson(DESError(420, "BACKEND_FAILURE", s"DES backend error: ${extractReason(e.getMessage())}")))
+            case PRECONDITION_FAILED =>
+              InternalServerError(Json.toJson(DESError(420, "BACKEND_FAILURE", s"DES backend error: ${extractReason(e.getMessage())}")))
             case _ => ServiceUnavailable(Json.toJson(DESError(e.reportAs, "BACKEND_FAILURE", s"DES 5xx error: ${extractReason(e.getMessage())}")))
           }
         }
@@ -88,8 +95,10 @@ trait DesController extends ApiController {
           e.upstreamResponseCode match {
             case FORBIDDEN => Forbidden(Json.toJson(DESError(e.reportAs, "FORBIDDEN", s"DES forbidden error: ${extractReason(e.getMessage())}")))
             case UNAUTHORIZED => Unauthorized(Json.toJson(DESError(e.reportAs, "UNAUTHORIZED", s"DES unauthorised error: ${extractReason(e.getMessage())}")))
-            case TOO_MANY_REQUESTS => TooManyRequests(Json.toJson(DESError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"DES too many requests: ${extractReason(e.getMessage())}")))
-            case REQUEST_TIMEOUT => RequestTimeout(Json.toJson(DESError(REQUEST_TIMEOUT, "TIMEOUT", s"DES not responding error: ${extractReason(e.getMessage())}")))
+            case TOO_MANY_REQUESTS =>
+              TooManyRequests(Json.toJson(DESError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"DES too many requests: ${extractReason(e.getMessage())}")))
+            case REQUEST_TIMEOUT =>
+              RequestTimeout(Json.toJson(DESError(REQUEST_TIMEOUT, "TIMEOUT", s"DES not responding error: ${extractReason(e.getMessage())}")))
             case _ => ServiceUnavailable(Json.toJson(DESError(e.reportAs, "OTHER", s"DES 4xx error: ${extractReason(e.getMessage())}")))
           }
         }
