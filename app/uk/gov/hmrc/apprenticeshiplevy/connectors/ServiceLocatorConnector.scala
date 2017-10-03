@@ -20,12 +20,12 @@ import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration
 import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration._
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpPost }
 
 trait ServiceLocatorConnector {
   val appName: String
@@ -60,7 +60,7 @@ trait ServiceLocatorConnector {
 }
 
 object ServiceLocatorConnector extends ServiceLocatorConnector {
-  override lazy val appName = AppContext.appName
+  override lazy val appName = AppContext.maybeString("appName").getOrElse("apprenticeship-levy")
   override lazy val appUrl = AppContext.appUrl
   override lazy val serviceUrl = AppContext.serviceLocatorUrl
   override val http = WSHttp

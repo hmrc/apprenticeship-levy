@@ -20,20 +20,24 @@ import uk.gov.hmrc.apprenticeshiplevy.config.WSHttp
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.config.MicroserviceAuditFilter
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import scala.concurrent.Future
 import scala.util.{Success, Failure, Try}
-import play.api.Logger
+import play.api.{Logger,Mode}
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.metrics._
 import com.kenshoo.play.metrics.Metrics
 import com.codahale.metrics.Counter
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet }
 
-trait AuthConnector extends Auditor with GraphiteMetrics with Timer {
+trait AuthConnector
+  extends Auditor
+  with GraphiteMetrics
+  with Timer
+  with uk.gov.hmrc.apprenticeshiplevy.config.Configuration {
   metrics: GraphiteMetrics =>
 
   def authBaseUrl: String
@@ -49,13 +53,17 @@ trait AuthConnector extends Auditor with GraphiteMetrics with Timer {
   }
 }
 
-object SandboxAuthConnector extends AuthConnector with ServicesConfig {
+object SandboxAuthConnector
+  extends AuthConnector
+  with uk.gov.hmrc.apprenticeshiplevy.config.Configuration {
   override val authBaseUrl: String = AppContext.stubAuthUrl
   override val http: HttpGet = WSHttp
   protected def auditConnector: Option[AuditConnector] = None
 }
 
-object LiveAuthConnector extends AuthConnector with ServicesConfig {
+object LiveAuthConnector
+  extends AuthConnector
+  with uk.gov.hmrc.apprenticeshiplevy.config.Configuration {
   override def authBaseUrl: String = AppContext.authUrl
   override def http: HttpGet = WSHttp
   protected def auditConnector: Option[AuditConnector] = Some(MicroserviceAuditFilter.auditConnector)

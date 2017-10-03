@@ -17,12 +17,14 @@
 package uk.gov.hmrc.apprenticeshiplevy.config
 
 import play.api.Play
-import play.api.{Configuration, Logger, Mode, Application}
+import play.api.{Logger, Mode, Application}
 import uk.gov.hmrc.play.config.ServicesConfig
 import scala.util.{Try, Success, Failure}
 import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.apprenticeshiplevy.connectors.ServiceLocatorConnector
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.http.HeaderCarrier
+import com.typesafe.config.ConfigFactory
+import uk.gov.hmrc.play.config.AppName
 
 trait ServiceLocatorRegistration extends RunMode {
   def registrationEnabled: Boolean
@@ -47,7 +49,28 @@ trait ServiceLocatorRegistration extends RunMode {
   }
 }
 
-object AppContext extends ServicesConfig with ServiceLocatorRegistration {
+trait Configuration extends RunMode with ServicesConfig {
+  private val nilConfig = play.api.Configuration(ConfigFactory.load())
+  def appNameConfiguration: play.api.Configuration = AppContext.maybeConfiguration.flatMap(_.getConfig("appName")).getOrElse(nilConfig)
+  protected def mode: Mode.Mode = AppContext.maybeApp.map(_.mode).getOrElse(Mode.Prod)
+  protected def runModeConfiguration: play.api.Configuration = AppContext.maybeApp.map(_.configuration).getOrElse(nilConfig)
+  def maybeBoolean(id: String): Option[Boolean] = AppContext.maybeConfiguration.flatMap(_.getBoolean(id))
+
+  def maybeString(id: String): Option[String] = AppContext.maybeConfiguration.flatMap(_.getString(id))
+
+  def serviceLocatorUrl: String = maybeBaseURL("service-locator").getOrElse("")
+  def maybeBaseURL(name: String): Option[String] = Try(baseUrl(name)) match {
+        case Success(v) => Some(v)
+        case Failure(e) => {
+          // $COVERAGE-OFF$
+          Logger.error(s"Unable to get baseUrl for ${name}. Error: ${e.getMessage()}")
+          // $COVERAGE-ON$
+          None
+        }
+      }
+}
+
+object AppContext extends ServiceLocatorRegistration with Configuration {
   // $COVERAGE-OFF$
   Logger.info(s"""\n${"_" * 80}\n""")
   // $COVERAGE-ON$
@@ -56,14 +79,7 @@ object AppContext extends ServicesConfig with ServiceLocatorRegistration {
 
   def maybeApp: Option[Application] = Try(Play.maybeApplication).getOrElse(None)
 
-  def maybeConfiguration: Option[Configuration] = maybeApp.map(_.configuration)
-
-  def appName: String = maybeString("appName").getOrElse{
-    // $COVERAGE-OFF$
-    Logger.error("appName is not configured")
-    // $COVERAGE-ON$
-    ""
-  }
+  def maybeConfiguration: Option[play.api.Configuration] = maybeApp.map(_.configuration)
 
   def appUrl: String = maybeString("appUrl").getOrElse{
     // $COVERAGE-OFF$
@@ -71,8 +87,6 @@ object AppContext extends ServicesConfig with ServiceLocatorRegistration {
     // $COVERAGE-ON$
     ""
   }
-
-  def serviceLocatorUrl: String = maybeBaseURL("service-locator").getOrElse("")
 
   override def registrationEnabled: Boolean =
     maybeString("microservice.services.service-locator.enabled")
@@ -164,20 +178,6 @@ object AppContext extends ServicesConfig with ServiceLocatorRegistration {
   // scalastyle:off
   def defaultNumberOfDeclarationYears: Int = maybeString("microservice.defaultNumberOfDeclarationYears").map(_.toInt).getOrElse(6)
   // scalastyle:on
-
-  private def maybeBoolean(id: String): Option[Boolean] = maybeConfiguration.flatMap(_.getBoolean(id))
-
-  private def maybeString(id: String): Option[String] = maybeConfiguration.flatMap(_.getString(id))
-
-  private def maybeBaseURL(name: String): Option[String] = Try(baseUrl(name)) match {
-        case Success(v) => Some(v)
-        case Failure(e) => {
-          // $COVERAGE-OFF$
-          Logger.error(s"Unable to get baseUrl for ${name}. Error: ${e.getMessage()}")
-          // $COVERAGE-ON$
-          None
-        }
-      }
 
   // $COVERAGE-OFF$
   Logger.info(s"""\n${"_" * 80}\n""")
