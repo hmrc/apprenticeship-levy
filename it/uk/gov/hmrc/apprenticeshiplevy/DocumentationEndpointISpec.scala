@@ -65,6 +65,20 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
       }
     }
 
+    describe (s"should when calling ${localMicroserviceUrl}/api/definition") {
+      it (s"should have a correct white list configured") {
+        // set up
+        val request = FakeRequest(GET, s"/api/definition")
+
+        // test
+        val result = route(app, request).get
+
+        // check
+        status(result) shouldBe 200
+        contentAsString(result) should include ("""["myappid1","myappid2"]""")
+      }
+    }
+
     describe (s"should when calling ${localMicroserviceUrl}/api/documentation/<version>/<endpoint>") {
       /* DEPRECATED
       describe (s"with valid parameters") {

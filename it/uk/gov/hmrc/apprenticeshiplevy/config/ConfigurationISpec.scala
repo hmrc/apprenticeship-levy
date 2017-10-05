@@ -30,7 +30,7 @@ with ConfiguredServer with EitherValues with Matchers {
       AppContext.privateModeEnabled shouldBe true
     }
     it ("should have whitelist application id list") {
-      AppContext.whitelistedApplicationIds shouldBe Array("myappid")
+      AppContext.whitelistedApplicationIds shouldBe Array("myappid1","myappid2")
     }
     it ("should have DES environment") {
       AppContext.desEnvironment shouldBe "ist0"
