@@ -64,7 +64,7 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
           val json = contentAsJson(result)
           val version1 = (json \ "api" \ "versions")(0)
           (version1 \ "access" \ "type").as[String] shouldBe "PRIVATE"
-          (version1 \ "access" \ "whitelistedApplicationIds")(0).as[String] shouldBe "myappid"
+          (version1 \ "access" \ "whitelistedApplicationIds")(0).as[String] shouldBe "myappid1"
         }
       }
     }
