@@ -62,6 +62,6 @@ trait IntegrationTestConfig {
         "microservice.services.auth.host" -> stubHost,
         "microservice.services.auth.port" -> stubPort,
         "microservice.services.auth.path" -> "",
-        "microservice.whitelisted-applications" -> "myappid"
+        "microservice.whitelisted-applications" -> "myappid1,myappid2"
         ) ++ Map(controllerSettings: _*)
 }
