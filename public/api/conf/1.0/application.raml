@@ -50,7 +50,8 @@ annotationTypes:
   scope:
 
 /apprenticeship-levy:
-  get:
+  /:
+    get:
       displayName: Get all employers
       description: !include docs/get-all-employers.md
       is: [headers.acceptHeader]
