@@ -23,7 +23,7 @@
     "versions": [
       {
         "version": "1.0",
-        "status": "PUBLISHED",
+        "status": "STABLE",
         "endpoints": [</xsl:text>
     <xsl:variable name="files" select="collection('../../../../docs/endpoints/xml/?select=*.xml;recurse=no')"/>
     <xsl:for-each select="$files">
