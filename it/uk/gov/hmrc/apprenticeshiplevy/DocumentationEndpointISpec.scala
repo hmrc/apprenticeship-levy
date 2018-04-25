@@ -1,25 +1,18 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import scala.io.Source
-import scala.xml.XML._
 import java.io.File
 
-import org.scalatest._
-import org.scalatest.Matchers._
-import org.scalatest.prop._
-import org.scalatest.xml.XmlMatchers._
-
+import javax.xml.parsers.SAXParserFactory
 import org.scalacheck.Gen
-
-import play.api.test.{FakeRequest, Helpers, RouteInvokers}
-import play.api.test.Helpers._
-import play.api.libs.json.Json
-import play.api.Play
-import play.api.Play._
-
-import uk.gov.hmrc.apprenticeshiplevy.util._
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.Matchers._
+import org.scalatest._
 import org.scalatestplus.play._
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import uk.gov.hmrc.apprenticeshiplevy.util._
+
+import scala.io.Source
+import scala.xml.XML._
 
 @DoNotDiscover
 class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
@@ -28,7 +21,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
   }
 
   def asXml(content: String): scala.xml.Elem = {
-    loadString(content)
+    withSAXParser(secureSAXParser).loadString(content)
   }
 
   describe (s"API Documentation Endpoint") {
@@ -153,5 +146,13 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
         }
       }
     }
+  }
+
+  def secureSAXParser = {
+    val saxParserFactory = SAXParserFactory.newInstance()
+    saxParserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false)
+    saxParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+    saxParserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+    saxParserFactory.newSAXParser()
   }
 }
