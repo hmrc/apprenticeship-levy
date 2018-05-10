@@ -24,7 +24,7 @@ private object AppDependencies {
   private val playConfigVersion = "5.0.0"
   private val playHmrcApiVersion = "1.4.0"
   private val hmrcTestVersion = "2.4.0"
-  private val playHalVersion = "1.1.0"
+  private val playHalVersion = "1.2.0"
   private val scalaXMLVersion = "2.11.0-M4"
   private val xmlDiffVersion = "2.0.2"
   private val scalacheckVersion = "1.12.5"
