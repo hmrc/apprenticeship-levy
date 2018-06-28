@@ -30,7 +30,7 @@ class ServiceLocatorRegistrationISpec
       // Wiremock and Play started by IntegrationTestSuite so this test is simply to verify service registered on start up.
       wiremockServer.verify(1, postRequestedFor(urlMatching("/registration")).
           withHeader("content-type", equalTo("application/json")).
-          withRequestBody(equalTo(regPayloadStringFor("application-name", additionalConfiguration.getOrElse("appUrl", "http://microservice-name").toString))))
+          withRequestBody(equalTo(regPayloadStringFor("application-name", additionalConfiguration.getOrElse("appUrl", "https://microservice-name").toString))))
     }
   }
 }
