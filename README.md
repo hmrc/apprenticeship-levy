@@ -9,7 +9,7 @@
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")
 
 ## Background
-=============
+
 
 The Skills Funding Agency (**SFA**) is a sub-department of the Department for Business, Innovation and Skills (**BIS**) responsible for, amongst other things, providing funding to employers for approved apprenticeship training schemes. From April 2017 a new Apprenticeship Levy will be applied to organisations with large payrolls (broadly speaking, payrolls in excess of £3 million). HMRC will be collecting the levy, but the SFA has responsibility for ensuring that the employers who paid the levy have access to those funds to spend on apprentices. The purpose of this api is to allow the Digital Apprenticeship Service (**DAS**), being built by the SFA, to access information about the levy that an organisation has paid. This document describes the API that is being built on the Multi-Channel Digital Tax Platform (**MDTP**) to serve DAS.
 
@@ -37,7 +37,6 @@ In brief however the endpoints are:
 * [/fraction-calculation-date](./docs/get-latest-fraction-calculation-date.bak.md) which returns the date the last time HMRC systems were updated with new fraction values
 
 #### Examples
-
 * `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470`
 * `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/epaye/840%2FMODES17`
 * `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/epaye/123%2FAB12345/declarations`
@@ -45,6 +44,7 @@ In brief however the endpoints are:
 * `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/fraction-calculation-date`
 
 ## Running
+
 
 ### Running Preview Release
 

@@ -7,7 +7,7 @@ object Config {
     environmentProperty match {
       case "local" => "http://localhost:9470"
       case "dev" => throw new IllegalArgumentException(s"Provide dev endpoint by replacing this exception with the url to the environment")
-      case "qa" => ***REMOVED***
+      case "qa" => "***REMOVED***"
       case "staging" => throw new IllegalArgumentException(s"Provide staging endpoint by replacing this exception with the url to the environment")
       case "live" => throw new IllegalArgumentException(s"Provide live endpoint by replacing this exception with the url to the environment")
       case _ => throw new IllegalArgumentException(s"Environment '$environmentProperty' not known")
