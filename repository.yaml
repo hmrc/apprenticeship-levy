@@ -1,1 +1,7 @@
 digital-service: Apprenticeship Levy API
+
+leakDetectionExemptions:
+ - ruleId: 'ip_addresses'
+   filePaths:
+      - '/project/MicroService.scala'
+      - '/README.md'
