@@ -16,30 +16,26 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
+import java.net.URLDecoder
+
 import org.joda.time.LocalDate
 import play.api.Logger
-import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
-import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import uk.gov.hmrc.apprenticeshiplevy.utils.{DateRange, ClosedDateRange}
-import views.html.helper
+import play.api.http.Status._
+import play.api.libs.json._
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
-import scala.concurrent.{Future, ExecutionContext}
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.apprenticeshiplevy.config.MicroserviceAuditFilter
+import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, MicroserviceAuditFilter, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
-import play.api.Logger
-import uk.gov.hmrc.apprenticeshiplevy.metrics._
-import java.net.URLDecoder
 import uk.gov.hmrc.apprenticeshiplevy.data.des.DesignatoryDetails._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.EmploymentCheckStatus._
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
-import play.api.libs.json._
-import uk.gov.hmrc.play.http._
-import scala.util.{Try, Success, Failure}
-import play.api.http.Status._
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpResponse, NotFoundException, Upstream5xxResponse }
+import uk.gov.hmrc.apprenticeshiplevy.data.des._
+import uk.gov.hmrc.apprenticeshiplevy.metrics._
+import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import views.html.helper
+
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 trait DesUrl {
   def baseUrl: String
@@ -123,7 +119,7 @@ trait EmploymentCheckEndpoint extends Timer {
     // $COVERAGE-ON$
 
     timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
-      audit(new ALAEvent("employmentCheck", empref, nino, dateParams)) {
+      audit(ALAEvent("employmentCheck", empref, nino, dateParams)) {
         des.httpGet.GET[EmploymentCheckStatus](url).recover { case notFound: NotFoundException => Unknown }
       }
     }
@@ -203,9 +199,9 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
   }
 
   protected[connectors] def toEmployerPaymentsSummary(className: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
+    import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsError._
     import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsSummary._
     import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsSummaryVersion0._
-    import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsError._
     import uk.gov.hmrc.apprenticeshiplevy.data.des.EmptyEmployerPayments._
 
     def toEPSResponse[A <: EPSResponse](jsResult: JsResult[A]): Option[EPSResponse] = jsResult match {

@@ -27,4 +27,10 @@ case class ALAEvent(name: String, empref: String = "", nino: String = "", dateRa
      "ServiceReceivedRequest",
      tags = hc.toAuditTags(name, ""),
      detail = data ++ Map("upstream_http_status"->httpStatus.toString))
+
+  def toDataEvent(httpStatus: Int, exception: Throwable)(implicit hc: HeaderCarrier): DataEvent = DataEvent("ala-api",
+    "ServiceReceivedRequest",
+    tags = hc.toAuditTags(name, ""),
+    detail = data ++ Map("upstream_http_status"->httpStatus.toString) ++ Map("exception" → exception.toString))
+
 }
