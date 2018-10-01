@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.audit
 
-import scala.concurrent.{Future, ExecutionContext}
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
-import uk.gov.hmrc.play.audit.EventKeys._
-import scala.util.{Success, Failure, Try}
-import play.api.Logger
-import uk.gov.hmrc.play.http._
 import java.io.IOException
-import uk.gov.hmrc.http.{ BadRequestException, GatewayTimeoutException, HeaderCarrier, NotFoundException, Upstream4xxResponse, Upstream5xxResponse }
+
+import play.api.Logger
+import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 trait Auditor  {
   def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = {
@@ -32,7 +32,7 @@ trait Auditor  {
       case Success(v) => auditConnector.map(_.sendEvent(event.toDataEvent(200)))
       case Failure(t) => {
         val httpStatus = exceptionToMessage(t)
-        auditConnector.map(_.sendEvent(event.toDataEvent(httpStatus)))
+        auditConnector.map(_.sendEvent(event.toDataEvent(httpStatus, t)))
         Logger.warn(s"Failed to '${event.name}' Server ${httpStatus}: ${t.getMessage()}")
       }
     }

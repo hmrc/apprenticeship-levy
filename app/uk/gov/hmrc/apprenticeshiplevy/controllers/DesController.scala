@@ -16,29 +16,16 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import play.api.hal.{HalLink, HalResource}
-import play.api.libs.json.Json
-import play.api.mvc.Result
-import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
-import uk.gov.hmrc.play.microservice.controller.BaseController
-import play.api.mvc.{ActionBuilder, Request, Result, Results, RequestHeader}
-import play.api.http.Status._
-import uk.gov.hmrc.play.http._
 import java.io.IOException
-import scala.util.Try
-import scala.util.matching.Regex
 import java.net.URLDecoder
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+
 import org.slf4j.MDC
 import play.api.Logger
-import uk.gov.hmrc.http.{ BadRequestException,
-                          GatewayTimeoutException,
-                          HeaderCarrier,
-                          JsValidationException,
-                          NotFoundException,
-                          Upstream4xxResponse,
-                          Upstream5xxResponse }
+import play.api.libs.json.Json
+import play.api.mvc.{RequestHeader, Result}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.http.logging.Authorization
+import uk.gov.hmrc.http._
 
 trait DesController extends ApiController {
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
@@ -59,11 +46,11 @@ trait DesController extends ApiController {
 
   protected val desErrorHandler: PartialFunction[Throwable, Result] = {
         case e: JsValidationException => {
-          Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES returned bad json: ${e.getMessage()}, API returning  code ${INTERNAL_SERVER_ERROR}")
+          Logger.error(s"Client ${MDC.get("X-Client-ID")} DES returned bad json: ${e.getMessage()}, API returning  code ${INTERNAL_SERVER_ERROR}")
           InternalServerError(Json.toJson(DESError(INTERNAL_SERVER_ERROR, "JSON_FAILURE", s"DES and/or BACKEND server returned bad json.")))
         }
         case e: IllegalArgumentException => {
-          Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES returned bad json: ${e.getMessage()}, API returning  code ${INTERNAL_SERVER_ERROR}")
+          Logger.error(s"Client ${MDC.get("X-Client-ID")} DES returned bad json: ${e.getMessage()}, API returning  code ${INTERNAL_SERVER_ERROR}")
           InternalServerError(Json.toJson(DESError(INTERNAL_SERVER_ERROR, "JSON_FAILURE", s"DES and/or BACKEND server returned bad json.")))
         }
         case e: BadRequestException => {
