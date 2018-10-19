@@ -1,15 +1,8 @@
 import sbt._
-import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object MicroServiceBuild extends Build with MicroService {
 
   val appName = "apprenticeship-levy"
-
-  override lazy val plugins: Seq[Plugins] = Seq(
-    SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin
-  )
 
   override lazy val appDependencies: Seq[ModuleID] = AppDependencies()
   override val defaultPort: Int = 9470
@@ -17,8 +10,8 @@ object MicroServiceBuild extends Build with MicroService {
 
 private object AppDependencies {
 
-  import play.sbt.PlayImport._
   import play.core.PlayVersion
+  import play.sbt.PlayImport._
 
   private val microserviceBootstrapVersion = "6.18.0"
   private val playConfigVersion = "5.0.0"

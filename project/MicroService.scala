@@ -4,7 +4,7 @@ import sbt.Keys._
 import sbt.Tests.{Group, SubProcess}
 import sbt._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
-
+import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 trait MicroService {
 
@@ -14,6 +14,7 @@ trait MicroService {
   import uk.gov.hmrc.SbtAutoBuildPlugin
   import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
   import uk.gov.hmrc.versioning.SbtGitVersioning
+  import uk.gov.hmrc.SbtArtifactory
   import play.sbt.routes.RoutesCompiler.autoImport._
   import play.sbt.routes.RoutesKeys.routesGenerator
 
@@ -43,9 +44,8 @@ trait MicroService {
 
   lazy val AcceptanceTest = config("ac") extend(Test)
   lazy val appDependencies : Seq[ModuleID] = Seq.empty
-  lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala)
+  lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
   lazy val compileScalastyle = taskKey[Unit]("compileScalastyle")
-  lazy val compileScalastyleTask = org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask("")
   lazy val playSettings : Seq[Setting[_]] = Seq(routesImport ++= Seq("uk.gov.hmrc.apprenticeshiplevy.config.QueryBinders._", "org.joda.time.LocalDate",
                                                                      "uk.gov.hmrc.apprenticeshiplevy.config.PathBinders._", "uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference","uk.gov.hmrc.apprenticeshiplevy.data.api.Nino"))
   lazy val scoverageSettings = {
@@ -59,12 +59,13 @@ trait MicroService {
     )
   }
   lazy val microservice = Project(appName, file("."))
-    .enablePlugins(Seq(play.sbt.PlayScala) ++ plugins : _*)
+    .enablePlugins(plugins : _*)
     .settings(playSettings ++ scoverageSettings : _*)
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
     .settings(defaultSettings(): _*)
     .settings(PlayKeys.playDefaultPort := defaultPort)
+    .settings(majorVersion := 3)
     .settings(
       targetJvm := "jvm-1.8",
       scalaVersion := "2.11.11",
