@@ -13,30 +13,13 @@ private object AppDependencies {
   import play.core.PlayVersion
   import play.sbt.PlayImport._
 
-  private val microserviceBootstrapVersion = "6.18.0"
-  private val playConfigVersion = "5.0.0"
-  private val playHmrcApiVersion = "1.4.0"
-  private val hmrcTestVersion = "2.4.0"
-  private val playHalVersion = "1.2.0"
-  private val scalaXMLVersion = "2.11.0-M4"
-  private val xmlDiffVersion = "2.0.2"
-  private val scalacheckVersion = "1.12.5"
-  private val playAuditingVersion = "3.2.0"
-  private val domainVersion = "4.1.0"
-  private val pegdownVersion = "1.6.0"
-  private val scalajHttpVersion = "2.3.0"
-  private val playAuthVersion = "5.1.0"
-  private val playAuthFrontendVersion = "7.0.0"
-
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "microservice-bootstrap" % microserviceBootstrapVersion,
-    "uk.gov.hmrc" %% "play-config" % playConfigVersion,
-    "uk.gov.hmrc" %% "play-hmrc-api" % playHmrcApiVersion,
-    "uk.gov.hmrc" %% "play-hal" % playHalVersion,
-    "uk.gov.hmrc" %% "domain" % domainVersion,
-    "uk.gov.hmrc" %% "play-authorisation" % playAuthVersion,
-    "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthFrontendVersion
+    "uk.gov.hmrc" %% "microservice-bootstrap" % "10.4.0",
+    "uk.gov.hmrc" %% "play-hmrc-api" % "3.4.0-play-25",
+    "uk.gov.hmrc" %% "play-hal" % "1.8.0-play-25",
+    "uk.gov.hmrc" %% "domain" % "5.3.0",
+    "uk.gov.hmrc" %% "play-authorised-frontend" % "7.1.0"
   )
 
   trait TestDependencies {
@@ -47,13 +30,13 @@ private object AppDependencies {
   object Test {
     def apply() = new TestDependencies {
       override lazy val test = Seq(
-        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
-        "org.scalatest" %% "scalatest" % "2.2.6" % scope,
+        "uk.gov.hmrc" %% "hmrctest" % "3.5.0-play-25" % scope,
+        "org.scalatest" %% "scalatest" % "3.0.5" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.pegdown" % "pegdown" % pegdownVersion % scope,
-        "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % scope,
-        "org.mockito" % "mockito-all" % "1.9.5" % scope,
-        "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % scope
+        "org.pegdown" % "pegdown" % "1.6.0" % scope,
+        "org.scalamock" %% "scalamock-scalatest-support" % "3.6.0" % scope,
+        "org.mockito" % "mockito-all" % "1.10.19" % scope,
+        "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % scope
       )
     }.test
   }
@@ -64,15 +47,15 @@ private object AppDependencies {
       override lazy val scope: String = "it"
 
       override lazy val test = Seq(
-        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
-        "org.scalatest" %% "scalatest" % "2.2.6" % scope,
-        "org.pegdown" % "pegdown" % "1.5.0" % scope,
+        "uk.gov.hmrc" %% "hmrctest" % "3.5.0-play-25" % scope,
+        "org.scalatest" %% "scalatest" % "3.0.5" % scope,
+        "org.pegdown" % "pegdown" % "1.6.0" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "com.github.tomakehurst" % "wiremock" % "2.5.1" % scope,
-        "org.scala-lang" % "scala-xml" % scalaXMLVersion % scope,
-        "com.github.andyglow" % "scala-xml-diff_2.11" % xmlDiffVersion % scope,
-        "org.scalacheck" %% "scalacheck" % scalacheckVersion % scope,
-        "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % scope
+        "com.github.tomakehurst" % "wiremock" % "2.21.0" % scope,
+        "org.scala-lang.modules" %% "scala-xml" % "1.1.1" % scope,
+        "com.github.andyglow" %% "scala-xml-diff" % "2.0.3" % scope,
+        "org.scalacheck" %% "scalacheck" % "1.14.0" % scope,
+        "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1" % scope
       )
     }.test
   }
@@ -81,10 +64,10 @@ private object AppDependencies {
     def apply() = new TestDependencies {
       override lazy val scope: String = "ac"
       override lazy val test = Seq(
-        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
-        "org.scalatest" %% "scalatest" % "2.2.6" % scope,
-        "org.pegdown" % "pegdown" % "1.5.0" % scope,
-        "org.scalaj" %% "scalaj-http" % scalajHttpVersion
+        "uk.gov.hmrc" %% "hmrctest" % "3.5.0-play-25" % scope,
+        "org.scalatest" %% "scalatest" % "3.0.5" % scope,
+        "org.pegdown" % "pegdown" % "1.6.0" % scope,
+        "org.scalaj" %% "scalaj-http" % "2.4.1"
       )
     }.test
   }

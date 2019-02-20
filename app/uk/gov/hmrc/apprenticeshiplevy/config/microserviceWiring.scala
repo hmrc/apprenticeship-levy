@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 
 package uk.gov.hmrc.apprenticeshiplevy.config
+
+import akka.actor.ActorSystem
+import com.typesafe.config.Config
+import play.api.Play
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -40,7 +44,11 @@ trait WSHttp extends HttpGet with WSGet
                  with HttpPatch with WSPatch
                  with Hooks{
 }
-object WSHttp extends WSHttp
+object WSHttp extends WSHttp {
+  override protected def actorSystem: ActorSystem = Play.current.actorSystem
+
+  override protected def configuration: Option[Config] = Some(Play.current.configuration.underlying)
+}
 
 
 object MicroserviceAuditConnector
@@ -57,4 +65,7 @@ object MicroserviceAuthConnector
   override val authBaseUrl = AppContext.authUrl
   def http: HttpGet = WSHttp
 
+  override protected def actorSystem: ActorSystem = Play.current.actorSystem
+
+  override protected def configuration: Option[Config] = Some(Play.current.configuration.underlying)
 }
