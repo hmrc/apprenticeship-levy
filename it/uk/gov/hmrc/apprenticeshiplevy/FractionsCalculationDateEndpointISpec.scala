@@ -1,24 +1,15 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import org.scalatest._
-import org.scalatest.Matchers._
-
-import org.scalacheck.Gen
-
-import play.api.test.{FakeRequest, Helpers, RouteInvokers}
-import play.api.test.Helpers._
-import play.api.libs.json.Json
-import play.api.Play
-import play.api.Play._
-import views.html.helper
-
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.{status =>_,_}
 import com.github.tomakehurst.wiremock.http.Fault
-
-import uk.gov.hmrc.apprenticeshiplevy.util._
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.Matchers._
+import org.scalatest._
 import org.scalatestplus.play._
+import play.api.libs.json.Json
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import uk.gov.hmrc.apprenticeshiplevy.util._
 
 @DoNotDiscover
 class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with ConfiguredServer  {

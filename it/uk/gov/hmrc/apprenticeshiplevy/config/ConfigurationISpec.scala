@@ -1,11 +1,8 @@
 package uk.gov.hmrc.apprenticeshiplevy.config
 
 import org.scalatest._
-import org.scalatest.Matchers._
-
-import uk.gov.hmrc.apprenticeshiplevy._
-import uk.gov.hmrc.apprenticeshiplevy.util._
 import org.scalatestplus.play._
+import uk.gov.hmrc.apprenticeshiplevy._
 
 @DoNotDiscover
 class ConfigurationISpec extends WiremockFunSpec

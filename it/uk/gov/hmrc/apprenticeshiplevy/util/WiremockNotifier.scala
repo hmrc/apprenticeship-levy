@@ -1,12 +1,10 @@
 package uk.gov.hmrc.apprenticeshiplevy.util
 
+import java.text.SimpleDateFormat
+import java.util.Date
+
 import com.github.tomakehurst.wiremock.common._
 import org.scalatest.Informer
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import play.api.Logger
 
 trait WiremockNotifier extends Notifier {

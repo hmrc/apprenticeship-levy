@@ -1,19 +1,17 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import org.scalatest._
-import uk.gov.hmrc.apprenticeshiplevy.util._
-import uk.gov.hmrc.play.test.UnitSpec
-import play.api.libs.Crypto
-import play.api.{Application, Play, Mode}
 import java.util.UUID._
+
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.Fault
-import scala.util.Try
-import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
-import play.Logger
+import org.scalatest._
 import org.scalatestplus.play._
+import play.Logger
 import play.api.inject.guice._
-import play.api.test._
+import play.api.{Application, Mode}
+import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
+import uk.gov.hmrc.apprenticeshiplevy.util._
+import scala.util.Try
 
 class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.config.ConfigurationISpec,
                                            new ServiceLocatorRegistrationISpec,
@@ -72,6 +70,8 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
   override def afterAll(cm: ConfigMap) {
     WiremockService.stop()
   }
+
+  override protected def withFixture(test: NoArgTest): Outcome = ???
 }
 
 class NoWiremockIntegrationTestsSuite

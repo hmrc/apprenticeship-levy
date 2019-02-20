@@ -1,16 +1,14 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
+import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.DoNotDiscover
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-
-import com.github.tomakehurst.wiremock.client.WireMock._
+import org.scalatestplus.play._
 import play.api.libs.json.Json
-
+import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
+import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration
 import uk.gov.hmrc.apprenticeshiplevy.util.WiremockService
 import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration
-import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
-import org.scalatestplus.play._
 
 @DoNotDiscover
 class ServiceLocatorRegistrationISpec

@@ -1,15 +1,8 @@
 package uk.gov.hmrc.apprenticeshiplevy.config
 
-import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock._
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
-import play.api.libs.json.Json
-import org.scalatest.Informing
-import com.github.tomakehurst.wiremock.common._
-import play.api.libs.Crypto
-import scala.io.Source
 import java.io.File
+
+import scala.io.Source
 
 trait IntegrationTestConfig {
   System.setProperty("logger.resource","logback-test.xml")

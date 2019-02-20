@@ -1,13 +1,11 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import uk.gov.hmrc.play.test.UnitSpec
-
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
-import org.scalatest._
 import org.scalacheck.Gen
-
-import uk.gov.hmrc.apprenticeshiplevy.util.WiremockService
+import org.scalatest._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
+import uk.gov.hmrc.apprenticeshiplevy.util.WiremockService
+import uk.gov.hmrc.play.test.UnitSpec
 
 trait WiremockConfig extends BeforeAndAfterEach with Informing {
   this: Suite =>

@@ -1,11 +1,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.util
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
-import org.scalatest.Informer
-import com.github.tomakehurst.wiremock.common._
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 
 trait WiremockService extends IntegrationTestConfig with StandardOutInformer {
