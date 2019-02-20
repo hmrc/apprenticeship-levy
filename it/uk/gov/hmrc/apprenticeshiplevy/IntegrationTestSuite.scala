@@ -11,6 +11,8 @@ import play.api.inject.guice._
 import play.api.{Application, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 import uk.gov.hmrc.apprenticeshiplevy.util._
+import uk.gov.hmrc.play.test.UnitSpec
+
 import scala.util.Try
 
 class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.config.ConfigurationISpec,
@@ -24,7 +26,7 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
                                            new FractionsCalculationDateEndpointISpec,
                                            new RootEndpointISpec,
                                            new TestDataEndpointISpec)
-  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite {
+  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite with UnitSpec {
 
   WiremockService.start()
   override implicit lazy final val app: Application = new GuiceApplicationBuilder()
@@ -70,13 +72,11 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
   override def afterAll(cm: ConfigMap) {
     WiremockService.stop()
   }
-
-  override protected def withFixture(test: NoArgTest): Outcome = ???
 }
 
 class NoWiremockIntegrationTestsSuite
   extends Suites(new PublicDefinitionEndpointISpec, new ServiceLocatorRegistrationISpec2)
-  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite {
+  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite with UnitSpec {
 
   override def stubConfigPath = "./it/no-mappings"
   override def additionalConfiguration: Map[String, Any] = (super.additionalConfiguration - "microservice.private-mode") ++ Map(

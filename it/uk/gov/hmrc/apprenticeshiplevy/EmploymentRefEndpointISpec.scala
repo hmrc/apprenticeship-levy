@@ -24,6 +24,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             contentType(result) shouldBe Some("application/hal+json")
             val json = contentAsJson(result)
+            //println(s"JSON: $json")
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES17"
             (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES17/fractions"
             (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/840%2FMODES17/declarations"
