@@ -21,13 +21,15 @@ import play.api.libs.json.{JsArray, JsObject, JsString, Json}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
-import play.api.http.{HeaderNames}
+import play.api.http.HeaderNames
 import play.api.mvc.Result
 import uk.gov.hmrc.play.http._
 import java.io.IOException
+
 import org.slf4j.MDC
 import play.api.Logger
-import uk.gov.hmrc.http.{ BadRequestException, GatewayTimeoutException, NotFoundException, Upstream4xxResponse, Upstream5xxResponse }
+import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath.decodeAnyDoubleEncoding
+import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, NotFoundException, Upstream4xxResponse, Upstream5xxResponse}
 
 trait RootController extends ApiController {
   def authConnector: AuthConnector
@@ -87,7 +89,7 @@ trait RootController extends ApiController {
     }
 
   private[controllers] def transformEmpRefs(empRefs: Seq[String]): HalResource = {
-    val links = selfLink(rootUrl) +: empRefs.map(empref => HalLink(empref, emprefUrl(EmploymentReference(empref))))
+    val links = selfLink(decodeAnyDoubleEncoding(rootUrl)) +: empRefs.map(empref => HalLink(empref, decodeAnyDoubleEncoding(emprefUrl(EmploymentReference(empref)))))
     val body = Json.toJson(Map("emprefs" -> empRefs)).as[JsObject]
 
     HalResource(HalLinks(links.map(processLink).toVector), body)
