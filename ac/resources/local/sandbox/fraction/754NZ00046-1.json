@@ -1,5 +1,5 @@
 {
-  "params": "",
+  "params": "?fromDate=2011-07-22",
   "response": {
   "empref":"754/NZ00046",
   "fractionCalculations":[
