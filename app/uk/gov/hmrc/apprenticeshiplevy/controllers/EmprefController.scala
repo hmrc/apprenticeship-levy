@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 
-import play.api.Logger
 import play.api.hal.{Hal, HalLink, HalResource}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath._
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 trait EmprefController extends DesController {
   def desConnector: DesConnector
@@ -49,12 +48,14 @@ trait EmprefController extends DesController {
   }
 
   private[controllers] def prepareLinks(empref: EmploymentReference): HalResource = {
+    //links will be url encoded so need to decode them before sending back
     val links = Seq(
-      selfLink(emprefUrl(empref)),
-      HalLink("declarations", declarationsUrl(empref)),
-      HalLink("fractions", fractionsUrl(empref)),
-      HalLink("employment-check", employmentCheckUrl(empref))
-    )
+        selfLink(decodeAnyDoubleEncoding(emprefUrl(empref))),
+        HalLink("declarations", decodeAnyDoubleEncoding(declarationsUrl(empref))),
+        HalLink("fractions", decodeAnyDoubleEncoding(fractionsUrl(empref))),
+        HalLink("employment-check", decodeAnyDoubleEncoding(employmentCheckUrl(empref)))
+      )
+
     Hal.linksSeq(links.map(processLink))
   }
 }

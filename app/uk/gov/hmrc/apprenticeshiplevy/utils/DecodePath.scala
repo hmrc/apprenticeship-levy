@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.live
+package uk.gov.hmrc.apprenticeshiplevy.utils
 
-import org.joda.time.LocalDate
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
-import uk.gov.hmrc.apprenticeshiplevy.controllers.{DesController, LevyDeclarationController}
+import play.utils.UriEncoding.decodePath
 
-object LiveLevyDeclarationController extends DesController with LevyDeclarationController {
-  override def desConnector: DesConnector = LiveDesConnector
+object DecodePath {
+
+  def decodeAnyDoubleEncoding(path:String):String = {
+
+    if(path.contains("%25")){
+      val replacedPath = path.replace("{nino}", "replace-with-nino")
+
+      decodePath(replacedPath, "utf-8")
+        .replace("replace-with-nino", "{nino}")
+    }else{
+      path
+    }
+
+  }
+
 }

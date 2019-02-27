@@ -1,30 +1,16 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import org.scalatest._
-import org.scalatest.Matchers._
-
 import org.joda.time.{LocalDate, LocalDateTime}
-
 import org.scalacheck.Gen
-
-import play.api.test.{FakeRequest, Helpers, RouteInvokers}
-import play.api.test.Helpers._
-import play.api.libs.json.Json
-import play.api.Play
-import play.api.Play._
-import play.api.Play.current
-import play.api.libs.ws.WS
-import views.html.helper
-
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock._
-import com.github.tomakehurst.wiremock.http.Fault
-
-import uk.gov.hmrc.apprenticeshiplevy.util._
-import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration,PayrollPeriod}
-import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
+import org.scalatest.Matchers._
+import org.scalatest._
 import org.scalatestplus.play._
+import play.api.libs.json.Json
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, PayrollPeriod}
+import views.html.helper
 
 @DoNotDiscover
 class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConfig with ConfiguredServer {

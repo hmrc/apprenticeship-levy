@@ -1,12 +1,11 @@
 package uk.gov.hmrc.apprenticeshiplevy.util
 
+import java.text.SimpleDateFormat
+import java.util.Date
+
 import com.github.tomakehurst.wiremock.common._
-import org.scalatest.Informer
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import org.scalactic.source
+import org.scalatest.{Informer, Informing}
 import play.api.Logger
 
 trait WiremockNotifier extends Notifier {
@@ -40,9 +39,9 @@ class WiremockTestInformerNotifier(var testInformer: Informer, var verboseWiremo
   }
 }
 
-trait StandardOutInformer {
+trait StandardOutInformer extends Informing {
   lazy val info = new Informer {
-    def apply(message: String, payload: Option[Any] = None): Unit = { println(message) }
+    def apply(message: String, payload: Option[Any] = None)(implicit pos:source.Position): Unit = { println(message) }
   }
 }
 
@@ -50,7 +49,7 @@ object StandardOutInformer extends StandardOutInformer
 
 trait NullInformer {
   lazy val info = new Informer {
-    def apply(message: String, payload: Option[Any] = None): Unit = { }
+    def apply(message: String, payload: Option[Any] = None)(implicit pos:source.Position): Unit = { }
   }
 }
 
@@ -58,7 +57,7 @@ object NullInformer extends NullInformer
 
 trait LoggerInformer {
   lazy val info = new Informer {
-    def apply(message: String, payload: Option[Any] = None): Unit = {
+    def apply(message: String, payload: Option[Any] = None)(implicit pos:source.Position): Unit = {
       if (message.contains("ERROR"))
         Logger("wiremock").error(message)
       else

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,33 +16,20 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import java.net.URLEncoder
-
-import org.scalatest.mock.MockitoSugar
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, LiveAuthConnector}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain._
-import org.scalatest.concurrent.ScalaFutures
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import org.scalatest._
-import org.scalatest.mock.MockitoSugar
-import org.mockito._
-import org.mockito.Mockito._
 import org.mockito.Matchers._
-import uk.gov.hmrc.play.test.UnitSpec
-import org.joda.time.LocalDate
-import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import scala.concurrent.Future
-import uk.gov.hmrc.play.http._
-import uk.gov.hmrc.play.http.logging._
-import play.api.libs.concurrent.Execution.Implicits._
-import uk.gov.hmrc.apprenticeshiplevy.connectors._
-import play.api.mvc.{ActionBuilder, Request, Result, Results}
-import play.api.libs.json.Json
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet }
+import org.mockito.Mockito._
+import org.mockito._
+import org.scalatest.mockito.MockitoSugar
+import play.api.mvc.Result
+import play.api.test.FakeRequest
+import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
 import uk.gov.hmrc.http.logging.Authorization
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.frontend.auth.connectors.domain._
+import uk.gov.hmrc.play.test.UnitSpec
+
+import scala.concurrent.Future
 
 class RootControllerHeadersTest extends UnitSpec with MockitoSugar {
   "propogate authorization headers on to connector" in {

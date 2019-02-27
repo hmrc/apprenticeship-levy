@@ -1,19 +1,19 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import org.scalatest._
-import uk.gov.hmrc.apprenticeshiplevy.util._
-import uk.gov.hmrc.play.test.UnitSpec
-import play.api.libs.Crypto
-import play.api.{Application, Play, Mode}
 import java.util.UUID._
+
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.Fault
-import scala.util.Try
-import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
-import play.Logger
+import org.scalatest._
 import org.scalatestplus.play._
+import play.Logger
 import play.api.inject.guice._
-import play.api.test._
+import play.api.{Application, Mode}
+import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
+import uk.gov.hmrc.apprenticeshiplevy.util._
+import uk.gov.hmrc.play.test.UnitSpec
+
+import scala.util.Try
 
 class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.config.ConfigurationISpec,
                                            new ServiceLocatorRegistrationISpec,
@@ -26,7 +26,7 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
                                            new FractionsCalculationDateEndpointISpec,
                                            new RootEndpointISpec,
                                            new TestDataEndpointISpec)
-  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite {
+  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite with UnitSpec {
 
   WiremockService.start()
   override implicit lazy final val app: Application = new GuiceApplicationBuilder()
@@ -76,7 +76,7 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
 
 class NoWiremockIntegrationTestsSuite
   extends Suites(new PublicDefinitionEndpointISpec, new ServiceLocatorRegistrationISpec2)
-  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite {
+  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite with UnitSpec {
 
   override def stubConfigPath = "./it/no-mappings"
   override def additionalConfiguration: Map[String, Any] = (super.additionalConfiguration - "microservice.private-mode") ++ Map(
