@@ -16,20 +16,19 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import play.api.hal.{Hal, HalLink, HalLinks, HalResource}
-import play.api.libs.json.{JsArray, JsObject, JsString, Json}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
-import play.api.http.HeaderNames
-import play.api.mvc.Result
-import uk.gov.hmrc.play.http._
 import java.io.IOException
 
 import org.slf4j.MDC
 import play.api.Logger
+import play.api.hal.{HalLink, HalLinks, HalResource}
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Result
+import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
+import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath.decodeAnyDoubleEncoding
-import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, NotFoundException, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http._
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait RootController extends ApiController {
   def authConnector: AuthConnector
