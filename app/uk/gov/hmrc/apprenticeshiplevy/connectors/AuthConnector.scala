@@ -16,22 +16,15 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
-import uk.gov.hmrc.apprenticeshiplevy.config.WSHttp
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.config.MicroserviceAuditFilter
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import scala.concurrent.Future
-import scala.util.{Success, Failure, Try}
-import play.api.{Logger,Mode}
+import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, MicroserviceAuditFilter, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.metrics._
-import com.kenshoo.play.metrics.Metrics
-import com.codahale.metrics.Counter
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
+
+import scala.concurrent.{ExecutionContext, Future}
 
 trait AuthConnector
   extends Auditor
@@ -44,7 +37,7 @@ trait AuthConnector
 
   def http: HttpGet
 
-  def getEmprefs(implicit hc: HeaderCarrier): Future[Seq[String]] = {
+  def getEmprefs(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[String]] = {
     timer(RequestEvent(AUTH_SERVICE_REQUEST, None)) {
       audit(new ALAEvent("readEmprefs", "")) {
         http.GET[Authority](s"$authBaseUrl/auth/authority").map { a => a.accounts.epaye.map(_.empRef.value).toList}
