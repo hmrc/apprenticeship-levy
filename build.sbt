@@ -1,10 +1,8 @@
-import sbt.Tests.{Group, SubProcess}
 import sbt._
-import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
+import scoverage.ScoverageKeys
+import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings, _}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
-import uk.gov.hmrc.DefaultBuildSettings._
-import scoverage.ScoverageKeys
 
 val appName: String = "apprenticeship-levy"
 
@@ -80,7 +78,7 @@ lazy val microservice = Project(appName, file("."))
     majorVersion := 3,
     ivyConfigurations += XsltConfig,
     libraryDependencies ++= AppDependencies.all,
-    libraryDependencies += "net.sourceforge.saxon" % "saxon" % "9.1.0.8" % XsltConfig.name,
+    libraryDependencies ++= AppDependencies.generateApiTask,
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     generateAPIDocsTask,
