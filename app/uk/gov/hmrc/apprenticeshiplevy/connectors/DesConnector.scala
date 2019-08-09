@@ -38,18 +38,6 @@ import views.html.helper
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-trait DesUrl {
-  def baseUrl: String
-}
-
-trait DesSandboxUrl extends DesUrl {
-  def baseUrl: String = AppContext.stubDesUrl
-}
-
-trait DesProductionUrl extends DesUrl {
-  def baseUrl: String = AppContext.desUrl
-}
-
 trait DesUtils {
   val EMPREF = "([0-9]{3})([\\/]*)([a-zA-Z0-9]+)".r
 
@@ -259,20 +247,22 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
                                                           s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/declarations"
 }
 
-trait DesConnector extends DesUrl
-                   with FractionsEndpoint
+trait DesConnector extends FractionsEndpoint
                    with EmployerDetailsEndpoint
                    with EmploymentCheckEndpoint
                    with LevyDeclarationsEndpoint
                    with Auditor
                    with GraphiteMetrics {
   def httpGet: HttpGet
+  def baseUrl: String
 }
 
-class LiveDesConnector @Inject()(val httpGet: HttpGet) extends DesConnector with DesProductionUrl {
+class LiveDesConnector @Inject()(val httpGet: HttpGet) extends DesConnector {
   protected def auditConnector: Option[AuditConnector] = Some(MicroserviceAuditFilter.auditConnector)
+  def baseUrl: String = AppContext.desUrl
 }
 
-class SandboxDesConnector @Inject()(val httpGet: HttpGet) extends DesConnector with DesSandboxUrl {
+class SandboxDesConnector @Inject()(val httpGet: HttpGet) extends DesConnector {
   protected def auditConnector: Option[AuditConnector] = None
+  def baseUrl: String = AppContext.stubDesUrl
 }

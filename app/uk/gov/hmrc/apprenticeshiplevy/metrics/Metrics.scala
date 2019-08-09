@@ -42,13 +42,7 @@ case class TimerEvent(name: String, delta: Long, timeUnit: TimeUnit) extends Met
   def metric(): String = name
 }
 
-trait Metrics {
-  def successfulRequest(event: MetricEvent): Unit
-  def failedRequest(event: MetricEvent): Unit
-  def processRequest(event: TimerEvent): Unit
-}
-
-trait GraphiteMetrics extends Metrics {
+trait GraphiteMetrics {
   Logger.info("[Metrics] Registering metrics...")
 
   val registry: Option[MetricRegistry] = if (AppContext.metricsEnabled) Try (Some(current.injector.instanceOf[MetricsImpl].defaultRegistry)).getOrElse(None) else None
@@ -90,17 +84,17 @@ trait GraphiteMetrics extends Metrics {
     }
   }
 
-  override def successfulRequest(event: MetricEvent): Unit = event match {
+  def successfulRequest(event: MetricEvent): Unit = event match {
     case RequestEvent(name, Some(_)) => mark(s"ala.success.${name}")
     case _ => mark(s"ala.success.${event.name}")
   }
 
-  override def failedRequest(event: MetricEvent): Unit = event match {
+  def failedRequest(event: MetricEvent): Unit = event match {
     case RequestEvent(name, Some(_)) => mark(s"ala.failed.${name}")
     case _ => mark(s"ala.failed.${event.name}")
   }
 
-  override def processRequest(event: TimerEvent): Unit = log(s"ala.timers.${event.name}", event.delta, event.timeUnit)
+  def processRequest(event: TimerEvent): Unit = log(s"ala.timers.${event.name}", event.delta, event.timeUnit)
 
   registry match {
     case Some(_) =>
