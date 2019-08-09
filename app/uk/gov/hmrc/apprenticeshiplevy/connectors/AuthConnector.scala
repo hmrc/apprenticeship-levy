@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
+import com.google.inject.Inject
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, MicroserviceAuditFilter, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
@@ -46,18 +47,12 @@ trait AuthConnector
   }
 }
 
-object SandboxAuthConnector
-  extends AuthConnector
-  with uk.gov.hmrc.apprenticeshiplevy.config.Configuration {
+class SandboxAuthConnector @Inject()(val http: HttpGet) extends AuthConnector with uk.gov.hmrc.apprenticeshiplevy.config.Configuration {
   override val authBaseUrl: String = AppContext.stubAuthUrl
-  override val http: HttpGet = WSHttp
   protected def auditConnector: Option[AuditConnector] = None
 }
 
-object LiveAuthConnector
-  extends AuthConnector
-  with uk.gov.hmrc.apprenticeshiplevy.config.Configuration {
+class LiveAuthConnector @Inject()(val http: HttpGet) extends AuthConnector with uk.gov.hmrc.apprenticeshiplevy.config.Configuration {
   override def authBaseUrl: String = AppContext.authUrl
-  override def http: HttpGet = WSHttp
   protected def auditConnector: Option[AuditConnector] = Some(MicroserviceAuditFilter.auditConnector)
 }
