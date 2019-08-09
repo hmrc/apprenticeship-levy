@@ -79,6 +79,7 @@ lazy val microservice = Project(appName, file("."))
     ivyConfigurations += XsltConfig,
     libraryDependencies ++= AppDependencies.all,
     libraryDependencies ++= AppDependencies.generateApiTask,
+    parallelExecution in Test := false,
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     generateAPIDocsTask,
@@ -91,7 +92,8 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest) (base => Seq(base / "it")),
     unmanagedResourceDirectories in IntegrationTest <+= baseDirectory(_ / "public"),
-    addTestReportOption(IntegrationTest, "int-test-reports"))
+    addTestReportOption(IntegrationTest, "int-test-reports"),
+    parallelExecution in IntegrationTest := false)
   .configs(AcceptanceTest)
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
   .settings(
