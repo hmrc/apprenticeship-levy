@@ -32,7 +32,7 @@ import uk.gov.hmrc.time.DateConverter
 import scala.util.{Try, Success, Failure}
 import org.slf4j.MDC
 
-trait TestDataController extends Controller with Utf8MimeTypes {
+class SandboxTestDataController extends Controller with Utf8MimeTypes {
   val SANDBOX_DATA_DIR = "public/sandbox-data"
 
   protected def retrieve(file: String): Option[InputStream] = {
@@ -178,7 +178,4 @@ trait TestDataController extends Controller with Utf8MimeTypes {
       case _ => Future.successful(result("{}"))
     }
   }
-}
-
-object SandboxTestDataController extends TestDataController {
 }

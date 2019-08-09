@@ -20,35 +20,38 @@ import org.joda.time.LocalDate
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsController
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.play.test.UnitSpec
 
 class FractionsControllerSpec extends UnitSpec with ScalaFutures {
+  val liveFractionsController = new LiveFractionsController(new LiveDesConnector)
+
   "getting the fractions" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {
-      val response = LiveFractionsController.fractions(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
+      val response = liveFractionsController.fractions(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
       response.header.status shouldBe NOT_ACCEPTABLE
     }
   }
 
   "validating fromDate" should {
     "should use default value if fromDate is omitted" in {
-      LiveFractionsController.validateFromDate(None) shouldBe new LocalDate().minusMonths(LiveFractionsController.defaultPriorMonthsForFromDate)
+      liveFractionsController.validateFromDate(None) shouldBe new LocalDate().minusMonths(liveFractionsController.defaultPriorMonthsForFromDate)
     }
     "use date if supplied" in {
       val date: LocalDate = new LocalDate("2013-07-22")
-      LiveFractionsController.validateToDate(Some(date)) shouldBe date
+      liveFractionsController.validateToDate(Some(date)) shouldBe date
     }
   }
 
   "validating toDate" should {
     "should use default value if toDate is omitted" in {
-      LiveFractionsController.validateToDate(None) shouldBe new LocalDate()
+      liveFractionsController.validateToDate(None) shouldBe new LocalDate()
     }
     "use date if supplied" in {
       val date: LocalDate = new LocalDate("2010-08-03")
-      LiveFractionsController.validateToDate(Some(date)) shouldBe date
+      liveFractionsController.validateToDate(Some(date)) shouldBe date
     }
   }
 }

@@ -17,9 +17,10 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import scala.io.Source
-import java.io.{File,InputStream}
+import java.io.{File, InputStream}
 
-import play.api.{Application, Play, Mode}
+import com.google.inject.{Inject, Singleton}
+import play.api.{Application, Mode, Play}
 import play.api.Play.current
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
@@ -29,43 +30,21 @@ import play.api.libs.iteratee.Enumerator
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import play.Logger
+
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
-trait AssetsController extends BaseController {
-  implicit def current: Option[Application]
+//trait AssetsController extends BaseController {
+//  implicit def current: Option[Application]
+//
+//  private val AbsolutePath = """^(/|[a-zA-Z]:\\).*""".r
+//
+//
+//}
+@Singleton
+class DocumentationController extends BaseController {
+  implicit val current = AppContext.maybeApp
 
-  private val AbsolutePath = """^(/|[a-zA-Z]:\\).*""".r
-
-  protected def retrieve(rootPath: String, file: String): Option[InputStream] = {
-    current.flatMap { app =>
-      if (app.mode == Mode.Prod) {
-        // $COVERAGE-OFF$
-        app.resourceAsStream(s"${rootPath}/${file}")
-        // $COVERAGE-ON$
-      } else {
-        app.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
-      }
-    }
-  }
-
-  protected def at(rootPath: String, file: String): Action[AnyContent] = Action { request =>
-    retrieve(rootPath, file) match {
-      case Some(fileToServe) => {
-        val mimeType = if (file.contains("raml")) "application/raml+yaml" else play.api.libs.MimeTypes.forFileName(file).getOrElse("text/plain")
-        Ok(Source.fromInputStream(fileToServe).mkString).as(mimeType)
-      }
-      case _ => {
-        // $COVERAGE-OFF$
-        Logger.error(s"Assets controller failed to serve a file: ${rootPath}/${file}.")
-        // $COVERAGE-ON$
-        NotFound
-      }
-    }
-  }
-}
-
-trait DocumentationController extends AssetsController {
   lazy val whitelistedApplicationIds = AppContext.whitelistedApplicationIds
 
   lazy val whitelist = Json.obj(
@@ -79,8 +58,35 @@ trait DocumentationController extends AssetsController {
       JsArray(versions.value.updated(0, versions(0).as[JsObject] ++ whitelist))
     })
 
+  def retrieve(rootPath: String, file: String): Option[InputStream] = {
+    current.flatMap { app =>
+      if (app.mode == Mode.Prod) {
+        // $COVERAGE-OFF$
+        app.resourceAsStream(s"${rootPath}/${file}")
+        // $COVERAGE-ON$
+      } else {
+        app.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
+      }
+    }
+  }
+
+  def at(rootPath: String, file: String): Action[AnyContent] = Action { request =>
+    retrieve(rootPath, file) match {
+      case Some(fileToServe) => {
+        val mimeType = if (file.contains("raml")) "application/raml+yaml" else play.api.libs.MimeTypes.forFileName(file).getOrElse("text/plain")
+        Ok(Source.fromInputStream(fileToServe).mkString).as(mimeType)
+      }
+      case _ => {
+        // $COVERAGE-OFF$
+        Logger.error(s"Assets controller failed to serve a file: ${rootPath}/${file}.")
+        // $COVERAGE-ON$
+        NotFound
+      }
+    }
+  }
+
   def documentation(version: String, endpoint: String): Action[AnyContent]  =
-    super.at(s"public/documentation/$version", s"${endpoint.replaceAll(" ", "-")}.xml")
+    at(s"public/documentation/$version", s"${endpoint.replaceAll(" ", "-")}.xml")
 
   def definition: Action[AnyContent]  = Action.async {
     val filename = "definition.json"
@@ -112,10 +118,7 @@ trait DocumentationController extends AssetsController {
   }
 
   def conf(version: String, file: String): Action[AnyContent] = {
-    super.at(s"public/api/conf/${version}", file)
+    at(s"public/api/conf/${version}", file)
   }
 }
 
-object DocumentationController extends DocumentationController {
-  override implicit val current = AppContext.maybeApp
-}

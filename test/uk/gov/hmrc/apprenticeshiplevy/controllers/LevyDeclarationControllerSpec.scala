@@ -31,9 +31,11 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet }
 
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
+  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector)
+
   "getting the levy declarations" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {
-      val response = LiveLevyDeclarationController.declarations(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
+      val response = liveFractionsController.declarations(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
       response.header.status shouldBe NOT_ACCEPTABLE
     }
   }

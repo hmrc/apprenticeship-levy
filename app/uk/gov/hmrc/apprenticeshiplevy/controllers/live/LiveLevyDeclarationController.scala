@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
+import com.google.inject.Inject
 import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{DesController, LevyDeclarationController}
 
-object LiveLevyDeclarationController extends DesController with LevyDeclarationController {
-  override def desConnector: DesConnector = LiveDesConnector
-}
+class LiveLevyDeclarationController  @Inject()(val desConnector: LiveDesConnector) extends DesController with LevyDeclarationController

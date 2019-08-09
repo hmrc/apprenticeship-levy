@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
+package uk.gov.hmrc.apprenticeshiplevy.config
 
-import com.google.inject.Inject
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, SandboxDesConnector}
-import uk.gov.hmrc.apprenticeshiplevy.controllers.{DesController, FractionsCalculationDateController, FractionsController}
+import play.api
+import play.api.Environment
+import play.api.inject.{Binding, Module}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 
-class SandboxFractionsController @Inject()(val desConnector: SandboxDesConnector) extends DesController with FractionsController with FractionsCalculationDateController
+class AppLevyModule extends Module {
+  override def bindings(environment: Environment, configuration: api.Configuration): Seq[Binding[_]] = Seq(
+
+  )
+}

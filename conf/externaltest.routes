@@ -1,2 +1,2 @@
 # Add all the application routes to the app.routes file
-->         /            sandbox.Routes
+->         /sandbox            sandbox.Routes

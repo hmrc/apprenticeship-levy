@@ -268,12 +268,12 @@ trait DesConnector extends DesUrl
   def httpGet: HttpGet
 }
 
-object LiveDesConnector extends DesConnector with DesProductionUrl {
+class LiveDesConnector extends DesConnector with DesProductionUrl {
   def httpGet: HttpGet = WSHttp
   protected def auditConnector: Option[AuditConnector] = Some(MicroserviceAuditFilter.auditConnector)
 }
 
-object SandboxDesConnector extends DesConnector with DesSandboxUrl {
+class SandboxDesConnector extends DesConnector with DesSandboxUrl {
   def httpGet: HttpGet = WSHttp
   protected def auditConnector: Option[AuditConnector] = None
 }

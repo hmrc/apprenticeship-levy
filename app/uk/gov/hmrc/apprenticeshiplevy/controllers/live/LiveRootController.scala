@@ -20,7 +20,7 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, LiveAuthConnect
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-object LiveRootController extends RootController {
+class LiveRootController extends RootController {
   override def authConnector: AuthConnector = LiveAuthConnector
 
   override def rootUrl: String = routes.LiveRootController.root().url
