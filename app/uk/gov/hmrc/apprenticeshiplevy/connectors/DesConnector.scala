@@ -18,6 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import java.net.URLDecoder
 
+import com.google.inject.Inject
 import org.joda.time.LocalDate
 import play.api.Logger
 import play.api.http.Status._
@@ -268,12 +269,10 @@ trait DesConnector extends DesUrl
   def httpGet: HttpGet
 }
 
-class LiveDesConnector extends DesConnector with DesProductionUrl {
-  def httpGet: HttpGet = WSHttp
+class LiveDesConnector @Inject()(val httpGet: HttpGet) extends DesConnector with DesProductionUrl {
   protected def auditConnector: Option[AuditConnector] = Some(MicroserviceAuditFilter.auditConnector)
 }
 
-class SandboxDesConnector extends DesConnector with DesSandboxUrl {
-  def httpGet: HttpGet = WSHttp
+class SandboxDesConnector @Inject()(val httpGet: HttpGet) extends DesConnector with DesSandboxUrl {
   protected def auditConnector: Option[AuditConnector] = None
 }

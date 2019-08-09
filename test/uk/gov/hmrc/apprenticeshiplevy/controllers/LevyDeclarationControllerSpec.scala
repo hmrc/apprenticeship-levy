@@ -19,19 +19,20 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import org.joda.time.DateTimeConstants.{APRIL, MAY}
 import org.joda.time.{LocalDate, LocalDateTime}
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, PayrollPeriod, EmploymentReference}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, LevyDeclaration, PayrollPeriod}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.play.test.UnitSpec
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
 
-class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures {
-  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector)
+class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar {
+  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector(mock[HttpGet]))
 
   "getting the levy declarations" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {

@@ -18,19 +18,19 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
+import play.Logger
 import play.api._
 import play.api.mvc._
 import play.filters.headers._
-import uk.gov.hmrc.apprenticeshiplevy.connectors.ServiceLocatorConnector
-import uk.gov.hmrc.play.auth.controllers.AuthParamsControllerConfig
-import uk.gov.hmrc.play.auth.microservice.filters.AuthorisationFilter
-import uk.gov.hmrc.play.config.{AppName, ControllerConfig, RunMode}
-import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
-import scala.util.{Try, Success, Failure}
-import play.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.filters._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.microservice.filters.{ AuditFilter, LoggingFilter, MicroserviceFilterSupport }
+import uk.gov.hmrc.play.auth.controllers.AuthParamsControllerConfig
+import uk.gov.hmrc.play.auth.microservice.filters.AuthorisationFilter
+import uk.gov.hmrc.play.config.ControllerConfig
+import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
+import uk.gov.hmrc.play.microservice.filters.{AuditFilter, LoggingFilter, MicroserviceFilterSupport}
+
+import scala.util.{Failure, Success, Try}
 
 object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = AppContext.maybeConfiguration.map(_.underlying.as[Config]("controllers")).getOrElse(throw new RuntimeException())

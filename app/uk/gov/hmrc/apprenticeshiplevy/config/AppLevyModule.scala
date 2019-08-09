@@ -19,11 +19,11 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 import play.api
 import play.api.Environment
 import play.api.inject.{Binding, Module}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.http.HttpGet
 
 class AppLevyModule extends Module {
   override def bindings(environment: Environment, configuration: api.Configuration): Seq[Binding[_]] = Seq(
-    bind[HttpGet].to(WSHttp)
+    bind[HttpGet].to(WSHttp),
+    bind[WSHttp].to(WSHttp)
   )
 }

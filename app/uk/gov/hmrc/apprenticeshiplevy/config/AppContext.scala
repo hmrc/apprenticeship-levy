@@ -75,7 +75,7 @@ object AppContext extends ServiceLocatorRegistration with Configuration {
   Logger.info(s"""\n${"_" * 80}\n""")
   // $COVERAGE-ON$
 
-  override lazy val slConnector = ServiceLocatorConnector
+  override lazy val slConnector = Play.current.injector.instanceOf[ServiceLocatorConnector]
 
   def maybeApp: Option[Application] = Try(Play.maybeApplication).getOrElse(None)
 
