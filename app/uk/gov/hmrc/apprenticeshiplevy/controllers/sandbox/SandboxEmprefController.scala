@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import org.joda.time.LocalDate
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, SandboxDesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 

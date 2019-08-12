@@ -16,12 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config
 
-import play.api.mvc._
-import play.api.routing._
-
 import javax.inject.Inject
-
-import play.api.mvc._
 import play.api.routing.Router.Routes
 import play.api.routing.SimpleRouter
 

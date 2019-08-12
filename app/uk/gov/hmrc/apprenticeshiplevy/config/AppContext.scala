@@ -16,15 +16,13 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config
 
-import play.api.Play
-import play.api.{Logger, Mode, Application}
-import uk.gov.hmrc.play.config.ServicesConfig
-import scala.util.{Try, Success, Failure}
-import uk.gov.hmrc.play.config.RunMode
+import com.typesafe.config.ConfigFactory
+import play.api.{Application, Logger, Mode, Play}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.ServiceLocatorConnector
 import uk.gov.hmrc.http.HeaderCarrier
-import com.typesafe.config.ConfigFactory
-import uk.gov.hmrc.play.config.AppName
+import uk.gov.hmrc.play.config.{RunMode, ServicesConfig}
+
+import scala.util.{Failure, Success, Try}
 
 trait ServiceLocatorRegistration extends RunMode {
   def registrationEnabled: Boolean

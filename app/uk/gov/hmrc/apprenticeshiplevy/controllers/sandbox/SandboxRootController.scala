@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 import com.google.inject.Inject
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, SandboxAuthConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxAuthConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 

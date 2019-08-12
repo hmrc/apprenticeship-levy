@@ -19,18 +19,12 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import play.api.Play
-
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.http.{HttpGet, _}
+import uk.gov.hmrc.http.hooks.HttpHook
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.auth.microservice.connectors.AuthConnector
-import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.ws._
-import uk.gov.hmrc.http.hooks.HttpHook
-import uk.gov.hmrc.play.audit.http.HttpAuditing
-
-import scala.concurrent.Future
-import uk.gov.hmrc.http.HttpGet
 import uk.gov.hmrc.play.microservice.config.LoadAuditingConfig
 
 trait Hooks extends uk.gov.hmrc.http.hooks.HttpHooks {

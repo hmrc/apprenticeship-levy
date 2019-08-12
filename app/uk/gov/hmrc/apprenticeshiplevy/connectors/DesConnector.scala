@@ -24,7 +24,7 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
-import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, MicroserviceAuditFilter, WSHttp}
+import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, MicroserviceAuditFilter}
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.data.des.DesignatoryDetails._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.EmploymentCheckStatus._

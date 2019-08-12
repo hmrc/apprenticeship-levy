@@ -17,8 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import com.google.inject.Inject
-import org.joda.time.LocalDate
+import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
 
 class LiveEmploymentCheckController  @Inject()(val desConnector: LiveDesConnector) extends EmploymentCheckController

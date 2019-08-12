@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import com.google.inject.Inject
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, LiveAuthConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveAuthConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 

@@ -17,8 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import com.google.inject.Inject
-import org.joda.time.LocalDate
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{DesController, FractionsCalculationDateController, FractionsController}
 
 class LiveFractionsController  @Inject()(val desConnector: LiveDesConnector) extends DesController with FractionsController

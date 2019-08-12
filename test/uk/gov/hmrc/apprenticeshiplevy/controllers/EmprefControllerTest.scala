@@ -19,9 +19,8 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import java.net.URLEncoder
 
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, DesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
-import play.utils.UriEncoding
 
 class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues {
   "prepareLinks" should {

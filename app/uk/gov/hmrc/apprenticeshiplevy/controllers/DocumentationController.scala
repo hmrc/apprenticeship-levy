@@ -16,22 +16,19 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import scala.io.Source
-import java.io.{File, InputStream}
+import java.io.InputStream
 
-import com.google.inject.{Inject, Singleton}
-import play.api.{Application, Mode, Play}
-import play.api.Play.current
+import com.google.inject.Singleton
+import play.Logger
+import play.api.Mode
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
-import play.api.mvc.{Action, AnyContent, Controller}
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.iteratee.Enumerator
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.microservice.controller.BaseController
-import play.Logger
 
 import scala.concurrent.Future
+import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 //trait AssetsController extends BaseController {

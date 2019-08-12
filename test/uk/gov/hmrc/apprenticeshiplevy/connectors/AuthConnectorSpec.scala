@@ -16,25 +16,19 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
-import org.scalatest._
-import org.scalatest.mockito.MockitoSugar
-import org.mockito._
-import org.mockito.Mockito._
 import org.mockito.Matchers._
-import uk.gov.hmrc.play.test.UnitSpec
-import org.joda.time.LocalDate
-import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import scala.concurrent.Future
+import org.mockito.Mockito._
+import org.mockito._
+import org.scalatest.mockito.MockitoSugar
 import play.api.libs.concurrent.Execution.Implicits._
-import uk.gov.hmrc.apprenticeshiplevy.utils._
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.EventKeys._
-import uk.gov.hmrc.play.frontend.auth.connectors.domain._
-import uk.gov.hmrc.domain._
-import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.EventKeys._
+import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
+import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.play.test.UnitSpec
+
+import scala.concurrent.Future
 
 class AuthConnectorSpec extends UnitSpec with MockitoSugar {
   "Auth Connector" should {

@@ -17,16 +17,13 @@
 package uk.gov.hmrc.apprenticeshiplevy.metrics
 
 import java.util.concurrent.TimeUnit
+
 import com.codahale.metrics._
-import scala.concurrent.{duration, Await}
-import scala.concurrent.duration._
+import com.kenshoo.play.metrics.MetricsImpl
 import play.api.Logger
-import java.util.concurrent.TimeUnit
-import play.api.Play
-import play.api.Play._
-import com.kenshoo.play.metrics.{MetricsImpl, MetricsFilter, MetricsFilterImpl}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import play.api.Play.current
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+
 import scala.util.Try
 
 sealed trait MetricEvent {

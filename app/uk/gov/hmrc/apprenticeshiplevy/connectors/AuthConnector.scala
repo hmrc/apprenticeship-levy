@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import com.google.inject.Inject
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
-import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, MicroserviceAuditFilter, WSHttp}
+import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, MicroserviceAuditFilter}
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.metrics._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}

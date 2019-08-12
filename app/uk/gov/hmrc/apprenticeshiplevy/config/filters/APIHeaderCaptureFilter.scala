@@ -16,12 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config.filters
 
-import play.api._
-import play.api.mvc._
-import play.filters.headers._
 import org.slf4j.MDC
-
 import play.api.mvc.{Filter, RequestHeader, Result}
+
 import scala.concurrent.Future
 
 trait APIHeaderCaptureFilter extends Filter {
