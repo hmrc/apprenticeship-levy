@@ -26,7 +26,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 class SandboxRootController @Inject()(val authConnector: SandboxAuthConnector) extends RootController with SandboxLinkHelper {
   override val env = AppContext.env
 
-  override val rootUrl: String = routes.SandboxRootController.root().url
+  override def rootUrl: String = routes.SandboxRootController.root().url
 
   override def emprefUrl(empref: EmploymentReference): String = routes.SandboxEmprefController.empref(empref).url
 
