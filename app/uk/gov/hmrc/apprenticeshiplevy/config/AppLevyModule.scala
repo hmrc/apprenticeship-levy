@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.config.filters
+package uk.gov.hmrc.apprenticeshiplevy.config
 
-import org.slf4j.MDC
-import play.api.mvc.{Filter, RequestHeader, Result}
+import play.api
+import play.api.Environment
+import play.api.inject.{Binding, Module}
+import uk.gov.hmrc.http.HttpGet
 
-import scala.concurrent.Future
-
-trait APIHeaderCaptureFilter extends Filter {
-  def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
-    MDC.put("X-Client-ID",rh.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller"))
-    next(rh)
-  }
+class AppLevyModule extends Module {
+  override def bindings(environment: Environment, configuration: api.Configuration): Seq[Binding[_]] = Seq(
+    bind[HttpGet].to(WSHttp),
+    bind[WSHttp].to(WSHttp)
+  )
 }

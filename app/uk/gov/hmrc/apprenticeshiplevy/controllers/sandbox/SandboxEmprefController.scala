@@ -16,14 +16,17 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
+import com.google.inject.Inject
 import org.joda.time.LocalDate
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{SandboxDesConnector, DesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference,Nino}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
-trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
+class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector) extends EmprefController with SandboxLinkHelper {
+  override val env = AppContext.env
+
   override def emprefUrl(empref: EmploymentReference): String = routes.SandboxEmprefController.empref(empref).url
 
   override def declarationsUrl(empref: EmploymentReference): String = routes.SandboxLevyDeclarationController.declarations(empref, None, None).url
@@ -36,11 +39,5 @@ trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
   }
 
   override def processLink(l: HalLink): HalLink = stripSandboxForNonDev(l)
-}
-
-object SandboxEmprefController extends SandboxEmprefController {
-  override val env = AppContext.env
-
-  override def desConnector: DesConnector = SandboxDesConnector
 
 }

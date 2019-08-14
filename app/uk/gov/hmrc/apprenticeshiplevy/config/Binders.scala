@@ -16,14 +16,15 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config
 
-import org.joda.time.LocalDate
-import play.api.mvc.{QueryStringBindable, PathBindable}
-import uk.gov.hmrc.time.DateConverter
-import scala.util.Try
-import java.util.regex.Pattern
-import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import scala.util.matching.Regex
 import java.net.{URLDecoder, URLEncoder}
+
+import org.joda.time.LocalDate
+import play.api.mvc.{PathBindable, QueryStringBindable}
+import uk.gov.hmrc.apprenticeshiplevy.data.api._
+import uk.gov.hmrc.time.DateConverter
+
+import scala.util.Try
+import scala.util.matching.Regex
 
 object QueryBinders {
   val DatePattern = AppContext.datePattern.r

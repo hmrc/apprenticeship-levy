@@ -16,23 +16,22 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data
 
+import java.io.{File, FileInputStream, InputStream}
+import java.net.URLDecoder
+
+import org.joda.time._
+import org.slf4j.MDC
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.{Logger, Mode}
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import scala.concurrent.Future
-import uk.gov.hmrc.play.microservice.controller.Utf8MimeTypes
-import java.net.URLDecoder
-import play.api.Play.current
-import scala.io.Source
-import java.io.{File,InputStream,FileInputStream}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import org.joda.time._
-import uk.gov.hmrc.time.DateConverter
-import scala.util.{Try, Success, Failure}
-import org.slf4j.MDC
+import uk.gov.hmrc.play.microservice.controller.Utf8MimeTypes
 
-trait TestDataController extends Controller with Utf8MimeTypes {
+import scala.concurrent.Future
+import scala.io.Source
+import scala.util.Try
+
+class SandboxTestDataController extends Controller with Utf8MimeTypes {
   val SANDBOX_DATA_DIR = "public/sandbox-data"
 
   protected def retrieve(file: String): Option[InputStream] = {
@@ -178,7 +177,4 @@ trait TestDataController extends Controller with Utf8MimeTypes {
       case _ => Future.successful(result("{}"))
     }
   }
-}
-
-object SandboxTestDataController extends TestDataController {
 }

@@ -16,17 +16,11 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import play.api.libs.json._
-import play.api.libs.json.Json._
-import org.joda.time.LocalDate
 import org.joda.time.DateTimeConstants.{APRIL, MAY}
 import org.joda.time.{LocalDate, LocalDateTime}
+import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import scala.util.{Try, Success, Failure}
+import uk.gov.hmrc.play.test.UnitSpec
 
 class EmployerPaymentSummarySpec extends UnitSpec {
   "convertToDeclaration" should {

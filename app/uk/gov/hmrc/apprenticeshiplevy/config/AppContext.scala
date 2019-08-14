@@ -16,15 +16,13 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config
 
-import play.api.Play
-import play.api.{Logger, Mode, Application}
-import uk.gov.hmrc.play.config.ServicesConfig
-import scala.util.{Try, Success, Failure}
-import uk.gov.hmrc.play.config.RunMode
+import com.typesafe.config.ConfigFactory
+import play.api.{Application, Logger, Mode, Play}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.ServiceLocatorConnector
 import uk.gov.hmrc.http.HeaderCarrier
-import com.typesafe.config.ConfigFactory
-import uk.gov.hmrc.play.config.AppName
+import uk.gov.hmrc.play.config.{RunMode, ServicesConfig}
+
+import scala.util.{Failure, Success, Try}
 
 trait ServiceLocatorRegistration extends RunMode {
   def registrationEnabled: Boolean
@@ -75,7 +73,7 @@ object AppContext extends ServiceLocatorRegistration with Configuration {
   Logger.info(s"""\n${"_" * 80}\n""")
   // $COVERAGE-ON$
 
-  override lazy val slConnector = ServiceLocatorConnector
+  override lazy val slConnector = Play.current.injector.instanceOf[ServiceLocatorConnector]
 
   def maybeApp: Option[Application] = Try(Play.maybeApplication).getOrElse(None)
 

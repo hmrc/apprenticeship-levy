@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.apprenticeshiplevy.data.des._
+import org.joda.time.LocalDateTime
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import org.joda.time.{LocalDate, LocalDateTime}
+import uk.gov.hmrc.play.test.UnitSpec
 
 class LevyDeclarationSpec extends UnitSpec {
   "LevyDeclaration" should {

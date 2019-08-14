@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
 import play.api.libs.json._
 
 case class Fraction(region: String, value: BigDecimal)

@@ -16,23 +16,23 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
+import com.google.inject.Inject
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, WSHttp}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration
 import uk.gov.hmrc.apprenticeshiplevy.data.api.ServiceLocatorRegistration._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpPost }
 
-trait ServiceLocatorConnector {
-  val appName: String
-  val appUrl: String
-  val serviceUrl: String
-  val metadata: Option[Map[String, String]]
-  val http: HttpPost
+class ServiceLocatorConnector @Inject()(http: WSHttp) {
+  lazy val appName = AppContext.maybeString("appName").getOrElse("apprenticeship-levy")
+  lazy val appUrl = AppContext.appUrl
+  lazy val serviceUrl = AppContext.serviceLocatorUrl
+  val metadata = Some(Map("third-party-api" -> "true"))
 
   def register(implicit hc: HeaderCarrier): Future[Try[Unit]] =
     http
@@ -59,10 +59,4 @@ trait ServiceLocatorConnector {
       }
 }
 
-object ServiceLocatorConnector extends ServiceLocatorConnector {
-  override lazy val appName = AppContext.maybeString("appName").getOrElse("apprenticeship-levy")
-  override lazy val appUrl = AppContext.appUrl
-  override lazy val serviceUrl = AppContext.serviceLocatorUrl
-  override val http = WSHttp
-  override val metadata = Some(Map("third-party-api" -> "true"))
-}
+

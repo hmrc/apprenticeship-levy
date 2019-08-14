@@ -16,11 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import play.api.libs.json._
 import play.api.libs.json.Reads._
-import play.api.libs.functional.syntax._
-import scala.util.{Try, Success, Failure}
-import play.api.Logger
+import play.api.libs.json._
 
 sealed trait EmploymentCheckStatus
 

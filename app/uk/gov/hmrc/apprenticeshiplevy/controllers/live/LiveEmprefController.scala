@@ -17,12 +17,13 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 
+import com.google.inject.Inject
 import org.joda.time.LocalDate
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference,Nino}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
-object LiveEmprefController extends EmprefController {
+class LiveEmprefController @Inject()(val desConnector: LiveDesConnector) extends EmprefController {
   override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url
 
   override def declarationsUrl(empref: EmploymentReference): String = routes.LiveLevyDeclarationController.declarations(empref, None, None).url
@@ -33,5 +34,4 @@ object LiveEmprefController extends EmprefController {
     routes.LiveEmploymentCheckController.check(empref, Nino("nino"), new LocalDate, new LocalDate)
       .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
 
-  override def desConnector: DesConnector = LiveDesConnector
 }

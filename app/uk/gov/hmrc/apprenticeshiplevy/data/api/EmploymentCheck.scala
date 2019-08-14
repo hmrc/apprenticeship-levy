@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.api
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
 import org.joda.time.LocalDate
 import play.api.libs.json._
 import uk.gov.hmrc.http.controllers.RestFormats

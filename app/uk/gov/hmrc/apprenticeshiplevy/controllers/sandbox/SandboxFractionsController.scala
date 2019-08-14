@@ -16,9 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{SandboxDesConnector, DesConnector}
+import com.google.inject.Inject
+import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{DesController, FractionsCalculationDateController, FractionsController}
 
-object SandboxFractionsController extends DesController with FractionsController with FractionsCalculationDateController {
-  override def desConnector: DesConnector = SandboxDesConnector
-}
+class SandboxFractionsController @Inject()(val desConnector: SandboxDesConnector) extends DesController with FractionsController with FractionsCalculationDateController
