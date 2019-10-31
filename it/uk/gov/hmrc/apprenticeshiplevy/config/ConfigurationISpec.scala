@@ -17,12 +17,6 @@ with ConfiguredServer with EitherValues with Matchers {
     it ("should have an app url") {
       AppContext.appUrl shouldBe "http://microservice-name"
     }
-    it ("should have an service locator url") {
-      AppContext.serviceLocatorUrl shouldBe "http://localhost:8080"
-    }
-    it ("should have registration enabled") {
-      AppContext.registrationEnabled shouldBe true
-    }
     it ("should have private mode enabled") {
       AppContext.privateModeEnabled shouldBe true
     }

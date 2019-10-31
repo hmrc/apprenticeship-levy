@@ -18,34 +18,9 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 
 import com.typesafe.config.ConfigFactory
 import play.api.{Application, Logger, Mode, Play}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.ServiceLocatorConnector
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.config.{RunMode, ServicesConfig}
 
 import scala.util.{Failure, Success, Try}
-
-trait ServiceLocatorRegistration extends RunMode {
-  def registrationEnabled: Boolean
-  val slConnector: ServiceLocatorConnector
-
-  // replacing GlobalSettings.onStart
-  registrationEnabled match {
-    case true => {
-      AppContext.maybeApp.map { app =>
-        slConnector.register(HeaderCarrier())
-      }.orElse{
-        // $COVERAGE-OFF$
-        Logger.error("Registration in Service Locator is disabled due to no app started")
-        // $COVERAGE-ON$
-        None
-      }
-    }
-    case false =>
-      // $COVERAGE-OFF$
-      Logger.warn("Registration in Service Locator is disabled")
-      // $COVERAGE-ON$
-  }
-}
 
 trait Configuration extends RunMode with ServicesConfig {
   private val nilConfig = play.api.Configuration(ConfigFactory.load())
@@ -56,7 +31,6 @@ trait Configuration extends RunMode with ServicesConfig {
 
   def maybeString(id: String): Option[String] = AppContext.maybeConfiguration.flatMap(_.getString(id))
 
-  def serviceLocatorUrl: String = maybeBaseURL("service-locator").getOrElse("")
   def maybeBaseURL(name: String): Option[String] = Try(baseUrl(name)) match {
         case Success(v) => Some(v)
         case Failure(e) => {
@@ -68,12 +42,10 @@ trait Configuration extends RunMode with ServicesConfig {
       }
 }
 
-object AppContext extends ServiceLocatorRegistration with Configuration {
+object AppContext extends Configuration {
   // $COVERAGE-OFF$
   Logger.info(s"""\n${"_" * 80}\n""")
   // $COVERAGE-ON$
-
-  override lazy val slConnector = Play.current.injector.instanceOf[ServiceLocatorConnector]
 
   def maybeApp: Option[Application] = Try(Play.maybeApplication).getOrElse(None)
 
@@ -85,16 +57,6 @@ object AppContext extends ServiceLocatorRegistration with Configuration {
     // $COVERAGE-ON$
     ""
   }
-
-  override def registrationEnabled: Boolean =
-    maybeString("microservice.services.service-locator.enabled")
-      .flatMap(flag => Try(flag.toBoolean).toOption)
-      .getOrElse {
-        // $COVERAGE-OFF$
-        Logger.warn("A configuration value has not been provided for service-locator.enabled, defaulting to true")
-        // $COVERAGE-ON$
-        true
-      }
 
   def privateModeEnabled: Boolean = maybeString("microservice.private-mode")
     .flatMap(flag => Try(flag.toBoolean).toOption)

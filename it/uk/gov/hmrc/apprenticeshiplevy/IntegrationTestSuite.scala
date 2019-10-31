@@ -16,7 +16,6 @@ import uk.gov.hmrc.play.test.UnitSpec
 import scala.util.Try
 
 class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.config.ConfigurationISpec,
-                                           new ServiceLocatorRegistrationISpec,
                                            new DeclarationsEndpointISpec,
                                            new DefinitionEndpointISpec,
                                            new DocumentationEndpointISpec,
@@ -74,15 +73,13 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
   }
 }
 
-class NoWiremockIntegrationTestsSuite
-  extends Suites(new PublicDefinitionEndpointISpec, new ServiceLocatorRegistrationISpec2)
+class NoWiremockIntegrationTestsSuite extends Suites(new PublicDefinitionEndpointISpec)
   with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite with UnitSpec {
 
   override def stubConfigPath = "./it/no-mappings"
   override def additionalConfiguration: Map[String, Any] = (super.additionalConfiguration - "microservice.private-mode") ++ Map(
     "microservice.private-mode" -> "false",
-    "microservice.whitelisted-applications" -> "none",
-    "microservice.services.service-locator.enabled" -> "false")
+    "microservice.whitelisted-applications" -> "none")
 
   override implicit lazy final val app: Application = new GuiceApplicationBuilder()
                                                           .configure(additionalConfiguration)
