@@ -16,9 +16,12 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{SandboxDesConnector, DesConnector}
+import play.api.Play
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, SandboxDesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, SandboxAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{DesController, FractionsCalculationDateController, FractionsController}
 
 object SandboxFractionsController extends DesController with FractionsController with FractionsCalculationDateController {
   override def desConnector: DesConnector = SandboxDesConnector
+  override val authAction: AuthAction = Play.current.injector.instanceOf[SandboxAuthAction]
 }

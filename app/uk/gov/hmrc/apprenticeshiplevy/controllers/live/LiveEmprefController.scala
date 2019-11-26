@@ -18,9 +18,11 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 
 import org.joda.time.LocalDate
+import play.api.Play
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference,Nino}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
 object LiveEmprefController extends EmprefController {
   override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url
@@ -34,4 +36,6 @@ object LiveEmprefController extends EmprefController {
       .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
 
   override def desConnector: DesConnector = LiveDesConnector
+
+  override val authAction: AuthAction = Play.current.injector.instanceOf[AuthAction]
 }

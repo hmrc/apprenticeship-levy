@@ -17,11 +17,13 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import org.joda.time.LocalDate
+import play.api.Play
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{SandboxDesConnector, DesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, SandboxDesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference,Nino}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, SandboxAuthAction}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
 trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
   override def emprefUrl(empref: EmploymentReference): String = routes.SandboxEmprefController.empref(empref).url
@@ -42,5 +44,7 @@ object SandboxEmprefController extends SandboxEmprefController {
   override val env = AppContext.env
 
   override def desConnector: DesConnector = SandboxDesConnector
+
+  override val authAction: AuthAction = Play.current.injector.instanceOf[SandboxAuthAction]
 
 }

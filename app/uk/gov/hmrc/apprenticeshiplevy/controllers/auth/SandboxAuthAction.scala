@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
+package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
-import play.api.Play
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, SandboxDesConnector}
-import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, SandboxAuthAction}
+import play.api.mvc.{Request, Result}
 
-object SandboxEmploymentCheckController extends EmploymentCheckController {
-  override def desConnector: DesConnector = SandboxDesConnector
-  override val authAction: AuthAction = Play.current.injector.instanceOf[SandboxAuthAction]
+import scala.concurrent.Future
+
+class SandboxAuthAction extends AuthAction {
+  override protected def filter[A](request: Request[A]): Future[Option[Result]] = Future.successful(None)
 }

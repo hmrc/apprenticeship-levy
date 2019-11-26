@@ -17,9 +17,12 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import org.joda.time.LocalDate
+import play.api.Play
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{LiveDesConnector, DesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 
 object LiveEmploymentCheckController extends EmploymentCheckController {
   override def desConnector: DesConnector = LiveDesConnector
+  override val authAction: AuthAction = Play.current.injector.instanceOf[AuthAction]
 }

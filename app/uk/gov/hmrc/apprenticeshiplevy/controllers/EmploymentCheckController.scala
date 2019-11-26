@@ -20,19 +20,22 @@ import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNotVisible
-import uk.gov.hmrc.apprenticeshiplevy.data.des.{Employed, Unknown, NotEmployed}
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentCheck,EmploymentReference,Nino}
+import uk.gov.hmrc.apprenticeshiplevy.data.des.{Employed, NotEmployed, Unknown}
+import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentCheck, EmploymentReference, Nino}
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
 import scala.concurrent.Future
 import play.api.mvc.Result
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 
 trait EmploymentCheckController extends DesController {
 
   def desConnector: DesConnector
+  val authAction: AuthAction
 
   // scalastyle:off
-  def check(ref: EmploymentReference, ni: Nino, fromDate: LocalDate, toDate: LocalDate) = withValidAcceptHeader.async { implicit request =>
+  def check(ref: EmploymentReference, ni: Nino, fromDate: LocalDate, toDate: LocalDate) = (authAction andThen withValidAcceptHeader).async { implicit request =>
   // scalastyle:on
     if (fromDate.isAfter(toDate)) {
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)

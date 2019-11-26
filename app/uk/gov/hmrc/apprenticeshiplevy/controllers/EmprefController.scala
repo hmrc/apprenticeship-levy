@@ -20,12 +20,15 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import play.api.hal.{Hal, HalLink, HalResource}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath._
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 trait EmprefController extends DesController {
   def desConnector: DesConnector
+
+  val authAction: AuthAction
 
   def declarationsUrl(empref: EmploymentReference): String
 
@@ -39,7 +42,7 @@ trait EmprefController extends DesController {
   def processLink(l: HalLink): HalLink = identity(l)
 
   // scalastyle:off
-  def empref(ref: EmploymentReference) = withValidAcceptHeader.async { implicit request =>
+  def empref(ref: EmploymentReference) = (authAction andThen withValidAcceptHeader).async { implicit request =>
   // scalastyle:on
     desConnector.designatoryDetails(ref.empref).map { details =>
       val hal = prepareLinks(ref)

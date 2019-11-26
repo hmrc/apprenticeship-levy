@@ -22,6 +22,7 @@ import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, DesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import play.utils.UriEncoding
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction}
 
 class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues {
   "prepareLinks" should {
@@ -47,6 +48,8 @@ class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues 
     override def fractionsUrl(ref: EmploymentReference): String = emprefUrl(ref) + "/fractions"
 
     override def employmentCheckUrl(ref: EmploymentReference): String = emprefUrl(ref) + "/employed/{nino}"
+
+    override val authAction: AuthAction = FakeAuthAction
   }
 
 }

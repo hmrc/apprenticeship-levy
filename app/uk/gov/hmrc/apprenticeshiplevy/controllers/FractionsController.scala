@@ -19,6 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
@@ -29,10 +30,12 @@ trait FractionsController {
   self: DesController =>
   def desConnector: DesConnector
 
+  val authAction: AuthAction
+
   val defaultPriorMonthsForFromDate = 72
 
   // scalastyle:off
-  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
+  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = (authAction andThen withValidAcceptHeader).async { implicit request =>
     // scalastyle:on
 
     val validatedFromDate = validateFromDate(fromDate)
@@ -68,10 +71,13 @@ trait FractionsController {
   */
 trait FractionsCalculationDateController {
   self: DesController =>
+
   def desConnector: DesConnector
 
+  val authAction: AuthAction
+
   // scalastyle:off
-  def fractionCalculationDate = withValidAcceptHeader.async { implicit request =>
+  def fractionCalculationDate = (authAction andThen withValidAcceptHeader).async { implicit request =>
     // scalastyle:on
     desConnector.fractionCalculationDate map { date =>
       Ok(Json.toJson(date))
