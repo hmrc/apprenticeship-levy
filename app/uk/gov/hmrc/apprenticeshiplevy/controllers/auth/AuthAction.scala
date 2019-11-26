@@ -35,7 +35,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
   override protected def filter[A](request: Request[A]): Future[Option[Result]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE")) {
+    authorised() {
       Future.successful(None)
     }.recover {
       case t: Throwable =>

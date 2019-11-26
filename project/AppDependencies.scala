@@ -10,7 +10,6 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-hmrc-api"            % "3.6.0-play-25",
     "uk.gov.hmrc" %% "play-hal"                 % "1.9.0-play-25",
     "uk.gov.hmrc" %% "domain"                   % "5.6.0-play-25",
-    "uk.gov.hmrc" %% "play-authorised-frontend" % "7.1.0",
     "uk.gov.hmrc" %% "auth-client"              % "2.31.0-play-25"
   )
 

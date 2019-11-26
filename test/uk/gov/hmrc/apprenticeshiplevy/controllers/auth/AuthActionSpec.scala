@@ -48,17 +48,6 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
     }
   }
 
-  "A user with insufficient confidence level" should {
-    "return UNAUTHORIZED" in {
-      when(mockAuthConnector.authorise(any(), any())(any(), any()))
-        .thenReturn(Future.failed(InsufficientConfidenceLevel()))
-      val authAction = new AuthActionImpl(mockAuthConnector)
-      val controller = new Harness(authAction)
-      val result = controller.onPageLoad()(FakeRequest("", ""))
-      status(result) shouldBe UNAUTHORIZED
-    }
-  }
-
   "A user that is logged in" must {
     "be allowed access" in {
       when(mockAuthConnector.authorise[Unit](any(),any())(any(), any()))

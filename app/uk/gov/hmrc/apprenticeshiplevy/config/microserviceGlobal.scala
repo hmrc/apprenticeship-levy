@@ -18,26 +18,20 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
+import play.Logger
 import play.api._
 import play.api.mvc._
 import play.filters.headers._
-import uk.gov.hmrc.apprenticeshiplevy.connectors.ServiceLocatorConnector
-import uk.gov.hmrc.play.auth.controllers.AuthParamsControllerConfig
-import uk.gov.hmrc.play.auth.microservice.filters.AuthorisationFilter
-import uk.gov.hmrc.play.config.{AppName, ControllerConfig, RunMode}
-import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
-import scala.util.{Try, Success, Failure}
-import play.Logger
 import uk.gov.hmrc.apprenticeshiplevy.config.filters._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.microservice.filters.{ AuditFilter, LoggingFilter, MicroserviceFilterSupport }
+import uk.gov.hmrc.play.config.ControllerConfig
+import uk.gov.hmrc.play.microservice.bootstrap.DefaultMicroserviceGlobal
+import uk.gov.hmrc.play.microservice.filters.{AuditFilter, LoggingFilter, MicroserviceFilterSupport}
+
+import scala.util.{Failure, Success, Try}
 
 object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = AppContext.maybeConfiguration.map(_.underlying.as[Config]("controllers")).getOrElse(throw new RuntimeException())
-}
-
-object AuthParamsControllerConfiguration extends AuthParamsControllerConfig {
-  lazy val controllerConfigs = ControllerConfiguration.controllerConfigs
 }
 
 object MicroserviceAuditFilter
@@ -72,14 +66,6 @@ object MicroserviceLoggingFilter extends LoggingFilter with MicroserviceFilterSu
     ControllerConfiguration.paramsForController(controllerName).needsLogging
 }
 
-object MicroserviceAuthFilter extends AuthorisationFilter with MicroserviceFilterSupport {
-  override lazy val authParamsConfig = AuthParamsControllerConfiguration
-  override lazy val authConnector = MicroserviceAuthConnector
-
-  override def controllerNeedsAuth(controllerName: String): Boolean =
-    ControllerConfiguration.paramsForController(controllerName).needsAuth
-}
-
 object MicroserviceGlobal
   extends DefaultMicroserviceGlobal
   with uk.gov.hmrc.apprenticeshiplevy.config.Configuration {
@@ -95,7 +81,7 @@ object MicroserviceGlobal
 
   override val microserviceAuditFilter = MicroserviceAuditFilter
 
-  override val authFilter = Some(MicroserviceAuthFilter)
+  override val authFilter = None
 
   override protected lazy val defaultMicroserviceFilters: Seq[EssentialFilter] = Try {
     super.defaultMicroserviceFilters ++ Seq(new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(AppContext.maybeConfiguration.get)),
