@@ -17,9 +17,12 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
 import play.api.mvc.{Request, Result}
+import uk.gov.hmrc.domain.EmpRef
 
 import scala.concurrent.Future
 
 class SandboxAuthAction extends AuthAction {
-  override protected def filter[A](request: Request[A]): Future[Option[Result]] = Future.successful(None)
+  override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
+    Future.successful(Right(AuthenticatedRequest(request, Some(EmpRef("840", "MODES17")))))
+  }
 }

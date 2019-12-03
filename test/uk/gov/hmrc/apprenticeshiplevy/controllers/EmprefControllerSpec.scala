@@ -19,12 +19,11 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import java.net.URLEncoder
 
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{AuthConnector, DesConnector}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
-import play.utils.UriEncoding
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction}
 
-class EmprefControllerTest extends WordSpecLike with Matchers with OptionValues {
+class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues {
   "prepareLinks" should {
     "correctly prepare HAL for an empref" in {
       val empref = "123/AB12345"

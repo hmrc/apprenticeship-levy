@@ -19,10 +19,10 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import java.net.URLEncoder
 
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.AuthConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-class RootControllerTest extends WordSpecLike with Matchers with OptionValues {
+class RootControllerSpec extends WordSpecLike with Matchers with OptionValues {
   "transformEmprefs" should {
     "correctly generate HAL for emprefs" in {
       val hal = testController.transformEmpRefs(Seq("123/AB12345", "321/XY54321"))
@@ -38,9 +38,10 @@ class RootControllerTest extends WordSpecLike with Matchers with OptionValues {
   val testController = new RootController {
     override def rootUrl: String = "/"
 
-    override def authConnector: AuthConnector = ???
 
     override def emprefUrl(ref: EmploymentReference): String = s"""/epaye/${URLEncoder.encode(ref.empref, "UTF-8")}"""
+
+    override val authAction: AuthAction = FakeAuthAction
   }
 
 }

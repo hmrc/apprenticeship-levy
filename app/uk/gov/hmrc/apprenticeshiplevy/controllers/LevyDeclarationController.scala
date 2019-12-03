@@ -20,7 +20,7 @@ import org.joda.time._
 import org.slf4j.MDC
 import play.api.Logger
 import play.api.libs.json.Json
-import play.api.mvc.Result
+import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
@@ -40,7 +40,7 @@ trait LevyDeclarationController {
   val authAction: AuthAction
 
   // scalastyle:off
-  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = (authAction andThen withValidAcceptHeader).async { implicit request =>
+  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] = (authAction andThen withValidAcceptHeader).async { implicit request =>
   // scalastyle:on
     if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get))
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)

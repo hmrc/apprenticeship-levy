@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.live
+package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
-import play.api.Play
-import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
-import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.domain.EmpRef
 
-object LiveRootController extends RootController {
-
-  override val authAction: AuthAction = Play.current.injector.instanceOf[AuthAction]
-
-  override def rootUrl: String = routes.LiveRootController.root().url
-
-  override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url
-}
+case class AuthenticatedRequest[A](request: Request[A],
+                                   empRef: Option[EmpRef]
+                                  ) extends WrappedRequest[A](request)

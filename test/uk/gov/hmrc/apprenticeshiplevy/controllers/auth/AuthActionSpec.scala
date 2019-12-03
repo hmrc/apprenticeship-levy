@@ -23,18 +23,20 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.mvc.{Action, AnyContent, Controller}
 import play.api.test.FakeRequest
+import uk.gov.hmrc.apprenticeshiplevy.utils.RetrievalOps
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.play.test.UnitSpec
-
+import play.api.test.Helpers._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar {
+class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar with RetrievalOps {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
   class Harness(authAction: AuthAction) extends Controller {
-    def onPageLoad(): Action[AnyContent] = authAction { request => Ok("") }
+    def onPageLoad(): Action[AnyContent] = authAction { request => Ok(s"PAYE: ${request.empRef.getOrElse("Fail")}") }
   }
 
   "A user with no active session" should {
@@ -48,16 +50,51 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
     }
   }
 
-  "A user that is logged in" must {
+  "A user that is logged in with a PAYE enrolment" must {
     "be allowed access" in {
-      when(mockAuthConnector.authorise[Unit](any(),any())(any(), any()))
-        .thenReturn(Future.successful(()))
+
+      val enrolments = Enrolments(Set(
+    Enrolment("IR-PAYE", Seq(
+      EnrolmentIdentifier("TaxOfficeNumber", "someOffice"),
+      EnrolmentIdentifier("TaxOfficeReference", "someRef")),
+      "")))
+
+      val retrievalResult: Future[Enrolments] =
+          Future.successful(enrolments)
+
+      when(mockAuthConnector.authorise[Enrolments](any(),any())(any(), any()))
+        .thenReturn(retrievalResult)
 
       val authAction = new AuthActionImpl(mockAuthConnector)
       val controller = new Harness(authAction)
 
-      val result = controller.onPageLoad()(FakeRequest("", ""))
+      val result = controller.onPageLoad()(FakeRequest())
       status(result) shouldBe OK
+      contentAsString(result) should include("someOffice/someRef")
+    }
+  }
+
+  "A user that is logged in without a PAYE enrolment" must {
+    "be allowed access" in {
+
+
+      val enrolments = Enrolments(Set(
+    Enrolment("IR-SA", Seq(
+      EnrolmentIdentifier("Utr", "someUtr")),
+      "")))
+
+      val retrievalResult: Future[Enrolments] =
+          Future.successful(enrolments)
+
+      when(mockAuthConnector.authorise[Enrolments](any(),any())(any(), any()))
+        .thenReturn(retrievalResult)
+
+      val authAction = new AuthActionImpl(mockAuthConnector)
+      val controller = new Harness(authAction)
+
+      val result = controller.onPageLoad()(FakeRequest())
+      status(result) shouldBe OK
+
     }
   }
 }
