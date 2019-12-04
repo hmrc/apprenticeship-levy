@@ -34,7 +34,13 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           it (s"should return links for each empref") {
             // set up
 //            val response = fileToStr("./it/resources/data/input/mapping_body")
-            val response = """{"allEnrolments": []}"""
+            val response = """{"allEnrolments": [{
+                             |    "key": "IR-PAYE",
+                             |    "identifiers": [{ "key": "TaxOfficeNumber", "value": "123" },
+                             |    { "key": "TaxOfficeReference", "value": "AB12345" }],
+                             |    "state": "Activated"
+                             |  }
+                             |  ]}""".stripMargin
             stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withBody(response)))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
