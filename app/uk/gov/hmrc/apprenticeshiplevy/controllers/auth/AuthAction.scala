@@ -72,76 +72,65 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
       Try((Json.parse(m) \ "reason").as[String]) getOrElse ((Json.parse(m) \ "Reason").as[String])
     } else {msg}) getOrElse(msg)
 
+  private def logWarningAboutException(e: Throwable, code: Int, description: String): Unit = {
+    val message = s"Client ${
+      MDC.get("X-Client-ID")
+    } API error: ${
+      e.getMessage
+    }, API returning ${description} ${
+      code
+    }"
+    Logger.warn(message)
+  }
+
   private def authErrorHandler(exc: Throwable): Result = {
     exc match {
       case e: SessionRecordNotFound =>
-        Logger.warn(s"Client ${
-          MDC.get("X-Client-ID")
-        } API error: ${
-          e.getMessage
-        }, API returning Unauthorized with code ${
-          UNAUTHORIZED
-        }")
+        logWarningAboutException(e, UNAUTHORIZED, "Unauthorized with code")
         Unauthorized(Json.toJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"No active session error: ${
           extractReason(e.getMessage)
         }")))
       case e: BadRequestException =>
-        Logger.warn(s"Client ${
-          MDC.get("X-Client-ID")
-        } API error: ${
-          e.getMessage
-        }, API returning BadRequest with code ${
-          SERVICE_UNAVAILABLE
-        }")
+        logWarningAboutException(e, SERVICE_UNAVAILABLE, "BadRequest with code")
         BadRequest(Json.toJson(AuthError(SERVICE_UNAVAILABLE, "BAD_REQUEST", s"Bad request error: ${
           extractReason(e.getMessage)
         }")))
       case e: IOException =>
-        Logger.error(s"Client ${
-          MDC.get("X-Client-ID")
-        } API error: ${
-          e.getMessage
-        }, API returning ServiceUnavailable with code ${
-          SERVICE_UNAVAILABLE
-        }", e)
+        logWarningAboutException(e, SERVICE_UNAVAILABLE, "ServiceUnavailable with code")
         ServiceUnavailable(Json.toJson(AuthError(SERVICE_UNAVAILABLE, "IO", s"Auth connection error: ${
           extractReason(e.getMessage)
         }")))
       case e: GatewayTimeoutException =>
-        Logger.error(s"Client ${
+        val message = s"Client ${
           MDC.get("X-Client-ID")
         } API error: ${
           e.getMessage
         }, API returning RequestTimeout with code ${
           GATEWAY_TIMEOUT
-        }", e)
+        }"
+        Logger.error(message, e)
         RequestTimeout(Json.toJson(AuthError(REQUEST_TIMEOUT, "GATEWAY_TIMEOUT", s"Auth not responding error: ${
           extractReason(e.getMessage)
         }")))
       case e: NotFoundException =>
-        Logger.warn(s"Client ${
-          MDC.get("X-Client-ID")
-        } API error: ${
-          e.getMessage
-        }, API returning NotFound with code ${
-          NOT_FOUND
-        }")
+        logWarningAboutException(e, NOT_FOUND, "NotFound with code")
         NotFound(Json.toJson(AuthError(NOT_FOUND, "NOT_FOUND", s"Auth endpoint not found: ${
           extractReason(e.getMessage)
         }")))
       case e: Upstream5xxResponse =>
-        Logger.error(s"Client ${
+        val message = s"Client ${
           MDC.get("X-Client-ID")
         } API error: ${
           e.getMessage
         }, API returning ServiceUnavailable with code ${
           e.reportAs
-        }", e)
+        }"
+        Logger.error(message, e)
         ServiceUnavailable(Json.toJson(AuthError(e.reportAs, "BACKEND_FAILURE", s"Auth 5xx error: ${
           extractReason(e.getMessage)
         }")))
       case e: Upstream4xxResponse =>
-        Logger.warn(s"Client ${
+        val message = s"Client ${
           MDC.get("X-Client-ID")
         } API error: ${
           e.getMessage
@@ -149,12 +138,10 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
           e.upstreamResponseCode
         }, API returning code ${
           e.reportAs
-        }")
+        }"
+        Logger.warn(message)
         e.upstreamResponseCode match {
           case FORBIDDEN => Forbidden(Json.toJson(AuthError(e.reportAs, "FORBIDDEN", s"Auth forbidden error: ${
-            extractReason(e.getMessage)
-          }")))
-          case UNAUTHORIZED => Unauthorized(Json.toJson(AuthError(e.reportAs, "UNAUTHORIZED", s"Auth unauthorised error: ${
             extractReason(e.getMessage)
           }")))
           case TOO_MANY_REQUESTS => TooManyRequests(Json.toJson(AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"Auth too many requests: ${
@@ -168,20 +155,22 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
           }")))
         }
       case e: _root_.uk.gov.hmrc.http.JsValidationException =>
-        Logger.error(s"Client ${
+        val message = s"Client ${
           MDC.get("X-Client-ID")
         } API error: ${
           e.getMessage
-        }, API returning Unauthorized 498, WRONG_TOKEN", e)
+        }, API returning Unauthorized 498, WRONG_TOKEN"
+        Logger.error(message, e)
         Unauthorized(Json.toJson(AuthError(498, "WRONG_TOKEN", s"Auth unauthorised error: OAUTH 2 User Token Required not TOTP")))
       case e: Throwable =>
-        Logger.error(s"Client ${
+        val message = s"Client ${
           MDC.get("X-Client-ID")
         } API error: ${
           e.getMessage
         }, API returning code ${
           INTERNAL_SERVER_ERROR
-        }", e)
+        }"
+        Logger.error(message, e)
         InternalServerError(Json.toJson(AuthError(INTERNAL_SERVER_ERROR, "API", s"API or Auth internal server error: ${
           extractReason(e.getMessage)
         }")))
