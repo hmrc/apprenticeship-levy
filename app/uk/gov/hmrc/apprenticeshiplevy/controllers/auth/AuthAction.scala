@@ -75,6 +75,17 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
   private def authErrorHandler(exc: Throwable): Result = {
     println("============== Exception =================: " + exc.getMessage + " " + exc.getClass)
     exc match {
+      case e: SessionRecordNotFound =>
+        Logger.warn(s"Client ${
+          MDC.get("X-Client-ID")
+        } API error: ${
+          e.getMessage
+        }, API returning Unauthorized with code ${
+          UNAUTHORIZED
+        }")
+        Unauthorized(Json.toJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"No active session error: ${
+          extractReason(e.getMessage)
+        }")))
       case e: BadRequestException =>
         Logger.warn(s"Client ${
           MDC.get("X-Client-ID")
