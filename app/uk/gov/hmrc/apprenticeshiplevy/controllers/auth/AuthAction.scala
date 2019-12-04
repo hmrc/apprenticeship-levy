@@ -73,7 +73,6 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
     } else {msg}) getOrElse(msg)
 
   private def authErrorHandler(exc: Throwable): Result = {
-    println("============== Exception =================: " + exc.getMessage + " " + exc.getClass)
     exc match {
       case e: SessionRecordNotFound =>
         Logger.warn(s"Client ${
