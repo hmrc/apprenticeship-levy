@@ -41,7 +41,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
                              |    "state": "Activated"
                              |  }
                              |  ]}""".stripMargin
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withBody(response)))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withBody(response)))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -51,7 +51,6 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             status(result) shouldBe OK
             contentType(result) shouldBe Some("application/hal+json")
             val json = contentAsJson(result)
-            println("json result is " + json.toString)
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/"
             (json \ "_links" \ "123/AB12345" \ "href").as[String] shouldBe "/epaye/123%2FAB12345"
           }
@@ -60,7 +59,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
         describe ("when errors occur") {
           it (s"should return 401 when Auth returns 401") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(401).withStatusMessage("Not authorised.").withHeader("WWW-Authenticate", "MDTP detail=\"SessionRecordNotFound\"")))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(401).withStatusMessage("Not authorised.").withHeader("WWW-Authenticate", "MDTP detail=\"SessionRecordNotFound\"")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -74,7 +73,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
           it (s"should return 403 when Auth returns 403") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(403).withStatusMessage("Forbidden.")))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(403).withStatusMessage("Forbidden.")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -88,7 +87,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
           it (s"HTTP 404") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(404).withStatusMessage("Not found.")))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(404).withStatusMessage("Not found.")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -104,7 +103,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
         describe ("when backend systems failing") {
           it (s"should return http status 503 when connection closed") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -118,7 +117,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
           it (s"should return 503 when returning empty response and connection closed") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -132,7 +131,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
           it (s"should return 408 when timed out") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(200).withFixedDelay(1000*60)))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(200).withFixedDelay(1000*60)))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -146,7 +145,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
           it (s"should return 503 when Auth returns 500") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(500).withStatusMessage("Internal server error")))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(500).withStatusMessage("Internal server error")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -160,7 +159,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
           it (s"should return 503 when Auth returns 503") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(503).withStatusMessage("Backend systems failing")))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(503).withStatusMessage("Backend systems failing")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -174,7 +173,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
           it (s"should return http status 429 when Auth HTTP 429") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(429).withBody("""{"reason" : "Drowning in requests"}""")))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(429).withBody("""{"reason" : "Drowning in requests"}""")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -188,7 +187,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
           it (s"should return http status 503 when Auth HTTP 409") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(411).withBody("""{"reason" : "Some Auth 411 error"}""")))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(411).withBody("""{"reason" : "Some Auth 411 error"}""")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -202,7 +201,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
           it (s"should return http status 408 when Auth HTTP 408") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(408).withBody("""{"reason" : "Not responding"}""")))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(408).withBody("""{"reason" : "Not responding"}""")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -216,7 +215,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
           it (s"should return http status 400 when Auth HTTP 400") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(400).withBody("""{"reason" : "Not responding"}""")))
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(400).withBody("""{"reason" : "Not responding"}""")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
