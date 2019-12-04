@@ -12,7 +12,7 @@ import play.api.test.Helpers._
 @DoNotDiscover
 class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
   describe("Root Endpoint") {
-    it(s"when accessed via privileged should return 401") {
+    ignore(s"when accessed via privileged should return 401") {
         // set up
         val response = """{"uri":"/auth/session/xxxxx","confidenceLevel":500,"credentialStrength":"none","legacyOid":"N/A","currentLoginTime":"2016-12-08T09:28:42.155Z","enrolments":"/auth/session/xxxxx/enrolments","clientId":"yyyy","ttl":4}"""
         stubFor(get(urlEqualTo("/auth/authority")).withId(uuid).willReturn(aResponse().withBody(response)))
