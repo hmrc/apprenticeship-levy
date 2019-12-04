@@ -35,7 +35,7 @@ trait EmploymentCheckController extends DesController {
   val authAction: AuthAction
 
   // scalastyle:off
-  def check(ref: EmploymentReference, ni: Nino, fromDate: LocalDate, toDate: LocalDate) = (authAction andThen withValidAcceptHeader).async { implicit request =>
+  def check(ref: EmploymentReference, ni: Nino, fromDate: LocalDate, toDate: LocalDate) = (withValidAcceptHeader andThen authAction).async { implicit request =>
   // scalastyle:on
     if (fromDate.isAfter(toDate)) {
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)

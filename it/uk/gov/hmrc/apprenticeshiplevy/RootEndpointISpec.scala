@@ -60,7 +60,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
         describe ("when errors occur") {
           it (s"should return 401 when Auth returns 401") {
             // set up
-            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(401).withStatusMessage("Not authorised.")))
+            stubFor(post(urlEqualTo("/auth/authorise")).willReturn(aResponse().withStatus(401).withStatusMessage("Not authorised.").withHeader("WWW-Authenticate", "MDTP detail=\"SessionRecordNotFound\"")))
             val request = FakeRequest(GET, s"$context/").withHeaders(standardDesHeaders: _*)
 
             // test
@@ -69,7 +69,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
             // check
             status(result) shouldBe 401
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_UNAUTHORIZED","message":"Auth unauthorised error: POST of 'http://localhost:8080/auth/authorise' returned 401. Response body: ''"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_UNAUTHORIZED","message":"No active session error: Session record not found"}""")
           }
 
           it (s"should return 403 when Auth returns 403") {

@@ -42,7 +42,7 @@ trait EmprefController extends DesController {
   def processLink(l: HalLink): HalLink = identity(l)
 
   // scalastyle:off
-  def empref(ref: EmploymentReference) = (authAction andThen withValidAcceptHeader).async { implicit request =>
+  def empref(ref: EmploymentReference) = (withValidAcceptHeader andThen authAction).async { implicit request =>
   // scalastyle:on
     desConnector.designatoryDetails(ref.empref).map { details =>
       val hal = prepareLinks(ref)

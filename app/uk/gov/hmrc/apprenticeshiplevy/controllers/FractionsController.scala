@@ -35,7 +35,7 @@ trait FractionsController {
   val defaultPriorMonthsForFromDate = 72
 
   // scalastyle:off
-  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = (authAction andThen withValidAcceptHeader).async { implicit request =>
+  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = (withValidAcceptHeader andThen authAction).async { implicit request =>
     // scalastyle:on
 
     val validatedFromDate = validateFromDate(fromDate)
@@ -77,7 +77,7 @@ trait FractionsCalculationDateController {
   val authAction: AuthAction
 
   // scalastyle:off
-  def fractionCalculationDate = (authAction andThen withValidAcceptHeader).async { implicit request =>
+  def fractionCalculationDate = (withValidAcceptHeader andThen authAction).async { implicit request =>
     // scalastyle:on
     desConnector.fractionCalculationDate map { date =>
       Ok(Json.toJson(date))
