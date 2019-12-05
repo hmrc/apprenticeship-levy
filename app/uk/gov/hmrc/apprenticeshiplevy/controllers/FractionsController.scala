@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
-import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
+import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
@@ -44,7 +44,7 @@ trait FractionsController {
     if (validatedFromDate.isAfter(validatedToDate)) {
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
     } else {
-      desConnector.fractions(toDESFormat(ref.empref), DateRange(Some(validatedFromDate), Some(validatedToDate))) map { fs =>
+      desConnector.fractions(toDESFormat(ref.empref), ClosedDateRange(validatedFromDate, validatedToDate)) map { fs =>
         Ok(Json.toJson(fs))
       } recover desErrorHandler
     }

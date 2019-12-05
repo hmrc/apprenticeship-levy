@@ -50,17 +50,18 @@ lazy val scoverageSettings = {
   val ScoverageExclusionPatterns = List(
     "<empty>",
     "Reverse.*",
-    "sandbox.Routes.*",
-    "app.Routes.*",
+    ".*.Routes.*",
     "views.*",
     "prod.*",
     ".*assets.*",
+    "uk.gov.hmrc.apprenticeshiplevy.metrics.*",
+    "uk.gov.hmrc.apprenticeshiplevy.config.*",
     "testOnlyDoNotUseInAppConf.*",
     "uk.gov.hmrc.BuildInfo"
   )
   Seq(
     ScoverageKeys.coverageExcludedPackages := ScoverageExclusionPatterns.mkString("", ";", ""),
-    ScoverageKeys.coverageMinimum := 85,
+    ScoverageKeys.coverageMinimum := 80,
     ScoverageKeys.coverageFailOnMinimum := false,
     ScoverageKeys.coverageHighlighting := true
   )

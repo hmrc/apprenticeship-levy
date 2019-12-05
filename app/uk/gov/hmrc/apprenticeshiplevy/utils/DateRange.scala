@@ -19,44 +19,17 @@ package uk.gov.hmrc.apprenticeshiplevy.utils
 import org.joda.time.LocalDate
 
 sealed trait DateRange {
-  //def contains(date: LocalDate): Boolean
-
   def toParams: Option[String]
 }
 
 case object OpenDateRange extends DateRange {
-  //override def contains(date: LocalDate): Boolean = true
-
   override def toParams: Option[String] = None
 }
 
 case class ClosedDateRange(from: LocalDate, to: LocalDate) extends DateRange {
-  //override def contains(date: LocalDate): Boolean = !date.isBefore(from) && !date.isAfter(to)
-
-  override def toParams: Option[String] = Some(paramString)
-
-  def paramString: String = s"fromDate=$from&toDate=$to"
+  override def toParams: Option[String] = Some(s"fromDate=$from&toDate=$to")
 }
 
 case class OpenEarlyDateRange(to: LocalDate) extends DateRange {
-  //override def contains(date: LocalDate): Boolean = !date.isAfter(to)
-
   override def toParams: Option[String] = Some(s"toDate=$to")
-}
-
-case class OpenLateDateRange(from: LocalDate) extends DateRange {
-  //override def contains(date: LocalDate): Boolean = !date.isBefore(from)
-
-  override def toParams: Option[String] = Some(s"fromDate=$from")
-}
-
-object DateRange {
-  def apply(fromDate: Option[LocalDate], toDate: Option[LocalDate]): DateRange = {
-    (fromDate, toDate) match {
-      case (None, None) => OpenDateRange
-      case (Some(from), Some(to)) => ClosedDateRange(from, to)
-      case (None, Some(to)) => OpenEarlyDateRange(to)
-      case (Some(from), None) => OpenLateDateRange(from)
-    }
-  }
 }

@@ -28,7 +28,6 @@ import play.api.mvc._
 import play.api.{Configuration, Logger, Play}
 import uk.gov.hmrc.apprenticeshiplevy.config.WSHttp
 import uk.gov.hmrc.apprenticeshiplevy.controllers.AuthError
-import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.domain.EmpRef
@@ -58,9 +57,6 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
             }
           }
         Future.successful(Right(AuthenticatedRequest(request, payeRef)))
-      case _ =>
-        Future.successful(Right(AuthenticatedRequest(request, None)))
-
     }.recover { case e: Throwable => Left(authErrorHandler(e)) }
 
   }
@@ -154,14 +150,6 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
             extractReason(e.getMessage)
           }")))
         }
-      case e: _root_.uk.gov.hmrc.http.JsValidationException =>
-        val message = s"Client ${
-          MDC.get("X-Client-ID")
-        } API error: ${
-          e.getMessage
-        }, API returning Unauthorized 498, WRONG_TOKEN"
-        Logger.error(message, e)
-        Unauthorized(Json.toJson(AuthError(498, "WRONG_TOKEN", s"Auth unauthorised error: OAUTH 2 User Token Required not TOTP")))
       case e: Throwable =>
         val message = s"Client ${
           MDC.get("X-Client-ID")

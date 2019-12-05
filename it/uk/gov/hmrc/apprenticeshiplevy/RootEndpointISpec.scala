@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.apprenticeshiplevy
 
 import com.github.tomakehurst.wiremock.client.WireMock.{status =>_,_}
@@ -12,6 +28,21 @@ import play.api.test.Helpers._
 @DoNotDiscover
 class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
   describe("Root Endpoint") {
+    it("when accessed via sandbox url") {
+      val request = FakeRequest(GET, "/sandbox/").withHeaders(standardDesHeaders: _*)
+
+      // test
+      val result = route(app, request).get
+
+      // check
+      status(result) shouldBe OK
+      contentType(result) shouldBe Some("application/hal+json")
+
+      val json = contentAsJson(result)
+      (json \ "_links" \ "self" \ "href").as[String] shouldBe "/"
+      (json \ "_links" \ "840/MODES17" \ "href").as[String] shouldBe "/epaye/840%2FMODES17"
+    }
+
     ignore(s"when accessed via privileged should return 401") {
         // set up
         val response = """{"uri":"/auth/session/xxxxx","confidenceLevel":500,"credentialStrength":"none","legacyOid":"N/A","currentLoginTime":"2016-12-08T09:28:42.155Z","enrolments":"/auth/session/xxxxx/enrolments","clientId":"yyyy","ttl":4}"""
@@ -33,7 +64,6 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
         describe (s"and backend systems not failing") {
           it (s"should return links for each empref") {
             // set up
-//            val response = fileToStr("./it/resources/data/input/mapping_body")
             val response = """{"allEnrolments": [{
                              |    "key": "IR-PAYE",
                              |    "identifiers": [{ "key": "TaxOfficeNumber", "value": "123" },

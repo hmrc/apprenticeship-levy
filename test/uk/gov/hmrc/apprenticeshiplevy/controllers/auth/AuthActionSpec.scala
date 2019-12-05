@@ -36,7 +36,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
   class Harness(authAction: AuthAction) extends Controller {
-    def onPageLoad(): Action[AnyContent] = authAction { request => Ok(s"PAYE: ${request.empRef.getOrElse("Fail")}") }
+    def onPageLoad(): Action[AnyContent] = authAction { request => Ok(s"PAYE: ${request.empRef.getOrElse("None found")}") }
   }
 
   "A user with no active session" should {
@@ -94,7 +94,27 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
 
       val result = controller.onPageLoad()(FakeRequest())
       status(result) shouldBe OK
-
+      contentAsString(result) should include("None found")
     }
   }
+
+  "A user that is logged in with an empty PAYE enrolment" must {
+    "be allowed access" in {
+
+      val enrolments = Enrolments(Set(Enrolment("IR-PAYE", Seq.empty, "")))
+      val retrievalResult: Future[Enrolments] =
+        Future.successful(enrolments)
+
+      when(mockAuthConnector.authorise[Enrolments](any(),any())(any(), any()))
+        .thenReturn(retrievalResult)
+
+      val authAction = new AuthActionImpl(mockAuthConnector)
+      val controller = new Harness(authAction)
+
+      val result = controller.onPageLoad()(FakeRequest())
+      status(result) shouldBe OK
+      contentAsString(result) should include("None found")
+    }
+  }
+
 }

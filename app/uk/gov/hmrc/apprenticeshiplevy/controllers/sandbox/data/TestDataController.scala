@@ -129,13 +129,17 @@ trait TestDataController extends Controller with Utf8MimeTypes {
   protected def toInstant(json: JsLookupResult): Instant = {
     val time = LocalTime.MIDNIGHT
     val zone = DateTimeZone.getDefault()
-    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{case e: Throwable => LocalDateTime.parse(json.as[String]).toDateTime().toInstant()}.get
+    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{
+      case e: Throwable => LocalDateTime.parse(json.as[String]).toDateTime().toInstant()
+    }.get
   }
 
   protected def toInstant(json: JsLookupResult, days: Int): Instant = {
     val time = LocalTime.MIDNIGHT
     val zone = DateTimeZone.getDefault()
-    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{case e: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toDateTime().toInstant()}.get
+    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{
+      case e: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toDateTime().toInstant()
+    }.get
   }
 
   protected def filterByDate(path: String, json: JsValue)(implicit request: Request[_]): Future[Result] = {
