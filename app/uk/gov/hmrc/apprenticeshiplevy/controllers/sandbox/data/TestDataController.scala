@@ -69,7 +69,7 @@ trait TestDataController extends Controller with Utf8MimeTypes {
     request.headers.get("OVERRIDE_EMPREF") match {
       case Some(empref) => {
         path match {
-          case Empref(path1, old_empref, path2) => {
+          case Empref(path1, _, path2) => {
             val newpath = s"${path1}${empref}${path2}"
             Logger.info(s"Resource path overridden by OVERRIDE_EMPREF header. Now looking for ${newpath}")
             readJson(SANDBOX_DATA_DIR, newpath)
@@ -130,7 +130,7 @@ trait TestDataController extends Controller with Utf8MimeTypes {
     val time = LocalTime.MIDNIGHT
     val zone = DateTimeZone.getDefault()
     Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{
-      case e: Throwable => LocalDateTime.parse(json.as[String]).toDateTime().toInstant()
+      case _: Throwable => LocalDateTime.parse(json.as[String]).toDateTime().toInstant()
     }.get
   }
 
@@ -138,7 +138,7 @@ trait TestDataController extends Controller with Utf8MimeTypes {
     val time = LocalTime.MIDNIGHT
     val zone = DateTimeZone.getDefault()
     Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{
-      case e: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toDateTime().toInstant()
+      case _: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toDateTime().toInstant()
     }.get
   }
 

@@ -29,9 +29,10 @@ object EmploymentCheckStatus {
                                                       .orElse((__ \ "employed").read[String].map(_.toBoolean))
                                                       .map(isEmployed => EmploymentCheckStatus(isEmployed))
 
-  def apply(isEmployed: Boolean): EmploymentCheckStatus = isEmployed match {
-    case true => Employed
-    case false => NotEmployed
+  def apply(isEmployed: Boolean): EmploymentCheckStatus = if (isEmployed) {
+    Employed
+  } else {
+    NotEmployed
   }
 
   def apply(isEmployed: String): EmploymentCheckStatus = isEmployed match {

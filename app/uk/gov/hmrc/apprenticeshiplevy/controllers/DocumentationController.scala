@@ -35,8 +35,6 @@ import scala.util.{Failure, Success, Try}
 trait AssetsController extends BaseController {
   implicit def current: Option[Application]
 
-  private val AbsolutePath = """^(/|[a-zA-Z]:\\).*""".r
-
   protected def retrieve(rootPath: String, file: String): Option[InputStream] = {
     current.flatMap { app =>
       if (app.mode == Mode.Prod) {
@@ -49,7 +47,7 @@ trait AssetsController extends BaseController {
     }
   }
 
-  protected def at(rootPath: String, file: String): Action[AnyContent] = Action { request =>
+  protected def at(rootPath: String, file: String): Action[AnyContent] = Action { _ =>
     retrieve(rootPath, file) match {
       case Some(fileToServe) => {
         val mimeType = if (file.contains("raml")) "application/raml+yaml" else play.api.libs.MimeTypes.forFileName(file).getOrElse("text/plain")

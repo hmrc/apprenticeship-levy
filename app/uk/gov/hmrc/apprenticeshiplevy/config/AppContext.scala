@@ -31,21 +31,19 @@ trait ServiceLocatorRegistration extends RunMode {
   val slConnector: ServiceLocatorConnector
 
   // replacing GlobalSettings.onStart
-  registrationEnabled match {
-    case true => {
-      AppContext.maybeApp.map { app =>
-        slConnector.register(HeaderCarrier())
-      }.orElse{
-        // $COVERAGE-OFF$
-        Logger.error("Registration in Service Locator is disabled due to no app started")
-        // $COVERAGE-ON$
-        None
-      }
-    }
-    case false =>
+  if (registrationEnabled) {
+    AppContext.maybeApp.map { _ =>
+      slConnector.register(HeaderCarrier())
+    }.orElse {
       // $COVERAGE-OFF$
-      Logger.warn("Registration in Service Locator is disabled")
+      Logger.error("Registration in Service Locator is disabled due to no app started")
       // $COVERAGE-ON$
+      None
+    }
+  } else {
+    // $COVERAGE-OFF$
+    Logger.warn("Registration in Service Locator is disabled")
+    // $COVERAGE-ON$
   }
 }
 

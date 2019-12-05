@@ -27,8 +27,8 @@ trait Timer {
   def timer[T](event: RequestEvent)(block: => Future[T])(implicit ec: ExecutionContext): Future[T] = {
     block andThen {
       case Failure(t) => t match {
-        case e: NotFoundException => ;
-        case e => metrics.failedRequest(event)
+        case _: NotFoundException => ;
+        case _ => metrics.failedRequest(event)
       }
       case _ => ;
     }

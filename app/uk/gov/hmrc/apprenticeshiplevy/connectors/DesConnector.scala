@@ -120,7 +120,7 @@ trait EmploymentCheckEndpoint extends Timer {
 
     timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
       audit(ALAEvent("employmentCheck", empref, nino, dateParams)) {
-        des.httpGet.GET[EmploymentCheckStatus](url).recover { case notFound: NotFoundException => Unknown }
+        des.httpGet.GET[EmploymentCheckStatus](url).recover { case _: NotFoundException => Unknown }
       }
     }
   }
