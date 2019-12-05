@@ -45,7 +45,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
 
-    authorised(AuthProviders(PrivilegedApplication)).retrieve(Retrievals.allEnrolments) {
+    authorised().retrieve(Retrievals.allEnrolments) {
       case Enrolments(enrolments) =>
         val payeRef: Option[EmpRef] = enrolments.find(_.key == "IR-PAYE")
           .flatMap { enrolment =>
