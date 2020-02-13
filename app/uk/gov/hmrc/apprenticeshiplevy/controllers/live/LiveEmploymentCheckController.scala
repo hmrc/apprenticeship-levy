@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import org.joda.time.LocalDate
 import play.api.Play
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, PrivilegedAuthActionImpl}
 
 object LiveEmploymentCheckController extends EmploymentCheckController {
   override def desConnector: DesConnector = LiveDesConnector
-  override val authAction: AuthAction = Play.current.injector.instanceOf[AuthAction]
+  override val authAction: AuthAction = Play.current.injector.instanceOf[PrivilegedAuthActionImpl]
 }

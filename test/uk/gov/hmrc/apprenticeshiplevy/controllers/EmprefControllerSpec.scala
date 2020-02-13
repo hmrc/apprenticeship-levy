@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import java.net.URLEncoder
 
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction}
 
 class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues {
   "prepareLinks" should {
@@ -48,7 +48,7 @@ class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues 
 
     override def employmentCheckUrl(ref: EmploymentReference): String = emprefUrl(ref) + "/employed/{nino}"
 
-    override val authAction: AuthAction = FakeAuthAction
+    override val authAction: AuthAction = FakePrivilegedAuthAction
   }
 
 }

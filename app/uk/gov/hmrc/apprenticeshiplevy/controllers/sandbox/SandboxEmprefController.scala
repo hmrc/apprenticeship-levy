@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, SandboxDesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, SandboxAuthAction}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, SandboxPrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
 trait SandboxEmprefController extends EmprefController with SandboxLinkHelper {
@@ -45,6 +45,6 @@ object SandboxEmprefController extends SandboxEmprefController {
 
   override def desConnector: DesConnector = SandboxDesConnector
 
-  override val authAction: AuthAction = Play.current.injector.instanceOf[SandboxAuthAction]
+  override val authAction: AuthAction = Play.current.injector.instanceOf[SandboxPrivilegedAuthAction]
 
 }

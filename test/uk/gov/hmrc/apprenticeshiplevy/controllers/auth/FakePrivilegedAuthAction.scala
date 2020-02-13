@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.metrics
+package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
-import java.util.concurrent.TimeUnit
-import scala.concurrent.{Future, ExecutionContext}
-import scala.util.{Success, Failure, Try}
-import uk.gov.hmrc.http.NotFoundException
+import play.api.mvc.{Request, Result}
+import uk.gov.hmrc.domain.EmpRef
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
-trait Timer {
-  metrics: GraphiteMetrics =>
+import scala.concurrent.Future
 
-  def timer[T](event: RequestEvent)(block: => Future[T])(implicit ec: ExecutionContext): Future[T] = {
-    block andThen {
-      case Failure(t) => t match {
-        case _: NotFoundException => ;
-        case _ => metrics.failedRequest(event)
-      }
-      case _ => ;
-    }
+object FakePrivilegedAuthAction extends AuthAction {
+
+  override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    Future.successful(Right(AuthenticatedRequest(request, None)))
   }
 }

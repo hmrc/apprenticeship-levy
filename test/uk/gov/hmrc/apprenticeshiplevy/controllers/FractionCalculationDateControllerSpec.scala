@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.joda.time.LocalDate
 import org.mockito.Matchers._
+import org.mockito.Mockito._
 import org.mockito._
 import org.scalatestplus.mockito.MockitoSugar
-import org.mockito.Mockito._
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, Upstream5xxResponse}
@@ -87,7 +87,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
 
         override protected def defaultDESToken: String = "ABC"
 
-        override val authAction: AuthAction = FakeAuthAction
+        override val authAction: AuthAction = FakePrivilegedAuthAction
       }
 
       // test
@@ -118,7 +118,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
 
         override protected def defaultDESToken: String = "ABC"
 
-        override val authAction: AuthAction = FakeAuthAction
+        override val authAction: AuthAction = FakePrivilegedAuthAction
       }
 
       // test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import play.api.mvc._
 import play.api.{Configuration, Logger, Play}
 import uk.gov.hmrc.apprenticeshiplevy.config.WSHttp
 import uk.gov.hmrc.apprenticeshiplevy.controllers.AuthError
+import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.domain.EmpRef
@@ -44,7 +45,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
 
-    authorised().retrieve(Retrievals.allEnrolments) {
+    authorised(Enrolment("IR-PAYE")).retrieve(Retrievals.allEnrolments) {
       case Enrolments(enrolments) =>
         val payeRef: Option[EmpRef] = enrolments.find(_.key == "IR-PAYE")
           .flatMap { enrolment =>
@@ -57,10 +58,28 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
             }
           }
         Future.successful(Right(AuthenticatedRequest(request, payeRef)))
-    }.recover { case e: Throwable => Left(authErrorHandler(e)) }
+    }.recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
 
   }
+}
 
+class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit executionContext: ExecutionContext)
+  extends AuthAction with AuthorisedFunctions {
+
+  override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
+
+    authorised(AuthProviders(PrivilegedApplication)){
+      Future.successful(Right(AuthenticatedRequest(request, None)))
+    }.recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
+
+  }
+}
+
+@ImplementedBy(classOf[AuthActionImpl])
+trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionRefiner[Request, AuthenticatedRequest]
+
+private object ErrorHandler {
   private def extractReason(msg: String): String =
     Try(if (msg.contains("Response body")) {
       val str1 = msg.reverse.substring(1).reverse.substring(msg.indexOf("Response body") + 14).trim
@@ -79,7 +98,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
     Logger.warn(message)
   }
 
-  private def authErrorHandler(exc: Throwable): Result = {
+  def authErrorHandler(exc: Throwable): Result = {
     exc match {
       case e: SessionRecordNotFound =>
         logWarningAboutException(e, UNAUTHORIZED, "Unauthorized with code")
@@ -164,11 +183,8 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
         }")))
     }
   }
-
 }
 
-@ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionRefiner[Request, AuthenticatedRequest]
 
 class AuthConnector extends PlayAuthConnector with ServicesConfig {
   override lazy val serviceUrl: String = baseUrl("auth")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,9 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito._
 import org.scalatest.mockito.MockitoSugar
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.http.logging.Authorization
@@ -52,7 +51,7 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
 
         override protected def defaultDESToken: String = "ABC"
 
-        override val authAction: AuthAction = FakeAuthAction
+        override val authAction: AuthAction = FakePrivilegedAuthAction
       }
 
       // test
@@ -89,7 +88,7 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
 
         override protected def defaultDESToken: String = "ABC"
 
-        override val authAction: AuthAction = FakeAuthAction
+        override val authAction: AuthAction = FakePrivilegedAuthAction
       }
 
       // test

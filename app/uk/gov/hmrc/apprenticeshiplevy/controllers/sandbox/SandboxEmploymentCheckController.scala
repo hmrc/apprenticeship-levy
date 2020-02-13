@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 import play.api.Play
 import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, SandboxDesConnector}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, SandboxAuthAction}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, SandboxPrivilegedAuthAction}
 
 object SandboxEmploymentCheckController extends EmploymentCheckController {
   override def desConnector: DesConnector = SandboxDesConnector
-  override val authAction: AuthAction = Play.current.injector.instanceOf[SandboxAuthAction]
+  override val authAction: AuthAction = Play.current.injector.instanceOf[SandboxPrivilegedAuthAction]
 }
