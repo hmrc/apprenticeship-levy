@@ -16,13 +16,16 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import java.io.File
+
 import org.scalatest.Inside
+import org.scalatestplus.play.OneAppPerSuite
 import play.api.Play
 import uk.gov.hmrc.play.test.UnitSpec
-import java.io.File
+
 import scala.util.{Failure, Success}
 
-class DocumentationControllerSpec extends UnitSpec with Inside {
+class DocumentationControllerSpec extends UnitSpec with Inside with OneAppPerSuite {
 
   val validDefinition = new File(getClass.getResource("/validDefinition.json").toURI())
   val invalidDefinition = new File(getClass.getResource("/invalidDefinition.json").toURI())
@@ -46,7 +49,7 @@ class DocumentationControllerSpec extends UnitSpec with Inside {
 }
 
 class TestDocumentationController extends DocumentationController {
-  override implicit lazy val current = Some(Play.current)
+  override implicit val current = Some(Play.current)
   override lazy val whitelistedApplicationIds = Seq(
     "f0e2611e-2f45-4326-8cd2-6eefebec77b7",
     "cafebabe-2f45-4326-8cd2-6eefebec77b7"

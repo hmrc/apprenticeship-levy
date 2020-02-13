@@ -16,24 +16,23 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
-import org.scalatest._
-import org.scalatest.mockito.MockitoSugar
-import org.mockito._
-import org.mockito.Mockito._
-import org.mockito.Matchers._
-import uk.gov.hmrc.play.test.UnitSpec
 import org.joda.time.{LocalDate, LocalDateTime}
-import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import scala.concurrent.Future
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.mockito._
+import org.scalatest.mockito.MockitoSugar
 import play.api.libs.concurrent.Execution.Implicits._
-import uk.gov.hmrc.apprenticeshiplevy.utils._
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.EventKeys._
-import uk.gov.hmrc.play.audit.model.DataEvent
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpResponse }
+import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
+import uk.gov.hmrc.apprenticeshiplevy.data.des._
+import uk.gov.hmrc.apprenticeshiplevy.utils._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpResponse}
+import uk.gov.hmrc.play.audit.EventKeys._
+import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
+import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.play.test.UnitSpec
+
+import scala.concurrent.Future
 
 class DesConnectorSpec extends UnitSpec with MockitoSugar {
   "DES Connector" should {
@@ -159,8 +158,6 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
     }
 
     "with valid and invalid json" must {
-      import play.api.libs.functional.syntax._
-      import play.api.libs.json.Reads._
       import play.api.libs.json._
 
       "convert invalid empty json to valid response" in {

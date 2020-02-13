@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.data.api
+package uk.gov.hmrc.apprenticeshiplevy.config
 
-import play.api.libs.json.Json
+import play.api
+import play.api.Environment
+import play.api.inject.{Binding, Module}
+import uk.gov.hmrc.http.HttpGet
 
-case class ServiceLocatorRegistration(serviceName: String,
-                                      serviceUrl: String,
-                                      metadata: Option[Map[String, String]] = None)
-
-object ServiceLocatorRegistration {
-  implicit val format = Json.format[ServiceLocatorRegistration]
+class AppLevyModule extends Module {
+  override def bindings(environment: Environment, configuration: api.Configuration): Seq[Binding[_]] = Seq(
+    bind[HttpGet].to(WSHttp),
+    bind[WSHttp].to(WSHttp)
+  )
 }

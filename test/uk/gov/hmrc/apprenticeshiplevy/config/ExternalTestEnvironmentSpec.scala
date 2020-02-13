@@ -16,22 +16,18 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config
 
-import org.scalatest.DoNotDiscover
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-
-import org.scalatest._
-import org.scalatest.Matchers._
-
-import play.api.test.{FakeRequest, Helpers, RouteInvokers}
+import org.scalatestplus.play._
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
-import org.scalatestplus.play._
-import uk.gov.hmrc.apprenticeshiplevy.config._
 
-class ExternalTestEnvironmentSpec extends UnitSpec {
+class ExternalTestEnvironmentSpec extends UnitSpec with OneAppPerSuite {
   "When in External Test Mode API" must {
-    object TestRouter extends ConditionalRouter with IsInExternalTest {
-      def isInExternalTest: Boolean = true
+    val mockExternalTestRoutes = app.injector.instanceOf[externaltest.Routes]
+    val mocknonexternalTestRoutes = app.injector.instanceOf[nonexternaltest.Routes]
+
+    object TestRouter extends ConditionalRouter(mockExternalTestRoutes, mocknonexternalTestRoutes) with IsInExternalTest {
+      override def isInExternalTest: Boolean = true
     }
 
     "not have sandbox API endpoints" in {
@@ -42,7 +38,7 @@ class ExternalTestEnvironmentSpec extends UnitSpec {
       val result = TestRouter.handlerFor(request)
 
       // check
-      TestRouter.routes === externaltest.Routes.routes
+      TestRouter.routes === mockExternalTestRoutes.routes
       result shouldBe None
     }
 
@@ -54,8 +50,8 @@ class ExternalTestEnvironmentSpec extends UnitSpec {
       val result = TestRouter.handlerFor(request)
 
       // check
-      TestRouter.routes === externaltest.Routes.routes
-      result.get === uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.SandboxFractionsController.fractions _
+      TestRouter.routes === mocknonexternalTestRoutes.routes
+      result.get === uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxFractionsController.fractions _
     }
   }
 }

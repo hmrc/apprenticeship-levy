@@ -17,8 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
 import play.api.libs.json._
-import play.api.libs.json.Reads._
-import play.api.libs.functional.syntax._
 
 case class QuestionsAndDeclaration(freeOfTaxPaymentsMadeToEmployee: Boolean,
                                    expensesVouchersOrBenefitsFromOthers: Boolean,

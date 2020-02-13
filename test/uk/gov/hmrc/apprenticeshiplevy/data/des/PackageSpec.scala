@@ -16,11 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import uk.gov.hmrc.play.test.UnitSpec
-import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import play.api.libs.json._
-import play.api.libs.json.Json._
 import org.joda.time.LocalDate
+import play.api.libs.json._
+import uk.gov.hmrc.play.test.UnitSpec
 
 class PackageSpec extends UnitSpec {
   "Data Des Package" should {

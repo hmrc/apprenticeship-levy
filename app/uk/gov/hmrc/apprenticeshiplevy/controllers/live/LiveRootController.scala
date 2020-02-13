@@ -16,14 +16,12 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-import play.api.Play
+import com.google.inject.Inject
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-object LiveRootController extends RootController {
-
-  override val authAction: AuthAction = Play.current.injector.instanceOf[AuthAction]
+class LiveRootController @Inject()(val authAction: AuthAction) extends RootController {
 
   override def rootUrl: String = routes.LiveRootController.root().url
 

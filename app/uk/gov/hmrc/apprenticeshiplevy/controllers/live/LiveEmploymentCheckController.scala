@@ -16,13 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-import org.joda.time.LocalDate
-import play.api.Play
+import com.google.inject.Inject
+import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, LiveDesConnector}
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, PrivilegedAuthActionImpl}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.PrivilegedAuthActionImpl
 
-object LiveEmploymentCheckController extends EmploymentCheckController {
-  override def desConnector: DesConnector = LiveDesConnector
-  override val authAction: AuthAction = Play.current.injector.instanceOf[PrivilegedAuthActionImpl]
-}
+class LiveEmploymentCheckController  @Inject()(val desConnector: LiveDesConnector,
+                                               val authAction: PrivilegedAuthActionImpl) extends EmploymentCheckController

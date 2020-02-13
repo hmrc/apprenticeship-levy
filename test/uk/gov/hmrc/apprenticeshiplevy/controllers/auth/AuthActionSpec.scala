@@ -117,4 +117,18 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
     }
   }
 
+  "A user that is logged in using PrivilegedApplication" must {
+    "be allowed access" in {
+
+      when(mockAuthConnector.authorise[Unit](any(), any())(any(), any()))
+        .thenReturn(())
+
+      val authAction = new PrivilegedAuthActionImpl(mockAuthConnector)
+      val controller = new Harness(authAction)
+
+      val result = controller.onPageLoad()(FakeRequest())
+      status(result) shouldBe OK
+      contentAsString(result) should include("None found")
+    }
+  }
 }

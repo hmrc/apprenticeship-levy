@@ -18,12 +18,13 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import java.net.URLDecoder
 
+import com.google.inject.Inject
 import org.joda.time.LocalDate
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
-import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, MicroserviceAuditFilter, WSHttp}
+import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, MicroserviceAuditFilter}
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.data.des.DesignatoryDetails._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.EmploymentCheckStatus._
@@ -36,18 +37,6 @@ import views.html.helper
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
-
-trait DesUrl {
-  def baseUrl: String
-}
-
-trait DesSandboxUrl extends DesUrl {
-  def baseUrl: String = AppContext.stubDesUrl
-}
-
-trait DesProductionUrl extends DesUrl {
-  def baseUrl: String = AppContext.desUrl
-}
 
 trait DesUtils {
   val EMPREF = "([0-9]{3})([\\/]*)([a-zA-Z0-9]+)".r
@@ -258,22 +247,22 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
                                                           s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/declarations"
 }
 
-trait DesConnector extends DesUrl
-                   with FractionsEndpoint
+trait DesConnector extends FractionsEndpoint
                    with EmployerDetailsEndpoint
                    with EmploymentCheckEndpoint
                    with LevyDeclarationsEndpoint
                    with Auditor
                    with GraphiteMetrics {
   def httpGet: HttpGet
+  def baseUrl: String
 }
 
-object LiveDesConnector extends DesConnector with DesProductionUrl {
-  def httpGet: HttpGet = WSHttp
+class LiveDesConnector @Inject()(val httpGet: HttpGet) extends DesConnector {
   protected def auditConnector: Option[AuditConnector] = Some(MicroserviceAuditFilter.auditConnector)
+  def baseUrl: String = AppContext.desUrl
 }
 
-object SandboxDesConnector extends DesConnector with DesSandboxUrl {
-  def httpGet: HttpGet = WSHttp
+class SandboxDesConnector @Inject()(val httpGet: HttpGet) extends DesConnector {
   protected def auditConnector: Option[AuditConnector] = None
+  def baseUrl: String = AppContext.stubDesUrl
 }

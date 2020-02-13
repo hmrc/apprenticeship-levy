@@ -17,21 +17,24 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.test.UnitSpec
 
-class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with GuiceOneAppPerSuite {
+class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar {
+  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector(mock[HttpGet]), FakePrivilegedAuthAction)
+
   "getting the levy declarations" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {
-      val response = TestLevyDeclarationController.declarations(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
+      val response = liveFractionsController.declarations(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
       response.header.status shouldBe NOT_ACCEPTABLE
     }
   }

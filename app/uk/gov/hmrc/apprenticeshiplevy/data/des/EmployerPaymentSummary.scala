@@ -16,19 +16,18 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
+import org.joda.time.DateTimeConstants.APRIL
+import org.joda.time.Months.monthsBetween
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.{LocalDate, LocalDateTime, _}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import org.joda.time.DateTimeConstants.APRIL
-import org.joda.time.Months.monthsBetween
-import org.joda.time._
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{LocalDate, LocalDateTime}
-import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
-import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import uk.gov.hmrc.apprenticeshiplevy.data.des.FinalSubmission._
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import scala.util.{Try, Success, Failure}
+import uk.gov.hmrc.apprenticeshiplevy.data.des.FinalSubmission._
+import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
+
+import scala.util.{Failure, Success, Try}
 
 case class EmployerPaymentSummary(submissionId: Long,
                                   hmrcSubmissionTime: LocalDateTime,

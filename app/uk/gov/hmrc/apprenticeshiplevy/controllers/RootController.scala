@@ -16,17 +16,12 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import java.io.IOException
-
-import org.slf4j.MDC
-import play.api.Logger
 import play.api.hal.{HalLink, HalLinks, HalResource}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath.decodeAnyDoubleEncoding
-import uk.gov.hmrc.http._
 
 trait RootController extends ApiController {
 
@@ -49,7 +44,9 @@ trait RootController extends ApiController {
   }
 
   private[controllers] def transformEmpRefs(empRefs: Seq[String]): HalResource = {
-    val links = selfLink(decodeAnyDoubleEncoding(rootUrl)) +: empRefs.map(empref => HalLink(empref, decodeAnyDoubleEncoding(emprefUrl(EmploymentReference(empref)))))
+    val links = selfLink(decodeAnyDoubleEncoding(rootUrl)) +: empRefs.map(empref =>
+      HalLink(empref, decodeAnyDoubleEncoding(emprefUrl(EmploymentReference(empref))))
+    )
     val body = Json.toJson(Map("emprefs" -> empRefs)).as[JsObject]
 
     HalResource(HalLinks(links.map(processLink).toVector), body)

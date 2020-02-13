@@ -16,10 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
 import play.api.libs.json._
-import org.joda.time.LocalDate
 
 case class Fractions(empref: String, fractionCalculations: List[FractionCalculation])
 

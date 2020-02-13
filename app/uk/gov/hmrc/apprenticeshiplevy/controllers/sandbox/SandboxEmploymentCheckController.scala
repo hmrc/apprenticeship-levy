@@ -16,12 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import play.api.Play
-import uk.gov.hmrc.apprenticeshiplevy.connectors.{DesConnector, SandboxDesConnector}
+import com.google.inject.Inject
+import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, SandboxPrivilegedAuthAction}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{PrivilegedAuthActionImpl, SandboxPrivilegedAuthAction}
 
-object SandboxEmploymentCheckController extends EmploymentCheckController {
-  override def desConnector: DesConnector = SandboxDesConnector
-  override val authAction: AuthAction = Play.current.injector.instanceOf[SandboxPrivilegedAuthAction]
-}
+class SandboxEmploymentCheckController @Inject()(val desConnector: SandboxDesConnector,
+                                                 val authAction: SandboxPrivilegedAuthAction) extends EmploymentCheckController
