@@ -19,8 +19,8 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import play.api.Play
-import uk.gov.hmrc.http.{HttpGet, _}
 import uk.gov.hmrc.http.hooks.HttpHook
+import uk.gov.hmrc.http.{HttpGet, _}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.auth.microservice.connectors.AuthConnector
 import uk.gov.hmrc.play.config.ServicesConfig

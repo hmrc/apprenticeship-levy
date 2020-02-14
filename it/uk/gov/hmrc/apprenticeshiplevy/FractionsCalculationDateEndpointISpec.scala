@@ -1,7 +1,7 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.{status =>_,_}
+import com.github.tomakehurst.wiremock.client.WireMock.{status => _, _}
 import com.github.tomakehurst.wiremock.http.Fault
 import org.scalatest.Matchers._
 import org.scalatest._

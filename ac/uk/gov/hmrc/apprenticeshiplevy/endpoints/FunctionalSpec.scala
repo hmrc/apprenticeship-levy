@@ -1,9 +1,11 @@
 package uk.gov.hmrc.apprenticeshiplevy.endpoints
 
+import java.io.File
+
 import org.scalatest._
 import uk.gov.hmrc.apprenticeshiplevy.config.Config
+
 import scala.io.Source
-import java.io.File
 
 trait FunctionalSpec extends FunSpec {
   val url = Config.rootUrl

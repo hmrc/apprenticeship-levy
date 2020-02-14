@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
 import play.api.mvc.{Request, Result}
-import uk.gov.hmrc.domain.EmpRef
 
 import scala.concurrent.Future
 

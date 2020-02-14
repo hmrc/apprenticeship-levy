@@ -20,7 +20,7 @@ import org.joda.time.{LocalDate, LocalDateTime}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent

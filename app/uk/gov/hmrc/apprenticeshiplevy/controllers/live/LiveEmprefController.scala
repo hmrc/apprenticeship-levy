@@ -21,8 +21,8 @@ import com.google.inject.Inject
 import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.PrivilegedAuthActionImpl
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, PrivilegedAuthActionImpl}
 
 class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
                                      val authAction: PrivilegedAuthActionImpl) extends EmprefController {

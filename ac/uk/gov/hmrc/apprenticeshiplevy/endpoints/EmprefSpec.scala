@@ -1,11 +1,12 @@
 package uk.gov.hmrc.apprenticeshiplevy.endpoints
 
-import org.scalatest._
-import org.scalatest.Matchers._
-import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import java.io.File
-import scalaj.http.Http
+
+import org.scalatest.Matchers._
+import org.scalatest._
+import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import play.api.libs.json.Json
+import scalaj.http.Http
 
 @DoNotDiscover
 class EmprefSpec extends FunctionalSpec with Eventually with IntegrationPatience {

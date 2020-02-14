@@ -1,11 +1,10 @@
 package uk.gov.hmrc.apprenticeshiplevy.endpoints
 
-import org.scalatest._
 import org.scalatest.Matchers._
+import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
-
-import scalaj.http.Http
 import play.api.libs.json.Json
+import scalaj.http.Http
 
 @DoNotDiscover
 class RootSpec extends FunctionalSpec with Eventually with IntegrationPatience {

@@ -4,8 +4,8 @@ import java.io.File
 
 import javax.xml.parsers.SAXParserFactory
 import org.scalacheck.Gen
+import org.scalatest.DoNotDiscover
 import org.scalatest.Matchers._
-import org.scalatest._
 import org.scalatestplus.play._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

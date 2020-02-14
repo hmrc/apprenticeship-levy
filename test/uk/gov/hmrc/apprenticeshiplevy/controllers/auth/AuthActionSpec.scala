@@ -23,11 +23,11 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.mvc.{Action, AnyContent, Controller}
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.utils.RetrievalOps
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.play.test.UnitSpec
-import play.api.test.Helpers._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

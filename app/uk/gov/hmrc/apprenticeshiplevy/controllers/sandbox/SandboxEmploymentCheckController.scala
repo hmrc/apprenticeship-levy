@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 import com.google.inject.Inject
 import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{PrivilegedAuthActionImpl, SandboxPrivilegedAuthAction}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.SandboxPrivilegedAuthAction
 
 class SandboxEmploymentCheckController @Inject()(val desConnector: SandboxDesConnector,
                                                  val authAction: SandboxPrivilegedAuthAction) extends EmploymentCheckController
