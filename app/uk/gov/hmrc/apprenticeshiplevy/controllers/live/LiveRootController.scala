@@ -18,10 +18,10 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import com.google.inject.Inject
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthActionImpl
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-class LiveRootController @Inject()(val authAction: AuthAction) extends RootController {
+class LiveRootController @Inject()(val authAction: AuthActionImpl) extends RootController {
 
   override def rootUrl: String = routes.LiveRootController.root().url
 

@@ -38,7 +38,7 @@ trait RootController extends ApiController {
   def root: Action[AnyContent] = (withValidAcceptHeader andThen authAction) { implicit request =>
     // scalastyle:on
 
-    val empRef = if (request.empRef.isDefined) Seq(request.empRef.get.toString) else Seq.empty
+    val empRef: Seq[String] = request.empRef.fold(Seq.empty[String])(empRef => Seq(empRef.toString))
 
     ok(transformEmpRefs(empRef))
   }
