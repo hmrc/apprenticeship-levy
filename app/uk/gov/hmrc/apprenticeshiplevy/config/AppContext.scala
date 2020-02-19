@@ -51,11 +51,15 @@ object AppContext extends Configuration {
 
   def maybeConfiguration: Option[play.api.Configuration] = maybeApp.map(_.configuration)
 
-  def appUrl: String = maybeString("appUrl").getOrElse{
-    // $COVERAGE-OFF$
-    Logger.error("appUrl is not configured")
-    // $COVERAGE-ON$
-    ""
+  def appUrl: String = {
+    val x = maybeString("appUrl").getOrElse{
+      // $COVERAGE-OFF$
+      Logger.error("appUrl is not configured")
+      // $COVERAGE-ON$
+      ""
+    }
+    Logger.error(s"APP URL: $x")
+    x
   }
 
   def privateModeEnabled: Boolean = maybeString("microservice.private-mode")
@@ -103,9 +107,17 @@ object AppContext extends Configuration {
       }
     }.getOrElse(maybeBaseURL(name).getOrElse(""))
 
-  def authUrl: String = getURL("auth")
+  def authUrl: String = {
+    val x = getURL("auth")
+    Logger.error(s"**** Auth URL: $x")
+    x
+  }
 
-  def desUrl: String = getURL("des")
+  def desUrl: String = {
+    val x = getURL("des")
+    Logger.error(s"*** DES URL: $x")
+    x
+  }
 
   def stubURL(name: String) = Try {
       val stubUrl = maybeBaseURL(s"stub-${name}").getOrElse("")

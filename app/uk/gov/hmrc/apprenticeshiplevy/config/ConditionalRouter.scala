@@ -31,11 +31,11 @@ class ConditionalRouter @Inject() (externalTestRoutes: externaltest.Routes,
   override def routes: Routes = {
     isInExternalTest match {
       case true => {
-        play.api.Logger.debug("In External Test Environment: Using externaltest.routes")
+        play.api.Logger.error("In External Test Environment: Using externaltest.routes")
         externalTestRoutes.routes
       }
       case false => {
-        play.api.Logger.debug("Not in External Test Environment: Using nonexternaltest.routes")
+        play.api.Logger.error("Not in External Test Environment: Using nonexternaltest.routes")
         nonexternaltestRoutes.routes
       }
     }

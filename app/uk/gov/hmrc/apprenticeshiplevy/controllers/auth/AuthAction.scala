@@ -44,7 +44,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
-
+    Logger.error("Using IR PAYE auth")
     authorised(Enrolment("IR-PAYE")).retrieve(Retrievals.allEnrolments) {
       case Enrolments(enrolments) =>
         val payeRef: Option[EmpRef] = enrolments.find(_.key == "IR-PAYE")
@@ -68,7 +68,7 @@ class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector)(impli
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
-
+    Logger.error("Using priviledged auth")
     authorised(AuthProviders(PrivilegedApplication)){
       Future.successful(Right(AuthenticatedRequest(request, None)))
     }.recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
