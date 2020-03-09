@@ -24,7 +24,9 @@ import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.mvc.{Action, AnyContent, Controller}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.RetrievalOps
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, GGCredId, LegacyCredentials, PAClientId, Retrieval, ~}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -100,7 +102,6 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
 
   "A user that is logged in with an empty PAYE enrolment" must {
     "be allowed access" in {
-
       val enrolments = Enrolments(Set(Enrolment("IR-PAYE", Seq.empty, "")))
       val retrievalResult: Future[Enrolments] =
         Future.successful(enrolments)
@@ -131,4 +132,79 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       contentAsString(result) should include("None found")
     }
   }
+
+  "AllProviderAuthAction" must {
+    "return an instance of auth action" in {
+      new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference(""))
+        .isInstanceOf[AuthAction] shouldBe true
+    }
+
+    "authenticate a privileged application" in {
+      when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+        .thenReturn(paRetrieval)
+
+      val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference(""))
+      val controller = new Harness(authAction)
+
+      val result = controller.onPageLoad()(FakeRequest())
+      status(result) shouldBe OK
+      contentAsString(result) should include("None found")
+    }
+
+    "authenticate an IR-PAYE enrolled user" when {
+      "the request emp ref matches their emp ref" in {
+        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+          .thenReturn(ggRetrieval)
+
+        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123%2FABCDEF"))
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(FakeRequest())
+        status(result) shouldBe OK
+        contentAsString(result) should include("123/ABCDEF")
+      }
+
+      "their is no emp ref returned" in {
+        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+          .thenReturn(emptyGGRetrieval)
+
+        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123%2FABCDEF"))
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(FakeRequest())
+        status(result) shouldBe OK
+        contentAsString(result) should include("None found")
+      }
+    }
+
+    "return unauthorized for an IR-PAYE enrolled user" when {
+      "the request emp ref does not match their emp ref" in {
+        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+          .thenReturn(ggRetrieval)
+
+        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123%2FABCDE"))
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(FakeRequest())
+        status(result) shouldBe UNAUTHORIZED
+      }
+    }
+  }
+
+  val enrolments: Enrolments = Enrolments(Set(
+    Enrolment("IR-PAYE", Seq(
+      EnrolmentIdentifier("TaxOfficeNumber", "123"),
+      EnrolmentIdentifier("TaxOfficeReference", "ABCDEF")),
+      "")
+  ))
+  val paRetrieval: Enrolments ~ LegacyCredentials =
+    new ~(Enrolments(Set()), PAClientId("app-id"))
+
+  val ggRetrieval: Enrolments ~ LegacyCredentials =
+    new ~(enrolments, GGCredId(""))
+
+  val emptyGGRetrieval: Enrolments ~ LegacyCredentials =
+    new ~(Enrolments(Set(Enrolment("IR-PAYE", Seq(), ""))), GGCredId(""))
+
+
 }

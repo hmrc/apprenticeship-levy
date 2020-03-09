@@ -48,7 +48,7 @@ class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues 
 
     override def employmentCheckUrl(ref: EmploymentReference): String = emprefUrl(ref) + "/employed/{nino}"
 
-    override val authAction: AuthAction = FakePrivilegedAuthAction
+    override val authAction: EmploymentReference => AuthAction = _ => FakePrivilegedAuthAction
   }
 
 }

@@ -28,12 +28,12 @@ import play.api.mvc._
 import play.api.{Configuration, Logger, Play}
 import uk.gov.hmrc.apprenticeshiplevy.config.WSHttp
 import uk.gov.hmrc.apprenticeshiplevy.controllers.AuthError
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.ErrorHandler.extractReason
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, PAClientId, ~}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
 import uk.gov.hmrc.play.HeaderCarrierConverter
@@ -66,15 +66,15 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
   }
 }
 
-class PayeEitherOrAuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit executionContext: ExecutionContext)
+class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit executionContext: ExecutionContext)
   extends AuthorisedFunctions {
 
   def apply(empRef: EmploymentReference): AuthAction = new AuthAction {
     override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
       implicit val ec: ExecutionContext = executionContext
-      authorised(Enrolment("IR-PAYE") or AuthProviders(PrivilegedApplication)).retrieve(Retrievals.allEnrolments and Retrievals.credentials) {
-        case _ ~ Some(Credentials(_, "PrivilegedApplication")) =>
+      authorised(Enrolment("IR-PAYE") or AuthProviders(PrivilegedApplication)).retrieve(Retrievals.allEnrolments and Retrievals.authProviderId) {
+        case _ ~ PAClientId(_) =>
           Future.successful(Right(AuthenticatedRequest(request, None)))
         case Enrolments(enrolments) ~ _ =>
           val payeRef: Option[EmpRef] = enrolments.find(_.key == "IR-PAYE")
@@ -91,7 +91,10 @@ class PayeEitherOrAuthActionImpl @Inject()(val authConnector: AuthConnector)(imp
           if(isCorrectEmpRef) {
             Future.successful(Right(AuthenticatedRequest(request, payeRef)))
           } else {
-            throw new Exception("User requesting unauthorised details") //TODO better message
+            Logger.warn(s"Unauthorized request of ${empRef.empref} from $payeRef")
+            Future.successful(Left(Unauthorized(
+              Json.toJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"Unauthorized request of ${empRef.empref}."))
+            )))
           }
       }.recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
     }

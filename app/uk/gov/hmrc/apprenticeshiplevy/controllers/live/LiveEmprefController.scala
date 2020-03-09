@@ -21,11 +21,11 @@ import com.google.inject.Inject
 import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, PayeEitherOrAuthActionImpl, PrivilegedAuthActionImpl}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, AllProviderAuthActionImpl, PrivilegedAuthActionImpl}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
 class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
-                                     val auth: PayeEitherOrAuthActionImpl) extends EmprefController {
+                                     val auth: AllProviderAuthActionImpl) extends EmprefController {
   override val authAction: EmploymentReference => AuthAction = auth(_)
 
   override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url
