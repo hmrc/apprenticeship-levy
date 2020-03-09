@@ -156,7 +156,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
           .thenReturn(ggRetrieval)
 
-        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123%2FABCDEF"))
+        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123/ABCDEF"))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())
@@ -168,7 +168,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
           .thenReturn(emptyGGRetrieval)
 
-        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123%2FABCDEF"))
+        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123/ABCDEF"))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())

@@ -87,7 +87,7 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector)(impl
                 case _ => None
               }
             }
-          val isCorrectEmpRef: Boolean = !payeRef.exists(_.encodedValue != empRef.empref)
+          val isCorrectEmpRef: Boolean = !payeRef.exists(_.value != empRef.empref)
           if(isCorrectEmpRef) {
             Future.successful(Right(AuthenticatedRequest(request, payeRef)))
           } else {
