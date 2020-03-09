@@ -26,7 +26,10 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.SandboxPrivilegedAuthActi
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
 class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
-                                        val authAction: SandboxPrivilegedAuthAction) extends EmprefController with SandboxLinkHelper {
+                                        val auth: SandboxPrivilegedAuthAction) extends EmprefController with SandboxLinkHelper {
+
+  override val authAction: EmploymentReference => SandboxPrivilegedAuthAction = _ => auth
+
   override val env = AppContext.env
 
   override def emprefUrl(empref: EmploymentReference): String = routes.SandboxEmprefController.empref(empref).url

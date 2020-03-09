@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "222/hmrctest4",
+    "nino": "???",
+    "fromDate": "???",
+    "toDate": "???",
+    "employed": false
+  }
+}

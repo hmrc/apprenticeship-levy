@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 trait EmprefController extends DesController {
   def desConnector: DesConnector
 
-  val authAction: AuthAction
+  val authAction: EmploymentReference => AuthAction
 
   def declarationsUrl(empref: EmploymentReference): String
 
@@ -42,7 +42,7 @@ trait EmprefController extends DesController {
   def processLink(l: HalLink): HalLink = identity(l)
 
   // scalastyle:off
-  def empref(ref: EmploymentReference) = (withValidAcceptHeader andThen authAction).async { implicit request =>
+  def empref(ref: EmploymentReference) = (withValidAcceptHeader andThen authAction(ref)).async { implicit request =>
   // scalastyle:on
     desConnector.designatoryDetails(ref.empref).map { details =>
       val hal = prepareLinks(ref)

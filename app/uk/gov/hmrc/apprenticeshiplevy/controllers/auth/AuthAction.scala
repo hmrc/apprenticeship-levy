@@ -28,9 +28,12 @@ import play.api.mvc._
 import play.api.{Configuration, Logger, Play}
 import uk.gov.hmrc.apprenticeshiplevy.config.WSHttp
 import uk.gov.hmrc.apprenticeshiplevy.controllers.AuthError
+import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
 import uk.gov.hmrc.play.HeaderCarrierConverter
@@ -63,13 +66,45 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
   }
 }
 
+class PayeEitherOrAuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit executionContext: ExecutionContext)
+  extends AuthorisedFunctions {
+
+  def apply(empRef: EmploymentReference): AuthAction = new AuthAction {
+    override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
+      implicit val ec: ExecutionContext = executionContext
+      authorised(Enrolment("IR-PAYE") or AuthProviders(PrivilegedApplication)).retrieve(Retrievals.allEnrolments and Retrievals.credentials) {
+        case _ ~ Some(Credentials(_, "PrivilegedApplication")) =>
+          Future.successful(Right(AuthenticatedRequest(request, None)))
+        case Enrolments(enrolments) ~ _ =>
+          val payeRef: Option[EmpRef] = enrolments.find(_.key == "IR-PAYE")
+            .flatMap { enrolment =>
+              val taxOfficeNumber = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
+              val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
+
+              (taxOfficeNumber, taxOfficeReference) match {
+                case (Some(number), Some(reference)) => Some(EmpRef(number, reference))
+                case _ => None
+              }
+            }
+          val isCorrectEmpRef: Boolean = !payeRef.exists(_.encodedValue != empRef.empref)
+          if(isCorrectEmpRef) {
+            Future.successful(Right(AuthenticatedRequest(request, payeRef)))
+          } else {
+            throw new Exception("User requesting unauthorised details") //TODO better message
+          }
+      }.recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
+    }
+  }
+}
+
 class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit executionContext: ExecutionContext)
   extends AuthAction with AuthorisedFunctions {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
 
-    authorised(AuthProviders(PrivilegedApplication)){
+    authorised(AuthProviders(PrivilegedApplication)) {
       Future.successful(Right(AuthenticatedRequest(request, None)))
     }.recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
 
@@ -84,15 +119,17 @@ private object ErrorHandler {
     Try(if (msg.contains("Response body")) {
       val str1 = msg.reverse.substring(1).reverse.substring(msg.indexOf("Response body") + 14).trim
       val m = if (str1.startsWith("{")) str1 else str1.substring(str1.indexOf("{"))
-      Try((Json.parse(m) \ "reason").as[String]) getOrElse ((Json.parse(m) \ "Reason").as[String])
-    } else {msg}) getOrElse(msg)
+      Try((Json.parse(m) \ "reason").as[String]) getOrElse (Json.parse(m) \ "Reason").as[String]
+    } else {
+      msg
+    }) getOrElse msg
 
   private def logWarningAboutException(e: Throwable, code: Int, description: String): Unit = {
     val message = s"Client ${
       MDC.get("X-Client-ID")
     } API error: ${
       e.getMessage
-    }, API returning ${description} ${
+    }, API returning $description ${
       code
     }"
     Logger.warn(message)
@@ -184,7 +221,6 @@ private object ErrorHandler {
     }
   }
 }
-
 
 class AuthConnector extends PlayAuthConnector with ServicesConfig {
   override lazy val serviceUrl: String = baseUrl("auth")
