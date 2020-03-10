@@ -21,8 +21,6 @@ trait WiremockConfig extends BeforeAndAfterEach with Informing {
   }
 }
 
-trait WiremockSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks with IntegrationTestConfig with WiremockConfig
-
 trait WiremockFunSpec extends FunSpec with ScalaCheckDrivenPropertyChecks with WiremockConfig with IntegrationTestConfig {
     def standardDesHeaders(): Seq[(String,String)] = Seq(("ACCEPT"->"application/vnd.hmrc.1.0+json"),
                                                          ("Environment"->"isit"),

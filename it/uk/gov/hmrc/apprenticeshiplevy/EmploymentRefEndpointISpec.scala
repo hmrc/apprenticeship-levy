@@ -1,5 +1,6 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, stubFor, urlEqualTo}
 import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatestplus.play._
@@ -14,14 +15,22 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
     contexts.foreach { case (context) =>
       describe (s"should when calling ${localMicroserviceUrl}$context/epaye/<empref>") {
         describe (s"with valid parameters") {
-          it (s"should return the declarations and fractions link for each empref") {
+          it ("should return the declarations and fractions link for each empref") {
+            val response = """{"allEnrolments": [{
+                             |    "key": "IR-PAYE",
+                             |    "identifiers": [{ "key": "TaxOfficeNumber", "value": "123" },
+                             |    { "key": "TaxOfficeReference", "value": "AB12345" }],
+                             |    "state": "Activated"
+                             |  }
+                             |  ],"authProviderId": { "paClientId": "123" }}""".stripMargin
+            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withBody(response)))
             // set up
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES17").withHeaders(standardDesHeaders: _*)
 
             // test
             val result = route(app, request).get
 
-            // check
+            status(result) shouldBe 200
             contentType(result) shouldBe Some("application/hal+json")
             val json = contentAsJson(result)
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES17"
