@@ -2,9 +2,9 @@
   "status": 200,
   "jsonBody": {
     "empref": "222/hmrctest3",
-    "nino": "???",
-    "fromDate": "???",
-    "toDate": "???",
+    "nino": "AA345678C",
+    "fromDate": "2016-03-06",
+    "toDate": "2016-04-05",
     "employed": false
   }
 }
