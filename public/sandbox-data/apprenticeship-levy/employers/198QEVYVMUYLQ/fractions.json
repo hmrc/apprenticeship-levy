@@ -1,7 +1,7 @@
 {
   "status": 200,
   "jsonBody": {
-    "empref": "198/QEVYVMUYLQ",
+    "empref": "198QEVYVMUYLQ",
     "fractionCalculations": [{
             "calculatedAt": "2020-01-15",
             "fractions": [{

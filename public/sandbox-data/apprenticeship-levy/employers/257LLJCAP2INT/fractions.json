@@ -1,7 +1,7 @@
 {
   "status": 200,
   "jsonBody": {
-    "empref": "257/LLJCAP2INT",
+    "empref": "257LLJCAP2INT",
     "fractionCalculations": [{
             "calculatedAt": "2020-01-15",
             "fractions": [{
