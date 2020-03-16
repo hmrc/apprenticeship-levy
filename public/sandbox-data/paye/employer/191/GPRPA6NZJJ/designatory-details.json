@@ -1,0 +1,25 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref":"191/GPRPA6NZJJ",
+    "employer":{
+      "name":{
+        "nameLine1":"Company DE8DZO"
+      },
+      "address":{
+        "addressLine1":"Company DE8DZO",
+        "addressLine2":"12 Latimer Place",
+        "addressLine3":"Twickenham",
+        "addressLine4":"Address Line 4",
+        "addressLine5":"Address Line 5",
+        "postcode":"TS51PA",
+        "foreignCountry":"UK"
+      },
+      "contact":{
+        "telephone":{
+          "telephoneNumber":"123"
+        }
+      }
+    }
+  }
+}
