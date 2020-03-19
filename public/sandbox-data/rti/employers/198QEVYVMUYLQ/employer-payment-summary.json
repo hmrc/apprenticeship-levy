@@ -3,43 +3,33 @@
   "jsonBody": {
     "empref": "198/QEVYVMUYLQ",
     "eps": [{
-        "submissionId": 2225011,
-        "hmrcSubmissionTime": "2019-02-18T12:00:00",
-        "rtiSubmissionTime": "2019-02-18T12:00:00",
-        "taxYear": "18-19",
+        "submissionId": 2225055,
+        "hmrcSubmissionTime": "2017-12-18T12:00:00",
+        "rtiSubmissionTime": "2017-12-18T12:00:00",
+        "taxYear": "17-18",
         "apprenticeshipLevy": {
             "amountDue": 1000,
-            "taxMonth": "10",
+            "taxMonth": "8",
             "amountAllowance": 15000
         }
     }, {
-        "submissionId": 2225022,
-        "hmrcSubmissionTime": "2019-03-18T12:00:00",
-        "rtiSubmissionTime": "2019-03-18T12:00:00",
+        "submissionId": 2225066,
+        "hmrcSubmissionTime": "2019-01-18T12:00:00",
+        "rtiSubmissionTime": "2019-01-18T12:00:00",
         "taxYear": "18-19",
         "apprenticeshipLevy": {
-            "amountDue": 2000,
+            "amountDue": 1000,
+            "taxMonth": "9",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 2225077,
+        "hmrcSubmissionTime": "2020-03-18T12:00:00",
+        "rtiSubmissionTime": "2020-03-18T12:00:00",
+        "taxYear": "19-20",
+        "apprenticeshipLevy": {
+            "amountDue": 1000,
             "taxMonth": "11",
-            "amountAllowance": 15000
-        }
-    }, {
-        "submissionId": 2225033,
-        "hmrcSubmissionTime": "2019-06-18T12:00:00",
-        "rtiSubmissionTime": "2019-06-18T12:00:00",
-        "taxYear": "19-20",
-        "apprenticeshipLevy": {
-            "amountDue": 1000,
-            "taxMonth": "2",
-            "amountAllowance": 15000
-        }
-    }, {
-        "submissionId": 2225044,
-        "hmrcSubmissionTime": "2019-07-18T12:00:00",
-        "rtiSubmissionTime": "2019-07-18T12:00:00",
-        "taxYear": "19-20",
-        "apprenticeshipLevy": {
-            "amountDue": 2000,
-            "taxMonth": "3",
             "amountAllowance": 15000
         }
     }

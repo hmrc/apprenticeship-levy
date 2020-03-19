@@ -3,43 +3,13 @@
   "jsonBody": {
     "empref": "833/ED5INHRWX7",
     "eps": [{
-        "submissionId": 2228011,
-        "hmrcSubmissionTime": "2019-02-18T12:00:00",
-        "rtiSubmissionTime": "2019-02-18T12:00:00",
-        "taxYear": "18-19",
-        "apprenticeshipLevy": {
-            "amountDue": 0,
-            "taxMonth": "10",
-            "amountAllowance": 15000
-        }
-    }, {
-        "submissionId": 2228022,
-        "hmrcSubmissionTime": "2019-03-18T12:00:00",
-        "rtiSubmissionTime": "2019-03-18T12:00:00",
-        "taxYear": "18-19",
+        "submissionId": 2228055,
+        "hmrcSubmissionTime": "2020-03-18T12:00:00",
+        "rtiSubmissionTime": "2020-03-18T12:00:00",
+        "taxYear": "19-20",
         "apprenticeshipLevy": {
             "amountDue": 0,
             "taxMonth": "11",
-            "amountAllowance": 15000
-        }
-    }, {
-        "submissionId": 2228033,
-        "hmrcSubmissionTime": "2019-06-18T12:00:00",
-        "rtiSubmissionTime": "2019-06-18T12:00:00",
-        "taxYear": "19-20",
-        "apprenticeshipLevy": {
-            "amountDue": 0,
-            "taxMonth": "2",
-            "amountAllowance": 15000
-        }
-    }, {
-        "submissionId": 2228044,
-        "hmrcSubmissionTime": "2019-07-18T12:00:00",
-        "rtiSubmissionTime": "2019-07-18T12:00:00",
-        "taxYear": "19-20",
-        "apprenticeshipLevy": {
-            "amountDue": 0,
-            "taxMonth": "3",
             "amountAllowance": 15000
         }
     }]
