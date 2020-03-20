@@ -40,7 +40,7 @@ trait LevyDeclarationController {
   val authAction: AuthAction
 
   // scalastyle:off
-  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] = (withValidAcceptHeader).async { implicit request =>
+  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async { implicit request =>
   // scalastyle:on
     if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get))
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
