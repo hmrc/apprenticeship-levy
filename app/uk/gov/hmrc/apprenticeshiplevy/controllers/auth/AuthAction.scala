@@ -48,7 +48,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
 
-    authorised( ).retrieve(Retrievals.allEnrolments) {
+    authorised().retrieve(Retrievals.allEnrolments) {
       case Enrolments(enrolments) =>
         val payeRef: Option[EmpRef] = enrolments.find(_.key == "IR-PAYE")
           .flatMap { enrolment =>
@@ -143,6 +143,11 @@ private object ErrorHandler {
       case e: SessionRecordNotFound =>
         logWarningAboutException(e, UNAUTHORIZED, "Unauthorized with code")
         Unauthorized(Json.toJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"No active session error: ${
+          extractReason(e.getMessage)
+        }")))
+      case e: AuthorisationException =>
+        logWarningAboutException(e, UNAUTHORIZED, "Unauthorized with code")
+        Unauthorized(Json.toJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"${
           extractReason(e.getMessage)
         }")))
       case e: BadRequestException =>
