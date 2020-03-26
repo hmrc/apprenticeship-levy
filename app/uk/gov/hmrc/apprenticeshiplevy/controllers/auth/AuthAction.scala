@@ -87,6 +87,8 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector)(impl
                 case _ => None
               }
             }
+
+          Logger.warn(s"[UserAuth] Enrolments for $empRef: $payeRef")
           val isCorrectEmpRef: Boolean = !payeRef.exists(_.value != empRef.empref)
           if(isCorrectEmpRef) {
             Future.successful(Right(AuthenticatedRequest(request, payeRef)))
