@@ -28,12 +28,11 @@ import play.api.mvc._
 import play.api.{Configuration, Logger, Play}
 import uk.gov.hmrc.apprenticeshiplevy.config.WSHttp
 import uk.gov.hmrc.apprenticeshiplevy.controllers.AuthError
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.ErrorHandler.extractReason
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, PAClientId, ~}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
 import uk.gov.hmrc.play.HeaderCarrierConverter
@@ -87,8 +86,6 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector)(impl
                 case _ => None
               }
             }
-
-          Logger.warn(s"[UserAuth] Enrolments for $empRef: $payeRef")
           val isCorrectEmpRef: Boolean = !payeRef.exists(_.value != empRef.empref)
           if(isCorrectEmpRef) {
             Future.successful(Right(AuthenticatedRequest(request, payeRef)))
