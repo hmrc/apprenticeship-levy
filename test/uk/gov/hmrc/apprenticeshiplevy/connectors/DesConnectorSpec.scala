@@ -88,7 +88,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
         }
 
         // test
-        val futureResult = connector.fractions("123/AB12345", OpenDateRange)(HeaderCarrier(),defaultContext)
+        val futureResult = connector.fractions("123/AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(HeaderCarrier(),defaultContext)
 
         // check
         await[Fractions](futureResult) shouldBe expected
@@ -151,7 +151,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
                       ))
 
       // test
-      val futureResult = connector.eps("123AB12345", OpenDateRange)(hc, ec)
+      val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(hc, ec)
 
       // check
       await[EmployerPaymentsSummary](futureResult) shouldBe expected
@@ -169,7 +169,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
                 ))
 
         // test
-        val futureResult = connector.eps("123AB12345", OpenDateRange)(hc, ec)
+        val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(hc, ec)
 
         // check
         await[EmployerPaymentsSummary](futureResult) shouldBe expected
@@ -201,7 +201,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
                       ))
 
         // test
-        val futureResult = connector.eps("123AB12345", OpenDateRange)(hc, ec)
+        val futureResult = connector.eps("123AB12345", ClosedDateRange(new LocalDate(2016,7,1), new LocalDate(2016,7,15)))(hc, ec)
 
         // check
         await[EmployerPaymentsSummary](futureResult) shouldBe expected
@@ -302,7 +302,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
                         })
 
         // test
-        val futureResult = connector.eps("123AB12345", OpenDateRange)(hc, ec)
+        val futureResult = connector.eps("123AB12345", ClosedDateRange(new LocalDate(2016,7,1), new LocalDate(2016,7,15)))(hc, ec)
 
         // check
         await[EmployerPaymentsSummary](futureResult) shouldBe expected

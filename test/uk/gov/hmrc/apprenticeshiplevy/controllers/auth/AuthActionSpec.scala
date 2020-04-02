@@ -56,10 +56,10 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
     "be allowed access" in {
 
       val enrolments = Enrolments(Set(
-    Enrolment("IR-PAYE", Seq(
-      EnrolmentIdentifier("TaxOfficeNumber", "someOffice"),
-      EnrolmentIdentifier("TaxOfficeReference", "someRef")),
-      "")))
+        Enrolment("IR-PAYE", Seq(
+          EnrolmentIdentifier("TaxOfficeNumber", "someOffice"),
+          EnrolmentIdentifier("TaxOfficeReference", "someRef")),
+          "")))
 
       val retrievalResult: Future[Enrolments] =
           Future.successful(enrolments)
@@ -81,9 +81,9 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
 
 
       val enrolments = Enrolments(Set(
-    Enrolment("IR-SA", Seq(
-      EnrolmentIdentifier("Utr", "someUtr")),
-      "")))
+        Enrolment("IR-SA", Seq(
+          EnrolmentIdentifier("Utr", "someUtr")),
+          "")))
 
       val retrievalResult: Future[Enrolments] =
           Future.successful(enrolments)
@@ -163,18 +163,6 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         status(result) shouldBe OK
         contentAsString(result) should include("123/ABCDEF")
       }
-
-      "their is no emp ref returned" in {
-        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
-          .thenReturn(emptyGGRetrieval)
-
-        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123/ABCDEF"))
-        val controller = new Harness(authAction)
-
-        val result = controller.onPageLoad()(FakeRequest())
-        status(result) shouldBe OK
-        contentAsString(result) should include("None found")
-      }
     }
 
     "return unauthorized for an IR-PAYE enrolled user" when {
@@ -183,6 +171,17 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
           .thenReturn(ggRetrieval)
 
         val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123%2FABCDE"))
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(FakeRequest())
+        status(result) shouldBe UNAUTHORIZED
+      }
+
+      "their is no emp ref returned" in {
+        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+          .thenReturn(emptyGGRetrieval)
+
+        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123/ABCDEF"))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())

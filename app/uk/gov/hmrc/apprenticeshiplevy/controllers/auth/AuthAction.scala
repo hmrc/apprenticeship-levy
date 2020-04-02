@@ -49,16 +49,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
 
     authorised().retrieve(Retrievals.allEnrolments) {
       case Enrolments(enrolments) =>
-        val payeRef: Option[EmpRef] = enrolments.find(_.key == "IR-PAYE")
-          .flatMap { enrolment =>
-            val taxOfficeNumber = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
-            val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
-
-            (taxOfficeNumber, taxOfficeReference) match {
-              case (Some(number), Some(reference)) => Some(EmpRef(number, reference))
-              case _ => None
-            }
-          }
+        val payeRef: Option[EmpRef] = EnrolmentHelper.getEmpRef(enrolments)
         Future.successful(Right(AuthenticatedRequest(request, payeRef)))
     }.recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
 
@@ -72,21 +63,12 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector)(impl
     override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
       implicit val ec: ExecutionContext = executionContext
-      authorised(Enrolment("IR-PAYE") or AuthProviders(PrivilegedApplication)).retrieve(Retrievals.allEnrolments and Retrievals.authProviderId) {
+      authorised(EnrolmentHelper.enrolmentPredicate or AuthProviders(PrivilegedApplication)).retrieve(Retrievals.allEnrolments and Retrievals.authProviderId) {
         case _ ~ PAClientId(_) =>
           Future.successful(Right(AuthenticatedRequest(request, None)))
         case Enrolments(enrolments) ~ _ =>
-          val payeRef: Option[EmpRef] = enrolments.find(_.key == "IR-PAYE")
-            .flatMap { enrolment =>
-              val taxOfficeNumber = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
-              val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
-
-              (taxOfficeNumber, taxOfficeReference) match {
-                case (Some(number), Some(reference)) => Some(EmpRef(number, reference))
-                case _ => None
-              }
-            }
-          val isCorrectEmpRef: Boolean = !payeRef.exists(_.value != empRef.empref)
+          val payeRef: Option[EmpRef] = EnrolmentHelper.getEmpRef(enrolments)
+          val isCorrectEmpRef: Boolean = payeRef.exists(_.value == empRef.empref)
           if(isCorrectEmpRef) {
             Future.successful(Right(AuthenticatedRequest(request, payeRef)))
           } else {
@@ -115,6 +97,21 @@ class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector)(impli
 
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionRefiner[Request, AuthenticatedRequest]
+
+private object EnrolmentHelper {
+  val enrolmentKey: String = "IR-PAYE"
+  val enrolmentPredicate: Enrolment = Enrolment(enrolmentKey)
+  def getEmpRef(enrolments: Set[Enrolment]): Option[EmpRef] = enrolments.find(_.key == enrolmentKey)
+    .flatMap { enrolment =>
+      val taxOfficeNumber = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
+      val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
+
+      (taxOfficeNumber, taxOfficeReference) match {
+        case (Some(number), Some(reference)) => Some(EmpRef(number, reference))
+        case _ => None
+      }
+    }
+}
 
 private object ErrorHandler {
   private def extractReason(msg: String): String =

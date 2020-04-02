@@ -35,10 +35,10 @@ object QueryBinders {
         date match {
           case DatePattern(year, _*) if year.toInt >= 2000 => Right(DateConverter.parseToLocalDate(date))
           case _ =>
-            Left(s"DATE_INVALID: '${date}' date parameter is in the wrong format. Should be '${DatePattern.toString()}' where date is yyyy-MM-dd and year is 2000 or later.")
+            Left(s"DATE_INVALID: '${date}' date parameter is in the wrong format. Should be '${DatePattern.toString()}' where date format is yyyy-MM-dd and year is 2000 or later.")
         }
       } recover {
-        case _: Exception => Left(s"DATE_INVALID: date parameter is in the wrong format. Should be '${DatePattern.toString()}' where data is yyyy-MM-dd.")
+        case _: Exception => Left(s"DATE_INVALID: date parameter is in the wrong format. Should be '${DatePattern.toString()}' where date format is yyyy-MM-dd.")
       }).get
       }
     }

@@ -19,17 +19,13 @@ package uk.gov.hmrc.apprenticeshiplevy.utils
 import org.joda.time.LocalDate
 
 sealed trait DateRange {
-  def toParams: Option[String]
-}
-
-case object OpenDateRange extends DateRange {
-  override def toParams: Option[String] = None
+  def toParams: String
 }
 
 case class ClosedDateRange(from: LocalDate, to: LocalDate) extends DateRange {
-  override def toParams: Option[String] = Some(s"fromDate=$from&toDate=$to")
+  override def toParams: String = s"fromDate=$from&toDate=$to"
 }
 
 case class OpenEarlyDateRange(to: LocalDate) extends DateRange {
-  override def toParams: Option[String] = Some(s"toDate=$to")
+  override def toParams: String = s"toDate=$to"
 }

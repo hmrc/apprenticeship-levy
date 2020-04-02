@@ -100,7 +100,7 @@ trait EmploymentCheckEndpoint extends Timer {
 
   def check(empref: String, nino: String, dateRange: ClosedDateRange)
            (implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[EmploymentCheckStatus] = {
-    val dateParams = dateRange.toParams.getOrElse("")
+    val dateParams = dateRange.toParams
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?${dateParams}"
 
     // $COVERAGE-OFF$
@@ -119,12 +119,8 @@ trait FractionsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
   def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Fractions] = {
-    val dateParams = dateRange.toParams.getOrElse("")
-    val url = (s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions", dateRange.toParams) match {
-      case (u, Some(params)) => s"$u?$params"
-      case (u, None) => u
-    }
-
+    val dateParams = dateRange.toParams
+    val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions?$dateParams"
     // $COVERAGE-OFF$
     Logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
@@ -157,9 +153,8 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
-    val dateParams = dateRange.toParams.getOrElse("")
-
-    val url = s"${desURL(empref)}${params(dateRange)}"
+    val dateParams = dateRange.toParams
+    val url = s"${desURL(empref)}?$dateParams"
 
     timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
       audit(new ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
@@ -232,14 +227,6 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
   }
 
   protected[connectors] def isEpsOrigPathEnabled: Boolean = AppContext.epsOrigPathEnabled
-
-  protected[connectors] def params(dateRange: DateRange): String = dateRange.toParams match {
-      case None => {
-        val defaultRange = ClosedDateRange(new LocalDate().minusYears(AppContext.defaultNumberOfDeclarationYears), new LocalDate())
-        defaultRange.toParams.map(p=>s"?${p}").getOrElse("")
-      }
-      case Some(ps) => s"?${ps}"
-    }
 
   protected[connectors] def desURL(empref: String): String = if (isEpsOrigPathEnabled)
                                                           s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"

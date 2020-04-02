@@ -18,6 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNotVisible
@@ -34,16 +35,17 @@ trait EmploymentCheckController extends DesController {
   val authAction: AuthAction
 
   // scalastyle:off
-  def check(ref: EmploymentReference, ni: Nino, fromDate: LocalDate, toDate: LocalDate) = (withValidAcceptHeader andThen authAction).async { implicit request =>
+  def check(ref: EmploymentReference, ni: Nino, fromDate: LocalDate, toDate: LocalDate): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
+    implicit request =>
   // scalastyle:on
-    if (fromDate.isAfter(toDate)) {
-      Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
-    } else {
-      desConnector.check(toDESFormat(ref.empref), ni.nino, ClosedDateRange(fromDate, toDate)).map {
-        case Employed => Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = true)))
-        case NotEmployed => Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = false)))
-        case Unknown => ErrorNotVisible.toResult
-      } recover desErrorHandler
-    }
+      if (fromDate.isAfter(toDate)) {
+        Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
+      } else {
+        desConnector.check(toDESFormat(ref.empref), ni.nino, ClosedDateRange(fromDate, toDate)).map {
+          case Employed => Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = true)))
+          case NotEmployed => Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = false)))
+          case Unknown => ErrorNotVisible.toResult
+        } recover desErrorHandler
+      }
   }
 }
