@@ -23,7 +23,7 @@ import org.slf4j.MDC
 import play.api.Mode.Mode
 import play.api.http.Status._
 import play.api.libs.json.Json
-import play.api.mvc.Results.{BadRequest, Forbidden, InternalServerError, NotFound, RequestTimeout, ServiceUnavailable, TooManyRequests, Unauthorized}
+import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.{Configuration, Logger, Play}
 import uk.gov.hmrc.apprenticeshiplevy.config.WSHttp

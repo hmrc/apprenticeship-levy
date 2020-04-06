@@ -197,13 +197,13 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       "")
   ))
   val paRetrieval: Enrolments ~ LegacyCredentials =
-    new ~(Enrolments(Set()), PAClientId("app-id"))
+    Enrolments(Set()) ~ PAClientId("app-id")
 
   val ggRetrieval: Enrolments ~ LegacyCredentials =
-    new ~(enrolments, GGCredId(""))
+    enrolments ~ GGCredId("")
 
   val emptyGGRetrieval: Enrolments ~ LegacyCredentials =
-    new ~(Enrolments(Set(Enrolment("IR-PAYE", Seq(), ""))), GGCredId(""))
+    Enrolments(Set(Enrolment("IR-PAYE", Seq(), ""))) ~ GGCredId("")
 
 
 }
