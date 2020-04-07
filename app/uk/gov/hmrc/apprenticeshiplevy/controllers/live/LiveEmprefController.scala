@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,13 @@ import com.google.inject.Inject
 import org.joda.time.LocalDate
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, AllProviderAuthActionImpl, PrivilegedAuthActionImpl}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
-class LiveEmprefController @Inject()(val desConnector: LiveDesConnector) extends EmprefController {
+class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
+                                     val auth: AllProviderAuthActionImpl) extends EmprefController {
+  override val authAction: EmploymentReference => AuthAction = auth(_)
+
   override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url
 
   override def declarationsUrl(empref: EmploymentReference): String = routes.LiveLevyDeclarationController.declarations(empref, None, None).url

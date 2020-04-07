@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@ import org.joda.time.LocalDate
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, Upstream5xxResponse}
@@ -40,23 +41,28 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       // set up
       val stubHttpGet = mock[HttpGet]
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture(), any()))
+      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any(), any()))
            .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
-      val controller = new FractionsCalculationDateController() with DesController {
-        def desConnector: DesConnector = new DesConnector() {
-          def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpGet: HttpGet = stubHttpGet
-          protected def auditConnector: Option[AuditConnector] = None
-        }
-        override protected def defaultDESEnvironment: String = "clone"
 
-        override protected def defaultDESToken: String = "ABC"
+      val controller = new FractionsCalculationDateController() with DesController {
+        val desConnector: DesConnector = new DesConnector() {
+          val baseUrl: String = "http://a.guide.to.nowhere/"
+          val httpGet: HttpGet = stubHttpGet
+          protected val auditConnector: Option[AuditConnector] = None
+        }
+        override protected val defaultDESEnvironment: String = "clone"
+
+        override protected val defaultDESToken: String = "ABC"
+
+        override val authAction: AuthAction = FakeAuthAction
       }
 
       // test
-      val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+      await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                                     "Authorization"->"Bearer dsfda9080",
-                                                                                                    "Environment"->"clone"))
+                                                                                                    "Environment"->"clone")))
+
+      verify(stubHttpGet).GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture(), any())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -69,7 +75,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       // set up
       val stubHttpGet = mock[HttpGet]
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture(), any()))
+      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any(), any()))
            .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
       val controller = new FractionsCalculationDateController() with DesController {
         def desConnector: DesConnector = new DesConnector() {
@@ -80,11 +86,15 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
         override protected def defaultDESEnvironment: String = "clone"
 
         override protected def defaultDESToken: String = "ABC"
+
+        override val authAction: AuthAction = FakePrivilegedAuthAction
       }
 
       // test
-      val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                                    "Authorization"->"Bearer dsfda9080"))
+      await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                                                                    "Authorization"->"Bearer dsfda9080")))
+
+      verify(stubHttpGet).GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture(), any())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -107,6 +117,8 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
         override protected def defaultDESEnvironment: String = "clone"
 
         override protected def defaultDESToken: String = "ABC"
+
+        override val authAction: AuthAction = FakePrivilegedAuthAction
       }
 
       // test

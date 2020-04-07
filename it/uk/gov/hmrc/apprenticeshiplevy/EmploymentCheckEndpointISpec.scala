@@ -1,8 +1,8 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
 import org.scalacheck.Gen
+import org.scalatest.DoNotDiscover
 import org.scalatest.Matchers._
-import org.scalatest._
 import org.scalatestplus.play._
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -122,7 +122,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
                   // check
                   httpStatus shouldBe 400
                   contentType(result) shouldBe Some("application/json")
-                  contentAsString(result) should include ("""date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date is yyyy-MM-dd and year is 2000 or later.""")
+                  contentAsString(result) should include ("""date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later.""")
                 }
               }
             }

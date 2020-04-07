@@ -1,0 +1,17 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "833/ED5INHRWX7",
+    "eps": [{
+        "submissionId": 2228055,
+        "hmrcSubmissionTime": "2020-03-18T12:00:00",
+        "rtiSubmissionTime": "2020-03-18T12:00:00",
+        "taxYear": "19-20",
+        "apprenticeshipLevy": {
+            "amountDue": 0,
+            "taxMonth": "11",
+            "amountAllowance": 15000
+        }
+    }]
+}
+}

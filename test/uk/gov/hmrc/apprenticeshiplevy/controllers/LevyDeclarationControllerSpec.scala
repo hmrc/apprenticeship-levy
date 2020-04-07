@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
@@ -29,7 +30,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.test.UnitSpec
 
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar {
-  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector(mock[HttpGet]))
+  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector(mock[HttpGet]), FakePrivilegedAuthAction)
 
   "getting the levy declarations" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {
@@ -51,4 +52,5 @@ object TestDesConnector extends DesConnector {
 
 object TestLevyDeclarationController extends LevyDeclarationController with DesController {
   override def desConnector: DesConnector = TestDesConnector
+  override val authAction: AuthAction = FakePrivilegedAuthAction
 }

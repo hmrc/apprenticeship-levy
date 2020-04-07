@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import scala.util.{Failure, Success}
 trait Auditor  {
   def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = {
     block andThen {
-      case Success(v) => auditConnector.map(_.sendEvent(event.toDataEvent(200)))
+      case Success(_) => auditConnector.map(_.sendEvent(event.toDataEvent(200)))
       case Failure(t) => {
         val httpStatus = exceptionToMessage(t)
         auditConnector.map(_.sendEvent(event.toDataEvent(httpStatus, t)))
@@ -40,12 +40,12 @@ trait Auditor  {
 
   protected def auditConnector: Option[AuditConnector]
   protected val exceptionToMessage: PartialFunction[Throwable, Int] = {
-        case e: BadRequestException => 400
-        case e: IOException => 444
-        case e: GatewayTimeoutException => 408
-        case e: NotFoundException => 404
+        case _: BadRequestException => 400
+        case _: IOException => 444
+        case _: GatewayTimeoutException => 408
+        case _: NotFoundException => 404
         case e: Upstream5xxResponse => e.upstreamResponseCode
         case e: Upstream4xxResponse => e.upstreamResponseCode
-        case e => 500
+        case _ => 500
     }
 }

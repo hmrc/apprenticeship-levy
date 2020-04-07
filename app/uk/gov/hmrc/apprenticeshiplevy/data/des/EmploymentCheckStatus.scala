@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,10 @@ object EmploymentCheckStatus {
                                                       .orElse((__ \ "employed").read[String].map(_.toBoolean))
                                                       .map(isEmployed => EmploymentCheckStatus(isEmployed))
 
-  def apply(isEmployed: Boolean): EmploymentCheckStatus = isEmployed match {
-    case true => Employed
-    case false => NotEmployed
+  def apply(isEmployed: Boolean): EmploymentCheckStatus = if (isEmployed) {
+    Employed
+  } else {
+    NotEmployed
   }
 
   def apply(isEmployed: String): EmploymentCheckStatus = isEmployed match {

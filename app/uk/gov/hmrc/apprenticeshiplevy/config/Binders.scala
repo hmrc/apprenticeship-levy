@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,10 @@ object QueryBinders {
         date match {
           case DatePattern(year, _*) if year.toInt >= 2000 => Right(DateConverter.parseToLocalDate(date))
           case _ =>
-            Left(s"DATE_INVALID: '${date}' date parameter is in the wrong format. Should be '${DatePattern.toString()}' where date is yyyy-MM-dd and year is 2000 or later.")
+            Left(s"DATE_INVALID: '${date}' date parameter is in the wrong format. Should be '${DatePattern.toString()}' where date format is yyyy-MM-dd and year is 2000 or later.")
         }
       } recover {
-        case e: Exception => Left(s"DATE_INVALID: date parameter is in the wrong format. Should be '${DatePattern.toString()}' where data is yyyy-MM-dd.")
+        case _: Exception => Left(s"DATE_INVALID: date parameter is in the wrong format. Should be '${DatePattern.toString()}' where date format is yyyy-MM-dd.")
       }).get
       }
     }
@@ -85,8 +85,9 @@ object PathBinders {
     case _ => Left(s"${code}: '${value}' is in the wrong format. Should be ${regex.toString()} and url encoded.")
   }
 
-  private[config] def isValidNino(value: String, code: String): Either[String, String] = Nino.isValid(value) match {
-    case true => Right(value)
-    case false => Left(s"${code}: '${value}' is in the wrong format. Should have a prefix (one of ${uk.gov.hmrc.domain.Nino.validPrefixes}) and suffix (one of ${uk.gov.hmrc.domain.Nino.validSuffixes}) and url encoded.")
+  private[config] def isValidNino(value: String, code: String): Either[String, String] = if (Nino.isValid(value)) {
+    Right(value)
+  } else {
+    Left(s"${code}: '${value}' is in the wrong format. Should have a prefix (one of ${uk.gov.hmrc.domain.Nino.validPrefixes}) and suffix (one of ${uk.gov.hmrc.domain.Nino.validSuffixes}) and url encoded.")
   }
 }

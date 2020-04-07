@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "257/LLJCAP2INT",
+    "nino": "AA567890C",
+    "fromDate": "2016-03-06",
+    "toDate": "2016-04-05",
+    "employed": false
+  }
+}

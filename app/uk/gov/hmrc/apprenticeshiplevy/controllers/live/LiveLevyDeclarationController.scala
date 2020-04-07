@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import com.google.inject.Inject
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.PrivilegedAuthActionImpl
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{DesController, LevyDeclarationController}
 
-class LiveLevyDeclarationController  @Inject()(val desConnector: LiveDesConnector) extends DesController with LevyDeclarationController
+class LiveLevyDeclarationController  @Inject()(val desConnector: LiveDesConnector,
+                                               val authAction: PrivilegedAuthActionImpl) extends DesController with LevyDeclarationController

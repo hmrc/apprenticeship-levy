@@ -4,8 +4,8 @@ import java.io.File
 
 import javax.xml.parsers.SAXParserFactory
 import org.scalacheck.Gen
+import org.scalatest.DoNotDiscover
 import org.scalatest.Matchers._
-import org.scalatest._
 import org.scalatestplus.play._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,7 +42,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  
 
         val definitionFile = new File(s"./public/api/conf/$version/application.raml")
         val includes = Source.fromFile(definitionFile).getLines.filter(_.contains("!include")).map((line)=>line.substring(line.indexOf("!include "))).toList.filterNot(_.matches(".*(errors|versioning).md")).toSet
-        includes.zipWithIndex.foreach { case (include, i) =>
+        includes.zipWithIndex.foreach { case (include, _) =>
           it (s"and serve file for $include") {
             // set up
             val file = include.substring(9)

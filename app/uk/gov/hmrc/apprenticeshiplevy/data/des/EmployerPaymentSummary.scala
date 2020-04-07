@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ object EmployerPaymentSummary {
   }
 
   private[des] val toNoPayment: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
-    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, Some(dr), _, _, _, _, _) =>
+    case EmployerPaymentSummary(id, hmrcSt, _, ty, Some(dr), _, _, _, _, _) =>
       LevyDeclaration((id * 10L),
                       hmrcSt,
                       payrollPeriod = Some(PayrollPeriod(ty, calculateTaxMonth(dr.to))),
@@ -60,7 +60,7 @@ object EmployerPaymentSummary {
   }
 
   private[des] val toInactive: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
-    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, Some(dr), _, _, _, _) =>
+    case EmployerPaymentSummary(id, hmrcSt, _, _, _, Some(dr), _, _, _, _) =>
       LevyDeclaration(((id * 10L) + 1L),
                       hmrcSt,
                       inactiveFrom = Some(dr.from),
@@ -69,7 +69,7 @@ object EmployerPaymentSummary {
   }
 
   private[des] val toLevyDeclaration: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
-    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, _, _, Some(al), _, _) =>
+    case EmployerPaymentSummary(id, hmrcSt, _, ty, _, _, _, Some(al), _, _) =>
       LevyDeclaration(((id * 10L) + 2L),
                       hmrcSt,
                       payrollPeriod = Some(PayrollPeriod(ty, al.taxMonth.toInt)),
@@ -79,7 +79,7 @@ object EmployerPaymentSummary {
   }
 
   private[des] val toCeased: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
-    case EmployerPaymentSummary(id, hmrcSt, rtiSt, ty, _, _, _, _, Some(SchemeCeased(_, schemeCeasedDate, _)), _) =>
+    case EmployerPaymentSummary(id, hmrcSt, _, _, _, _, _, _, Some(SchemeCeased(_, schemeCeasedDate, _)), _) =>
       LevyDeclaration(((id * 10L) + 3L),
                       hmrcSt,
                       dateCeased = Some(schemeCeasedDate),

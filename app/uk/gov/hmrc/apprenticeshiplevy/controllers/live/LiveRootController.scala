@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import com.google.inject.Inject
-import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveAuthConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthActionImpl
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-class LiveRootController @Inject()(val authConnector: LiveAuthConnector) extends RootController {
+class LiveRootController @Inject()(val authAction: AuthActionImpl) extends RootController {
 
   override def rootUrl: String = routes.LiveRootController.root().url
 

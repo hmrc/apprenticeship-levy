@@ -50,11 +50,12 @@ lazy val scoverageSettings = {
   val ScoverageExclusionPatterns = List(
     "<empty>",
     "Reverse.*",
-    "sandbox.Routes.*",
-    "app.Routes.*",
+    ".*.Routes.*",
     "views.*",
     "prod.*",
     ".*assets.*",
+    "uk.gov.hmrc.apprenticeshiplevy.metrics.*",
+    "uk.gov.hmrc.apprenticeshiplevy.config.*",
     "testOnlyDoNotUseInAppConf.*",
     "uk.gov.hmrc.BuildInfo"
   )

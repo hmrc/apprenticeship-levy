@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 import com.google.inject.Inject
 import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxAuthConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.SandboxAuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-class SandboxRootController @Inject()(val authConnector: SandboxAuthConnector) extends RootController with SandboxLinkHelper {
+class SandboxRootController @Inject()(val authAction: SandboxAuthAction) extends RootController with SandboxLinkHelper {
   override val env = AppContext.env
 
   override def rootUrl: String = routes.SandboxRootController.root().url

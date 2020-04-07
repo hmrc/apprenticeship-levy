@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ class SandboxTestDataController extends Controller with Utf8MimeTypes {
     request.headers.get("OVERRIDE_EMPREF") match {
       case Some(empref) => {
         path match {
-          case Empref(path1, old_empref, path2) => {
+          case Empref(path1, _, path2) => {
             val newpath = s"${path1}${empref}${path2}"
             Logger.info(s"Resource path overridden by OVERRIDE_EMPREF header. Now looking for ${newpath}")
             readJson(SANDBOX_DATA_DIR, newpath)
@@ -128,13 +128,17 @@ class SandboxTestDataController extends Controller with Utf8MimeTypes {
   protected def toInstant(json: JsLookupResult): Instant = {
     val time = LocalTime.MIDNIGHT
     val zone = DateTimeZone.getDefault()
-    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{case e: Throwable => LocalDateTime.parse(json.as[String]).toDateTime().toInstant()}.get
+    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{
+      case _: Throwable => LocalDateTime.parse(json.as[String]).toDateTime().toInstant()
+    }.get
   }
 
   protected def toInstant(json: JsLookupResult, days: Int): Instant = {
     val time = LocalTime.MIDNIGHT
     val zone = DateTimeZone.getDefault()
-    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{case e: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toDateTime().toInstant()}.get
+    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{
+      case _: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toDateTime().toInstant()
+    }.get
   }
 
   protected def filterByDate(path: String, json: JsValue)(implicit request: Request[_]): Future[Result] = {

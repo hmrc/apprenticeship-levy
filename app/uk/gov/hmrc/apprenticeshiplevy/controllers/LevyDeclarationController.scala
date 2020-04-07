@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,11 @@ import org.joda.time._
 import org.slf4j.MDC
 import play.api.Logger
 import play.api.libs.json.Json
-import play.api.mvc.Result
+import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, LevyDeclaration, LevyDeclarations}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
@@ -36,9 +37,10 @@ trait LevyDeclarationController {
   self: DesController =>
 
   def desConnector: DesConnector
+  val authAction: AuthAction
 
   // scalastyle:off
-  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
+  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async { implicit request =>
   // scalastyle:on
     if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get))
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)

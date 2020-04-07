@@ -1,0 +1,27 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "191/GPRPA6NZJJ",
+    "eps": [{
+        "submissionId": 2226011,
+        "hmrcSubmissionTime": "2019-06-18T12:00:00",
+        "rtiSubmissionTime": "2019-06-18T12:00:00",
+        "taxYear": "19-20",
+        "apprenticeshipLevy": {
+            "amountDue": 1000,
+            "taxMonth": "2",
+            "amountAllowance": 15000
+        }
+    }, {
+        "submissionId": 2226022,
+        "hmrcSubmissionTime": "2019-07-18T12:00:00",
+        "rtiSubmissionTime": "2019-07-18T12:00:00",
+        "taxYear": "19-20",
+        "apprenticeshipLevy": {
+            "amountDue": 2000,
+            "taxMonth": "3",
+            "amountAllowance": 15000
+        }
+    }]
+}
+}

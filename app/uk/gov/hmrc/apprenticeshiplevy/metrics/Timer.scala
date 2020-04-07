@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ trait Timer {
   def timer[T](event: RequestEvent)(block: => Future[T])(implicit ec: ExecutionContext): Future[T] = {
     block andThen {
       case Failure(t) => t match {
-        case e: NotFoundException => ;
-        case e => metrics.failedRequest(event)
+        case _: NotFoundException => ;
+        case _ => metrics.failedRequest(event)
       }
       case _ => ;
     }

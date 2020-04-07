@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,11 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
-import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
+import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
@@ -29,19 +31,21 @@ trait FractionsController {
   self: DesController =>
   def desConnector: DesConnector
 
+  val authAction: AuthAction
+
   val defaultPriorMonthsForFromDate = 72
 
   // scalastyle:off
-  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) = withValidAcceptHeader.async { implicit request =>
-    // scalastyle:on
-
+  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
+    implicit request =>
+  // scalastyle:on
     val validatedFromDate = validateFromDate(fromDate)
     val validatedToDate = validateToDate(toDate)
 
     if (validatedFromDate.isAfter(validatedToDate)) {
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
     } else {
-      desConnector.fractions(toDESFormat(ref.empref), DateRange(Some(validatedFromDate), Some(validatedToDate))) map { fs =>
+      desConnector.fractions(toDESFormat(ref.empref), ClosedDateRange(validatedFromDate, validatedToDate)) map { fs =>
         Ok(Json.toJson(fs))
       } recover desErrorHandler
     }
@@ -68,13 +72,17 @@ trait FractionsController {
   */
 trait FractionsCalculationDateController {
   self: DesController =>
+
   def desConnector: DesConnector
 
+  val authAction: AuthAction
+
   // scalastyle:off
-  def fractionCalculationDate = withValidAcceptHeader.async { implicit request =>
-    // scalastyle:on
-    desConnector.fractionCalculationDate map { date =>
-      Ok(Json.toJson(date))
-    } recover desErrorHandler
+  def fractionCalculationDate: Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
+    implicit request =>
+  // scalastyle:on
+      desConnector.fractionCalculationDate map { date =>
+        Ok(Json.toJson(date))
+      } recover desErrorHandler
   }
 }

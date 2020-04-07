@@ -1,0 +1,25 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref":"833/ED5INHRWX7",
+    "employer":{
+      "name":{
+        "nameLine1":"Company JDYWSK"
+      },
+      "address":{
+        "addressLine1":"Company JDYWSK",
+        "addressLine2":"35 Irving Street",
+        "addressLine3":"Bath",
+        "addressLine4":"Address Line 4",
+        "addressLine5":"Address Line 5",
+        "postcode":"TS161PA",
+        "foreignCountry":"UK"
+      },
+      "contact":{
+        "telephone":{
+          "telephoneNumber":"123"
+        }
+      }
+    }
+  }
+}
