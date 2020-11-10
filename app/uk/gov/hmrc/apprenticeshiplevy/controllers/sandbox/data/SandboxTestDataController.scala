@@ -19,11 +19,12 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data
 import java.io.{File, FileInputStream, InputStream}
 import java.net.URLDecoder
 
+import com.google.inject.{Inject, Singleton}
 import org.joda.time._
 import org.slf4j.MDC
 import play.api.libs.json._
 import play.api.mvc._
-import play.api.{Logger, Mode}
+import play.api.{Configuration, Logger, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.microservice.controller.Utf8MimeTypes
 
@@ -31,28 +32,65 @@ import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Try
 
-class SandboxTestDataController extends Controller with Utf8MimeTypes {
+@Singleton
+class SandboxTestDataController @Inject()(configuration: Configuration) extends Controller with Utf8MimeTypes {
   val SANDBOX_DATA_DIR = "public/sandbox-data"
 
+  lazy val returnDummyResponse: Boolean =
+    configuration
+      .getBoolean("features.returnDummyResponse")
+      .getOrElse(false)
+
+  private[sandbox] def getFileName(file: String) =
+    if(returnDummyResponse) {
+      val empRefRegex = "^.*employers?\\/([a-zA-Z0-9]{3}\\/.*?|.*?)\\/.*".r
+      file match {
+        case empRefRegex(empRef) =>
+          Logger.debug(s"Replacing empref: $empRef in requested file: $file")
+          val dummyEmpRef = List("840","MODES17")
+          val ninoRegex = "^.*\\/employed\\/(.{8,9})\\?.*$".r
+
+          val updatedFile = file.replace(empRef,
+            if(empRef.contains("/")) dummyEmpRef.mkString("/")
+            else dummyEmpRef.mkString
+          )
+
+          updatedFile match {
+            case ninoRegex(nino) =>
+              Logger.debug(s"Replacing nino: $nino in requested file: $file")
+              val newNino = "SC111111A"
+
+              updatedFile.replace(nino, newNino)
+            case _ => updatedFile
+          }
+        case _ =>
+          Logger.debug(s"Could not find an empref to replace in: $file")
+          file
+      }
+    } else {
+      file
+    }
+
   protected def retrieve(file: String): Option[InputStream] = {
+    val fileToRequest = getFileName(file)
     AppContext.maybeApp.flatMap { app =>
       if (file.startsWith(SANDBOX_DATA_DIR)) {
         if (app.mode == Mode.Prod) {
           // $COVERAGE-OFF$
-          Logger.debug(s"Getting resource stream ${file}")
-          app.resourceAsStream(file)
+          Logger.debug(s"Getting resource stream $fileToRequest")
+          app.resourceAsStream(fileToRequest)
           // $COVERAGE-ON$
         } else {
           // $COVERAGE-OFF$
-          Logger.debug(s"Getting file input stream ${file}")
+          Logger.debug(s"Getting file input stream $fileToRequest")
           // $COVERAGE-ON$
-          app.getExistingFile(file).map(new FileInputStream(_))
+          app.getExistingFile(fileToRequest).map(new FileInputStream(_))
         }
       } else {
           // $COVERAGE-OFF$
-          Logger.debug(s"Getting file input stream ${file}")
+          Logger.debug(s"Getting file input stream $fileToRequest")
           // $COVERAGE-ON$
-          Try(new FileInputStream(new File(file))).toOption
+          Try(new FileInputStream(new File(fileToRequest))).toOption
       }
     }
   }
