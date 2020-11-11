@@ -21,7 +21,7 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data.SandboxTestDataController
 
-class SandboxTestDataControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
+class SandboxTestDataControllerSpec extends PlaySpec {
 
   def controller(dummyResponse: Boolean) =
     new SandboxTestDataController(Configuration("features.returnDummyResponse" -> dummyResponse))
