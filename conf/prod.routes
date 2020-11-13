@@ -5,4 +5,4 @@ GET        /admin/metrics                               com.kenshoo.play.metrics
 GET        /api/definition                              uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.definition
 GET        /api/documentation/:version/:endpoint        uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.documentation(version, endpoint)
 GET        /api/conf/:version/*file                     uk.gov.hmrc.apprenticeshiplevy.controllers.DocumentationController.conf(version, file)
-GET        /sandbox/data/*req                           uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data.SandboxTestDataController.serve(req)
+GET        /sandbox/data/*req                           @uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data.SandboxTestDataController.serve(req)

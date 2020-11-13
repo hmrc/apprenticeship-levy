@@ -19,11 +19,12 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data
 import java.io.{File, FileInputStream, InputStream}
 import java.net.URLDecoder
 
+import com.google.inject.{Inject, Singleton}
 import org.joda.time._
 import org.slf4j.MDC
 import play.api.libs.json._
 import play.api.mvc._
-import play.api.{Logger, Mode}
+import play.api.{Configuration, Logger, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.microservice.controller.Utf8MimeTypes
 
@@ -31,28 +32,71 @@ import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Try
 
-class SandboxTestDataController extends Controller with Utf8MimeTypes {
+@Singleton
+class SandboxTestDataController @Inject()(configuration: Configuration) extends Controller with Utf8MimeTypes {
+
+  private val logger = Logger(this.getClass)
+
   val SANDBOX_DATA_DIR = "public/sandbox-data"
 
+  lazy val returnDummyResponse: Boolean =
+    configuration
+      .getBoolean("features.returnDummyResponse")
+      .getOrElse(false)
+
+  private[sandbox] def getFileName(file: String): String =
+    if(returnDummyResponse) {
+      val empRefRegex = "^.*employers?\\/([a-zA-Z0-9]{3}\\/.*?|.*?)\\/.*".r
+      file match {
+        case empRefRegex(empRef) =>
+          logger.debug(s"Replacing empref: $empRef in requested file: $file")
+          val dummyEmpRef = List("840","MODES17")
+          val ninoRegex = "^.*\\/employed\\/(.{8,9}).*?$".r
+
+          val newEmpRef: String =
+            if(empRef.contains("/"))
+              dummyEmpRef.mkString("/")
+            else
+              dummyEmpRef.mkString
+
+          val updatedFile = file.replace(empRef, newEmpRef)
+
+          updatedFile match {
+            case ninoRegex(nino) =>
+              logger.debug(s"Replacing nino: $nino in requested file: $file")
+              val newNino = "SC111111A"
+
+              updatedFile.replace(nino, newNino)
+            case _ => updatedFile
+          }
+        case _ =>
+          logger.debug(s"Could not find an empref to replace in: $file")
+          file
+      }
+    } else {
+      file
+    }
+
   protected def retrieve(file: String): Option[InputStream] = {
+    val fileToRequest = getFileName(file)
     AppContext.maybeApp.flatMap { app =>
       if (file.startsWith(SANDBOX_DATA_DIR)) {
         if (app.mode == Mode.Prod) {
           // $COVERAGE-OFF$
-          Logger.debug(s"Getting resource stream ${file}")
-          app.resourceAsStream(file)
+          logger.debug(s"Getting resource stream $fileToRequest")
+          app.resourceAsStream(fileToRequest)
           // $COVERAGE-ON$
         } else {
           // $COVERAGE-OFF$
-          Logger.debug(s"Getting file input stream ${file}")
+          logger.debug(s"Getting file input stream $fileToRequest")
           // $COVERAGE-ON$
-          app.getExistingFile(file).map(new FileInputStream(_))
+          app.getExistingFile(fileToRequest).map(new FileInputStream(_))
         }
       } else {
           // $COVERAGE-OFF$
-          Logger.debug(s"Getting file input stream ${file}")
+          logger.debug(s"Getting file input stream $fileToRequest")
           // $COVERAGE-ON$
-          Try(new FileInputStream(new File(file))).toOption
+          Try(new FileInputStream(new File(fileToRequest))).toOption
       }
     }
   }
@@ -61,7 +105,7 @@ class SandboxTestDataController extends Controller with Utf8MimeTypes {
     MDC.put("X-Client-ID",request.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller"))
 
     // $COVERAGE-OFF$
-    Logger.debug(s"Request was received for path ${req}")
+    logger.debug(s"Request was received for path ${req}")
     // $COVERAGE-ON$
     val path = URLDecoder.decode(req, "UTF-8")
     val Empref = "(.*/)([a-zA-Z0-9]{3}/[a-zA-Z0-9]+)(/.*)".r
@@ -70,13 +114,13 @@ class SandboxTestDataController extends Controller with Utf8MimeTypes {
         path match {
           case Empref(path1, _, path2) => {
             val newpath = s"${path1}${empref}${path2}"
-            Logger.info(s"Resource path overridden by OVERRIDE_EMPREF header. Now looking for ${newpath}")
+            logger.info(s"Resource path overridden by OVERRIDE_EMPREF header. Now looking for ${newpath}")
             readJson(SANDBOX_DATA_DIR, newpath)
             .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), newpath))
             .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request ${req} with OVERRIDE_EMPREF header of ${empref} but no file '${newpath}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
           }
           case _ => {
-            Logger.warn(s"Resource path overridden by OVERRIDE_EMPREF header but unable to get new empref from ${path}.")
+            logger.warn(s"Resource path overridden by OVERRIDE_EMPREF header but unable to get new empref from ${path}.")
             Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file '${path}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}"""))
           }
         }
@@ -85,7 +129,7 @@ class SandboxTestDataController extends Controller with Utf8MimeTypes {
         if (path.startsWith("authorise/read")) {
           Future.successful(Ok(""))
         } else {
-          Logger.info(s"""No override header found. Headers: ${request.headers.toSimpleMap.mkString(" ")}""")
+          logger.info(s"""No override header found. Headers: ${request.headers.toSimpleMap.mkString(" ")}""")
           readJson(SANDBOX_DATA_DIR, path)
             .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), path))
             .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file '${path}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
@@ -97,18 +141,18 @@ class SandboxTestDataController extends Controller with Utf8MimeTypes {
   protected def readJson(dir: String, path: String)(implicit request: Request[_]): Option[Future[Result]] = {
     val filename = s"${dir}/${path}.json"
     // $COVERAGE-OFF$
-    Logger.debug(s"Looking for file ${filename}")
+    logger.debug(s"Looking for file ${filename}")
     // $COVERAGE-ON$
     getData(filename).map(json=>filterByDate(path, json))
   }
 
   protected def getData(filename: String): Option[JsValue] = retrieve(filename).flatMap { is =>
     // $COVERAGE-OFF$
-    Logger.debug(s"Found file ${filename} trying to read")
+    logger.debug(s"Found file ${filename} trying to read")
     // $COVERAGE-ON$
     val jsonStr = Source.fromInputStream(is).getLines().mkString("\n")
     // $COVERAGE-OFF$
-    Logger.debug(s"Parsing to json")
+    logger.debug(s"Parsing to json")
     // $COVERAGE-ON$
     Some(Json.parse(jsonStr))
   }
@@ -148,7 +192,7 @@ class SandboxTestDataController extends Controller with Utf8MimeTypes {
       case Some(jsonOutStr) => {
         (request.getQueryString("fromDate"), request.getQueryString("toDate")) match {
           case (maybeFrom,maybeTo) if maybeFrom.isDefined && maybeTo.isDefined  => {
-            Logger.debug(s"Filtering results to: ${maybeFrom} ${maybeTo}")
+            logger.debug(s"Filtering results to: ${maybeFrom} ${maybeTo}")
             val queryInterval = new Interval(maybeFrom.map(toInstant(_)).get,
                                              maybeTo.map(toInstant(_, 1)).get)
             val EmployedCheck = "([A-Za-z\\-/0-9]*)(employed)([A-Za-z\\-/0-9]*)".r
