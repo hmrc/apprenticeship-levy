@@ -26,14 +26,15 @@ import play.api.libs.json._
 import play.api.mvc._
 import play.api.{Configuration, Logger, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import uk.gov.hmrc.apprenticeshiplevy.utils.DataTransformer
 import uk.gov.hmrc.play.microservice.controller.Utf8MimeTypes
 
 import scala.concurrent.Future
 import scala.io.Source
-import scala.util.Try
+import scala.util.{Random, Try}
 
 @Singleton
-class SandboxTestDataController @Inject()(configuration: Configuration) extends Controller with Utf8MimeTypes {
+class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer, configuration: Configuration) extends Controller with Utf8MimeTypes {
 
   private val logger = Logger(this.getClass)
 
@@ -154,7 +155,7 @@ class SandboxTestDataController @Inject()(configuration: Configuration) extends 
     // $COVERAGE-OFF$
     logger.debug(s"Parsing to json")
     // $COVERAGE-ON$
-    Some(Json.parse(jsonStr))
+    Some(Json.parse(jsonDataTransformer.transform(jsonStr)))
   }
 
   protected def toInstant(dateStr: String): Instant = {

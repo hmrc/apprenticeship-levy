@@ -17,14 +17,14 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data.SandboxTestDataController
+import uk.gov.hmrc.apprenticeshiplevy.utils.DataTransformer
 
 class SandboxTestDataControllerSpec extends PlaySpec {
 
   def controller(dummyResponse: Boolean) =
-    new SandboxTestDataController(Configuration("features.returnDummyResponse" -> dummyResponse))
+    new SandboxTestDataController(new DataTransformer(), Configuration("features.returnDummyResponse" -> dummyResponse))
 
   "getFileName" must {
     "replace file EmpRef with 840/MODES17" when {
