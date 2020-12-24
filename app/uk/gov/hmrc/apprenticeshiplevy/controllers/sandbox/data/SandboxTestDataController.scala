@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.microservice.controller.Utf8MimeTypes
 
 import scala.concurrent.Future
 import scala.io.Source
-import scala.util.{Random, Try}
+import scala.util.Try
 
 @Singleton
 class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer, configuration: Configuration) extends Controller with Utf8MimeTypes {
