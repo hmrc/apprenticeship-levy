@@ -27,11 +27,11 @@ import scala.util.Random
 class DataTransformer() {
 
   def transform(input: String): String = {
-    randomizeSessionIds(input)
+    randomizeSubmissionIds(input)
   }
 
-  private def randomizeSessionIds(input: String): String = {
-    incrementalReplace(input, "{randomSessionId}", randomSessionId)
+  private def randomizeSubmissionIds(input: String): String = {
+    incrementalReplace(input, "{randomSubmissionId}", randomSubmissionId)
   }
 
   @tailrec
@@ -44,7 +44,7 @@ class DataTransformer() {
     }
   }
 
-  private def randomSessionId = "9" + randomDigits(10)
+  private def randomSubmissionId = "9" + randomDigits(10)
   private def randomDigits(digits: Int) = {
     @tailrec
     def loop(digits: Int, result: String): String = {
