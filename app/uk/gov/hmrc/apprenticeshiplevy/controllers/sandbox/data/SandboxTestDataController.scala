@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,14 +51,16 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer, 
       file match {
         case empRefRegex(empRef) =>
           logger.debug(s"Replacing empref: $empRef in requested file: $file")
-          val dummyEmpRef = List("840","MODES17")
           val ninoRegex = "^.*\\/employed\\/(.{8,9}).*?$".r
 
+          val emprefBreak = if(empRef.contains("/")) "/" else ""
           val newEmpRef: String =
-            if(empRef.contains("/"))
-              dummyEmpRef.mkString("/")
-            else
-              dummyEmpRef.mkString
+            empRef.take(3) match {
+              case "105" => s"840${emprefBreak}MODES17"
+              case "106" => s"840${emprefBreak}MODES18"
+              case "107" => s"840${emprefBreak}MODES19"
+              case _     => s"840${emprefBreak}MODES17"
+            }
 
           val updatedFile = file.replace(empRef, newEmpRef)
 

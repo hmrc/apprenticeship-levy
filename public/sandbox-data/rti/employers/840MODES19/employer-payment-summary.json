@@ -8,9 +8,9 @@
         "rtiSubmissionTime": "2017-05-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 10000,
+            "amountDue": 100,
             "taxMonth": "1",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -18,9 +18,9 @@
         "rtiSubmissionTime": "2017-06-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 20000,
+            "amountDue": 200,
             "taxMonth": "2",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -28,29 +28,9 @@
         "rtiSubmissionTime": "2017-07-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 35000,
+            "amountDue": 300,
             "taxMonth": "3",
-            "amountAllowance": 15000
-        }
-    }, {
-        "submissionId": {randomSubmissionId},
-        "hmrcSubmissionTime": "2017-07-16T12:00:00",
-        "rtiSubmissionTime": "2017-07-16T12:00:00",
-        "taxYear": "17-18",
-        "apprenticeshipLevy": {
-            "amountDue": 25000,
-            "taxMonth": "3",
-            "amountAllowance": 15000
-        }
-    }, {
-        "submissionId": {randomSubmissionId},
-        "hmrcSubmissionTime": "2017-07-17T12:00:00",
-        "rtiSubmissionTime": "2017-07-17T12:00:00",
-        "taxYear": "17-18",
-        "apprenticeshipLevy": {
-            "amountDue": 30000,
-            "taxMonth": "3",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -58,9 +38,9 @@
         "rtiSubmissionTime": "2017-08-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 40000,
+            "amountDue": 400,
             "taxMonth": "4",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -68,9 +48,9 @@
         "rtiSubmissionTime": "2017-09-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 50000,
+            "amountDue": 500,
             "taxMonth": "5",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -78,9 +58,9 @@
         "rtiSubmissionTime": "2017-10-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 60000,
+            "amountDue": 600,
             "taxMonth": "6",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -88,9 +68,9 @@
         "rtiSubmissionTime": "2017-11-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 70000,
+            "amountDue": 700,
             "taxMonth": "7",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -98,9 +78,9 @@
         "rtiSubmissionTime": "2017-12-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 80000,
+            "amountDue": 800,
             "taxMonth": "8",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -108,9 +88,9 @@
         "rtiSubmissionTime": "2018-01-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 90000,
+            "amountDue": 900,
             "taxMonth": "9",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -118,9 +98,9 @@
         "rtiSubmissionTime": "2018-02-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 100000,
+            "amountDue": 1000,
             "taxMonth": "10",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -128,9 +108,9 @@
         "rtiSubmissionTime": "2018-03-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 110000,
+            "amountDue": 1100,
             "taxMonth": "11",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }, {
         "submissionId": {randomSubmissionId},
@@ -138,9 +118,9 @@
         "rtiSubmissionTime": "2018-04-15T12:00:00",
         "taxYear": "17-18",
         "apprenticeshipLevy": {
-            "amountDue": 120000,
+            "amountDue": 0,
             "taxMonth": "12",
-            "amountAllowance": 15000
+            "amountAllowance": 0
         }
     }]
 }

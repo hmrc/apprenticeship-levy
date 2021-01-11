@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,11 @@ import scala.util.Random
 class DataTransformer() {
 
   def transform(input: String): String = {
-    randomizeSessionIds(input)
+    randomizeSubmissionIds(input)
   }
 
-  private def randomizeSessionIds(input: String): String = {
-    incrementalReplace(input, "{randomSessionId}", randomSessionId)
+  private def randomizeSubmissionIds(input: String): String = {
+    incrementalReplace(input, "{randomSubmissionId}", randomSubmissionId)
   }
 
   @tailrec
@@ -44,7 +44,7 @@ class DataTransformer() {
     }
   }
 
-  private def randomSessionId = "9" + randomDigits(10)
+  private def randomSubmissionId = "9" + randomDigits(10)
   private def randomDigits(digits: Int) = {
     @tailrec
     def loop(digits: Int, result: String): String = {
