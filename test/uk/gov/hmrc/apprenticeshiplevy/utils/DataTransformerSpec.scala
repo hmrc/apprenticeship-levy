@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ class DataTransformerSpec extends WordSpec with Matchers {
 
   "transform" should {
 
-    val input = "{randomSessionId}," * 100
+    val input = "{randomSubmissionId}," * 100
     val result = sut.transform(input).split(',')
 
     "produce 100 results" in { result.length shouldBe 100 }
