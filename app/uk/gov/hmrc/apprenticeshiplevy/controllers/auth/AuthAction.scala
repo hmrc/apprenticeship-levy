@@ -20,13 +20,11 @@ import java.io.IOException
 
 import com.google.inject.{ImplementedBy, Inject}
 import org.slf4j.MDC
-import play.api.Mode.Mode
+import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.{Configuration, Logger, Play}
-import uk.gov.hmrc.apprenticeshiplevy.config.WSHttp
 import uk.gov.hmrc.apprenticeshiplevy.controllers.AuthError
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
@@ -36,7 +34,6 @@ import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
 import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -224,14 +221,4 @@ private object ErrorHandler {
         }")))
     }
   }
-}
-
-class AuthConnector extends PlayAuthConnector with ServicesConfig {
-  override lazy val serviceUrl: String = baseUrl("auth")
-
-  override def http: CorePost = WSHttp
-
-  override protected def mode: Mode = Play.current.mode
-
-  override protected def runModeConfiguration: Configuration = Play.current.configuration
 }

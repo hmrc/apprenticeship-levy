@@ -23,7 +23,7 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object FakePrivilegedAuthAction extends PrivilegedAuthActionImpl(new AuthConnector) {
+object FakePrivilegedAuthAction extends PrivilegedAuthActionImpl(null) {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))

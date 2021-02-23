@@ -47,7 +47,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       val controller = new FractionsCalculationDateController() with DesController {
         val desConnector: DesConnector = new DesConnector() {
           val baseUrl: String = "http://a.guide.to.nowhere/"
-          val httpGet: HttpGet = stubHttpGet
+          val httpClient: HttpGet = stubHttpGet
           protected val auditConnector: Option[AuditConnector] = None
         }
         override protected val defaultDESEnvironment: String = "clone"
@@ -80,7 +80,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       val controller = new FractionsCalculationDateController() with DesController {
         def desConnector: DesConnector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpGet: HttpGet = stubHttpGet
+          def httpClient: HttpGet = stubHttpGet
           protected def auditConnector: Option[AuditConnector] = None
         }
         override protected def defaultDESEnvironment: String = "clone"
@@ -111,7 +111,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       val controller = new FractionsCalculationDateController() with DesController {
         def desConnector: DesConnector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpGet: HttpGet = stubHttpGet
+          def httpClient: HttpGet = stubHttpGet
           protected def auditConnector: Option[AuditConnector] = None
         }
         override protected def defaultDESEnvironment: String = "clone"

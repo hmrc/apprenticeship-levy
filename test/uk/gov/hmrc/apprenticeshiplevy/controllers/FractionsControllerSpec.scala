@@ -21,15 +21,18 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.apprenticeshiplevy.audit.LiveAuditor
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.FakePrivilegedAuthAction
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsController
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import uk.gov.hmrc.http.HttpGet
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.test.UnitSpec
 
 class FractionsControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar {
-  val liveFractionsController = new LiveFractionsController(new LiveDesConnector(mock[HttpGet]), FakePrivilegedAuthAction)
+  val liveFractionsController = new LiveFractionsController(new LiveDesConnector(mock[HttpClient], mock[AuditConnector], mock[LiveAuditor]),
+    FakePrivilegedAuthAction)
 
   "getting the fractions" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {

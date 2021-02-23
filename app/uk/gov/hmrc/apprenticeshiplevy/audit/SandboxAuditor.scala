@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.config
+package uk.gov.hmrc.apprenticeshiplevy.audit
+import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import scala.concurrent.{ExecutionContext, Future}
 
-import play.api
-import play.api.Environment
-import play.api.inject.{Binding, Module}
-import uk.gov.hmrc.http.HttpGet
-
-class AppLevyModule extends Module {
-  override def bindings(environment: Environment, configuration: api.Configuration): Seq[Binding[_]] = Seq(
-    bind[HttpGet].to(WSHttp),
-    bind[WSHttp].to(WSHttp)
-  )
+//TODO test
+class SandboxAuditor extends Auditor {
+  override def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = block
 }

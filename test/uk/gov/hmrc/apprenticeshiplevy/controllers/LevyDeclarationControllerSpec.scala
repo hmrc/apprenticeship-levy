@@ -20,17 +20,23 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.apprenticeshiplevy.audit.LiveAuditor
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.test.UnitSpec
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar {
-  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector(mock[HttpGet]), FakePrivilegedAuthAction)
+  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector(mock[HttpClient], mock[AuditConnector], mock[LiveAuditor]),
+    FakePrivilegedAuthAction)
 
   "getting the levy declarations" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {
@@ -43,11 +49,13 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with Mock
 object TestDesConnector extends DesConnector {
   override def baseUrl: String = ???
 
-  override def httpGet: HttpGet = ???
+  override def httpClient: HttpClient = ???
 
   override def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext) = ???
 
   protected def auditConnector: Option[AuditConnector] = None
+
+  override def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = ???
 }
 
 object TestLevyDeclarationController extends LevyDeclarationController with DesController {

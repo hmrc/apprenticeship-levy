@@ -25,7 +25,7 @@ import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.play.microservice.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.controller.BaseController
 
 import scala.concurrent.Future
 import scala.io.Source

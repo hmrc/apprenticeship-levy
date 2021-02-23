@@ -22,7 +22,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{ActionBuilder, Request, RequestHeader, Result}
 import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.microservice.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.controller.BaseController
 
 import scala.util.Try
 

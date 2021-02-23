@@ -27,8 +27,7 @@ import play.api.mvc._
 import play.api.{Configuration, Logger, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.utils.DataTransformer
-import uk.gov.hmrc.play.microservice.controller.Utf8MimeTypes
-
+import uk.gov.hmrc.play.bootstrap.controller.Utf8MimeTypes
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Try
