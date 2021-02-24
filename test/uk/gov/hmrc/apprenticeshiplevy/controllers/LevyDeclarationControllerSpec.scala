@@ -20,14 +20,13 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.apprenticeshiplevy.audit.LiveAuditor
 import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.test.UnitSpec
@@ -35,7 +34,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.{ExecutionContext, Future}
 
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar {
-  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector(mock[HttpClient], mock[AuditConnector], mock[LiveAuditor]),
+  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector(mock[HttpClient], mock[AuditConnector]),
     FakePrivilegedAuthAction)
 
   "getting the levy declarations" should {

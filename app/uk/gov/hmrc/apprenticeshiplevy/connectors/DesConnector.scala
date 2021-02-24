@@ -23,7 +23,7 @@ import org.joda.time.LocalDate
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
-import uk.gov.hmrc.apprenticeshiplevy.audit.{Auditor, LiveAuditor, SandboxAuditor}
+import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.data.des.DesignatoryDetails._
@@ -236,29 +236,21 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
 }
 
 trait DesConnector extends FractionsEndpoint
-                   with EmployerDetailsEndpoint
-                   with EmploymentCheckEndpoint
-                   with LevyDeclarationsEndpoint
-                   with GraphiteMetrics
-                   with Auditor {
+  with EmployerDetailsEndpoint
+  with EmploymentCheckEndpoint
+  with LevyDeclarationsEndpoint
+  with Auditor
+  with GraphiteMetrics {
   def httpClient: HttpClient
   def baseUrl: String
 }
 
-class LiveDesConnector @Inject()(val httpClient: HttpClient,
-                                 val auditConnector: AuditConnector,
-                                 auditor: LiveAuditor) extends DesConnector {
+class LiveDesConnector @Inject()(val httpClient: HttpClient, auditConnector: AuditConnector) extends DesConnector {
+  protected def auditConnector: Option[AuditConnector] = Some(auditConnector)
   def baseUrl: String = AppContext.desUrl
-
-  //TODO is this the best approach
-  override def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] =
-    auditor.audit(event: ALAEvent)(block)
 }
 
-class SandboxDesConnector @Inject()(val httpClient: HttpClient,
-                                    auditor: SandboxAuditor) extends DesConnector {
+class SandboxDesConnector @Inject()(val httpClient: HttpClient) extends DesConnector {
+  protected def auditConnector: Option[AuditConnector] = None
   def baseUrl: String = AppContext.stubDesUrl
-
-  override def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] =
-    auditor.audit(event: ALAEvent)(block)
 }

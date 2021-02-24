@@ -29,8 +29,9 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
 import uk.gov.hmrc.http.logging.Authorization
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
@@ -39,15 +40,15 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
   "getting fraction calculation date" should {
     "propogate environment but not authorization headers on to connector" in {
       // set up
-      val stubHttpGet = mock[HttpGet]
+      val mockhttp = mock[HttpClient]
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any(), any()))
+      when(mockhttp.GET[FractionCalculationDate](anyString())(any(), any(), any()))
            .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
 
       val controller = new FractionsCalculationDateController() with DesController {
         val desConnector: DesConnector = new DesConnector() {
           val baseUrl: String = "http://a.guide.to.nowhere/"
-          val httpClient: HttpGet = stubHttpGet
+          val httpClient: HttpClient = mockhttp
           protected val auditConnector: Option[AuditConnector] = None
         }
         override protected val defaultDESEnvironment: String = "clone"
@@ -62,7 +63,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
                                                                                                     "Authorization"->"Bearer dsfda9080",
                                                                                                     "Environment"->"clone")))
 
-      verify(stubHttpGet).GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture(), any())
+      verify(mockhttp).GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture(), any())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -73,14 +74,14 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
 
     "not fail if environment header not supplied" in {
       // set up
-      val stubHttpGet = mock[HttpGet]
+      val mockHttp = mock[HttpClient]
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any(), any()))
+      when(mockHttp.GET[FractionCalculationDate](anyString())(any(), any(), any()))
            .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
       val controller = new FractionsCalculationDateController() with DesController {
         def desConnector: DesConnector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpClient: HttpGet = stubHttpGet
+          def httpClient: HttpClient = mockHttp
           protected def auditConnector: Option[AuditConnector] = None
         }
         override protected def defaultDESEnvironment: String = "clone"
@@ -94,7 +95,7 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
       await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                                     "Authorization"->"Bearer dsfda9080")))
 
-      verify(stubHttpGet).GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture(), any())
+      verify(mockHttp).GET[FractionCalculationDate](anyString())(any(), headerCarrierCaptor.capture(), any())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -105,13 +106,13 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar {
 
     "recover from exceptions" in {
       // set up
-      val stubHttpGet = mock[HttpGet]
-      when(stubHttpGet.GET[FractionCalculationDate](anyString())(any(), any(), any()))
+      val mockHttp = mock[HttpClient]
+      when(mockHttp.GET[FractionCalculationDate](anyString())(any(), any(), any()))
            .thenReturn(Future.failed(new Upstream5xxResponse("DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503. Response body: '{\"reason\" : \"Backend systems not working\"}'", 1, 2)))
       val controller = new FractionsCalculationDateController() with DesController {
         def desConnector: DesConnector = new DesConnector() {
           def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpClient: HttpGet = stubHttpGet
+          def httpClient: HttpClient = mockHttp
           protected def auditConnector: Option[AuditConnector] = None
         }
         override protected def defaultDESEnvironment: String = "clone"
