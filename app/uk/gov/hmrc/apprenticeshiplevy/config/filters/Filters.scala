@@ -16,16 +16,13 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config.filters
 
-import akka.stream.Materializer
 import com.google.inject.Inject
-import org.slf4j.MDC
-import play.api.mvc.{Filter, RequestHeader, Result}
+import play.api.http.DefaultHttpFilters
+import play.filters.headers.{SecurityHeadersConfig, SecurityHeadersFilter}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import uk.gov.hmrc.play.bootstrap.filters.MicroserviceFilters
 
-import scala.concurrent.Future
+class Filters @Inject()(defaultFilters: MicroserviceFilters, apiHeaderCaptureFilter: APIHeaderCaptureFilter)
+  extends DefaultHttpFilters(defaultFilters.filters :+ apiHeaderCaptureFilter
+    :+ new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(AppContext.maybeConfiguration.get)): _*)
 
-class APIHeaderCaptureFilter @Inject()(val mat: Materializer) extends Filter {
-  def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
-    MDC.put("X-Client-ID",rh.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller"))
-    next(rh)
-  }
-}
