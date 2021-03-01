@@ -18,28 +18,21 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.io.InputStream
 
-import com.google.inject.Singleton
+import com.google.inject.{Inject, Singleton}
 import play.Logger
 import play.api.Mode
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-//trait AssetsController extends BaseController {
-//  implicit def current: Option[Application]
-//
-//  private val AbsolutePath = """^(/|[a-zA-Z]:\\).*""".r
-//
-//
-//}
 @Singleton
-class DocumentationController extends BaseController {
+class DocumentationController @Inject()(cc: ControllerComponents) extends BackendController(cc) {
   implicit val current = AppContext.maybeApp
 
   lazy val whitelistedApplicationIds = AppContext.whitelistedApplicationIds

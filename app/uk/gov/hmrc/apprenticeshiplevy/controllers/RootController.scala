@@ -18,12 +18,12 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import play.api.hal.{HalLink, HalLinks, HalResource}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath.decodeAnyDoubleEncoding
 
-trait RootController extends ApiController {
+abstract class RootController(cc: ControllerComponents) extends ApiController(cc) {
 
   def rootUrl: String
 

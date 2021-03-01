@@ -26,6 +26,8 @@ import play.api.libs.json._
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FinalSubmission._
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 
 import scala.util.{Failure, Success, Try}
 

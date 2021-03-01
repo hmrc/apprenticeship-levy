@@ -8,7 +8,7 @@ trait IntegrationTestConfig {
   System.setProperty("logger.resource","logback-test.xml")
 
   def fileToStr(filename: String): String = Source.fromFile(new File(s"$filename")).getLines.mkString("\n")
-  def aesKey: String = sys.props.get("play.crypto.secret").map(_.substring(0, 16)).getOrElse("")
+  def aesKey: String = sys.props.get("play.http.secret.key").map(_.substring(0, 16)).getOrElse("")
   def verboseWiremockOutput: Boolean = sys.props.getOrElse("WIREMOCK_VERBOSE_OUTPUT", "false").toBoolean
   def stubPort = sys.props.getOrElse("WIREMOCK_PORT", "8080").toInt
   def stubHost = sys.props.getOrElse("WIREMOCK_HOST", "localhost")
@@ -30,8 +30,8 @@ trait IntegrationTestConfig {
                                "LiveEmploymentCheckController").map(a=>(s"controllers.uk.gov.hmrc.apprenticeshiplevy.controllers.live.${a}.needsAuditing","false"))
 
   def additionalConfiguration: Map[String, Any] = Map(
-        "ws.timeout.request" -> "500",
-        "ws.timeout.connection" -> "500",
+        "play.ws.timeout.request" -> "500 seconds",
+        "play.ws.timeout.connection" -> "500 seconds",
         "http.port" -> test_port,
         "auditing.enabled" -> "false",
         "microservice.private-mode" -> "true",

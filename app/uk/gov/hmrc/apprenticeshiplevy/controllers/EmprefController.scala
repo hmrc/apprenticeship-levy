@@ -19,14 +19,14 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import play.api.hal.{Hal, HalLink, HalResource}
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath._
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-trait EmprefController extends DesController {
+abstract class EmprefController(cc: ControllerComponents) extends DesController(cc) {
   def desConnector: DesConnector
 
   val authAction: EmploymentReference => AuthAction

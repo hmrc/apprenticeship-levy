@@ -25,8 +25,9 @@ trait IsInExternalTest {
 }
 
 class ConditionalRouter @Inject() (externalTestRoutes: externaltest.Routes,
-                                   nonexternaltestRoutes: nonexternaltest.Routes) extends SimpleRouter with IsInExternalTest {
-  def isInExternalTest: Boolean = AppContext.externalTestModeEnabled
+                                   nonexternaltestRoutes: nonexternaltest.Routes,
+                                   appContext: AppContext) extends SimpleRouter with IsInExternalTest {
+  def isInExternalTest: Boolean = appContext.externalTestModeEnabled
 
   override def routes: Routes = {
     isInExternalTest match {

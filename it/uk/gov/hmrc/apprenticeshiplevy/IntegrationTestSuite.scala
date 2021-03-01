@@ -42,9 +42,9 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
   override def beforeAll(cm: ConfigMap) {
     System.err.println("Starting Play...")
 
-    sys.props.get("play.crypto.secret") match {
-      case Some(_) => Logger.info(s"play.crypto.secret system property set.")
-      case _ => Logger.warn(s"play.crypto.secret system property not set. Tests will fail.")
+    sys.props.get("play.http.secret.key") match {
+      case Some(_) => Logger.info(s"play.http.secret.key system property set.")
+      case _ => Logger.warn(s"play.http.secret.key system property not set. Tests will fail.")
     }
 
     Try("/authorise/read/epaye/AB12345?confidenceLevel=50&privilegedAccess=read:apprenticeship-levy").foreach { (validReadURL1) =>

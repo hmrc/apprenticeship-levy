@@ -22,7 +22,10 @@ import play.filters.headers.{SecurityHeadersConfig, SecurityHeadersFilter}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.bootstrap.filters.MicroserviceFilters
 
-class Filters @Inject()(defaultFilters: MicroserviceFilters, apiHeaderCaptureFilter: APIHeaderCaptureFilter)
+//TODO investigate filters
+class Filters @Inject()(defaultFilters: MicroserviceFilters,
+                        apiHeaderCaptureFilter: APIHeaderCaptureFilter,
+                        appContext: AppContext)
   extends DefaultHttpFilters(defaultFilters.filters :+ apiHeaderCaptureFilter
-    :+ new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(AppContext.maybeConfiguration.get)): _*)
+    :+ new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(appContext.maybeConfiguration.get)): _*)
 

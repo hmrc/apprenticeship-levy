@@ -33,7 +33,6 @@ import uk.gov.hmrc.apprenticeshiplevy.metrics._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import views.html.helper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -153,6 +152,8 @@ trait FractionsEndpoint extends Timer with DesUtils {
 trait LevyDeclarationsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
+  def appContext: AppContext
+
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams
     val url = s"${desURL(empref)}?$dateParams"
@@ -227,7 +228,7 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
     }
   }
 
-  protected[connectors] def isEpsOrigPathEnabled: Boolean = AppContext.epsOrigPathEnabled
+  protected[connectors] def isEpsOrigPathEnabled: Boolean = appContext.epsOrigPathEnabled
 
   protected[connectors] def desURL(empref: String): String = if (isEpsOrigPathEnabled)
                                                           s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"
@@ -238,19 +239,21 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
 trait DesConnector extends FractionsEndpoint
   with EmployerDetailsEndpoint
   with EmploymentCheckEndpoint
-  with LevyDeclarationsEndpoint
   with Auditor
   with GraphiteMetrics {
   def httpClient: HttpClient
   def baseUrl: String
 }
 
-class LiveDesConnector @Inject()(val httpClient: HttpClient, auditConnector: AuditConnector) extends DesConnector {
+class LiveDesConnector @Inject()(val httpClient: HttpClient,
+                                 auditConnector: AuditConnector,
+                                 val appContext: AppContext) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = Some(auditConnector)
-  def baseUrl: String = AppContext.desUrl
+  def baseUrl: String = appContext.desUrl
 }
 
-class SandboxDesConnector @Inject()(val httpClient: HttpClient) extends DesConnector {
+class SandboxDesConnector @Inject()(val httpClient: HttpClient,
+                                    appContext: AppContext) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = None
-  def baseUrl: String = AppContext.stubDesUrl
+  def baseUrl: String = appContext.stubDesUrl
 }

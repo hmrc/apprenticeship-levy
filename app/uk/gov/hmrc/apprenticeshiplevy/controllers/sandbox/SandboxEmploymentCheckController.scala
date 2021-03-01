@@ -17,9 +17,15 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import com.google.inject.Inject
+import play.api.mvc.BodyParsers
 import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.SandboxPrivilegedAuthAction
 
+import scala.concurrent.ExecutionContext
+
 class SandboxEmploymentCheckController @Inject()(val desConnector: SandboxDesConnector,
-                                                 val authAction: SandboxPrivilegedAuthAction) extends EmploymentCheckController
+                                                 val authAction: SandboxPrivilegedAuthAction,
+                                                 val executionContext: ExecutionContext,
+                                                 val parser: BodyParsers.Default
+                                                ) extends EmploymentCheckController
