@@ -36,6 +36,7 @@ import scala.concurrent.Future
 trait LevyDeclarationController {
   self: DesController =>
 
+  val appContext: AppContext
   def desConnector: DesConnector
   val authAction: AuthAction
 
@@ -71,9 +72,9 @@ trait LevyDeclarationController {
   }
 
   private[controllers] def toDateRange(fromDate: Option[LocalDate], toDate: Option[LocalDate]): DateRange = (fromDate, toDate) match {
-    case (None, None) => ClosedDateRange(new LocalDate().minusYears(AppContext.defaultNumberOfDeclarationYears), new LocalDate())
+    case (None, None) => ClosedDateRange(new LocalDate().minusYears(appContext.defaultNumberOfDeclarationYears), new LocalDate())
     case (Some(from), Some(to)) => ClosedDateRange(from, to)
-    case (None, Some(to)) => ClosedDateRange(to.minusYears(AppContext.defaultNumberOfDeclarationYears), to)
+    case (None, Some(to)) => ClosedDateRange(to.minusYears(appContext.defaultNumberOfDeclarationYears), to)
     case (Some(from), None) => ClosedDateRange(from, new LocalDate())
   }
 

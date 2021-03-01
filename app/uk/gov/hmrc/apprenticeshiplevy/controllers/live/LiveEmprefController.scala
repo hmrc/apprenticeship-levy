@@ -20,6 +20,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 import com.google.inject.Inject
 import org.joda.time.LocalDate
 import play.api.mvc.{BodyParsers, ControllerComponents}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AllProviderAuthActionImpl, AuthAction, PrivilegedAuthActionImpl}
@@ -31,6 +32,7 @@ class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
                                      val auth: AllProviderAuthActionImpl,
                                      val executionContext: ExecutionContext,
                                      val parser: BodyParsers.Default,
+                                     val appContext: AppContext,
                                      cc: ControllerComponents) extends EmprefController(cc) {
   override val authAction: EmploymentReference => AuthAction = auth(_)
 

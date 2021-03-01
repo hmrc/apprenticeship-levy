@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.io.InputStream
-
 import com.google.inject.{Inject, Singleton}
 import play.Logger
 import play.api.Mode
@@ -26,16 +25,16 @@ import play.api.libs.json.{Json, _}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class DocumentationController @Inject()(cc: ControllerComponents) extends BackendController(cc) {
-  implicit val current = AppContext.maybeApp
+class DocumentationController @Inject()(cc: ControllerComponents,
+                                        appContext: AppContext) extends BackendController(cc) {
+  implicit val current = appContext.maybeApp
 
-  lazy val whitelistedApplicationIds = AppContext.whitelistedApplicationIds
+  lazy val whitelistedApplicationIds = appContext.whitelistedApplicationIds
 
   lazy val whitelist = Json.obj(
     "access" -> Json.obj(
@@ -82,7 +81,7 @@ class DocumentationController @Inject()(cc: ControllerComponents) extends Backen
     val filename = "definition.json"
     retrieve("public/api", filename) match {
       case Some(fileToServe) => {
-        if (AppContext.privateModeEnabled) {
+        if (appContext.privateModeEnabled) {
           enrichDefinition(fileToServe) match {
             case Success(json) => Future.successful(Ok(json).withHeaders(HeaderNames.CONTENT_TYPE->MimeTypes.JSON))
             case Failure(_) => Future.successful(InternalServerError)

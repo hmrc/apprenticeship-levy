@@ -15,7 +15,6 @@
  */
 
 package uk.gov.hmrc.apprenticeshiplevy.utils
-
 import org.joda.time.LocalDate
 
 sealed trait DateRange {

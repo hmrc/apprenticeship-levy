@@ -42,7 +42,9 @@ case class TimerEvent(name: String, delta: Long, timeUnit: TimeUnit) extends Met
 trait GraphiteMetrics {
   Logger.info("[Metrics] Registering metrics...")
 
-  val registry: Option[MetricRegistry] = if (AppContext.metricsEnabled) Try (Some(current.injector.instanceOf[MetricsImpl].defaultRegistry)).getOrElse(None) else None
+  val appContext: AppContext
+
+  val registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(current.injector.instanceOf[MetricsImpl].defaultRegistry)).getOrElse(None) else None
 
   val AUTH_SERVICE_REQUEST = "auth-service"
   val DES_EMP_CHECK_REQUEST = "des-emp-check"

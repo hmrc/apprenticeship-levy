@@ -26,9 +26,8 @@ import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import scala.util.Try
 
+//TODO see if a trait with an unimplemented def could work here
 trait ApiController extends BackendController with HeaderValidator {
-
-  def cc: ControllerComponents
 
   implicit class ErrorResponseSyntax(er: ErrorResponse) {
     def result: Result = Status(er.httpStatusCode)(Json.toJson(er))

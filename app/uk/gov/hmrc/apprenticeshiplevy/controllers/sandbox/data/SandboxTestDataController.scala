@@ -31,9 +31,13 @@ import uk.gov.hmrc.play.bootstrap.controller.Utf8MimeTypes
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Try
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 
 @Singleton
-class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer, configuration: Configuration) extends Controller with Utf8MimeTypes {
+class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
+                                          configuration: Configuration,
+                                          appContext: AppContext) extends Controller with Utf8MimeTypes {
 
   private val logger = Logger(this.getClass)
 
@@ -81,7 +85,7 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer, 
 
   protected def retrieve(file: String): Option[InputStream] = {
     val fileToRequest = getFileName(file)
-    AppContext.maybeApp.flatMap { app =>
+    appContext.maybeApp.flatMap { app =>
       if (file.startsWith(SANDBOX_DATA_DIR)) {
         if (app.mode == Mode.Prod) {
           // $COVERAGE-OFF$

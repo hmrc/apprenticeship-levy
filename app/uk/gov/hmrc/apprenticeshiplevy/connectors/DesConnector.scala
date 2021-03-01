@@ -152,7 +152,7 @@ trait FractionsEndpoint extends Timer with DesUtils {
 trait LevyDeclarationsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
-  def appContext: AppContext
+  val appContext: AppContext
 
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams
@@ -239,6 +239,7 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
 trait DesConnector extends FractionsEndpoint
   with EmployerDetailsEndpoint
   with EmploymentCheckEndpoint
+  with LevyDeclarationsEndpoint
   with Auditor
   with GraphiteMetrics {
   def httpClient: HttpClient
@@ -253,7 +254,7 @@ class LiveDesConnector @Inject()(val httpClient: HttpClient,
 }
 
 class SandboxDesConnector @Inject()(val httpClient: HttpClient,
-                                    appContext: AppContext) extends DesConnector{
+                                    val appContext: AppContext) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = None
   def baseUrl: String = appContext.stubDesUrl
 }

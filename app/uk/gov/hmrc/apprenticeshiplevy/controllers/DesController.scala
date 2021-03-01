@@ -28,15 +28,18 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.logging.Authorization
 
 abstract class DesController(cc: ControllerComponents) extends ApiController(cc) {
+
+  val appContext: AppContext
+
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
     val hc = super.hc(rh).withExtraHeaders((("Environment",rh.headers.toSimpleMap.getOrElse("Environment",defaultDESEnvironment))))
     hc.copy(authorization=Some(Authorization(s"Bearer ${defaultDESToken}")))
   }
   // $COVERAGE-OFF$
-  protected def defaultDESEnvironment: String = AppContext.desEnvironment
+  protected def defaultDESEnvironment: String = appContext.desEnvironment
   // $COVERAGE-ON$
 
-  protected def defaultDESToken: String = AppContext.desToken
+  protected def defaultDESToken: String = appContext.desToken
 
   protected def toDESFormat(empref: String): String = URLDecoder.decode(empref, "UTF-8") match {
     case emprefParts(part1, _, part2) => part1 + part2
