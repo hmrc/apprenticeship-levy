@@ -27,6 +27,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FinalSubmission._
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 
+
 import scala.util.{Failure, Success, Try}
 
 case class EmployerPaymentSummary(submissionId: Long,
@@ -98,7 +99,6 @@ object EmployerPaymentSummary {
       }
     }
 
-  implicit val dateRangeFormat = Json.format[ClosedDateRange]
 
   implicit val jodaDateTimeFormat = new Format[LocalDateTime] {
     val localDateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")

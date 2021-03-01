@@ -30,6 +30,7 @@ import scala.concurrent.ExecutionContext
 class SandboxRootController @Inject()(val authAction: SandboxAuthAction,
                                       val parser: BodyParsers.Default,
                                       val executionContext: ExecutionContext,
+                                      val appContext: AppContext,
                                       environment: Environment,
                                       cc: ControllerComponents
                                       ) extends RootController(cc) with SandboxLinkHelper {

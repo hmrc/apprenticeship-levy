@@ -21,7 +21,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
 
 sealed trait FinalSubmission
 case class CombinedFinalSubmission(schemeCeased: Option[Boolean], schemeCeasedDate: Option[LocalDate], forYear: Option[Boolean]) extends FinalSubmission
@@ -31,7 +31,7 @@ case class LastSubmission(forYear: Boolean) extends FinalSubmission
 object FinalSubmission {
   implicit val combinedFinalSubmissionReads: Reads[FinalSubmission] = (
     (JsPath \ "schemeCeased").readNullable[Boolean] and
-    (JsPath \ "schemeCeasedDate").readNullable[LocalDate] and
+    (JsPath \ "schemeCeasedDate").readNullable[LocalDate](DefaultJodaLocalDateReads) and
     (JsPath \ "forYear").readNullable[Boolean]
   )(FinalSubmission.apply _)
 

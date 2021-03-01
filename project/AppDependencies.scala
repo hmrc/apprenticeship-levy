@@ -17,7 +17,7 @@ object AppDependencies {
   )
 
    lazy val test: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"            %% "hmrctest"                     % "3.9.0-play-25",
+    "uk.gov.hmrc"            %% "hmrctest"                     % "3.10.0-play-26",
     "org.scalatest"          %% "scalatest"                    % "3.0.8",
     "com.typesafe.play"      %% "play-test"                    % PlayVersion.current,
     "org.pegdown"             % "pegdown"                      % "1.6.0",

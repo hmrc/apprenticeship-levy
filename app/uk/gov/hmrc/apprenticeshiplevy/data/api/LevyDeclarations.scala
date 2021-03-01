@@ -19,6 +19,8 @@ package uk.gov.hmrc.apprenticeshiplevy.data.api
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{LocalDate, LocalDateTime}
 import play.api.libs.json._
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 
 case class PayrollPeriod(year: String, month: Int)
 

@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import org.slf4j.MDC
 import play.api.hal.{HalLink, HalResource}
 import play.api.libs.json.Json
-import play.api.mvc.{ActionBuilder, AnyContent, ControllerComponents, Request, RequestHeader, Result}
+import play.api.mvc._
 import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import scala.util.Try
 
 //TODO see if a trait with an unimplemented def could work here
-trait ApiController extends BackendController with HeaderValidator {
+abstract class ApiController(cc: ControllerComponents) extends BackendController(cc) with HeaderValidator {
 
   implicit class ErrorResponseSyntax(er: ErrorResponse) {
     def result: Result = Status(er.httpStatusCode)(Json.toJson(er))

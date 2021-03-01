@@ -34,6 +34,7 @@ class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
                                      val parser: BodyParsers.Default,
                                      val appContext: AppContext,
                                      cc: ControllerComponents) extends EmprefController(cc) {
+
   override val authAction: EmploymentReference => AuthAction = auth(_)
 
   override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url

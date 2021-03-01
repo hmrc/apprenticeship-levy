@@ -18,6 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.SandboxPrivilegedAuthAction
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{DesController, FractionsCalculationDateController, FractionsController}
@@ -27,5 +28,6 @@ class SandboxFractionsController @Inject()(val desConnector: SandboxDesConnector
                                            val authAction: SandboxPrivilegedAuthAction,
                                            val executionContext: ExecutionContext,
                                            val parser: BodyParsers.Default,
+                                           val appContext: AppContext,
                                            cc: ControllerComponents
                                            ) extends DesController(cc) with FractionsController with FractionsCalculationDateController
