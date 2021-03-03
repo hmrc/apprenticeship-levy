@@ -21,19 +21,19 @@ import java.io.InputStream
 import com.google.inject.{Inject, Singleton}
 import play.Logger
 import play.api.Mode
-import play.api.http.{FileMimeTypes, HeaderNames, MimeTypes}
+import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
+
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 @Singleton
 class DocumentationController @Inject()(cc: ControllerComponents,
-                                        appContext: AppContext,
-                                        fileMimeTypes: FileMimeTypes) extends BackendController(cc){
+                                        appContext: AppContext) extends BackendController(cc){
   implicit val current = appContext.maybeApp
 
   lazy val whitelistedApplicationIds = appContext.whitelistedApplicationIds
@@ -65,7 +65,7 @@ class DocumentationController @Inject()(cc: ControllerComponents,
     retrieve(rootPath, file) match {
       case Some(fileToServe) => {
         //TODO test the updated fileMimeTypes
-        val mimeType = if (file.contains("raml")) "application/raml+yaml" else fileMimeTypes.forFileName(file).getOrElse("text/plain")
+        val mimeType = if (file.contains("raml")) "application/raml+yaml" else cc.fileMimeTypes.forFileName(file).getOrElse("text/plain")
         Ok(Source.fromInputStream(fileToServe).mkString).as(mimeType)
       }
       case _ => {

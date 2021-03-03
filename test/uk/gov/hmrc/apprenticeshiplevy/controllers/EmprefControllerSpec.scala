@@ -18,12 +18,22 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.net.URLEncoder
 
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
+import play.api.test.Helpers.stubControllerComponents
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues {
+import scala.concurrent.ExecutionContext
+
+class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues with MockitoSugar {
+
+  val controllerComponents: ControllerComponents = stubControllerComponents()
+  val mockAppContext: AppContext = mock[AppContext]
+
   "prepareLinks" should {
     "correctly prepare HAL for an empref" in {
       val empref = "123/AB12345"
@@ -37,7 +47,14 @@ class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues 
     }
   }
 
-  val testController = new EmprefController {
+  val testController = new EmprefController(controllerComponents) {
+
+    override val appContext: AppContext = mockAppContext
+
+    override def executionContext: ExecutionContext = controllerComponents.executionContext
+
+    override def parser: BodyParser[AnyContent] = controllerComponents.parsers.default
+
     override def desConnector: DesConnector = ???
 
     override def emprefUrl(ref: EmploymentReference): String = s"""/epaye/${URLEncoder.encode(ref.empref, "UTF-8")}"""

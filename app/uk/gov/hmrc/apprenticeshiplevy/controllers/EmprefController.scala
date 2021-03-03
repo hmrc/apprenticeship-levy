@@ -27,7 +27,7 @@ import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath._
 //TODO update this
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-abstract class EmprefController(cc: ControllerComponents) extends DesController(cc) {
+abstract class EmprefController(val cc: ControllerComponents) extends DesController(cc) {
   def desConnector: DesConnector
 
   val authAction: EmploymentReference => AuthAction

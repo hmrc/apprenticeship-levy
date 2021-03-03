@@ -35,6 +35,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 
 class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar {
+
   "getting fraction calculations" should {
     "propogate environment but not authorization headers on to connector" in {
       // set up

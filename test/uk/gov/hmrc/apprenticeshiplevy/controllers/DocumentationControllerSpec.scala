@@ -19,20 +19,40 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import java.io.File
 
 import org.scalatest.Inside
-import org.scalatestplus.play.OneAppPerSuite
-import play.api.Play
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.ControllerComponents
+import play.api.test.Helpers.stubControllerComponents
+import play.api.test.Injecting
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.util.{Failure, Success}
 
-class DocumentationControllerSpec extends UnitSpec with Inside with OneAppPerSuite {
+class DocumentationControllerSpec extends UnitSpec with Inside with GuiceOneAppPerSuite with Injecting with MockitoSugar {
 
   val validDefinition = new File(getClass.getResource("/validDefinition.json").toURI())
   val invalidDefinition = new File(getClass.getResource("/invalidDefinition.json").toURI())
+  val stubComponents: ControllerComponents = stubControllerComponents()
+  val mockAppContext: AppContext = mock[AppContext]
+
+  override def fakeApplication: Application = GuiceApplicationBuilder()
+    .overrides(
+      bind[ControllerComponents].toInstance(stubComponents),
+      bind[AppContext].toInstance(mockAppContext)
+    )
+    .configure("whitelisted-applications" -> ("f0e2611e-2f45-4326-8cd2-6eefebec77b7", "cafebabe-2f45-4326-8cd2-6eefebec77b7"))
+    .build()
+
+  val documentationController = inject[DocumentationController]
 
   "DocumentationController" should {
-    "add whitelist information correctly" in new TestDocumentationController {
-      val enrichedDefinition = enrichDefinition(new java.io.FileInputStream(validDefinition))
+    "add whitelist information correctly" in {
+
+      val enrichedDefinition = documentationController.enrichDefinition(new java.io.FileInputStream(validDefinition))
 
       inside(enrichedDefinition) { case Success(json) =>
         val firstVersion = (json \ "api" \ "versions")(0)
@@ -42,16 +62,10 @@ class DocumentationControllerSpec extends UnitSpec with Inside with OneAppPerSui
       }
     }
 
-    "return a Failure if unable to transform definition.json" in new TestDocumentationController {
-      enrichDefinition(new java.io.FileInputStream(invalidDefinition)) should matchPattern { case Failure(_) => }
+    "return a Failure if unable to transform definition.json" in {
+      documentationController.enrichDefinition(new java.io.FileInputStream(invalidDefinition)) should matchPattern { case Failure(_) => }
     }
   }
 }
 
-class TestDocumentationController extends DocumentationController {
-  override implicit val current = Some(Play.current)
-  override lazy val whitelistedApplicationIds = Seq(
-    "f0e2611e-2f45-4326-8cd2-6eefebec77b7",
-    "cafebabe-2f45-4326-8cd2-6eefebec77b7"
-  )
-}
+
