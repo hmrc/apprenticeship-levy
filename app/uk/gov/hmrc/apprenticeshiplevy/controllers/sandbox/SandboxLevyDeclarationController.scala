@@ -29,4 +29,4 @@ class SandboxLevyDeclarationController @Inject()(val desConnector: SandboxDesCon
                                                  val executionContext: ExecutionContext,
                                                  val parser: BodyParsers.Default,
                                                  val appContext: AppContext,
-                                                 cc: ControllerComponents) extends DesController(cc) with LevyDeclarationController
+                                                 val controllerComponents: ControllerComponents) extends DesController with LevyDeclarationController

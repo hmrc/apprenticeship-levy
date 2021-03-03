@@ -23,7 +23,7 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath.decodeAnyDoubleEncoding
 
-abstract class RootController(cc: ControllerComponents) extends ApiController(cc) {
+trait RootController extends ApiController {
 
   def rootUrl: String
 

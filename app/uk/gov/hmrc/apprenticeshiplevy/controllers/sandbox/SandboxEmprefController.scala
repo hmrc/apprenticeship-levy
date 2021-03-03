@@ -34,8 +34,8 @@ class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
                                         val executionContext: ExecutionContext,
                                         val parser: BodyParsers.Default,
                                         val appContext: AppContext,
-                                        cc: ControllerComponents,
-                                        environment: Environment) extends EmprefController(cc) with SandboxLinkHelper {
+                                        val controllerComponents: ControllerComponents,
+                                        environment: Environment) extends EmprefController with SandboxLinkHelper {
 
   override val authAction: EmploymentReference => SandboxPrivilegedAuthAction = _ => auth
 

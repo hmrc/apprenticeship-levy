@@ -22,12 +22,12 @@ import java.net.URLDecoder
 import org.slf4j.MDC
 import play.api.Logger
 import play.api.libs.json.Json
-import play.api.mvc.{ControllerComponents, RequestHeader, Result}
+import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.logging.Authorization
 
-abstract class DesController(cc: ControllerComponents) extends ApiController(cc) {
+trait DesController extends ApiController {
 
   val appContext: AppContext
 

@@ -30,11 +30,11 @@ class LiveFractionsController @Inject()(val desConnector: LiveDesConnector,
                                         val executionContext: ExecutionContext,
                                         val parser: BodyParsers.Default,
                                         val appContext: AppContext,
-                                        cc: ControllerComponents) extends DesController(cc) with FractionsController
+                                        val controllerComponents: ControllerComponents) extends DesController with FractionsController
 
 class LiveFractionsCalculationDateController  @Inject()(val desConnector: LiveDesConnector,
                                                         val authAction: PrivilegedAuthActionImpl,
                                                         val executionContext: ExecutionContext,
                                                         val parser: BodyParsers.Default,
                                                         val appContext: AppContext,
-                                                        cc: ControllerComponents) extends DesController(cc) with FractionsCalculationDateController
+                                                        val controllerComponents: ControllerComponents) extends DesController with FractionsCalculationDateController

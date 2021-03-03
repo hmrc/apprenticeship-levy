@@ -19,19 +19,39 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import org.joda.time.LocalDate
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.test.FakeRequest
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.ControllerComponents
 import play.api.test.Helpers._
-import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.FakePrivilegedAuthAction
+import play.api.test.{FakeRequest, Injecting}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{FakePrivilegedAuthAction, PrivilegedAuthActionImpl}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsController
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
+import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.test.UnitSpec
 
-class FractionsControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar {
-  val liveFractionsController = new LiveFractionsController(new LiveDesConnector(mock[HttpClient], mock[AuditConnector]),
-    FakePrivilegedAuthAction)
+class FractionsControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar with GuiceOneAppPerSuite with Injecting {
+
+  val mockAppContext = mock[AppContext]
+  val stubComponents: ControllerComponents = stubControllerComponents()
+  val mockHttp = mock[HttpClient]
+  val mockAuditConnector = mock[AuditConnector]
+
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
+    .overrides(
+      bind[ControllerComponents].toInstance(stubComponents),
+      bind[AppContext].toInstance(mockAppContext),
+      bind[HttpClient].toInstance(mockHttp),
+      bind[AuditConnector].toInstance(mockAuditConnector),
+      bind[PrivilegedAuthActionImpl].to[FakePrivilegedAuthAction]
+    ).build()
+
+
+  val liveFractionsController = inject[LiveFractionsController]
 
   "getting the fractions" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {

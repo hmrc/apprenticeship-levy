@@ -29,4 +29,4 @@ class LiveEmploymentCheckController  @Inject()(val desConnector: LiveDesConnecto
                                                val executionContext: ExecutionContext,
                                                val parser: BodyParsers.Default,
                                                val appContext: AppContext,
-                                               cc: ControllerComponents) extends EmploymentCheckController(cc)
+                                               val controllerComponents: ControllerComponents) extends EmploymentCheckController

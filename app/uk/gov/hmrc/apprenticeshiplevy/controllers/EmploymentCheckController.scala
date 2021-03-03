@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNotVisible
@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
-abstract class EmploymentCheckController(cc: ControllerComponents) extends DesController(cc) {
+trait EmploymentCheckController extends DesController {
 
   def desConnector: DesConnector
   val authAction: AuthAction

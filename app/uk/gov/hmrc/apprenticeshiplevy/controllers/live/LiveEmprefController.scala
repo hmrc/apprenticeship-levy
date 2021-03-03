@@ -33,7 +33,7 @@ class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
                                      val executionContext: ExecutionContext,
                                      val parser: BodyParsers.Default,
                                      val appContext: AppContext,
-                                     cc: ControllerComponents) extends EmprefController(cc) {
+                                     val controllerComponents: ControllerComponents) extends EmprefController {
 
   override val authAction: EmploymentReference => AuthAction = auth(_)
 

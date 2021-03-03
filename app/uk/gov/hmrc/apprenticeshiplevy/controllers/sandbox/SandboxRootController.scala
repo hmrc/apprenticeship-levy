@@ -31,9 +31,9 @@ class SandboxRootController @Inject()(val authAction: SandboxAuthAction,
                                       val parser: BodyParsers.Default,
                                       val executionContext: ExecutionContext,
                                       val appContext: AppContext,
-                                      environment: Environment,
-                                      cc: ControllerComponents
-                                      ) extends RootController(cc) with SandboxLinkHelper {
+                                      val controllerComponents: ControllerComponents,
+                                      environment: Environment
+                                      ) extends RootController with SandboxLinkHelper {
   //TODO verify this is correct
   override val env = environment.toString
 

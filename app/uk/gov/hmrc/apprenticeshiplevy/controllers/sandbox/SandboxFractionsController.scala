@@ -29,5 +29,5 @@ class SandboxFractionsController @Inject()(val desConnector: SandboxDesConnector
                                            val executionContext: ExecutionContext,
                                            val parser: BodyParsers.Default,
                                            val appContext: AppContext,
-                                           cc: ControllerComponents
-                                           ) extends DesController(cc) with FractionsController with FractionsCalculationDateController
+                                           val controllerComponents: ControllerComponents
+                                           ) extends DesController with FractionsController with FractionsCalculationDateController

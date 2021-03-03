@@ -26,7 +26,7 @@ import scala.concurrent.ExecutionContext
 class LiveRootController @Inject()(val authAction: AuthActionImpl,
                                    val executionContext: ExecutionContext,
                                    val parser: BodyParsers.Default,
-                                   cc: ControllerComponents) extends RootController(cc) {
+                                   val controllerComponents: ControllerComponents) extends RootController {
 
   override def rootUrl: String = routes.LiveRootController.root().url
 

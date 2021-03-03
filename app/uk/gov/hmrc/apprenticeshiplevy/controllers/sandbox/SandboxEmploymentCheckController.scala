@@ -30,5 +30,5 @@ class SandboxEmploymentCheckController @Inject()(val desConnector: SandboxDesCon
                                                  val executionContext: ExecutionContext,
                                                  val parser: BodyParsers.Default,
                                                  val appContext: AppContext,
-                                                 cc: ControllerComponents
-                                                ) extends EmploymentCheckController(cc)
+                                                 val controllerComponents: ControllerComponents
+                                                ) extends EmploymentCheckController

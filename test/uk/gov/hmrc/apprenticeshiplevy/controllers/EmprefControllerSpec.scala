@@ -18,8 +18,8 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.net.URLEncoder
 
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
@@ -31,7 +31,7 @@ import scala.concurrent.ExecutionContext
 
 class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues with MockitoSugar {
 
-  val controllerComponents: ControllerComponents = stubControllerComponents()
+  val stubComponents: ControllerComponents = stubControllerComponents()
   val mockAppContext: AppContext = mock[AppContext]
 
   "prepareLinks" should {
@@ -47,9 +47,11 @@ class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues 
     }
   }
 
-  val testController = new EmprefController(controllerComponents) {
+  val testController = new EmprefController {
 
     override val appContext: AppContext = mockAppContext
+
+    override def controllerComponents: ControllerComponents = stubComponents
 
     override def executionContext: ExecutionContext = controllerComponents.executionContext
 
@@ -65,7 +67,7 @@ class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues 
 
     override def employmentCheckUrl(ref: EmploymentReference): String = emprefUrl(ref) + "/employed/{nino}"
 
-    override val authAction: EmploymentReference => AuthAction = _ => FakePrivilegedAuthAction
+    override val authAction: EmploymentReference => AuthAction = _ => new FakePrivilegedAuthAction
   }
 
 }
