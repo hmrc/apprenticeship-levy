@@ -20,9 +20,11 @@ import org.joda.time.{LocalDate, LocalDateTime}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils._
@@ -30,12 +32,20 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.EventKeys._
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class DesConnectorSpec extends UnitSpec with MockitoSugar {
+class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach{
+
+  val mockAppContext = mock[AppContext]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockAppContext)
+  }
+
   "DES Connector" should {
     "send audit events" in {
         // set up
@@ -62,6 +72,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
         val mockHttp = mock[HttpClient]
         when(mockHttp.GET[FractionCalculationDate](anyString())(any(), any(), any())).thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
         val connector = new DesConnector() {
+          override val appContext: AppContext = mockAppContext
           def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpClient: HttpClient = mockHttp
           protected def auditConnector: Option[AuditConnector] = None
@@ -83,6 +94,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
         when(mockHttp.GET[Fractions](anyString())(any(), any(), any()))
            .thenReturn(Future.successful(expected))
         val connector = new DesConnector() {
+          override val appContext: AppContext = mockAppContext
           def baseUrl: String = "http://a.guide.to.nowhere/"
           def httpClient: HttpClient = mockHttp
           protected def auditConnector: Option[AuditConnector] = None
@@ -102,6 +114,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
     val ec = defaultContext
     val mockHttp = mock[HttpClient]
     val connector = new DesConnector() {
+      override val appContext: AppContext = mockAppContext
       def baseUrl: String = "http://a.guide.to.nowhere"
       def httpClient: HttpClient = mockHttp
       protected def auditConnector: Option[AuditConnector] = None
@@ -130,6 +143,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar {
                         HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
                       ))
       val connector = new DesConnector() {
+        override val appContext: AppContext = mockAppContext
         def baseUrl: String = "http://a.guide.to.nowhere"
         def httpClient: HttpClient = mockHttp
         override protected[connectors] def isEpsOrigPathEnabled: Boolean = false
