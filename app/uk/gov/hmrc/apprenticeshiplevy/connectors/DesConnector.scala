@@ -152,7 +152,7 @@ trait FractionsEndpoint extends Timer with DesUtils {
 trait LevyDeclarationsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
-  val appContext: AppContext
+  def appContext: AppContext
 
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams

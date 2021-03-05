@@ -28,11 +28,10 @@ import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.audit.EventKeys._
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
@@ -40,10 +39,18 @@ import scala.concurrent.Future
 class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach{
 
   val mockAppContext = mock[AppContext]
+  val mockHttp = mock[HttpClient]
+
+  def connector: DesConnector = new DesConnector(){
+    override def appContext: AppContext = mockAppContext
+    def baseUrl: String = "http://a.guide.to.nowhere/"
+    def httpClient: HttpClient = mockHttp
+    protected def auditConnector: Option[AuditConnector] = None
+  }
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAppContext)
+    reset(mockAppContext, mockHttp)
   }
 
   "DES Connector" should {
@@ -69,14 +76,9 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
     "for Fraction Date endpoint" must {
       "when EDH not failing return local date instance of date" in {
         // set up
-        val mockHttp = mock[HttpClient]
+
         when(mockHttp.GET[FractionCalculationDate](anyString())(any(), any(), any())).thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
-        val connector = new DesConnector() {
-          override val appContext: AppContext = mockAppContext
-          def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpClient: HttpClient = mockHttp
-          protected def auditConnector: Option[AuditConnector] = None
-        }
+        when(mockAppContext.metricsEnabled).thenReturn(false)
 
         // test
         val futureResult = connector.fractionCalculationDate(HeaderCarrier(), defaultContext)
@@ -89,16 +91,11 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
     "for Fractions endpoint" must {
       "when EDH not failing return fractions" in {
         // set up
-        val mockHttp = mock[HttpClient]
+
         val expected = Fractions("123/AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))
         when(mockHttp.GET[Fractions](anyString())(any(), any(), any()))
            .thenReturn(Future.successful(expected))
-        val connector = new DesConnector() {
-          override val appContext: AppContext = mockAppContext
-          def baseUrl: String = "http://a.guide.to.nowhere/"
-          def httpClient: HttpClient = mockHttp
-          protected def auditConnector: Option[AuditConnector] = None
-        }
+        when(mockAppContext.metricsEnabled).thenReturn(false)
 
         // test
         val futureResult = connector.fractions("123/AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(HeaderCarrier(),defaultContext)
@@ -112,17 +109,15 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
   "have Levy Declarations endpoint and" should {
     val hc = HeaderCarrier()
     val ec = defaultContext
-    val mockHttp = mock[HttpClient]
-    val connector = new DesConnector() {
-      override val appContext: AppContext = mockAppContext
-      def baseUrl: String = "http://a.guide.to.nowhere"
-      def httpClient: HttpClient = mockHttp
-      protected def auditConnector: Option[AuditConnector] = None
-    }
 
     "support original endpoint url" in {
       // set up
       val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
+      when(mockAppContext.metricsEnabled).thenReturn(false)
+
+      //TODO this test and the ones below seem to be failing with a null pointer because the startsWith clause on the mock is not being met.
+      //the des url is controller be the mockAppContext flag below
+      when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
       when(mockHttp.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"))(any(), any(), any()))
                       .thenReturn(Future.successful(
                         HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
@@ -142,7 +137,8 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
                       .thenReturn(Future.successful(
                         HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
                       ))
-      val connector = new DesConnector() {
+      when(mockAppContext.metricsEnabled).thenReturn(false)
+      def connector = new DesConnector() {
         override val appContext: AppContext = mockAppContext
         def baseUrl: String = "http://a.guide.to.nowhere"
         def httpClient: HttpClient = mockHttp

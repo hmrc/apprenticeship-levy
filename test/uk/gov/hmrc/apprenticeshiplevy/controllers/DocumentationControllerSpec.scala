@@ -29,7 +29,7 @@ import play.api.test.Helpers.stubControllerComponents
 import play.api.test.Injecting
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.test.UnitSpec
-
+import org.mockito.Mockito.when
 import scala.util.{Failure, Success}
 
 class DocumentationControllerSpec extends UnitSpec with Inside with GuiceOneAppPerSuite with Injecting with MockitoSugar {
@@ -44,14 +44,13 @@ class DocumentationControllerSpec extends UnitSpec with Inside with GuiceOneAppP
       bind[ControllerComponents].toInstance(stubComponents),
       bind[AppContext].toInstance(mockAppContext)
     )
-    .configure("whitelisted-applications" -> ("f0e2611e-2f45-4326-8cd2-6eefebec77b7", "cafebabe-2f45-4326-8cd2-6eefebec77b7"))
     .build()
 
   val documentationController = inject[DocumentationController]
 
   "DocumentationController" should {
     "add whitelist information correctly" in {
-
+      when(mockAppContext.whitelistedApplicationIds).thenReturn(Seq("f0e2611e-2f45-4326-8cd2-6eefebec77b7", "cafebabe-2f45-4326-8cd2-6eefebec77b7"))
       val enrichedDefinition = documentationController.enrichDefinition(new java.io.FileInputStream(validDefinition))
 
       inside(enrichedDefinition) { case Success(json) =>

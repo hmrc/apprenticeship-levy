@@ -17,15 +17,14 @@
 package uk.gov.hmrc.apprenticeshiplevy.config.filters
 
 import com.google.inject.Inject
+import play.api.Configuration
 import play.api.http.DefaultHttpFilters
 import play.filters.headers.{SecurityHeadersConfig, SecurityHeadersFilter}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.play.bootstrap.filters.MicroserviceFilters
+import uk.gov.hmrc.play.bootstrap.backend.filters.BackendFilters
 
-//TODO investigate filters
-class Filters @Inject()(defaultFilters: MicroserviceFilters,
+class Filters @Inject()(defaultFilters: BackendFilters,
                         apiHeaderCaptureFilter: APIHeaderCaptureFilter,
-                        appContext: AppContext)
+                        configuration: Configuration)
   extends DefaultHttpFilters(defaultFilters.filters :+ apiHeaderCaptureFilter
-    :+ new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(appContext.maybeConfiguration.get)): _*)
+    :+ new SecurityHeadersFilter(SecurityHeadersConfig.fromConfiguration(configuration)): _*)
 
