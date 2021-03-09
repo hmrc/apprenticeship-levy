@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import com.codahale.metrics.MetricRegistry
 import org.joda.time.LocalDate
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -23,13 +24,12 @@ import org.mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
-import play.api.mvc.BodyParsers.Default
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors._
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction}
+import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
 import uk.gov.hmrc.http.logging.Authorization
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, Upstream5xxResponse}
@@ -44,31 +44,33 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar w
   val mockAppContext = mock[AppContext]
   val mockHttp = mock[HttpClient]
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockAppContext, mockHttp)
-  }
-
-  def controller = new FractionsCalculationDateController() with DesController {
-    val desConnector: DesConnector = new DesConnector() {
-      val baseUrl: String = "http://a.guide.to.nowhere/"
-      val httpClient: HttpClient = mockHttp
-      protected val auditConnector: Option[AuditConnector] = None
+  def controller : FractionsCalculationDateController = new FractionsCalculationDateController with DesController {
+    def desConnector: DesConnector = new DesConnector() {
       override val appContext: AppContext = mockAppContext
+      override protected def auditConnector: Option[AuditConnector] = None
+      override def registry: Option[MetricRegistry] = None
+      def baseUrl: String = "http://a.guide.to.nowhere/"
+      def httpClient: HttpClient = mockHttp
     }
-    override protected val defaultDESEnvironment: String = "clone"
 
-    override protected val defaultDESToken: String = "ABC"
+    override protected def defaultDESEnvironment: String = "clone"
 
-    override val authAction: AuthAction = new FakeAuthAction(new Default(stubComponents.parsers), stubComponents.executionContext)
+    override protected def defaultDESToken: String = "ABC"
+
+    override val authAction: AuthAction = new FakePrivilegedAuthAction
+
+    override val appContext: AppContext = mockAppContext
 
     override def controllerComponents: ControllerComponents = stubComponents
 
-    override def executionContext: ExecutionContext = stubComponents.executionContext
+    override def executionContext: ExecutionContext = controllerComponents.executionContext
 
-    override def parser: BodyParser[AnyContent] = stubComponents.parsers.default
+    override def parser: BodyParser[AnyContent] = controllerComponents.parsers.default
+  }
 
-    override val appContext: AppContext = mockAppContext
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockAppContext, mockHttp)
   }
 
   "getting fraction calculation date" should {
@@ -95,7 +97,6 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar w
 
     "not fail if environment header not supplied" in {
       // set up
-      val mockHttp = mock[HttpClient]
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(mockHttp.GET[FractionCalculationDate](anyString())(any(), any(), any()))
            .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
@@ -115,7 +116,6 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar w
 
     "recover from exceptions" in {
       // set up
-      val mockHttp = mock[HttpClient]
       when(mockHttp.GET[FractionCalculationDate](anyString())(any(), any(), any()))
            .thenReturn(Future.failed(new Upstream5xxResponse("DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503. Response body: '{\"reason\" : \"Backend systems not working\"}'", 1, 2)))
 

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import com.codahale.metrics.MetricRegistry
 import org.joda.time.LocalDate
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -43,18 +44,15 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar with 
   val mockAppContext: AppContext = mock[AppContext]
   val mockHttp = mock[HttpClient]
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockAppContext, mockHttp)
-  }
-
-  def controller = new FractionsController with DesController {
+  def controller : FractionsController = new FractionsController with DesController {
     def desConnector: DesConnector = new DesConnector() {
       override val appContext: AppContext = mockAppContext
+      override protected def auditConnector: Option[AuditConnector] = None
+      override def registry: Option[MetricRegistry] = None
       def baseUrl: String = "http://a.guide.to.nowhere/"
       def httpClient: HttpClient = mockHttp
-      protected def auditConnector: Option[AuditConnector] = None
     }
+
     override protected def defaultDESEnvironment: String = "clone"
 
     override protected def defaultDESToken: String = "ABC"
@@ -70,10 +68,14 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar with 
     override def parser: BodyParser[AnyContent] = controllerComponents.parsers.default
   }
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockAppContext, mockHttp)
+  }
+
   "getting fraction calculations" should {
     "propogate environment but not authorization headers on to connector" in {
       // set up
-
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(mockHttp.GET[Fractions](anyString())(any(), any(), any()))
            .thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
@@ -95,7 +97,6 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar with 
 
     "not fail if environment header not supplied" in {
       // set up
-      val mockHttp = mock[HttpClient]
       val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
 
       when(mockHttp.GET[Fractions](anyString())(any(), any(), any()))

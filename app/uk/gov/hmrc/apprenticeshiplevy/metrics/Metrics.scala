@@ -44,7 +44,7 @@ trait GraphiteMetrics {
 
   def appContext: AppContext
 
-  val registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(current.injector.instanceOf[MetricsImpl].defaultRegistry)).getOrElse(None) else None
+  def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(current.injector.instanceOf[MetricsImpl].defaultRegistry)).getOrElse(None) else None
 
   val AUTH_SERVICE_REQUEST = "auth-service"
   val DES_EMP_CHECK_REQUEST = "des-emp-check"
