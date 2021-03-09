@@ -23,23 +23,23 @@ object AppDependencies {
     "org.pegdown"             % "pegdown"                      % "1.6.0",
     "org.scalamock"          %% "scalamock-scalatest-support"  % "3.6.0",
     "org.mockito"             % "mockito-all"                  % "1.10.19",
-    "org.scalatestplus.play" %% "scalatestplus-play"           % "2.0.1"
+    "org.scalatestplus.play" %% "scalatestplus-play"           % "3.1.3"
    ).map(_ % "test")
 
    lazy val integrationTest: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"             %% "hmrctest"           % "3.9.0-play-25",
+    "uk.gov.hmrc"             %% "hmrctest"           % "3.10.0-play-26",
     "org.scalatest"           %% "scalatest"          % "3.0.8",
     "org.pegdown"              % "pegdown"            % "1.6.0",
     "com.typesafe.play"       %% "play-test"          % PlayVersion.current,
-    "com.github.tomakehurst"   % "wiremock"           % "2.24.1",
+    "com.github.tomakehurst"   % "wiremock-jre8"      % "2.26.1",
     "org.scala-lang.modules"  %% "scala-xml"          % "1.2.0",
     "com.github.andyglow"     %% "scala-xml-diff"     % "2.0.4",
     "org.scalacheck"          %% "scalacheck"         % "1.14.0",
-    "org.scalatestplus.play"  %% "scalatestplus-play" % "2.0.1"
+    "org.scalatestplus.play"  %% "scalatestplus-play" % "3.1.3"
    ).map(_ % "test,it")
 
    lazy val acceptanceTest: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"   %% "hmrctest"     % "3.9.0-play-25",
+    "uk.gov.hmrc"   %% "hmrctest"     % "3.10.0-play-26",
     "org.scalatest" %% "scalatest"    % "3.0.8",
     "org.pegdown"    % "pegdown"      % "1.6.0",
     "org.scalaj"    %% "scalaj-http"  % "2.4.2"
