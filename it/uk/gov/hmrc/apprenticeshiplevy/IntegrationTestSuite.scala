@@ -1,11 +1,11 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
 import java.util.UUID._
-
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.Fault
 import org.scalatest._
 import org.scalatestplus.play._
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.Logger
 import play.api.inject.guice._
 import play.api.{Application, Mode}
@@ -25,7 +25,7 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
                                            new FractionsCalculationDateEndpointISpec,
                                            new RootEndpointISpec,
                                            new TestDataEndpointISpec)
-  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite with UnitSpec {
+  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with GuiceOneServerPerSuite with UnitSpec {
 
   WiremockService.start()
   override implicit lazy final val app: Application = new GuiceApplicationBuilder()
@@ -74,7 +74,7 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
 }
 
 class NoWiremockIntegrationTestsSuite extends Suites(new PublicDefinitionEndpointISpec)
-  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with OneServerPerSuite with UnitSpec {
+  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with GuiceOneServerPerSuite with UnitSpec {
 
   override def stubConfigPath = "./it/no-mappings"
   override def additionalConfiguration: Map[String, Any] = (super.additionalConfiguration - "microservice.private-mode") ++ Map(

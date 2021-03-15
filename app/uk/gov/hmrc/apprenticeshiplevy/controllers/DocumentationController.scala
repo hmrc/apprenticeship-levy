@@ -17,10 +17,9 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.io.InputStream
-
 import com.google.inject.{Inject, Singleton}
 import play.Logger
-import play.api.Mode
+import play.api.{Environment, Mode}
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
@@ -33,7 +32,7 @@ import scala.util.{Failure, Success, Try}
 
 @Singleton
 class DocumentationController @Inject()(cc: ControllerComponents,
-                                        appContext: AppContext) extends BackendController(cc){
+                                        appContext: AppContext, environment: Environment) extends BackendController(cc){
   implicit val current = appContext.maybeApp
 
   lazy val whitelistedApplicationIds = appContext.whitelistedApplicationIds
@@ -50,14 +49,12 @@ class DocumentationController @Inject()(cc: ControllerComponents,
     })
 
   def retrieve(rootPath: String, file: String): Option[InputStream] = {
-    current.flatMap { app =>
-      if (app.mode == Mode.Prod) {
-        // $COVERAGE-OFF$
-        app.resourceAsStream(s"${rootPath}/${file}")
-        // $COVERAGE-ON$
-      } else {
-        app.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
-      }
+    if (environment.mode == Mode.Prod) {
+      // $COVERAGE-OFF$
+      environment.resourceAsStream(s"${rootPath}/${file}")
+      // $COVERAGE-ON$
+    } else {
+      environment.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
     }
   }
 

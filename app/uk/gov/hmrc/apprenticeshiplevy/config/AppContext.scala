@@ -47,7 +47,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig){
   }
 
 
-  def maybeApp: Option[Application] = Try(Play.maybeApplication).getOrElse(None)
+  def maybeApp: Option[Application] = Try(Some(Play.current)).getOrElse(None)
 
   def maybeConfiguration: Option[play.api.Configuration] = maybeApp.map(_.configuration)
 
