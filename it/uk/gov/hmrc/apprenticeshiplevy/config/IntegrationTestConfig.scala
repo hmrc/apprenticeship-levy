@@ -30,8 +30,8 @@ trait IntegrationTestConfig {
                                "LiveEmploymentCheckController").map(a=>(s"controllers.uk.gov.hmrc.apprenticeshiplevy.controllers.live.${a}.needsAuditing","false"))
 
   def additionalConfiguration: Map[String, Any] = Map(
-        "play.ws.timeout.request" -> "500 seconds",
-        "play.ws.timeout.connection" -> "500 seconds",
+        "play.ws.timeout.request" -> "500 milliseconds",
+        "play.ws.timeout.connection" -> "500 milliseconds",
         "http.port" -> test_port,
         "auditing.enabled" -> "false",
         "microservice.private-mode" -> "true",
