@@ -31,11 +31,10 @@ class SandboxRootController @Inject()(val authAction: SandboxAuthAction,
                                       val parser: BodyParsers.Default,
                                       val executionContext: ExecutionContext,
                                       val appContext: AppContext,
-                                      val controllerComponents: ControllerComponents,
-                                      environment: Environment
+                                      val controllerComponents: ControllerComponents
                                       ) extends RootController with SandboxLinkHelper {
-  //TODO verify this is correct
-  override val env = environment.toString
+
+  override val env = appContext.mode.toString
 
   override def rootUrl: String = routes.SandboxRootController.root().url
 

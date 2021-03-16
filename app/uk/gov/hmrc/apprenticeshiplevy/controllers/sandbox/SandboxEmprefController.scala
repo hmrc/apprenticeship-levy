@@ -39,8 +39,7 @@ class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
 
   override val authAction: EmploymentReference => SandboxPrivilegedAuthAction = _ => auth
 
-  //TODO test this
-  override val env = environment.toString
+  override val env = appContext.mode.toString
 
   override def emprefUrl(empref: EmploymentReference): String = routes.SandboxEmprefController.empref(empref).url
 
