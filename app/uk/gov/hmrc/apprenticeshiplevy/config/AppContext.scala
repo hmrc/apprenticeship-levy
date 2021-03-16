@@ -18,23 +18,24 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 
 import com.google.inject.Inject
 import com.typesafe.config.ConfigFactory
-import play.api.{Application, Logger, Mode, Play}
+import play.api.{Configuration, Environment, Logger, Mode}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
 import scala.util.{Failure, Success, Try}
 
-class AppContext @Inject()(servicesConfig: ServicesConfig){
+class AppContext @Inject()(servicesConfig: ServicesConfig,
+                           val configuration: Configuration,
+                           val environment: Environment) {
+
   import servicesConfig.baseUrl
 
   // $COVERAGE-OFF$
   Logger.info(s"""\n${"_" * 80}\n""")
   // $COVERAGE-ON$
 
-  private val nilConfig = play.api.Configuration(ConfigFactory.load())
-  def appNameConfiguration: play.api.Configuration = maybeConfiguration.flatMap(_.getConfig("appName")).getOrElse(nilConfig)
+  def maybeBoolean(id: String): Option[Boolean] = configuration.getOptional[Boolean](id)
 
-  def maybeBoolean(id: String): Option[Boolean] = maybeConfiguration.flatMap(_.getBoolean(id))
-
-  def maybeString(id: String): Option[String] = maybeConfiguration.flatMap(_.getString(id))
+  def maybeString(id: String): Option[String] = configuration.getOptional[String](id)
 
   def maybeBaseURL(name: String): Option[String] = Try(baseUrl(name)) match {
     case Success(v) => Some(v)
@@ -46,10 +47,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig){
     }
   }
 
-
-  def maybeApp: Option[Application] = Try(Some(Play.current)).getOrElse(None)
-
-  def maybeConfiguration: Option[play.api.Configuration] = maybeApp.map(_.configuration)
+  def mode: Mode = environment.mode
 
   def appUrl: String = maybeString("appUrl").getOrElse{
     // $COVERAGE-OFF$
@@ -98,7 +96,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig){
       if (port.isEmpty) {
         s"${protocol}://${host}"
       } else {
-        val baseurl = if (maybeApp.map(_.mode).getOrElse(Mode.Test) == Mode.Prod && !url.contains("localhost")) appUrl else url
+        val baseurl = if (environment.mode == Mode.Prod && !url.contains("localhost")) appUrl else url
         if (path == "") url else s"${baseurl}${path}"
       }
     }.getOrElse(maybeBaseURL(name).getOrElse(""))
@@ -110,7 +108,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig){
   def stubURL(name: String) = Try {
       val stubUrl = maybeBaseURL(s"stub-${name}").getOrElse("")
       val path = maybeString(s"microservice.services.stub-${name}.path").getOrElse("")
-      val baseurl = if (maybeApp.map(_.mode).getOrElse(Mode.Test) == Mode.Prod && !stubUrl.contains("localhost")) appUrl else stubUrl
+      val baseurl = if (environment.mode == Mode.Prod && !stubUrl.contains("localhost")) appUrl else stubUrl
       s"${baseurl}${path}"
     }.getOrElse(maybeBaseURL(s"stub-${name}").getOrElse(""))
 

@@ -18,17 +18,25 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import play.api.Configuration
+import play.api.mvc.ControllerComponents
+import play.api.test.Helpers.stubControllerComponents
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data.SandboxTestDataController
 import uk.gov.hmrc.apprenticeshiplevy.utils.DataTransformer
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class SandboxTestDataControllerSpec extends PlaySpec with MockitoSugar{
+class SandboxTestDataControllerSpec extends PlaySpec with MockitoSugar {
 
-  val mockAppContext = mock[AppContext]
+  def controller(dummyResponse: Boolean) = {
+    val servicesConfig = mock[ServicesConfig]
+    val configuration = Configuration("features.returnDummyResponse" -> dummyResponse)
+    val environment = mock[Environment]
+    val mockAppContext = new AppContext(servicesConfig, configuration, environment)
+    val stubComponents: ControllerComponents = stubControllerComponents()
 
-  def controller(dummyResponse: Boolean) =
-    new SandboxTestDataController(new DataTransformer(), Configuration("features.returnDummyResponse" -> dummyResponse), mockAppContext)
+    new SandboxTestDataController(new DataTransformer(), mockAppContext, stubComponents)
+  }
 
   "getFileName" must {
     "replace file EmpRef with 840/MODES17" when {

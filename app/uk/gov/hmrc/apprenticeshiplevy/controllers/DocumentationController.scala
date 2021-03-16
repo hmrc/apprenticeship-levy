@@ -32,8 +32,9 @@ import scala.util.{Failure, Success, Try}
 
 @Singleton
 class DocumentationController @Inject()(cc: ControllerComponents,
-                                        appContext: AppContext, environment: Environment) extends BackendController(cc){
-  implicit val current = appContext.maybeApp
+                                        appContext: AppContext) extends BackendController(cc){
+
+  private lazy val environment = appContext.environment
 
   lazy val whitelistedApplicationIds = appContext.whitelistedApplicationIds
 

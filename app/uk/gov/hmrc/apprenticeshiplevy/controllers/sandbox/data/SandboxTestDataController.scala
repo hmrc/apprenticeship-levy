@@ -18,7 +18,6 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data
 
 import java.io.{File, FileInputStream, InputStream}
 import java.net.URLDecoder
-
 import com.google.inject.{Inject, Singleton}
 import org.joda.time._
 import org.slf4j.MDC
@@ -28,24 +27,28 @@ import play.api.{Configuration, Logger, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.utils.DataTransformer
 import uk.gov.hmrc.play.bootstrap.controller.Utf8MimeTypes
+
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Try
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 @Singleton
 class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
-                                          configuration: Configuration,
-                                          appContext: AppContext) extends Controller with Utf8MimeTypes {
+                                          appContext: AppContext,
+                                          cc: ControllerComponents) extends BackendController(cc) with Utf8MimeTypes {
 
   private val logger = Logger(this.getClass)
+
+  lazy val config = appContext.configuration
 
   val SANDBOX_DATA_DIR = "public/sandbox-data"
 
   lazy val returnDummyResponse: Boolean =
-    configuration
-      .getBoolean("features.returnDummyResponse")
+    config
+      .getOptional[Boolean]("features.returnDummyResponse")
       .getOrElse(false)
 
   private[sandbox] def getFileName(file: String): String =
@@ -85,25 +88,23 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
 
   protected def retrieve(file: String): Option[InputStream] = {
     val fileToRequest = getFileName(file)
-    appContext.maybeApp.flatMap { app =>
-      if (file.startsWith(SANDBOX_DATA_DIR)) {
-        if (app.mode == Mode.Prod) {
-          // $COVERAGE-OFF$
-          logger.debug(s"Getting resource stream $fileToRequest")
-          app.resourceAsStream(fileToRequest)
-          // $COVERAGE-ON$
-        } else {
-          // $COVERAGE-OFF$
-          logger.debug(s"Getting file input stream $fileToRequest")
-          // $COVERAGE-ON$
-          app.getExistingFile(fileToRequest).map(new FileInputStream(_))
-        }
+    if (file.startsWith(SANDBOX_DATA_DIR)) {
+      if (appContext.mode == Mode.Prod) {
+        // $COVERAGE-OFF$
+        logger.debug(s"Getting resource stream $fileToRequest")
+        appContext.environment.resourceAsStream(fileToRequest)
+        // $COVERAGE-ON$
       } else {
-          // $COVERAGE-OFF$
-          logger.debug(s"Getting file input stream $fileToRequest")
-          // $COVERAGE-ON$
-          Try(new FileInputStream(new File(fileToRequest))).toOption
+        // $COVERAGE-OFF$
+        logger.debug(s"Getting file input stream $fileToRequest")
+        // $COVERAGE-ON$
+        appContext.environment.getExistingFile(fileToRequest).map(new FileInputStream(_))
       }
+    } else {
+      // $COVERAGE-OFF$
+      logger.debug(s"Getting file input stream $fileToRequest")
+      // $COVERAGE-ON$
+      Try(new FileInputStream(new File(fileToRequest))).toOption
     }
   }
 
