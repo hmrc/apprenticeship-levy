@@ -34,17 +34,19 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{FakePrivilegedAuthAction, PrivilegedAuthActionImpl}
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import uk.gov.hmrc.apprenticeshiplevy.utils.MockAppContext
 
 class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar with GuiceOneAppPerSuite
   with Injecting with BeforeAndAfterEach{
 
   val mockDesConnector = mock[LiveDesConnector]
   val stubComponents = stubControllerComponents()
-  val mockAppContext = mock[AppContext]
+  val mockAppContext = MockAppContext
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAppContext, mockDesConnector)
+    reset(mockDesConnector)
+    mockAppContext.reset()
   }
 
   override def fakeApplication: Application = GuiceApplicationBuilder()
@@ -52,7 +54,7 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with Mock
       bind[LiveDesConnector].toInstance(mockDesConnector),
       bind[PrivilegedAuthActionImpl].to[FakePrivilegedAuthAction],
       bind[ControllerComponents].toInstance(stubComponents),
-      bind[AppContext].toInstance(mockAppContext)
+      bind[AppContext].toInstance(mockAppContext.mocked)
     )
     .build()
 

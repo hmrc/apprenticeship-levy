@@ -17,8 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.io.File
-
-import org.scalatest.Inside
+import org.scalatest.{BeforeAndAfterEach, Inside}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
@@ -29,20 +28,27 @@ import play.api.test.Helpers.stubControllerComponents
 import play.api.test.Injecting
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.test.UnitSpec
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import uk.gov.hmrc.apprenticeshiplevy.utils.MockAppContext
+
 import scala.util.{Failure, Success}
 
-class DocumentationControllerSpec extends UnitSpec with Inside with GuiceOneAppPerSuite with Injecting with MockitoSugar {
+class DocumentationControllerSpec extends UnitSpec with Inside with GuiceOneAppPerSuite with Injecting with MockitoSugar with BeforeAndAfterEach {
 
   val validDefinition = new File(getClass.getResource("/validDefinition.json").toURI())
   val invalidDefinition = new File(getClass.getResource("/invalidDefinition.json").toURI())
   val stubComponents: ControllerComponents = stubControllerComponents()
-  val mockAppContext: AppContext = mock[AppContext]
+  val mockAppContext = MockAppContext
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    mockAppContext.reset()
+  }
 
   override def fakeApplication: Application = GuiceApplicationBuilder()
     .overrides(
       bind[ControllerComponents].toInstance(stubComponents),
-      bind[AppContext].toInstance(mockAppContext)
+      bind[AppContext].toInstance(mockAppContext.mocked)
     )
     .build()
 
@@ -50,7 +56,7 @@ class DocumentationControllerSpec extends UnitSpec with Inside with GuiceOneAppP
 
   "DocumentationController" should {
     "add whitelist information correctly" in {
-      when(mockAppContext.whitelistedApplicationIds).thenReturn(Seq("f0e2611e-2f45-4326-8cd2-6eefebec77b7", "cafebabe-2f45-4326-8cd2-6eefebec77b7"))
+      when(mockAppContext.mocked.whitelistedApplicationIds).thenReturn(Seq("f0e2611e-2f45-4326-8cd2-6eefebec77b7", "cafebabe-2f45-4326-8cd2-6eefebec77b7"))
       val enrichedDefinition = documentationController.enrichDefinition(new java.io.FileInputStream(validDefinition))
 
       inside(enrichedDefinition) { case Success(json) =>
