@@ -18,34 +18,45 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{OK, UNAUTHORIZED}
-import play.api.mvc.{Action, AnyContent, Controller}
+import play.api.mvc.BodyParsers.Default
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{stubControllerComponents, _}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.RetrievalOps
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, GGCredId, LegacyCredentials, PAClientId, Retrieval, ~}
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.{GGCredId, LegacyCredentials, PAClientId, ~}
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
 import uk.gov.hmrc.play.test.UnitSpec
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar with RetrievalOps {
+class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar with RetrievalOps with BeforeAndAfterEach {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val stubComponents = stubControllerComponents()
+  val defaultParser = new Default(stubComponents.parsers)
 
-  class Harness(authAction: AuthAction) extends Controller {
+  class Harness(authAction: AuthAction) extends BackendBaseController {
     def onPageLoad(): Action[AnyContent] = authAction { request => Ok(s"PAYE: ${request.empRef.getOrElse("None found")}") }
+
+    override def controllerComponents: ControllerComponents = stubComponents
+  }
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockAuthConnector)
   }
 
   "A user with no active session" should {
     "return UNAUTHORIZED" in {
       when(mockAuthConnector.authorise(any(), any())(any(), any()))
         .thenReturn(Future.failed(new SessionRecordNotFound))
-      val authAction = new AuthActionImpl(mockAuthConnector)
+      val authAction = new AuthActionImpl(mockAuthConnector, new Default(stubComponents.parsers))
       val controller = new Harness(authAction)
       val result = controller.onPageLoad()(FakeRequest("", ""))
       status(result) shouldBe UNAUTHORIZED
@@ -67,7 +78,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       when(mockAuthConnector.authorise[Enrolments](any(),any())(any(), any()))
         .thenReturn(retrievalResult)
 
-      val authAction = new AuthActionImpl(mockAuthConnector)
+      val authAction = new AuthActionImpl(mockAuthConnector, defaultParser)
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(FakeRequest())
@@ -78,7 +89,6 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
 
   "A user that is logged in without a PAYE enrolment" must {
     "be allowed access" in {
-
 
       val enrolments = Enrolments(Set(
         Enrolment("IR-SA", Seq(
@@ -91,7 +101,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       when(mockAuthConnector.authorise[Enrolments](any(),any())(any(), any()))
         .thenReturn(retrievalResult)
 
-      val authAction = new AuthActionImpl(mockAuthConnector)
+      val authAction = new AuthActionImpl(mockAuthConnector, defaultParser)
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(FakeRequest())
@@ -109,7 +119,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       when(mockAuthConnector.authorise[Enrolments](any(),any())(any(), any()))
         .thenReturn(retrievalResult)
 
-      val authAction = new AuthActionImpl(mockAuthConnector)
+      val authAction = new AuthActionImpl(mockAuthConnector, defaultParser)
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(FakeRequest())
@@ -124,7 +134,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       when(mockAuthConnector.authorise[Unit](any(), any())(any(), any()))
         .thenReturn(())
 
-      val authAction = new PrivilegedAuthActionImpl(mockAuthConnector)
+      val authAction = new PrivilegedAuthActionImpl(mockAuthConnector, defaultParser)
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(FakeRequest())
@@ -135,7 +145,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
 
   "AllProviderAuthAction" must {
     "return an instance of auth action" in {
-      new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference(""))
+      new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference(""))
         .isInstanceOf[AuthAction] shouldBe true
     }
 
@@ -143,7 +153,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
         .thenReturn(paRetrieval)
 
-      val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference(""))
+      val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference(""))
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(FakeRequest())
@@ -156,7 +166,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
           .thenReturn(ggRetrieval)
 
-        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123/ABCDEF"))
+        val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())
@@ -170,7 +180,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
           .thenReturn(ggRetrieval)
 
-        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123%2FABCDE"))
+        val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123%2FABCDE"))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())
@@ -181,7 +191,7 @@ class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
           .thenReturn(emptyGGRetrieval)
 
-        val authAction = new AllProviderAuthActionImpl(mockAuthConnector).apply(EmploymentReference("123/ABCDEF"))
+        val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())

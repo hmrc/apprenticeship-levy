@@ -20,13 +20,11 @@ import java.io.IOException
 
 import com.google.inject.{ImplementedBy, Inject}
 import org.slf4j.MDC
-import play.api.Mode.Mode
+import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.{Configuration, Logger, Play}
-import uk.gov.hmrc.apprenticeshiplevy.config.WSHttp
 import uk.gov.hmrc.apprenticeshiplevy.controllers.AuthError
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
@@ -36,12 +34,11 @@ import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
 import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
-class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit executionContext: ExecutionContext)
+class AuthActionImpl @Inject()(val authConnector: AuthConnector, val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
   extends AuthAction with AuthorisedFunctions {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
@@ -56,10 +53,14 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit execut
   }
 }
 
-class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit executionContext: ExecutionContext)
+class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, bodyParser: BodyParsers.Default)(implicit ec: ExecutionContext)
   extends AuthorisedFunctions {
 
   def apply(empRef: EmploymentReference): AuthAction = new AuthAction {
+
+    override def parser: BodyParsers.Default = bodyParser
+    override def executionContext: ExecutionContext = ec
+
     override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
       implicit val ec: ExecutionContext = executionContext
@@ -82,7 +83,7 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector)(impl
   }
 }
 
-class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector)(implicit executionContext: ExecutionContext)
+class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector, val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
   extends AuthAction with AuthorisedFunctions {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
@@ -96,7 +97,7 @@ class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector)(impli
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionRefiner[Request, AuthenticatedRequest]
+trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]
 
 private object EnrolmentHelper {
   val enrolmentKey: String = "IR-PAYE"
@@ -224,14 +225,4 @@ private object ErrorHandler {
         }")))
     }
   }
-}
-
-class AuthConnector extends PlayAuthConnector with ServicesConfig {
-  override lazy val serviceUrl: String = baseUrl("auth")
-
-  override def http: CorePost = WSHttp
-
-  override protected def mode: Mode = Play.current.mode
-
-  override protected def runModeConfiguration: Configuration = Play.current.configuration
 }

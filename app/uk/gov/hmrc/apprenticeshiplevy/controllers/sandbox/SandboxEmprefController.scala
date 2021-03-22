@@ -18,19 +18,28 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import com.google.inject.Inject
 import org.joda.time.LocalDate
+import play.api.Environment
 import play.api.hal.HalLink
+import play.api.mvc.{BodyParsers, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.SandboxPrivilegedAuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
+import scala.concurrent.ExecutionContext
+
 class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
-                                        val auth: SandboxPrivilegedAuthAction) extends EmprefController with SandboxLinkHelper {
+                                        val auth: SandboxPrivilegedAuthAction,
+                                        val executionContext: ExecutionContext,
+                                        val parser: BodyParsers.Default,
+                                        val appContext: AppContext,
+                                        val controllerComponents: ControllerComponents,
+                                        environment: Environment) extends EmprefController with SandboxLinkHelper {
 
   override val authAction: EmploymentReference => SandboxPrivilegedAuthAction = _ => auth
 
-  override val env = AppContext.env
+  override val env = appContext.mode.toString
 
   override def emprefUrl(empref: EmploymentReference): String = routes.SandboxEmprefController.empref(empref).url
 

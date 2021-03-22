@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
-import play.api.mvc.{Request, Result}
+import com.google.inject.Inject
+import play.api.mvc.{BodyParsers, Request, Result}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import scala.concurrent.{ExecutionContext, Future}
 
-import scala.concurrent.Future
-
-object FakeAuthAction extends AuthAction {
+class FakeAuthAction @Inject()(val parser: BodyParsers.Default, val executionContext: ExecutionContext) extends AuthAction {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))

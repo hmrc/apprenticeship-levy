@@ -19,13 +19,22 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import com.google.inject.Inject
 import org.joda.time.LocalDate
+import play.api.mvc.{BodyParsers, ControllerComponents}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, AllProviderAuthActionImpl, PrivilegedAuthActionImpl}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AllProviderAuthActionImpl, AuthAction, PrivilegedAuthActionImpl}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
+import scala.concurrent.ExecutionContext
+
 class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
-                                     val auth: AllProviderAuthActionImpl) extends EmprefController {
+                                     val auth: AllProviderAuthActionImpl,
+                                     val executionContext: ExecutionContext,
+                                     val parser: BodyParsers.Default,
+                                     val appContext: AppContext,
+                                     val controllerComponents: ControllerComponents) extends EmprefController {
+
   override val authAction: EmploymentReference => AuthAction = auth(_)
 
   override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url

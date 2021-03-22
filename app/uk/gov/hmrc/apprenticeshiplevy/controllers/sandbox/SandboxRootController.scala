@@ -17,14 +17,24 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import com.google.inject.Inject
+import play.api.Environment
 import play.api.hal.HalLink
+import play.api.mvc.{BodyParsers, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.SandboxAuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-class SandboxRootController @Inject()(val authAction: SandboxAuthAction) extends RootController with SandboxLinkHelper {
-  override val env = AppContext.env
+import scala.concurrent.ExecutionContext
+
+class SandboxRootController @Inject()(val authAction: SandboxAuthAction,
+                                      val parser: BodyParsers.Default,
+                                      val executionContext: ExecutionContext,
+                                      val appContext: AppContext,
+                                      val controllerComponents: ControllerComponents
+                                      ) extends RootController with SandboxLinkHelper {
+
+  override val env = appContext.mode.toString
 
   override def rootUrl: String = routes.SandboxRootController.root().url
 

@@ -24,7 +24,7 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
-import uk.gov.hmrc.apprenticeshiplevy.config.{AppContext, MicroserviceAuditFilter}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.data.des.DesignatoryDetails._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.EmploymentCheckStatus._
@@ -66,7 +66,7 @@ trait EmployerDetailsEndpoint extends Timer {
 
     timer(RequestEvent(DES_EMPREF_DETAILS_REQUEST, Some(empref))) {
       audit(new ALAEvent("readEmprefDetails", empref)) {
-        des.httpGet.GET[HodDesignatoryDetailsLinks](url).flatMap { response =>
+        des.httpClient.GET[HodDesignatoryDetailsLinks](url).flatMap { response =>
           val details = DesignatoryDetails(Some(empref))
           response.links.map { links =>
             Logger.debug((links.employer ++ links.communication).mkString(" "))
@@ -83,7 +83,7 @@ trait EmployerDetailsEndpoint extends Timer {
   }
 
   protected def getDetails(path: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] =
-    des.httpGet.GET[DesignatoryDetailsData](s"${des.baseUrl}${path}").map { data => Some(data) }.recover(errorHandler)
+    des.httpClient.GET[DesignatoryDetailsData](s"${des.baseUrl}${path}").map { data => Some(data) }.recover(errorHandler)
 
   protected val errorHandler: PartialFunction[Throwable, Option[DesignatoryDetailsData]] = {
         case e => {
@@ -109,7 +109,7 @@ trait EmploymentCheckEndpoint extends Timer {
 
     timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
       audit(ALAEvent("employmentCheck", empref, nino, dateParams)) {
-        des.httpGet.GET[EmploymentCheckStatus](url).recover { case _: NotFoundException => Unknown }
+        des.httpClient.GET[EmploymentCheckStatus](url).recover { case _: NotFoundException => Unknown }
       }
     }
   }
@@ -127,7 +127,7 @@ trait FractionsEndpoint extends Timer with DesUtils {
 
     timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
       audit(new ALAEvent("readFractions", empref, "", dateParams)) {
-        des.httpGet.GET[Fractions](url).map { fraction =>
+        des.httpClient.GET[Fractions](url).map { fraction =>
           fraction.copy(empref=convertEmpref(fraction.empref))
         }
       }
@@ -143,7 +143,7 @@ trait FractionsEndpoint extends Timer with DesUtils {
 
     timer(RequestEvent(DES_FRACTIONS_DATE_REQUEST, None)) {
       audit(new ALAEvent("readFractionCalculationDate")) {
-        des.httpGet.GET[FractionCalculationDate](url).map { _.date }
+        des.httpClient.GET[FractionCalculationDate](url).map { _.date }
       }
     }
   }
@@ -152,13 +152,15 @@ trait FractionsEndpoint extends Timer with DesUtils {
 trait LevyDeclarationsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
+  def appContext: AppContext
+
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams
     val url = s"${desURL(empref)}?$dateParams"
 
     timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
       audit(new ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
-        des.httpGet.GET[HttpResponse](url).map { response =>
+        des.httpClient.GET[HttpResponse](url).map { response =>
           marshall(empref, response.body).getOrElse {
             Logger.error(s""" |DES url ${url}
                               |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
@@ -226,7 +228,7 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
     }
   }
 
-  protected[connectors] def isEpsOrigPathEnabled: Boolean = AppContext.epsOrigPathEnabled
+  protected[connectors] def isEpsOrigPathEnabled: Boolean = appContext.epsOrigPathEnabled
 
   protected[connectors] def desURL(empref: String): String = if (isEpsOrigPathEnabled)
                                                           s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"
@@ -235,21 +237,24 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
 }
 
 trait DesConnector extends FractionsEndpoint
-                   with EmployerDetailsEndpoint
-                   with EmploymentCheckEndpoint
-                   with LevyDeclarationsEndpoint
-                   with Auditor
-                   with GraphiteMetrics {
-  def httpGet: HttpGet
+  with EmployerDetailsEndpoint
+  with EmploymentCheckEndpoint
+  with LevyDeclarationsEndpoint
+  with Auditor
+  with GraphiteMetrics {
+  def httpClient: HttpClient
   def baseUrl: String
 }
 
-class LiveDesConnector @Inject()(val httpGet: HttpGet) extends DesConnector {
-  protected def auditConnector: Option[AuditConnector] = Some(MicroserviceAuditFilter.auditConnector)
-  def baseUrl: String = AppContext.desUrl
+class LiveDesConnector @Inject()(val httpClient: HttpClient,
+                                 auditConnector: AuditConnector,
+                                 val appContext: AppContext) extends DesConnector{
+  protected def auditConnector: Option[AuditConnector] = Some(auditConnector)
+  def baseUrl: String = appContext.desUrl
 }
 
-class SandboxDesConnector @Inject()(val httpGet: HttpGet) extends DesConnector {
+class SandboxDesConnector @Inject()(val httpClient: HttpClient,
+                                    val appContext: AppContext) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = None
-  def baseUrl: String = AppContext.stubDesUrl
+  def baseUrl: String = appContext.stubDesUrl
 }

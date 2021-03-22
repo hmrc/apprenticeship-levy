@@ -19,10 +19,18 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import java.net.URLEncoder
 
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import play.api.mvc.BodyParsers.Default
+import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
+import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-class RootControllerSpec extends WordSpecLike with Matchers with OptionValues {
+import scala.concurrent.ExecutionContext
+
+class RootControllerSpec extends WordSpecLike with Matchers with OptionValues{
+
+  val stubComponents: ControllerComponents = stubControllerComponents()
+
   "transformEmprefs" should {
     "correctly generate HAL for emprefs" in {
       val hal = testController.transformEmpRefs(Seq("123/AB12345", "321/XY54321"))
@@ -34,14 +42,18 @@ class RootControllerSpec extends WordSpecLike with Matchers with OptionValues {
     }
   }
 
-
   val testController = new RootController {
     override def rootUrl: String = "/"
 
+    override def controllerComponents: ControllerComponents = stubComponents
+
+    override def executionContext: ExecutionContext = stubComponents.executionContext
+
+    override def parser: BodyParser[AnyContent] = stubComponents.parsers.default
 
     override def emprefUrl(ref: EmploymentReference): String = s"""/epaye/${URLEncoder.encode(ref.empref, "UTF-8")}"""
 
-    override val authAction: AuthAction = FakeAuthAction
+    override val authAction: AuthAction = new FakeAuthAction(new Default(stubComponents.parsers), stubComponents.executionContext)
   }
 
 }

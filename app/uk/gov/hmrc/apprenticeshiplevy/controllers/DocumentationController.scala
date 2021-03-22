@@ -17,32 +17,26 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.io.InputStream
-
-import com.google.inject.Singleton
+import com.google.inject.{Inject, Singleton}
 import play.Logger
-import play.api.Mode
+import play.api.{Environment, Mode}
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.play.microservice.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-//trait AssetsController extends BaseController {
-//  implicit def current: Option[Application]
-//
-//  private val AbsolutePath = """^(/|[a-zA-Z]:\\).*""".r
-//
-//
-//}
 @Singleton
-class DocumentationController extends BaseController {
-  implicit val current = AppContext.maybeApp
+class DocumentationController @Inject()(cc: ControllerComponents,
+                                        appContext: AppContext) extends BackendController(cc){
 
-  lazy val whitelistedApplicationIds = AppContext.whitelistedApplicationIds
+  private lazy val environment = appContext.environment
+
+  lazy val whitelistedApplicationIds = appContext.whitelistedApplicationIds
 
   lazy val whitelist = Json.obj(
     "access" -> Json.obj(
@@ -56,21 +50,20 @@ class DocumentationController extends BaseController {
     })
 
   def retrieve(rootPath: String, file: String): Option[InputStream] = {
-    current.flatMap { app =>
-      if (app.mode == Mode.Prod) {
-        // $COVERAGE-OFF$
-        app.resourceAsStream(s"${rootPath}/${file}")
-        // $COVERAGE-ON$
-      } else {
-        app.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
-      }
+    if (environment.mode == Mode.Prod) {
+      // $COVERAGE-OFF$
+      environment.resourceAsStream(s"${rootPath}/${file}")
+      // $COVERAGE-ON$
+    } else {
+      environment.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
     }
   }
 
   def at(rootPath: String, file: String): Action[AnyContent] = Action { request =>
     retrieve(rootPath, file) match {
       case Some(fileToServe) => {
-        val mimeType = if (file.contains("raml")) "application/raml+yaml" else play.api.libs.MimeTypes.forFileName(file).getOrElse("text/plain")
+        //TODO test the updated fileMimeTypes
+        val mimeType = if (file.contains("raml")) "application/raml+yaml" else cc.fileMimeTypes.forFileName(file).getOrElse("text/plain")
         Ok(Source.fromInputStream(fileToServe).mkString).as(mimeType)
       }
       case _ => {
@@ -89,7 +82,7 @@ class DocumentationController extends BaseController {
     val filename = "definition.json"
     retrieve("public/api", filename) match {
       case Some(fileToServe) => {
-        if (AppContext.privateModeEnabled) {
+        if (appContext.privateModeEnabled) {
           enrichDefinition(fileToServe) match {
             case Success(json) => Future.successful(Ok(json).withHeaders(HeaderNames.CONTENT_TYPE->MimeTypes.JSON))
             case Failure(_) => Future.successful(InternalServerError)

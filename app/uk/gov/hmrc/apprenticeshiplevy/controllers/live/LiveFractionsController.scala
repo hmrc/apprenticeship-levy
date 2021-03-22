@@ -17,12 +17,24 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import com.google.inject.Inject
+import play.api.mvc.{BodyParsers, ControllerComponents}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.PrivilegedAuthActionImpl
 import uk.gov.hmrc.apprenticeshiplevy.controllers.{DesController, FractionsCalculationDateController, FractionsController}
 
+import scala.concurrent.ExecutionContext
+
 class LiveFractionsController @Inject()(val desConnector: LiveDesConnector,
-                                        val authAction: PrivilegedAuthActionImpl) extends DesController with FractionsController
+                                        val authAction: PrivilegedAuthActionImpl,
+                                        val executionContext: ExecutionContext,
+                                        val parser: BodyParsers.Default,
+                                        val appContext: AppContext,
+                                        val controllerComponents: ControllerComponents) extends DesController with FractionsController
 
 class LiveFractionsCalculationDateController  @Inject()(val desConnector: LiveDesConnector,
-                                                        val authAction: PrivilegedAuthActionImpl) extends DesController with FractionsCalculationDateController
+                                                        val authAction: PrivilegedAuthActionImpl,
+                                                        val executionContext: ExecutionContext,
+                                                        val parser: BodyParsers.Default,
+                                                        val appContext: AppContext,
+                                                        val controllerComponents: ControllerComponents) extends DesController with FractionsCalculationDateController

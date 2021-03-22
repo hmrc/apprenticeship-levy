@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.audit
 
 import java.io.IOException
-
 import play.api.Logger
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.http._
@@ -40,12 +39,14 @@ trait Auditor  {
 
   protected def auditConnector: Option[AuditConnector]
   protected val exceptionToMessage: PartialFunction[Throwable, Int] = {
-        case _: BadRequestException => 400
-        case _: IOException => 444
-        case _: GatewayTimeoutException => 408
-        case _: NotFoundException => 404
-        case e: Upstream5xxResponse => e.upstreamResponseCode
-        case e: Upstream4xxResponse => e.upstreamResponseCode
-        case _ => 500
-    }
+    case _: BadRequestException => 400
+    case _: IOException => 444
+    case _: GatewayTimeoutException => 408
+    case _: NotFoundException => 404
+    case e: Upstream5xxResponse => e.upstreamResponseCode
+    case e: Upstream4xxResponse => e.upstreamResponseCode
+    case _ => 500
+  }
 }
+
+

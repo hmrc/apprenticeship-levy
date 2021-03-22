@@ -16,21 +16,49 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import org.mockito.Mockito.reset
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.test.FakeRequest
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import uk.gov.hmrc.apprenticeshiplevy.connectors._
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
+import play.api.test.{FakeRequest, Injecting}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
-import uk.gov.hmrc.apprenticeshiplevy.utils.DateRange
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.test.UnitSpec
+import play.api.inject.bind
+import play.api.mvc.ControllerComponents
+import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{FakePrivilegedAuthAction, PrivilegedAuthActionImpl}
+import play.api.test.Helpers.stubControllerComponents
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import uk.gov.hmrc.apprenticeshiplevy.utils.MockAppContext
 
-class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar {
-  val liveFractionsController = new LiveLevyDeclarationController(new LiveDesConnector(mock[HttpGet]), FakePrivilegedAuthAction)
+class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar with GuiceOneAppPerSuite
+  with Injecting with BeforeAndAfterEach{
+
+  val mockDesConnector = mock[LiveDesConnector]
+  val stubComponents = stubControllerComponents()
+  val mockAppContext = MockAppContext
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockDesConnector)
+    mockAppContext.reset()
+  }
+
+  override def fakeApplication: Application = GuiceApplicationBuilder()
+    .overrides(
+      bind[LiveDesConnector].toInstance(mockDesConnector),
+      bind[PrivilegedAuthActionImpl].to[FakePrivilegedAuthAction],
+      bind[ControllerComponents].toInstance(stubComponents),
+      bind[AppContext].toInstance(mockAppContext.mocked)
+    )
+    .build()
+
+  val liveFractionsController = inject[LiveLevyDeclarationController]
 
   "getting the levy declarations" should {
     "return a Not Acceptable response if the Accept header is not correctly set" in {
@@ -40,17 +68,3 @@ class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with Mock
   }
 }
 
-object TestDesConnector extends DesConnector {
-  override def baseUrl: String = ???
-
-  override def httpGet: HttpGet = ???
-
-  override def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext) = ???
-
-  protected def auditConnector: Option[AuditConnector] = None
-}
-
-object TestLevyDeclarationController extends LevyDeclarationController with DesController {
-  override def desConnector: DesConnector = TestDesConnector
-  override val authAction: AuthAction = FakePrivilegedAuthAction
-}

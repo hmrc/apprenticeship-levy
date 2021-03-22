@@ -17,9 +17,16 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
 import com.google.inject.Inject
+import play.api.mvc.{BodyParsers, ControllerComponents}
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.PrivilegedAuthActionImpl
+import scala.concurrent.ExecutionContext
 
 class LiveEmploymentCheckController  @Inject()(val desConnector: LiveDesConnector,
-                                               val authAction: PrivilegedAuthActionImpl) extends EmploymentCheckController
+                                               val authAction: PrivilegedAuthActionImpl,
+                                               val executionContext: ExecutionContext,
+                                               val parser: BodyParsers.Default,
+                                               val appContext: AppContext,
+                                               val controllerComponents: ControllerComponents) extends EmploymentCheckController

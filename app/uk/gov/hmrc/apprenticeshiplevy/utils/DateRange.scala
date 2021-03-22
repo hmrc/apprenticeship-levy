@@ -15,8 +15,10 @@
  */
 
 package uk.gov.hmrc.apprenticeshiplevy.utils
-
 import org.joda.time.LocalDate
+import play.api.libs.json.Json
+import play.api.libs.json.JodaWrites._
+import play.api.libs.json.JodaReads._
 
 sealed trait DateRange {
   def toParams: String
@@ -28,4 +30,12 @@ case class ClosedDateRange(from: LocalDate, to: LocalDate) extends DateRange {
 
 case class OpenEarlyDateRange(to: LocalDate) extends DateRange {
   override def toParams: String = s"toDate=$to"
+}
+
+object ClosedDateRange {
+  implicit val dateRangeFormat = Json.format[ClosedDateRange]
+}
+
+object OpenEarlyDateRange {
+  implicit val date = Json.format[OpenEarlyDateRange]
 }

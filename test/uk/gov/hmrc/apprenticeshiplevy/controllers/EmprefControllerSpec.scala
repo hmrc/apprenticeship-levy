@@ -19,11 +19,21 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import java.net.URLEncoder
 
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
+import play.api.test.Helpers.stubControllerComponents
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
-class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues {
+import scala.concurrent.ExecutionContext
+
+class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues with MockitoSugar {
+
+  val stubComponents: ControllerComponents = stubControllerComponents()
+  val mockAppContext: AppContext = mock[AppContext]
+
   "prepareLinks" should {
     "correctly prepare HAL for an empref" in {
       val empref = "123/AB12345"
@@ -38,6 +48,15 @@ class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues 
   }
 
   val testController = new EmprefController {
+
+    override val appContext: AppContext = mockAppContext
+
+    override def controllerComponents: ControllerComponents = stubComponents
+
+    override def executionContext: ExecutionContext = controllerComponents.executionContext
+
+    override def parser: BodyParser[AnyContent] = controllerComponents.parsers.default
+
     override def desConnector: DesConnector = ???
 
     override def emprefUrl(ref: EmploymentReference): String = s"""/epaye/${URLEncoder.encode(ref.empref, "UTF-8")}"""
@@ -48,7 +67,7 @@ class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues 
 
     override def employmentCheckUrl(ref: EmploymentReference): String = emprefUrl(ref) + "/employed/{nino}"
 
-    override val authAction: EmploymentReference => AuthAction = _ => FakePrivilegedAuthAction
+    override val authAction: EmploymentReference => AuthAction = _ => new FakePrivilegedAuthAction
   }
 
 }

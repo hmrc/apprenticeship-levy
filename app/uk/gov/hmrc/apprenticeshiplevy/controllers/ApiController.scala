@@ -19,14 +19,13 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import org.slf4j.MDC
 import play.api.hal.{HalLink, HalResource}
 import play.api.libs.json.Json
-import play.api.mvc.{ActionBuilder, Request, RequestHeader, Result}
+import play.api.mvc._
 import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.microservice.controller.BaseController
-
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
 import scala.util.Try
 
-trait ApiController extends BaseController with HeaderValidator {
+trait ApiController extends BackendBaseController with HeaderValidator {
 
   implicit class ErrorResponseSyntax(er: ErrorResponse) {
     def result: Result = Status(er.httpStatusCode)(Json.toJson(er))
@@ -51,7 +50,7 @@ trait ApiController extends BaseController with HeaderValidator {
     MDC.put("Authorization",rh.headers.toSimpleMap.getOrElse("X-Client-Authorization-Token","Unknown caller"))
   }
 
-  protected val withValidAcceptHeader: ActionBuilder[Request] = validateAccept(acceptHeaderValidationRules)
+  protected val withValidAcceptHeader: ActionBuilder[Request, AnyContent] = validateAccept(acceptHeaderValidationRules)
 
   protected def extractReason(msg: String) =
     Try(if (msg.contains("Response body")) {

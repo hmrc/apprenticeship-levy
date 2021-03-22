@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.config
+package uk.gov.hmrc.apprenticeshiplevy.utils
 
-import play.api
-import play.api.Environment
-import play.api.inject.{Binding, Module}
-import uk.gov.hmrc.http.HttpGet
+import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import org.mockito.Mockito.when
+import play.api.Mode
 
-class AppLevyModule extends Module {
-  override def bindings(environment: Environment, configuration: api.Configuration): Seq[Binding[_]] = Seq(
-    bind[HttpGet].to(WSHttp),
-    bind[WSHttp].to(WSHttp)
-  )
+object MockAppContext extends MockitoSugar {
+  val mocked = mock[AppContext]
+
+  when(mocked.mode).thenReturn(Mode.Test)
+
+  def reset() = {
+    org.mockito.Mockito.reset(mocked)
+    when(mocked.mode).thenReturn(Mode.Test)
+  }
 }
