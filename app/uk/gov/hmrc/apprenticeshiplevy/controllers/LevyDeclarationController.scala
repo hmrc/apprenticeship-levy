@@ -29,13 +29,13 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, LevyDeclara
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-//TODO update this
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait LevyDeclarationController {
   self: DesController =>
+
+  implicit val executionContext: ExecutionContext
 
   val appContext: AppContext
   def desConnector: DesConnector
@@ -44,10 +44,11 @@ trait LevyDeclarationController {
   // scalastyle:off
   def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async { implicit request =>
   // scalastyle:on
+    implicit val e = executionContext
     if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get))
       Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
     else
-      retrieveDeclarations(toDESFormat(ref.empref), toDateRange(fromDate, toDate))
+    retrieveDeclarations(toDESFormat(ref.empref), toDateRange(fromDate, toDate))
         .map { ds =>
           val results = ds.sortWith{ (first:LevyDeclaration,second:LevyDeclaration) =>
             first.submissionTime.isAfter(second.submissionTime) && first.id >= second.id
@@ -57,6 +58,7 @@ trait LevyDeclarationController {
   }
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
+    implicit val e = executionContext
     desConnector.eps(empref, dateRange)
       .map( employerPayments => employerPayments.eps.flatMap(EmployerPaymentSummary.toDeclarations(_)))
       .recover {

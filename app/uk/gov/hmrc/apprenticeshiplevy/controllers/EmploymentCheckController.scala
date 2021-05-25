@@ -25,8 +25,8 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNotVisible
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentCheck, EmploymentReference, Nino}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.{Employed, NotEmployed, Unknown}
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
-//TODO update this
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
+import scala.concurrent.ExecutionContext
 
 import scala.concurrent.Future
 
@@ -34,6 +34,7 @@ trait EmploymentCheckController extends DesController {
 
   def desConnector: DesConnector
   val authAction: AuthAction
+  implicit val executionContext: ExecutionContext
 
   // scalastyle:off
   def check(ref: EmploymentReference, ni: Nino, fromDate: LocalDate, toDate: LocalDate): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {

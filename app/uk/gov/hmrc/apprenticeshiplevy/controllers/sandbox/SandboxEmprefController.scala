@@ -31,11 +31,10 @@ import scala.concurrent.ExecutionContext
 
 class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
                                         val auth: SandboxPrivilegedAuthAction,
-                                        val executionContext: ExecutionContext,
                                         val parser: BodyParsers.Default,
                                         val appContext: AppContext,
                                         val controllerComponents: ControllerComponents,
-                                        environment: Environment) extends EmprefController with SandboxLinkHelper {
+                                        environment: Environment)(implicit val executionContext: ExecutionContext) extends EmprefController with SandboxLinkHelper {
 
   override val authAction: EmploymentReference => SandboxPrivilegedAuthAction = _ => auth
 

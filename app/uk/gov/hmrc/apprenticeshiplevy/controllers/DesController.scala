@@ -25,7 +25,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.logging.Authorization
+import uk.gov.hmrc.http.Authorization
 
 trait DesController extends ApiController {
 

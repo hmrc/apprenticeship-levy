@@ -75,6 +75,7 @@ lazy val microservice = Project(appName, file("."))
     scalaSettings,
     publishingSettings,
     defaultSettings(),
+    scalaVersion := "2.12.12",
     PlayKeys.playDefaultPort := 9470,
     majorVersion := 3,
     ivyConfigurations += XsltConfig,

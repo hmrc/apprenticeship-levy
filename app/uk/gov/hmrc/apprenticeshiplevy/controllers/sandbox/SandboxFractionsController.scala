@@ -26,8 +26,7 @@ import scala.concurrent.ExecutionContext
 
 class SandboxFractionsController @Inject()(val desConnector: SandboxDesConnector,
                                            val authAction: SandboxPrivilegedAuthAction,
-                                           val executionContext: ExecutionContext,
                                            val parser: BodyParsers.Default,
                                            val appContext: AppContext,
                                            val controllerComponents: ControllerComponents
-                                           ) extends DesController with FractionsController with FractionsCalculationDateController
+                                           )(implicit val executionContext: ExecutionContext) extends DesController with FractionsController with FractionsCalculationDateController

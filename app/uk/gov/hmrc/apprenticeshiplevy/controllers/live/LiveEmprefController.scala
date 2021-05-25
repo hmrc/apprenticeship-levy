@@ -30,10 +30,9 @@ import scala.concurrent.ExecutionContext
 
 class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
                                      val auth: AllProviderAuthActionImpl,
-                                     val executionContext: ExecutionContext,
                                      val parser: BodyParsers.Default,
                                      val appContext: AppContext,
-                                     val controllerComponents: ControllerComponents) extends EmprefController {
+                                     val controllerComponents: ControllerComponents)(implicit val executionContext: ExecutionContext) extends EmprefController {
 
   override val authAction: EmploymentReference => AuthAction = auth(_)
 

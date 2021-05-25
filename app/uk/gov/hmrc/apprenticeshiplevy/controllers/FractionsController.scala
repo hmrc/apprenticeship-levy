@@ -23,21 +23,20 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
-//TODO update this
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait FractionsController {
   self: DesController =>
-  def desConnector: DesConnector
 
+ implicit val ec = executionContext: ExecutionContext
+
+  def desConnector: DesConnector
   val authAction: AuthAction
 
   val defaultPriorMonthsForFromDate = 72
 
   // scalastyle:off
-  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
+  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]) : Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
     implicit request =>
   // scalastyle:on
     val validatedFromDate = validateFromDate(fromDate)
@@ -76,6 +75,8 @@ trait FractionsCalculationDateController {
 
   import play.api.libs.json.JodaWrites._
 
+  implicit val executionContext: ExecutionContext
+
   def desConnector: DesConnector
 
   val authAction: AuthAction
@@ -84,6 +85,7 @@ trait FractionsCalculationDateController {
   def fractionCalculationDate: Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
     implicit request =>
   // scalastyle:on
+     implicit val e = executionContext
       desConnector.fractionCalculationDate map { date =>
         Ok(Json.toJson(date))
       } recover desErrorHandler
