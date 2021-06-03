@@ -17,12 +17,12 @@
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import java.net.URLDecoder
-
 import com.google.inject.Inject
 import org.joda.time.LocalDate
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
+import play.api.mvc.RequestHeader
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
@@ -101,6 +101,16 @@ trait EmploymentCheckEndpoint extends Timer {
   des: DesConnector =>
 
   implicit val executionContext: ExecutionContext
+  implicit val headerCarrier: HeaderCarrier
+  implicit val requestHeader: RequestHeader
+
+  protected def defaultDESEnvironment: String = appContext.desEnvironment
+  protected def defaultDESToken: String = appContext.desToken
+
+//  override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
+//    val hc = super.hc(rh).withExtraHeaders((("Environment",rh.headers.toSimpleMap.getOrElse("Environment",defaultDESEnvironment))))
+//    hc.copy(authorization=Some(Authorization(s"Bearer ${defaultDESToken}")))
+//  }
 
   def check(empref: String, nino: String, dateRange: ClosedDateRange)
            (implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
