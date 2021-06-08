@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import org.joda.time._
 import org.slf4j.MDC
 import play.api.Logger
@@ -29,8 +30,6 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, LevyDeclara
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-//TODO update this
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 

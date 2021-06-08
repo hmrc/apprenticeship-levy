@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
@@ -23,13 +24,11 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
-//TODO update this
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-
 import scala.concurrent.Future
 
 trait FractionsController {
   self: DesController =>
+
   def desConnector: DesConnector
 
   val authAction: AuthAction

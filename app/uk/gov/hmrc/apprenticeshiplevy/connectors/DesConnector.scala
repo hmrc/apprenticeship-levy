@@ -18,6 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import java.net.URLDecoder
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import com.google.inject.Inject
 import org.joda.time.LocalDate
 import play.api.Logger
@@ -35,7 +36,7 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import views.html.helper
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import scala.util.Try
 
 trait DesUtils {
@@ -51,7 +52,7 @@ trait DesUtils {
 trait EmployerDetailsEndpoint extends Timer {
   des: DesConnector =>
 
-  def designatoryDetails(empref: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] = {
+  def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] = {
     val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
     val (office, ref) = URLDecoder.decode(empref, "UTF-8") match {
       case emprefParts(part1, _, part2) => (part1, part2)
@@ -77,12 +78,12 @@ trait EmployerDetailsEndpoint extends Timer {
               c <- getComms
             } yield (details.copy(employer=e, communication=c))
           }.getOrElse(Future.successful(details))
-        }(ec)
+        }
       }
     }
   }
 
-  protected def getDetails(path: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] =
+  protected def getDetails(path: String)(implicit hc: HeaderCarrier): Future[Option[DesignatoryDetailsData]] =
     des.httpClient.GET[DesignatoryDetailsData](s"${des.baseUrl}${path}").map { data => Some(data) }.recover(errorHandler)
 
   protected val errorHandler: PartialFunction[Throwable, Option[DesignatoryDetailsData]] = {
@@ -99,7 +100,7 @@ trait EmploymentCheckEndpoint extends Timer {
   des: DesConnector =>
 
   def check(empref: String, nino: String, dateRange: ClosedDateRange)
-           (implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[EmploymentCheckStatus] = {
+           (implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
     val dateParams = dateRange.toParams
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?${dateParams}"
 
@@ -118,7 +119,7 @@ trait EmploymentCheckEndpoint extends Timer {
 trait FractionsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
-  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Fractions] = {
+  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Fractions] = {
     val dateParams = dateRange.toParams
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions?$dateParams"
     // $COVERAGE-OFF$
@@ -134,7 +135,7 @@ trait FractionsEndpoint extends Timer with DesUtils {
     }
   }
 
-  def fractionCalculationDate(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
+  def fractionCalculationDate(implicit hc: HeaderCarrier): Future[LocalDate] = {
     val url = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
 
     // $COVERAGE-OFF$
@@ -154,7 +155,7 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
 
   def appContext: AppContext
 
-  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
+  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams
     val url = s"${desURL(empref)}?$dateParams"
 
@@ -185,8 +186,6 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
   }
 
   protected[connectors] def toEmployerPaymentsSummary(className: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
-    import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsError._
-    import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsSummary._
     import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsSummaryVersion0._
     import uk.gov.hmrc.apprenticeshiplevy.data.des.EmptyEmployerPayments._
 

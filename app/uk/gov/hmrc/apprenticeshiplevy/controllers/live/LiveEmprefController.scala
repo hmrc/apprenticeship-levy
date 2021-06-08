@@ -23,7 +23,7 @@ import play.api.mvc.{BodyParsers, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AllProviderAuthActionImpl, AuthAction, PrivilegedAuthActionImpl}
+import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AllProviderAuthActionImpl, AuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
 import scala.concurrent.ExecutionContext

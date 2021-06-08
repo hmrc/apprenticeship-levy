@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.config
 
 import com.google.inject.Inject
-import com.typesafe.config.ConfigFactory
 import play.api.{Configuration, Environment, Logger, Mode}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
