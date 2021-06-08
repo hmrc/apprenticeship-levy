@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import java.io.InputStream
 import com.google.inject.{Inject, Singleton}
 import play.Logger
-import play.api.{Environment, Mode}
+import play.api.Mode
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
 import play.api.mvc.{Action, AnyContent, ControllerComponents}

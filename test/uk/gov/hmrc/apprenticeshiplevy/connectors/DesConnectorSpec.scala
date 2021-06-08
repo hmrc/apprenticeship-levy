@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import org.joda.time.{LocalDate, LocalDateTime}
-import org.mockito.Matchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{any, anyString, startsWith}
+import org.mockito.Mockito.{reset, verify, when}
 import org.mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
@@ -40,6 +40,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
 
   val mockAppContext = mock[AppContext]
   val mockHttp = mock[HttpClient]
+  val hc = mock[HeaderCarrier]
 
   def connector: DesConnector = new DesConnector(){
     override def appContext: AppContext = mockAppContext
@@ -57,14 +58,13 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
     "send audit events" in {
         // set up
         val stubAuditConnector= mock[AuditConnector]
-        val eventCaptor = ArgumentCaptor.forClass(classOf[DataEvent])
+        val eventCaptor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
         when(stubAuditConnector.sendEvent(eventCaptor.capture())(any(), any())).thenReturn(Future.successful(AuditResult.Success))
         val event = ALAEvent("readEmprefDetails", "123AB12345")
         implicit val hc = HeaderCarrier()
-        implicit val ec = defaultContext
 
         // test
-        stubAuditConnector.sendEvent(event.toDataEvent(200))(hc,ec)
+        stubAuditConnector.sendEvent(event.toDataEvent(200))
 
         // check
         val auditEvent = eventCaptor.getValue
@@ -77,11 +77,11 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
       "when EDH not failing return local date instance of date" in {
         // set up
 
-        when(mockHttp.GET[FractionCalculationDate](anyString())(any(), any(), any())).thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
+        when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any())).thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
         when(mockAppContext.metricsEnabled).thenReturn(false)
 
         // test
-        val futureResult = connector.fractionCalculationDate(HeaderCarrier(), defaultContext)
+        val futureResult = connector.fractionCalculationDate(HeaderCarrier())
 
         // check
         await[LocalDate](futureResult) shouldBe new LocalDate(2016,11,3)
@@ -93,12 +93,12 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
         // set up
 
         val expected = Fractions("123/AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))
-        when(mockHttp.GET[Fractions](anyString())(any(), any(), any()))
+        when(mockHttp.GET[Fractions](anyString(), any(), any())(any(), any(), any()))
            .thenReturn(Future.successful(expected))
         when(mockAppContext.metricsEnabled).thenReturn(false)
 
         // test
-        val futureResult = connector.fractions("123/AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(HeaderCarrier(),defaultContext)
+        val futureResult = connector.fractions("123/AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(HeaderCarrier())
 
         // check
         await[Fractions](futureResult) shouldBe expected
@@ -108,7 +108,6 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
 
   "have Levy Declarations endpoint and" should {
     val hc = HeaderCarrier()
-    val ec = defaultContext
 
     "support original endpoint url" in {
       // set up
@@ -117,13 +116,13 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
 
       //the des url is controller be the mockAppContext flag below
       when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
-      when(mockHttp.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"))(any(), any(), any()))
+      when(mockHttp.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"), any(), any())(any(), any(), any()))
                       .thenReturn(Future.successful(
                         HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
                       ))
 
       // test
-      val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,11,3)))(hc, ec)
+      val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,11,3)))(hc)
 
       // check
       await[EmployerPaymentsSummary](futureResult) shouldBe expected
@@ -132,14 +131,14 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
     "support new endpoint url" in {
       // set up
       val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
-      when(mockHttp.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/apprenticeship-levy/employers/123AB12345/declarations"))(any(), any(), any()))
+      when(mockHttp.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/apprenticeship-levy/employers/123AB12345/declarations"), any(), any())(any(), any(), any()))
                       .thenReturn(Future.successful(
                         HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
                       ))
       when(mockAppContext.metricsEnabled).thenReturn(false)
 
       // test
-      val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,11,3)))(hc, ec)
+      val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,11,3)))(hc)
 
       // check
       await[EmployerPaymentsSummary](futureResult) shouldBe expected
@@ -149,13 +148,13 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
       // set up
       val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
       when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
-      when(mockHttp.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary?toDate=20"))(any(), any(), any()))
+      when(mockHttp.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary?toDate=20"), any(), any())(any(), any(), any()))
                       .thenReturn(Future.successful(
                         HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
                       ))
 
       // test
-      val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(hc, ec)
+      val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(hc)
 
       // check
       await[EmployerPaymentsSummary](futureResult) shouldBe expected
@@ -168,13 +167,13 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
         val url = "http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"
         val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
         when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
-        when(mockHttp.GET[HttpResponse](startsWith(s"${url}?toDate=20"))(any(), any(), any()))
+        when(mockHttp.GET[HttpResponse](startsWith(s"${url}?toDate=20"), any(), any())(any(), any(), any()))
                 .thenReturn(Future.successful(
                   HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
                 ))
 
         // test
-        val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(hc, ec)
+        val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(hc)
 
         // check
         await[EmployerPaymentsSummary](futureResult) shouldBe expected
@@ -185,7 +184,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
         val expected = EmployerPaymentsSummary("123/AB12345",
                         List(EmployerPaymentSummary(12345678L,new LocalDateTime("2016-07-14T16:05:44.000"),new LocalDateTime("2016-07-14T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(600.00),BigDecimal(15000),"11")))))
         when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
-        when(mockHttp.GET[HttpResponse](startsWith(s"${url}?fromDate=20"))(any(), any(), any()))
+        when(mockHttp.GET[HttpResponse](startsWith(s"${url}?fromDate=20"), any(), any())(any(), any(), any()))
                         .thenReturn(Future.successful(
                           HttpResponse(200, Some(
                           Json.parse("""{
@@ -207,7 +206,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
                       ))
 
         // test
-        val futureResult = connector.eps("123AB12345", ClosedDateRange(new LocalDate(2016,7,1), new LocalDate(2016,7,15)))(hc, ec)
+        val futureResult = connector.eps("123AB12345", ClosedDateRange(new LocalDate(2016,7,1), new LocalDate(2016,7,15)))(hc)
 
         // check
         await[EmployerPaymentsSummary](futureResult) shouldBe expected
@@ -224,7 +223,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
                              EmployerPaymentSummary(12345683L,new LocalDateTime("2016-07-15T16:05:23.000"),new LocalDateTime("2016-07-15T16:05:23.000"),"16-17",inactivePeriod=Some(ClosedDateRange(new LocalDate("2016-06-06"),new LocalDate("2016-09-05")))),
                              EmployerPaymentSummary(12345684L,new LocalDateTime("2016-10-15T16:05:23.000"),new LocalDateTime("2016-10-15T16:05:23.000"),"16-17",finalSubmission=Some(SchemeCeased(true,new LocalDate("2016-09-05"),None)))))
         when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
-        when(mockHttp.GET[HttpResponse](startsWith(s"${url}?fromDate=20"))(any(), any(), any()))
+        when(mockHttp.GET[HttpResponse](startsWith(s"${url}?fromDate=20"), any(), any())(any(), any(), any()))
                         .thenReturn(Future.successful{
                           HttpResponse(200, Some(
                           Json.parse("""{
@@ -309,7 +308,7 @@ class DesConnectorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEac
                         })
 
         // test
-        val futureResult = connector.eps("123AB12345", ClosedDateRange(new LocalDate(2016,7,1), new LocalDate(2016,7,15)))(hc, ec)
+        val futureResult = connector.eps("123AB12345", ClosedDateRange(new LocalDate(2016,7,1), new LocalDate(2016,7,15)))(hc)
 
         // check
         await[EmployerPaymentsSummary](futureResult) shouldBe expected

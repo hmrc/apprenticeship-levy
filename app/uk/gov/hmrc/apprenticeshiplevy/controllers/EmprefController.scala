@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.hal.{Hal, HalLink, HalResource}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
@@ -24,10 +24,10 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath._
-//TODO update this
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import scala.concurrent.ExecutionContext
 
 trait EmprefController extends DesController {
+
   def desConnector: DesConnector
 
   val authAction: EmploymentReference => AuthAction

@@ -23,7 +23,7 @@ import org.joda.time._
 import org.slf4j.MDC
 import play.api.libs.json._
 import play.api.mvc._
-import play.api.{Configuration, Logger, Mode}
+import play.api.{Logger, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.utils.DataTransformer
 import uk.gov.hmrc.play.bootstrap.controller.Utf8MimeTypes
@@ -31,7 +31,6 @@ import uk.gov.hmrc.play.bootstrap.controller.Utf8MimeTypes
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Try
-import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
