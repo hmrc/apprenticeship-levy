@@ -82,16 +82,6 @@ trait DesController extends ApiController {
           // $COVERAGE-ON$
           NotFound(Json.toJson(DESError(NOT_FOUND, "NOT_FOUND", s"DES endpoint not found: ${extractReason(e.getMessage())}")))
         }
-//        case e: Upstream5xxResponse => {
-//          // $COVERAGE-OFF$
-//          Logger.error(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning ServiceUnavailable with code ${e.reportAs}", e)
-//          // $COVERAGE-ON$
-//          e.upstreamResponseCode match {
-//            case PRECONDITION_FAILED =>
-//              InternalServerError(Json.toJson(DESError(420, "BACKEND_FAILURE", s"DES backend error: ${extractReason(e.getMessage())}")))
-//            case _ => ServiceUnavailable(Json.toJson(DESError(e.reportAs, "BACKEND_FAILURE", s"DES 5xx error: ${extractReason(e.getMessage())}")))
-//          }
-//        }
         case e: UpstreamErrorResponse => {
           // $COVERAGE-OFF$
           Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()} with ${e.upstreamResponseCode}, API returning code ${e.reportAs}", e)

@@ -210,7 +210,7 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
         Some(EmployerPaymentsSummary(empref, eps))
       case Some(EmployerPaymentsError(reason)) => {
         Logger.error(s"DES reported error reason '${reason}' on HTTP 200 response.")
-        throw new Upstream5xxResponse(s"DES returned error code object on HTTP 200 response (treating as error). DES error reason: '${reason}'.", PRECONDITION_FAILED, PRECONDITION_FAILED)
+        throw UpstreamErrorResponse.apply(s"DES returned error code object on HTTP 200 response (treating as error). DES error reason: '${reason}'.", PRECONDITION_FAILED)
       }
       case Some(EmptyEmployerPayments(empref)) =>
         Some(EmployerPaymentsSummary(empref, List.empty[EmployerPaymentSummary]))
