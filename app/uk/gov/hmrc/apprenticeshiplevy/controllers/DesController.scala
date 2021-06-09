@@ -82,28 +82,35 @@ trait DesController extends ApiController {
           // $COVERAGE-ON$
           NotFound(Json.toJson(DESError(NOT_FOUND, "NOT_FOUND", s"DES endpoint not found: ${extractReason(e.getMessage())}")))
         }
-        case e: Upstream5xxResponse => {
-          // $COVERAGE-OFF$
-          Logger.error(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning ServiceUnavailable with code ${e.reportAs}", e)
-          // $COVERAGE-ON$
-          e.upstreamResponseCode match {
-            case PRECONDITION_FAILED =>
-              InternalServerError(Json.toJson(DESError(420, "BACKEND_FAILURE", s"DES backend error: ${extractReason(e.getMessage())}")))
-            case _ => ServiceUnavailable(Json.toJson(DESError(e.reportAs, "BACKEND_FAILURE", s"DES 5xx error: ${extractReason(e.getMessage())}")))
-          }
-        }
-        case e: Upstream4xxResponse => {
+//        case e: Upstream5xxResponse => {
+//          // $COVERAGE-OFF$
+//          Logger.error(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning ServiceUnavailable with code ${e.reportAs}", e)
+//          // $COVERAGE-ON$
+//          e.upstreamResponseCode match {
+//            case PRECONDITION_FAILED =>
+//              InternalServerError(Json.toJson(DESError(420, "BACKEND_FAILURE", s"DES backend error: ${extractReason(e.getMessage())}")))
+//            case _ => ServiceUnavailable(Json.toJson(DESError(e.reportAs, "BACKEND_FAILURE", s"DES 5xx error: ${extractReason(e.getMessage())}")))
+//          }
+//        }
+        case e: UpstreamErrorResponse => {
           // $COVERAGE-OFF$
           Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()} with ${e.upstreamResponseCode}, API returning code ${e.reportAs}", e)
           // $COVERAGE-ON$
-          e.upstreamResponseCode match {
+          e.statusCode match {
+            case PRECONDITION_FAILED =>
+              InternalServerError(Json.toJson(DESError(420, "BACKEND_FAILURE", s"DES backend error: ${extractReason(e.getMessage())}")))
             case FORBIDDEN => Forbidden(Json.toJson(DESError(e.reportAs, "FORBIDDEN", s"DES forbidden error: ${extractReason(e.getMessage())}")))
             case UNAUTHORIZED => Unauthorized(Json.toJson(DESError(e.reportAs, "UNAUTHORIZED", s"DES unauthorised error: ${extractReason(e.getMessage())}")))
             case TOO_MANY_REQUESTS =>
               TooManyRequests(Json.toJson(DESError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"DES too many requests: ${extractReason(e.getMessage())}")))
             case REQUEST_TIMEOUT =>
               RequestTimeout(Json.toJson(DESError(REQUEST_TIMEOUT, "TIMEOUT", s"DES not responding error: ${extractReason(e.getMessage())}")))
-            case _ => ServiceUnavailable(Json.toJson(DESError(e.reportAs, "OTHER", s"DES 4xx error: ${extractReason(e.getMessage())}")))
+            case _ =>{
+             if(e.statusCode >= 400 && e.statusCode < 500)
+               ServiceUnavailable(Json.toJson(DESError(e.reportAs, "OTHER", s"DES 4xx error: ${extractReason(e.getMessage())}")))
+             else
+               ServiceUnavailable(Json.toJson(DESError(e.reportAs, "BACKEND_FAILURE", s"DES 5xx error: ${extractReason(e.getMessage())}")))
+            }
           }
         }
         case e => {
