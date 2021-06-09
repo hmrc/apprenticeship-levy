@@ -43,8 +43,7 @@ trait Auditor  {
     case _: IOException => 444
     case _: GatewayTimeoutException => 408
     case _: NotFoundException => 404
-    case e: Upstream5xxResponse => e.upstreamResponseCode
-    case e: Upstream4xxResponse => e.upstreamResponseCode
+    case e: UpstreamErrorResponse => e.statusCode
     case _ => 500
   }
 }
