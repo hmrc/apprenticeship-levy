@@ -21,9 +21,9 @@ object AppDependencies {
     "com.typesafe.play"      %% "play-test"                    % PlayVersion.current,
     "org.pegdown"             % "pegdown"                      % "1.6.0",
     "org.scalamock"          %% "scalamock-scalatest-support"  % "3.6.0",
-    //"org.mockito"             % "mockito-all"                  % "1.10.19",
-    "org.mockito"            % "mockito-core"                 % "3.6.0",
-    "org.scalatestplus.play" %% "scalatestplus-play"           % "3.1.3"
+    "org.mockito"            %  "mockito-core"                 % "3.6.0",
+    "org.scalatestplus.play" %% "scalatestplus-play"           % "3.1.3",
+    "com.github.tomakehurst" %  "wiremock-jre8"                % "2.27.2"
   ).map(_ % "test")
 
   lazy val integrationTest: Seq[ModuleID] = Seq(

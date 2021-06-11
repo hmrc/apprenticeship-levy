@@ -47,9 +47,20 @@ trait DesUtils {
       case EMPREF(taxOffice,_,ref) => s"$taxOffice/$ref"
       case _ => empref
     }
+
+  def createDesHeaders(implicit hc: HeaderCarrier): Seq[(String, String)] = {
+    Seq(
+      "X-Client-ID" -> getHeaderValueByKey("X-Client-ID"),
+      "Authorization" -> getHeaderValueByKey("Authorization"),
+      "Environment" -> getHeaderValueByKey("Environment")
+    )
+  }
+
+  private def getHeaderValueByKey(key: String)(implicit headerCarrier: HeaderCarrier): String =
+    headerCarrier.headers(Seq(key)).toMap.getOrElse(key, "")
 }
 
-trait EmployerDetailsEndpoint extends Timer {
+trait EmployerDetailsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] = {
@@ -67,7 +78,8 @@ trait EmployerDetailsEndpoint extends Timer {
 
     timer(RequestEvent(DES_EMPREF_DETAILS_REQUEST, Some(empref))) {
       audit(new ALAEvent("readEmprefDetails", empref)) {
-        des.httpClient.GET[HodDesignatoryDetailsLinks](url).flatMap { response =>
+        val headers = createDesHeaders
+        des.httpClient.GET[HodDesignatoryDetailsLinks](url, Seq(), headers).flatMap { response =>
           val details = DesignatoryDetails(Some(empref))
           response.links.map { links =>
             Logger.debug((links.employer ++ links.communication).mkString(" "))
@@ -83,8 +95,10 @@ trait EmployerDetailsEndpoint extends Timer {
     }
   }
 
-  protected def getDetails(path: String)(implicit hc: HeaderCarrier): Future[Option[DesignatoryDetailsData]] =
-    des.httpClient.GET[DesignatoryDetailsData](s"${des.baseUrl}${path}").map { data => Some(data) }.recover(errorHandler)
+  protected def getDetails(path: String)(implicit hc: HeaderCarrier): Future[Option[DesignatoryDetailsData]] = {
+    val headers = createDesHeaders
+    des.httpClient.GET[DesignatoryDetailsData](s"${des.baseUrl}${path}", Seq(), headers).map { data => Some(data) }.recover(errorHandler)
+  }
 
   protected val errorHandler: PartialFunction[Throwable, Option[DesignatoryDetailsData]] = {
         case e => {
@@ -144,7 +158,8 @@ trait FractionsEndpoint extends Timer with DesUtils {
 
     timer(RequestEvent(DES_FRACTIONS_DATE_REQUEST, None)) {
       audit(new ALAEvent("readFractionCalculationDate")) {
-        des.httpClient.GET[FractionCalculationDate](url).map { _.date }
+        val headers = createDesHeaders
+        des.httpClient.GET[FractionCalculationDate](url, Seq(), headers).map { _.date }
       }
     }
   }
@@ -161,7 +176,8 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
 
     timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
       audit(new ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
-        des.httpClient.GET[HttpResponse](url).map { response =>
+        val headers = createDesHeaders
+        des.httpClient.GET[HttpResponse](url, Seq(), headers).map { response =>
           marshall(empref, response.body).getOrElse {
             Logger.error(s""" |DES url ${url}
                               |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
