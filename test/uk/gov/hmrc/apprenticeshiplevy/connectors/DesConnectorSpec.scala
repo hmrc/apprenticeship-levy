@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{ok, _}
-import org.joda.time.LocalDate
+import org.joda.time.{LocalDate, LocalDateTime}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{when, reset => mockReset}
 import org.mockito._
@@ -209,40 +209,56 @@ class DesConnectorSpec
 
         response shouldBe expectedResponse
       }
-//
-//      "convert invalid bad date-time json values to valid date times" in {
-//        val url = "http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"
-//        val expected = EmployerPaymentsSummary("123/AB12345",
-//                        List(EmployerPaymentSummary(12345678L,new LocalDateTime("2016-07-14T16:05:44.000"),new LocalDateTime("2016-07-14T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(600.00),BigDecimal(15000),"11")))))
-//        when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
-//        when(mockHttp.GET[HttpResponse](startsWith(s"${url}?fromDate=20"), any(), any())(any(), any(), any()))
-//                        .thenReturn(Future.successful(
-//                          HttpResponse(200, Some(
-//                          Json.parse("""{
-//                          "empref": "123/AB12345",
-//                          "eps": [
-//                            {
-//                              "submissionId": 12345678,
-//                              "hmrcSubmissionTime": "2016-07-14T16:05:44Z",
-//                              "rtiSubmissionTime": "2016-07-14T16:05:23.123Z",
-//                              "taxYear": "16-17",
-//                              "apprenticeshipLevy": {
-//                                "amountDue": 600.00,
-//                                "taxMonth": "11",
-//                                "amountAllowance": 15000
-//                              }
-//                            }
-//                          ]
-//                        }""")))
-//                      ))
-//
-//        // test
-//        val futureResult = connector.eps("123AB12345", ClosedDateRange(new LocalDate(2016,7,1), new LocalDate(2016,7,15)))(hc)
-//
-//        // check
-//        await[EmployerPaymentsSummary](futureResult) shouldBe expected
-//      }
-//
+
+      "convert invalid bad date-time json values to valid date times" in {
+
+        val empRef = "123AB12345"
+        val empRefWithSlash = "123/AB12345"
+        val dateFrom = new LocalDate(2016,7,1)
+        val dateTo = new LocalDate(2016,7,15)
+        val dateRange = ClosedDateRange(dateFrom, dateTo)
+        val dateRangeParams = dateRange.toParams
+        val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+
+        val expectedResponse = EmployerPaymentsSummary(
+          empRefWithSlash,
+          List(
+            EmployerPaymentSummary(
+              12345678L,
+              new LocalDateTime("2016-07-14T16:05:44.000"),
+              new LocalDateTime("2016-07-14T16:05:23.000"),"16-17",
+              apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(600.00), BigDecimal(15000),"11")))
+          )
+        )
+
+        val json = Json.parse(
+        """{
+           "empref": "123/AB12345",
+           "eps": [
+              {
+                "submissionId": 12345678,
+                "hmrcSubmissionTime": "2016-07-14T16:05:44Z",
+                "rtiSubmissionTime": "2016-07-14T16:05:23.123Z",
+                "taxYear": "16-17",
+                "apprenticeshipLevy": {
+                  "amountDue": 600.00,
+                  "taxMonth": "11",
+                  "amountAllowance": 15000
+                }
+            }
+          ]
+        }"""
+        )
+
+        val stubResponse = ok(json.toString)
+
+        stubGetServer(stubResponse, employerPaymentsSummaryUrl)
+
+        val response = await(desConnector.eps(empRef, dateRange)(headerCarrier))
+
+        response shouldBe expectedResponse
+      }
+
 //      "convert valid json values to valid objects" in {
 //        val url = "http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"
 //        val expected = EmployerPaymentsSummary("123/AB12345",
