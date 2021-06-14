@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{ok, urlEqualTo, _}
+import com.github.tomakehurst.wiremock.client.WireMock.{ok, _}
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{when, reset => mockReset}
@@ -61,6 +61,7 @@ class DesConnectorSpec
 
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(
+      "microservice.epsOrigPathEnabled" -> true,
       "microservice.services.auth.host" -> "127.0.0.1",
       "microservice.services.auth.port" -> server.port(),
       "microservice.services.des.host" -> "127.0.0.1",
@@ -72,7 +73,7 @@ class DesConnectorSpec
       "metrics.enabled" -> false
     )
     .overrides(
-      bind[Auditor].toInstance(mockAuditor),
+      bind[Auditor].toInstance(mockAuditor)
     )
     .build()
 
@@ -150,79 +151,64 @@ class DesConnectorSpec
     }
   }
 
-//  "have Levy Declarations endpoint and" should {
-//    val hc = HeaderCarrier()
-//
-//    "support original endpoint url" in {
-//      // set up
-//      val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
-//      when(mockAppContext.metricsEnabled).thenReturn(false)
-//
-//      //the des url is controller be the mockAppContext flag below
-//      when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
-//      when(mockHttp.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"), any(), any())(any(), any(), any()))
-//                      .thenReturn(Future.successful(
-//                        HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
-//                      ))
-//
-//      // test
-//      val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,11,3)))(hc)
-//
-//      // check
-//      await[EmployerPaymentsSummary](futureResult) shouldBe expected
-//      )
-//    }
-//
-//    "support new endpoint url" in {
-//      // set up
-//      val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
-//      when(mockHttp.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/apprenticeship-levy/employers/123AB12345/declarations"), any(), any())(any(), any(), any()))
-//                      .thenReturn(Future.successful(
-//                        HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
-//                      ))
-//      when(mockAppContext.metricsEnabled).thenReturn(false)
-//
-//      // test
-//      val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,11,3)))(hc)
-//
-//      // check
-//      await[EmployerPaymentsSummary](futureResult) shouldBe expected
-//    }
-//
-//    "supply default dates when not specified" in {
-//      // set up
-//      val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
-//      when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
-//      when(mockHttp.GET[HttpResponse](startsWith("http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary?toDate=20"), any(), any())(any(), any(), any()))
-//                      .thenReturn(Future.successful(
-//                        HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
-//                      ))
-//
-//      // test
-//      val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(hc)
-//
-//      // check
-//      await[EmployerPaymentsSummary](futureResult) shouldBe expected
-//    }
-//
-//    "with valid and invalid json" must {
-//      import play.api.libs.json._
-//
-//      "convert invalid empty json to valid response" in {
-//        val url = "http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"
-//        val expected = EmployerPaymentsSummary("123/AB12345", List[EmployerPaymentSummary]())
-//        when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
-//        when(mockHttp.GET[HttpResponse](startsWith(s"${url}?toDate=20"), any(), any())(any(), any(), any()))
-//                .thenReturn(Future.successful(
-//                  HttpResponse(200, Some(Json.parse("""{"empref":"123AB12345"}""")))
-//                ))
-//
-//        // test
-//        val futureResult = connector.eps("123AB12345", OpenEarlyDateRange(new LocalDate(2016,4,22)))(hc)
-//
-//        // check
-//        await[EmployerPaymentsSummary](futureResult) shouldBe expected
-//      }
+  "have Levy Declarations endpoint and" should {
+    "support original endpoint url" in {
+
+      val empRef = "123AB12345"
+      val empRefWithSlash = "123/AB12345"
+      val localDate = new LocalDate(2016,11,3)
+      val dateRange = OpenEarlyDateRange(localDate)
+      val dateRangeParams = dateRange.toParams
+      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, List[EmployerPaymentSummary]())
+      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+      val json = Json.toJson[EmployerPaymentsSummary](expectedResponse)
+      val stubResponse = ok(json.toString)
+
+      stubGetServer(stubResponse, employerPaymentsSummaryUrl)
+
+      val response = await(desConnector.eps(empRef, dateRange)(headerCarrier))
+
+      response shouldBe expectedResponse
+    }
+
+    "supply default dates when not specified" in {
+
+      val empRef = "123AB12345"
+      val empRefWithSlash = "123/AB12345"
+      val localDate = new LocalDate(2016,4,22)
+      val dateRange = OpenEarlyDateRange(localDate)
+      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?toDate=${localDate.toString()}"
+      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, List[EmployerPaymentSummary]())
+      val json = Json.toJson[EmployerPaymentsSummary](expectedResponse)
+      val stubResponse = ok(json.toString)
+
+      stubGetServer(stubResponse, employerPaymentsSummaryUrl)
+
+      val response = await(desConnector.eps(empRef, dateRange)(headerCarrier))
+
+      response shouldBe expectedResponse
+    }
+
+    "with valid and invalid json" must {
+      import play.api.libs.json._
+
+      "convert invalid empty json to valid response" in {
+
+        val empRef = "123AB12345"
+        val empRefWithSlash = "123/AB12345"
+        val localDate = new LocalDate(2016,4,22)
+        val dateRange = OpenEarlyDateRange(localDate)
+        val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?toDate=${localDate.toString()}"
+        val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, List[EmployerPaymentSummary]())
+        val json = Json.parse("""{"empref":"123AB12345"}""")
+        val stubResponse = ok(json.toString)
+
+        stubGetServer(stubResponse, employerPaymentsSummaryUrl)
+
+        val response = await(desConnector.eps(empRef, dateRange)(headerCarrier))
+
+        response shouldBe expectedResponse
+      }
 //
 //      "convert invalid bad date-time json values to valid date times" in {
 //        val url = "http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"
@@ -358,6 +344,6 @@ class DesConnectorSpec
 //        // check
 //        await[EmployerPaymentsSummary](futureResult) shouldBe expected
 //      }
-//    }
-//  }
+    }
+  }
 }
