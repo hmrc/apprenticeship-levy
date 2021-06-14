@@ -17,8 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.utils
 
 import org.scalatest.{BeforeAndAfterEach, WordSpecLike}
-import uk.gov.hmrc.http.HeaderCarrier
 
 trait BaseSpec extends WordSpecLike with NinoGenerator with BeforeAndAfterEach {
-  implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 }

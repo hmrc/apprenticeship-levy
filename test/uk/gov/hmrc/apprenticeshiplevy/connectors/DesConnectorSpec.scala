@@ -62,13 +62,13 @@ class DesConnectorSpec
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(
       "microservice.epsOrigPathEnabled" -> true,
-      "microservice.services.auth.host" -> "127.0.0.1",
+      "microservice.services.auth.host" -> "localhost",
       "microservice.services.auth.port" -> server.port(),
-      "microservice.services.des.host" -> "127.0.0.1",
+      "microservice.services.des.host" -> "localhost",
       "microservice.services.des.port" -> server.port(),
-      "microservice.services.stub-des.host" -> "127.0.0.1",
+      "microservice.services.stub-des.host" -> "localhost",
       "microservice.services.stub-des.port" -> server.port(),
-      "microservice.services.stub-auth.host" -> "127.0.0.1",
+      "microservice.services.stub-auth.host" -> "localhost",
       "microservice.services.stub-auth.port" -> server.port(),
       "metrics.enabled" -> false
     )
@@ -166,9 +166,16 @@ class DesConnectorSpec
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
-      val response = await(desConnector.eps(empRef, dateRange)(headerCarrier))
+      val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier))
 
       response shouldBe expectedResponse
+
+      server.verify(
+        getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))
+          .withHeader("Authorization", equalTo(s"Bearer ABC"))
+          .withHeader("X-Client-ID", equalTo("ClientId"))
+          .withHeader("Environment", equalTo("Test"))
+      )
     }
 
     "supply default dates when not specified" in {
@@ -184,9 +191,16 @@ class DesConnectorSpec
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
-      val response = await(desConnector.eps(empRef, dateRange)(headerCarrier))
+      val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier))
 
       response shouldBe expectedResponse
+
+      server.verify(
+        getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))
+          .withHeader("Authorization", equalTo(s"Bearer ABC"))
+          .withHeader("X-Client-ID", equalTo("ClientId"))
+          .withHeader("Environment", equalTo("Test"))
+      )
     }
 
     "with valid and invalid json" must {
@@ -205,9 +219,16 @@ class DesConnectorSpec
 
         stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
-        val response = await(desConnector.eps(empRef, dateRange)(headerCarrier))
+        val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier))
 
         response shouldBe expectedResponse
+
+        server.verify(
+          getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))
+            .withHeader("Authorization", equalTo(s"Bearer ABC"))
+            .withHeader("X-Client-ID", equalTo("ClientId"))
+            .withHeader("Environment", equalTo("Test"))
+        )
       }
 
       "convert invalid bad date-time json values to valid date times" in {
@@ -254,112 +275,136 @@ class DesConnectorSpec
 
         stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
-        val response = await(desConnector.eps(empRef, dateRange)(headerCarrier))
+        val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier))
 
         response shouldBe expectedResponse
+
+        server.verify(
+          getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))
+            .withHeader("Authorization", equalTo(s"Bearer ABC"))
+            .withHeader("X-Client-ID", equalTo("ClientId"))
+            .withHeader("Environment", equalTo("Test"))
+        )
       }
 
-//      "convert valid json values to valid objects" in {
-//        val url = "http://a.guide.to.nowhere/rti/employers/123AB12345/employer-payment-summary"
-//        val expected = EmployerPaymentsSummary("123/AB12345",
-//                        List(EmployerPaymentSummary(12345678L,new LocalDateTime("2016-07-14T16:05:23.000"),new LocalDateTime("2016-07-14T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(600.00),BigDecimal(15000),"11"))),
-//                             EmployerPaymentSummary(12345679L,new LocalDateTime("2015-04-07T16:05:23.000"),new LocalDateTime("2015-04-07T16:05:23.000"),"15-16",Some(ClosedDateRange(new LocalDate("2016-12-13"),new LocalDate("2017-03-22")))),
-//                             EmployerPaymentSummary(12345680L,new LocalDateTime("2016-05-07T16:05:23.000"),new LocalDateTime("2016-05-07T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(500.00),BigDecimal(15000),"1"))),
-//                             EmployerPaymentSummary(12345681L,new LocalDateTime("2016-06-07T16:05:23.000"),new LocalDateTime("2016-06-07T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(1000.00),BigDecimal(15000),"2"))),
-//                             EmployerPaymentSummary(12345682L,new LocalDateTime("2016-06-15T16:20:23.000"),new LocalDateTime("2016-06-15T16:20:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(200.00),BigDecimal(15000),"2"))),
-//                             EmployerPaymentSummary(12345683L,new LocalDateTime("2016-07-15T16:05:23.000"),new LocalDateTime("2016-07-15T16:05:23.000"),"16-17",inactivePeriod=Some(ClosedDateRange(new LocalDate("2016-06-06"),new LocalDate("2016-09-05")))),
-//                             EmployerPaymentSummary(12345684L,new LocalDateTime("2016-10-15T16:05:23.000"),new LocalDateTime("2016-10-15T16:05:23.000"),"16-17",finalSubmission=Some(SchemeCeased(true,new LocalDate("2016-09-05"),None)))))
-//        when(mockAppContext.epsOrigPathEnabled).thenReturn(true)
-//        when(mockHttp.GET[HttpResponse](startsWith(s"${url}?fromDate=20"), any(), any())(any(), any(), any()))
-//                        .thenReturn(Future.successful{
-//                          HttpResponse(200, Some(
-//                          Json.parse("""{
-//                          "empref": "123/AB12345",
-//                          "eps": [
-//                            {
-//                              "submissionId": 12345678,
-//                              "hmrcSubmissionTime": "2016-07-14T16:05:23",
-//                              "rtiSubmissionTime": "2016-07-14T16:05:23",
-//                              "taxYear": "16-17",
-//                              "apprenticeshipLevy": {
-//                                "amountDue": 600.00,
-//                                "taxMonth": "11",
-//                                "amountAllowance": 15000
-//                              }
-//                            },
-//                            {
-//                              "submissionId": 12345679,
-//                              "hmrcSubmissionTime": "2015-04-07T16:05:23",
-//                              "rtiSubmissionTime": "2015-04-07T16:05:23",
-//                              "taxYear": "15-16",
-//                              "noPaymentPeriod": {
-//                                "from": "2016-12-13",
-//                                "to": "2017-03-22"
-//                              }
-//                            },
-//                            {
-//                              "submissionId": 12345680,
-//                              "hmrcSubmissionTime": "2016-05-07T16:05:23",
-//                              "rtiSubmissionTime": "2016-05-07T16:05:23",
-//                              "taxYear": "16-17",
-//                              "apprenticeshipLevy": {
-//                                "amountDue": 500.00,
-//                                "taxMonth": "1",
-//                                "amountAllowance": 15000
-//                              }
-//                            },
-//                            {
-//                              "submissionId": 12345681,
-//                              "hmrcSubmissionTime": "2016-06-07T16:05:23",
-//                              "rtiSubmissionTime": "2016-06-07T16:05:23",
-//                              "taxYear": "16-17",
-//                              "apprenticeshipLevy": {
-//                                "amountDue": 1000.00,
-//                                "taxMonth": "2",
-//                                "amountAllowance": 15000
-//                              }
-//                            },
-//                            {
-//                              "submissionId": 12345682,
-//                              "hmrcSubmissionTime": "2016-06-15T16:20:23",
-//                              "rtiSubmissionTime": "2016-06-15T16:20:23",
-//                              "taxYear": "16-17",
-//                              "apprenticeshipLevy": {
-//                                "amountDue": 200.00,
-//                                "taxMonth": "2",
-//                                "amountAllowance": 15000
-//                              }
-//                            },
-//                            {
-//                              "submissionId": 12345683,
-//                              "hmrcSubmissionTime": "2016-07-15T16:05:23",
-//                              "rtiSubmissionTime": "2016-07-15T16:05:23",
-//                              "taxYear": "16-17",
-//                              "inactivePeriod": {
-//                                "from": "2016-06-06",
-//                                "to": "2016-09-05"
-//                              }
-//                            },
-//                            {
-//                              "submissionId": 12345684,
-//                              "hmrcSubmissionTime": "2016-10-15T16:05:23",
-//                              "rtiSubmissionTime": "2016-10-15T16:05:23",
-//                              "taxYear": "16-17",
-//                              "finalSubmission": {
-//                                "schemeCeased": true,
-//                                "schemeCeasedDate": "2016-09-05"
-//                              }
-//                            }
-//                          ]
-//                        }""")))
-//                        })
-//
-//        // test
-//        val futureResult = connector.eps("123AB12345", ClosedDateRange(new LocalDate(2016,7,1), new LocalDate(2016,7,15)))(hc)
-//
-//        // check
-//        await[EmployerPaymentsSummary](futureResult) shouldBe expected
-//      }
+      "convert valid json values to valid objects" in {
+
+        val empRef = "123AB12345"
+        val dateFrom = new LocalDate(2016,7,1)
+        val dateTo = new LocalDate(2016,7,15)
+        val dateRange = ClosedDateRange(dateFrom, dateTo)
+        val dateRangeParams = dateRange.toParams
+        val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+
+        val expectedResponse =
+          EmployerPaymentsSummary("123/AB12345",
+            List(
+              EmployerPaymentSummary(12345678L,new LocalDateTime("2016-07-14T16:05:23.000"),new LocalDateTime("2016-07-14T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(600.00),BigDecimal(15000),"11"))),
+              EmployerPaymentSummary(12345679L,new LocalDateTime("2015-04-07T16:05:23.000"),new LocalDateTime("2015-04-07T16:05:23.000"),"15-16",Some(ClosedDateRange(new LocalDate("2016-12-13"),new LocalDate("2017-03-22")))),
+              EmployerPaymentSummary(12345680L,new LocalDateTime("2016-05-07T16:05:23.000"),new LocalDateTime("2016-05-07T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(500.00),BigDecimal(15000),"1"))),
+              EmployerPaymentSummary(12345681L,new LocalDateTime("2016-06-07T16:05:23.000"),new LocalDateTime("2016-06-07T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(1000.00),BigDecimal(15000),"2"))),
+              EmployerPaymentSummary(12345682L,new LocalDateTime("2016-06-15T16:20:23.000"),new LocalDateTime("2016-06-15T16:20:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(200.00),BigDecimal(15000),"2"))),
+              EmployerPaymentSummary(12345683L,new LocalDateTime("2016-07-15T16:05:23.000"),new LocalDateTime("2016-07-15T16:05:23.000"),"16-17",inactivePeriod=Some(ClosedDateRange(new LocalDate("2016-06-06"),new LocalDate("2016-09-05")))),
+              EmployerPaymentSummary(12345684L,new LocalDateTime("2016-10-15T16:05:23.000"),new LocalDateTime("2016-10-15T16:05:23.000"),"16-17",finalSubmission=Some(SchemeCeased(true,new LocalDate("2016-09-05"),None)))
+            )
+          )
+
+        val json =
+        """{
+           "empref": "123/AB12345",
+           "eps": [
+           {
+             "submissionId": 12345678,
+             "hmrcSubmissionTime": "2016-07-14T16:05:23",
+             "rtiSubmissionTime": "2016-07-14T16:05:23",
+             "taxYear": "16-17",
+             "apprenticeshipLevy": {
+                "amountDue": 600.00,
+                "taxMonth": "11",
+                "amountAllowance": 15000
+             }
+            },
+            {
+              "submissionId": 12345679,
+              "hmrcSubmissionTime": "2015-04-07T16:05:23",
+              "rtiSubmissionTime": "2015-04-07T16:05:23",
+              "taxYear": "15-16",
+              "noPaymentPeriod": {
+                "from": "2016-12-13",
+                "to": "2017-03-22"
+              }
+            },
+            {
+              "submissionId": 12345680,
+              "hmrcSubmissionTime": "2016-05-07T16:05:23",
+              "rtiSubmissionTime": "2016-05-07T16:05:23",
+              "taxYear": "16-17",
+              "apprenticeshipLevy": {
+                "amountDue": 500.00,
+                "taxMonth": "1",
+                "amountAllowance": 15000
+              }
+            },
+            {
+              "submissionId": 12345681,
+              "hmrcSubmissionTime": "2016-06-07T16:05:23",
+              "rtiSubmissionTime": "2016-06-07T16:05:23",
+              "taxYear": "16-17",
+              "apprenticeshipLevy": {
+                "amountDue": 1000.00,
+                "taxMonth": "2",
+                "amountAllowance": 15000
+              }
+            },
+            {
+              "submissionId": 12345682,
+              "hmrcSubmissionTime": "2016-06-15T16:20:23",
+              "rtiSubmissionTime": "2016-06-15T16:20:23",
+              "taxYear": "16-17",
+              "apprenticeshipLevy": {
+                "amountDue": 200.00,
+                "taxMonth": "2",
+                "amountAllowance": 15000
+              }
+            },
+            {
+              "submissionId": 12345683,
+              "hmrcSubmissionTime": "2016-07-15T16:05:23",
+              "rtiSubmissionTime": "2016-07-15T16:05:23",
+              "taxYear": "16-17",
+              "inactivePeriod": {
+                "from": "2016-06-06",
+                "to": "2016-09-05"
+              }
+            },
+            {
+              "submissionId": 12345684,
+              "hmrcSubmissionTime": "2016-10-15T16:05:23",
+              "rtiSubmissionTime": "2016-10-15T16:05:23",
+              "taxYear": "16-17",
+              "finalSubmission": {
+                "schemeCeased": true,
+                "schemeCeasedDate": "2016-09-05"
+              }
+            }
+            ]
+            }"""
+
+        val stubResponse = ok(json.toString)
+
+        stubGetServer(stubResponse, employerPaymentsSummaryUrl)
+
+        val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier))
+
+        response shouldBe expectedResponse
+
+        server.verify(
+          getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))
+            .withHeader("Authorization", equalTo(s"Bearer ABC"))
+            .withHeader("X-Client-ID", equalTo("ClientId"))
+            .withHeader("Environment", equalTo("Test"))
+        )
+      }
     }
   }
 }
