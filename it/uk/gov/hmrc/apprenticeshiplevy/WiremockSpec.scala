@@ -5,7 +5,6 @@ import org.scalatest._
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 import uk.gov.hmrc.apprenticeshiplevy.util.WiremockService
-import uk.gov.hmrc.play.test.UnitSpec
 
 trait WiremockConfig extends BeforeAndAfterEach with Informing {
   this: Suite =>
