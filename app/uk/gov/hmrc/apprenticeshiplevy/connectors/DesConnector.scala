@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import java.net.URLDecoder
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.google.inject.Inject
 import org.joda.time.LocalDate
@@ -36,6 +35,7 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import views.html.helper
 
+import java.util.UUID
 import scala.concurrent.Future
 import scala.util.Try
 
@@ -52,7 +52,8 @@ trait DesUtils {
     Seq(
       "X-Client-ID" -> getHeaderValueByKey("X-Client-ID"),
       "Authorization" -> getHeaderValueByKey("Authorization"),
-      "Environment" -> getHeaderValueByKey("Environment")
+      "Environment" -> getHeaderValueByKey("Environment"),
+      "CorrelationId" -> UUID.randomUUID().toString
     )
   }
 
