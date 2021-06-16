@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import java.net.URLDecoder
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import com.google.inject.Inject
 import org.joda.time.LocalDate
 import play.api.Logger
@@ -35,7 +35,8 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import views.html.helper
 
-import scala.concurrent.{ExecutionContext, Future}
+import java.util.UUID
+import scala.concurrent.Future
 import scala.util.Try
 
 trait DesUtils {
@@ -46,12 +47,24 @@ trait DesUtils {
       case EMPREF(taxOffice,_,ref) => s"$taxOffice/$ref"
       case _ => empref
     }
+
+  def createDesHeaders(implicit hc: HeaderCarrier): Seq[(String, String)] = {
+    Seq(
+      "X-Client-ID" -> getHeaderValueByKey("X-Client-ID"),
+      "Authorization" -> getHeaderValueByKey("Authorization"),
+      "Environment" -> getHeaderValueByKey("Environment"),
+      "CorrelationId" -> UUID.randomUUID().toString
+    )
+  }
+
+  private def getHeaderValueByKey(key: String)(implicit headerCarrier: HeaderCarrier): String =
+    headerCarrier.headers(Seq(key)).toMap.getOrElse(key, "")
 }
 
-trait EmployerDetailsEndpoint extends Timer {
+trait EmployerDetailsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
-  def designatoryDetails(empref: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] = {
+  def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] = {
     val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
     val (office, ref) = URLDecoder.decode(empref, "UTF-8") match {
       case emprefParts(part1, _, part2) => (part1, part2)
@@ -66,7 +79,8 @@ trait EmployerDetailsEndpoint extends Timer {
 
     timer(RequestEvent(DES_EMPREF_DETAILS_REQUEST, Some(empref))) {
       audit(new ALAEvent("readEmprefDetails", empref)) {
-        des.httpClient.GET[HodDesignatoryDetailsLinks](url).flatMap { response =>
+        val headers = createDesHeaders
+        des.httpClient.GET[HodDesignatoryDetailsLinks](url, Seq(), headers).flatMap { response =>
           val details = DesignatoryDetails(Some(empref))
           response.links.map { links =>
             Logger.debug((links.employer ++ links.communication).mkString(" "))
@@ -77,13 +91,15 @@ trait EmployerDetailsEndpoint extends Timer {
               c <- getComms
             } yield (details.copy(employer=e, communication=c))
           }.getOrElse(Future.successful(details))
-        }(ec)
+        }
       }
     }
   }
 
-  protected def getDetails(path: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] =
-    des.httpClient.GET[DesignatoryDetailsData](s"${des.baseUrl}${path}").map { data => Some(data) }.recover(errorHandler)
+  protected def getDetails(path: String)(implicit hc: HeaderCarrier): Future[Option[DesignatoryDetailsData]] = {
+    val headers = createDesHeaders
+    des.httpClient.GET[DesignatoryDetailsData](s"${des.baseUrl}${path}", Seq(), headers).map { data => Some(data) }.recover(errorHandler)
+  }
 
   protected val errorHandler: PartialFunction[Throwable, Option[DesignatoryDetailsData]] = {
         case e => {
@@ -99,7 +115,7 @@ trait EmploymentCheckEndpoint extends Timer {
   des: DesConnector =>
 
   def check(empref: String, nino: String, dateRange: ClosedDateRange)
-           (implicit hc: HeaderCarrier, ec: scala.concurrent.ExecutionContext): Future[EmploymentCheckStatus] = {
+           (implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
     val dateParams = dateRange.toParams
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?${dateParams}"
 
@@ -118,7 +134,7 @@ trait EmploymentCheckEndpoint extends Timer {
 trait FractionsEndpoint extends Timer with DesUtils {
   des: DesConnector =>
 
-  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Fractions] = {
+  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Fractions] = {
     val dateParams = dateRange.toParams
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions?$dateParams"
     // $COVERAGE-OFF$
@@ -134,7 +150,7 @@ trait FractionsEndpoint extends Timer with DesUtils {
     }
   }
 
-  def fractionCalculationDate(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
+  def fractionCalculationDate(implicit hc: HeaderCarrier): Future[LocalDate] = {
     val url = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
 
     // $COVERAGE-OFF$
@@ -143,7 +159,8 @@ trait FractionsEndpoint extends Timer with DesUtils {
 
     timer(RequestEvent(DES_FRACTIONS_DATE_REQUEST, None)) {
       audit(new ALAEvent("readFractionCalculationDate")) {
-        des.httpClient.GET[FractionCalculationDate](url).map { _.date }
+        val headers = createDesHeaders
+        des.httpClient.GET[FractionCalculationDate](url, Seq(), headers).map { _.date }
       }
     }
   }
@@ -154,13 +171,14 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
 
   def appContext: AppContext
 
-  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
+  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams
     val url = s"${desURL(empref)}?$dateParams"
 
     timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
       audit(new ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
-        des.httpClient.GET[HttpResponse](url).map { response =>
+        val headers = createDesHeaders
+        des.httpClient.GET[HttpResponse](url, Seq(), headers).map { response =>
           marshall(empref, response.body).getOrElse {
             Logger.error(s""" |DES url ${url}
                               |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
@@ -185,8 +203,6 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
   }
 
   protected[connectors] def toEmployerPaymentsSummary(className: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
-    import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsError._
-    import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsSummary._
     import uk.gov.hmrc.apprenticeshiplevy.data.des.EmployerPaymentsSummaryVersion0._
     import uk.gov.hmrc.apprenticeshiplevy.data.des.EmptyEmployerPayments._
 
@@ -211,7 +227,7 @@ trait LevyDeclarationsEndpoint extends Timer with DesUtils {
         Some(EmployerPaymentsSummary(empref, eps))
       case Some(EmployerPaymentsError(reason)) => {
         Logger.error(s"DES reported error reason '${reason}' on HTTP 200 response.")
-        throw new Upstream5xxResponse(s"DES returned error code object on HTTP 200 response (treating as error). DES error reason: '${reason}'.", PRECONDITION_FAILED, PRECONDITION_FAILED)
+        throw UpstreamErrorResponse.apply(s"DES returned error code object on HTTP 200 response (treating as error). DES error reason: '${reason}'.", PRECONDITION_FAILED)
       }
       case Some(EmptyEmployerPayments(empref)) =>
         Some(EmployerPaymentsSummary(empref, List.empty[EmployerPaymentSummary]))

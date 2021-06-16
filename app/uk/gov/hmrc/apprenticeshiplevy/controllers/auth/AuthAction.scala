@@ -174,30 +174,19 @@ private object ErrorHandler {
         NotFound(Json.toJson(AuthError(NOT_FOUND, "NOT_FOUND", s"Auth endpoint not found: ${
           extractReason(e.getMessage)
         }")))
-      case e: Upstream5xxResponse =>
-        val message = s"Client ${
-          MDC.get("X-Client-ID")
-        } API error: ${
-          e.getMessage
-        }, API returning ServiceUnavailable with code ${
-          e.reportAs
-        }"
-        Logger.error(message, e)
-        ServiceUnavailable(Json.toJson(AuthError(e.reportAs, "BACKEND_FAILURE", s"Auth 5xx error: ${
-          extractReason(e.getMessage)
-        }")))
-      case e: Upstream4xxResponse =>
+      case e: UpstreamErrorResponse =>
+        val apiMessage = if (e.statusCode >= 400 && e.statusCode < 500) "API returning code" else "API returning ServiceUnavailable with code"
         val message = s"Client ${
           MDC.get("X-Client-ID")
         } API error: ${
           e.getMessage
         } with ${
-          e.upstreamResponseCode
-        }, API returning code ${
+          e.statusCode
+        }, $apiMessage ${
           e.reportAs
         }"
         Logger.warn(message)
-        e.upstreamResponseCode match {
+        e.statusCode match {
           case FORBIDDEN => Forbidden(Json.toJson(AuthError(e.reportAs, "FORBIDDEN", s"Auth forbidden error: ${
             extractReason(e.getMessage)
           }")))
@@ -207,10 +196,13 @@ private object ErrorHandler {
           case REQUEST_TIMEOUT => RequestTimeout(Json.toJson(AuthError(REQUEST_TIMEOUT, "TIMEOUT", s"Auth not responding error: ${
             extractReason(e.getMessage)
           }")))
-          case _ => ServiceUnavailable(Json.toJson(AuthError(e.reportAs, "OTHER", s"Auth 4xx error: ${
-            extractReason(e.getMessage)
-          }")))
+          case _ =>
+            if (e.statusCode >= 400 && e.statusCode < 500)
+              ServiceUnavailable(Json.toJson(AuthError(e.reportAs, "OTHER", s"Auth 4xx error: ${extractReason(e.getMessage)}")))
+            else
+              ServiceUnavailable(Json.toJson(AuthError(e.reportAs, "BACKEND_FAILURE", s"Auth 5xx error: ${extractReason(e.getMessage)}")))
         }
+
       case e: Throwable =>
         val message = s"Client ${
           MDC.get("X-Client-ID")

@@ -18,8 +18,8 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import com.codahale.metrics.MetricRegistry
 import org.joda.time.LocalDate
-import org.mockito.Matchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{any, anyString}
+import org.mockito.Mockito.{reset, verify, when}
 import org.mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -32,7 +32,7 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivileg
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.http.logging.Authorization
+import uk.gov.hmrc.http.Authorization
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -76,8 +76,8 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar with 
   "getting fraction calculations" should {
     "propogate environment but not authorization headers on to connector" in {
       // set up
-      val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(mockHttp.GET[Fractions](anyString())(any(), any(), any()))
+      val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
+      when(mockHttp.GET[Fractions](anyString(), any(), any())(any(), any(), any()))
            .thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
 
       // test
@@ -86,7 +86,7 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar with 
                                                                                     "Authorization"->"Bearer dsfda9080",
                                                                                     "Environment"->"clone")))
 
-      verify(mockHttp).GET[Fractions](anyString())(any(), headerCarrierCaptor.capture(), any())
+      verify(mockHttp).GET[Fractions](anyString(), any(), any())(any(), headerCarrierCaptor.capture(), any())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -97,9 +97,9 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar with 
 
     "not fail if environment header not supplied" in {
       // set up
-      val headerCarrierCaptor = ArgumentCaptor.forClass(classOf[HeaderCarrier])
+      val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
 
-      when(mockHttp.GET[Fractions](anyString())(any(), any(), any()))
+      when(mockHttp.GET[Fractions](anyString(), any(), any())(any(), any(), any()))
            .thenReturn(Future.successful(Fractions("123AB12345",
                                                    List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
 
@@ -108,7 +108,7 @@ class FractionCalculationControllerSpec extends UnitSpec with MockitoSugar with 
                                                                       .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                     "Authorization"->"Bearer dsfda9080")))
 
-      verify(mockHttp).GET[Fractions](anyString())(any(), headerCarrierCaptor.capture(), any())
+      verify(mockHttp).GET[Fractions](anyString(), any(), any())(any(), headerCarrierCaptor.capture(), any())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
