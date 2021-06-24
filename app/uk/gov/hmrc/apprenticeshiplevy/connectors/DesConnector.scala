@@ -252,7 +252,7 @@ trait DesConnector extends FractionsEndpoint
   def createDesHeaders(implicit hc: HeaderCarrier): Seq[(String, String)] = {
     Seq(
       "X-Client-ID" -> getHeaderValueByKey("X-Client-ID"),
-      "Authorization" -> desAuthorization,
+      "Authorization" -> s"Bearer $desAuthorization",
       "Environment" -> desEnvironment,
       "CorrelationId" -> UUID.randomUUID().toString
     )
