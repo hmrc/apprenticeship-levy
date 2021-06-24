@@ -125,7 +125,7 @@ trait EmploymentCheckEndpoint extends Timer {
 
     timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
       audit(ALAEvent("employmentCheck", empref, nino, dateParams)) {
-        des.httpClient.GET[EmploymentCheckStatus](url).recover { case _: NotFoundException => Unknown }
+        des.httpClient.GET[EmploymentCheckStatus](url, Seq(), createDesHeaders).recover { case _: NotFoundException => Unknown }
       }
     }
   }
@@ -143,7 +143,7 @@ trait FractionsEndpoint extends Timer with DesUtils {
 
     timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
       audit(new ALAEvent("readFractions", empref, "", dateParams)) {
-        des.httpClient.GET[Fractions](url).map { fraction =>
+        des.httpClient.GET[Fractions](url, Seq(), createDesHeaders).map { fraction =>
           fraction.copy(empref=convertEmpref(fraction.empref))
         }
       }
