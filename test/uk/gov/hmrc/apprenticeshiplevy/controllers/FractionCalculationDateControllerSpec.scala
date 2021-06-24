@@ -50,6 +50,9 @@ class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar w
       override def registry: Option[MetricRegistry] = None
       def baseUrl: String = "http://a.guide.to.nowhere/"
       def httpClient: HttpClient = mockHttp
+      override def desAuthorization: String = "localBearer"
+
+      override def desEnvironment: String = "localEnv"
     }
 
     override protected def defaultDESEnvironment: String = "clone"
