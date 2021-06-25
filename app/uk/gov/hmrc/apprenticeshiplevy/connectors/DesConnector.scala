@@ -39,29 +39,7 @@ import java.util.UUID
 import scala.concurrent.Future
 import scala.util.Try
 
-trait DesUtils {
-  val EMPREF = "([0-9]{3})([\\/]*)([a-zA-Z0-9]+)".r
-
-  def convertEmpref(empref: String): String =
-    empref match {
-      case EMPREF(taxOffice,_,ref) => s"$taxOffice/$ref"
-      case _ => empref
-    }
-
-  def createDesHeaders(implicit hc: HeaderCarrier): Seq[(String, String)] = {
-    Seq(
-      "X-Client-ID" -> getHeaderValueByKey("X-Client-ID"),
-      "Authorization" -> getHeaderValueByKey("Authorization"),
-      "Environment" -> getHeaderValueByKey("Environment"),
-      "CorrelationId" -> UUID.randomUUID().toString
-    )
-  }
-
-  private def getHeaderValueByKey(key: String)(implicit headerCarrier: HeaderCarrier): String =
-    headerCarrier.headers(Seq(key)).toMap.getOrElse(key, "")
-}
-
-trait EmployerDetailsEndpoint extends Timer with DesUtils {
+trait EmployerDetailsEndpoint extends Timer {
   des: DesConnector =>
 
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] = {
@@ -125,13 +103,13 @@ trait EmploymentCheckEndpoint extends Timer {
 
     timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
       audit(ALAEvent("employmentCheck", empref, nino, dateParams)) {
-        des.httpClient.GET[EmploymentCheckStatus](url).recover { case _: NotFoundException => Unknown }
+        des.httpClient.GET[EmploymentCheckStatus](url, Seq(), createDesHeaders).recover { case _: NotFoundException => Unknown }
       }
     }
   }
 }
 
-trait FractionsEndpoint extends Timer with DesUtils {
+trait FractionsEndpoint extends Timer {
   des: DesConnector =>
 
   def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Fractions] = {
@@ -143,7 +121,7 @@ trait FractionsEndpoint extends Timer with DesUtils {
 
     timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
       audit(new ALAEvent("readFractions", empref, "", dateParams)) {
-        des.httpClient.GET[Fractions](url).map { fraction =>
+        des.httpClient.GET[Fractions](url, Seq(), createDesHeaders).map { fraction =>
           fraction.copy(empref=convertEmpref(fraction.empref))
         }
       }
@@ -166,7 +144,7 @@ trait FractionsEndpoint extends Timer with DesUtils {
   }
 }
 
-trait LevyDeclarationsEndpoint extends Timer with DesUtils {
+trait LevyDeclarationsEndpoint extends Timer {
   des: DesConnector =>
 
   def appContext: AppContext
@@ -260,6 +238,28 @@ trait DesConnector extends FractionsEndpoint
   with GraphiteMetrics {
   def httpClient: HttpClient
   def baseUrl: String
+  def desAuthorization: String
+  def desEnvironment: String
+
+  val EMPREF = "([0-9]{3})([\\/]*)([a-zA-Z0-9]+)".r
+
+  def convertEmpref(empref: String): String =
+    empref match {
+      case EMPREF(taxOffice,_,ref) => s"$taxOffice/$ref"
+      case _ => empref
+    }
+
+  def createDesHeaders(implicit hc: HeaderCarrier): Seq[(String, String)] = {
+    Seq(
+      "X-Client-ID" -> getHeaderValueByKey("X-Client-ID"),
+      "Authorization" -> s"Bearer $desAuthorization",
+      "Environment" -> desEnvironment,
+      "CorrelationId" -> UUID.randomUUID().toString
+    )
+  }
+
+  private def getHeaderValueByKey(key: String)(implicit headerCarrier: HeaderCarrier): String =
+    headerCarrier.headers(Seq(key)).toMap.getOrElse(key, "")
 }
 
 class LiveDesConnector @Inject()(val httpClient: HttpClient,
@@ -267,10 +267,18 @@ class LiveDesConnector @Inject()(val httpClient: HttpClient,
                                  val appContext: AppContext) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = Some(auditConnector)
   def baseUrl: String = appContext.desUrl
+
+  override def desAuthorization: String = appContext.desToken
+
+  override def desEnvironment: String = appContext.desEnvironment
 }
 
 class SandboxDesConnector @Inject()(val httpClient: HttpClient,
                                     val appContext: AppContext) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = None
   def baseUrl: String = appContext.stubDesUrl
+
+  override def desAuthorization: String = appContext.desToken
+
+  override def desEnvironment: String = appContext.desEnvironment
 }
