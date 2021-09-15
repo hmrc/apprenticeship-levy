@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config
 
+import play.api.Logging
+
 import javax.inject.Inject
 import play.api.routing.Router.Routes
 import play.api.routing.SimpleRouter
@@ -26,17 +28,17 @@ trait IsInExternalTest {
 
 class ConditionalRouter @Inject() (externalTestRoutes: externaltest.Routes,
                                    nonexternaltestRoutes: nonexternaltest.Routes,
-                                   appContext: AppContext) extends SimpleRouter with IsInExternalTest {
+                                   appContext: AppContext) extends SimpleRouter with IsInExternalTest with Logging {
   def isInExternalTest: Boolean = appContext.externalTestModeEnabled
 
   override def routes: Routes = {
     isInExternalTest match {
       case true => {
-        play.api.Logger.debug("In External Test Environment: Using externaltest.routes")
+        logger.debug("In External Test Environment: Using externaltest.routes")
         externalTestRoutes.routes
       }
       case false => {
-        play.api.Logger.debug("Not in External Test Environment: Using nonexternaltest.routes")
+        logger.debug("Not in External Test Environment: Using nonexternaltest.routes")
         nonexternaltestRoutes.routes
       }
     }

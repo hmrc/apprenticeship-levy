@@ -20,13 +20,13 @@ import org.joda.time.DateTimeConstants.APRIL
 import org.joda.time.Months.monthsBetween
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{LocalDate, LocalDateTime, _}
+import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FinalSubmission._
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
-
 
 import scala.util.{Failure, Success, Try}
 
@@ -41,7 +41,7 @@ case class EmployerPaymentSummary(submissionId: Long,
                                   finalSubmission: Option[FinalSubmission] = None,
                                   questionsAndDeclarations: Option[QuestionsAndDeclaration] = None)
 
-object EmployerPaymentSummary {
+object EmployerPaymentSummary extends Logging {
   val TAX_YEAR_START_DAY = 6
   val BeginningOfTaxYear = new MonthDay(APRIL, TAX_YEAR_START_DAY)
 
@@ -108,7 +108,7 @@ object EmployerPaymentSummary {
       js.value match {
         case DateTime(timestamp,_) => localDateTimeFormat.parseDateTime(timestamp).toLocalDateTime
         case _ => {
-          play.api.Logger.warn(s"Bad date time value of '${js.value}' returned from DES so returning new LocalDateTime(0L)")
+          logger.warn(s"Bad date time value of '${js.value}' returned from DES so returning new LocalDateTime(0L)")
           new LocalDateTime(0L)
         }
       }

@@ -18,7 +18,6 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.io.File
 import org.scalatest.{BeforeAndAfterEach, Inside}
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.bind
@@ -27,13 +26,12 @@ import play.api.mvc.ControllerComponents
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.Injecting
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.play.test.UnitSpec
-import org.mockito.Mockito.{reset, when}
-import uk.gov.hmrc.apprenticeshiplevy.utils.MockAppContext
+import org.mockito.Mockito.when
+import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, MockAppContext}
 
 import scala.util.{Failure, Success}
 
-class DocumentationControllerSpec extends UnitSpec with Inside with GuiceOneAppPerSuite with Injecting with MockitoSugar with BeforeAndAfterEach {
+class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with GuiceOneAppPerSuite with Injecting with BeforeAndAfterEach {
 
   val validDefinition = new File(getClass.getResource("/validDefinition.json").toURI())
   val invalidDefinition = new File(getClass.getResource("/invalidDefinition.json").toURI())

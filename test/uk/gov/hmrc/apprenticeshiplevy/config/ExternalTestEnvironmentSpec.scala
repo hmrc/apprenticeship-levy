@@ -16,13 +16,12 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config
 
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 
-class ExternalTestEnvironmentSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar {
+class ExternalTestEnvironmentSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite {
   "When in External Test Mode API" must {
     val mockExternalTestRoutes = app.injector.instanceOf[externaltest.Routes]
     val mocknonexternalTestRoutes = app.injector.instanceOf[nonexternaltest.Routes]

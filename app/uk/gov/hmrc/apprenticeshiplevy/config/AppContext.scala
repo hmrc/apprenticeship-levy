@@ -17,19 +17,19 @@
 package uk.gov.hmrc.apprenticeshiplevy.config
 
 import com.google.inject.Inject
-import play.api.{Configuration, Environment, Logger, Mode}
+import play.api.{Configuration, Environment, Logging, Mode}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.util.{Failure, Success, Try}
 
 class AppContext @Inject()(servicesConfig: ServicesConfig,
                            val configuration: Configuration,
-                           val environment: Environment) {
+                           val environment: Environment) extends Logging {
 
   import servicesConfig.baseUrl
 
   // $COVERAGE-OFF$
-  Logger.info(s"""\n${"_" * 80}\n""")
+  logger.info(s"""\n${"_" * 80}\n""")
   // $COVERAGE-ON$
 
   def maybeBoolean(id: String): Option[Boolean] = configuration.getOptional[Boolean](id)
@@ -40,7 +40,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
     case Success(v) => Some(v)
     case Failure(e) => {
       // $COVERAGE-OFF$
-      Logger.error(s"Unable to get baseUrl for ${name}. Error: ${e.getMessage()}")
+      logger.error(s"Unable to get baseUrl for ${name}. Error: ${e.getMessage()}")
       // $COVERAGE-ON$
       None
     }
@@ -50,7 +50,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
 
   def appUrl: String = maybeString("appUrl").getOrElse{
     // $COVERAGE-OFF$
-    Logger.error("appUrl is not configured")
+    logger.error("appUrl is not configured")
     // $COVERAGE-ON$
     ""
   }
@@ -59,7 +59,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
     .flatMap(flag => Try(flag.toBoolean).toOption)
     .getOrElse {
       // $COVERAGE-OFF$
-      Logger.warn("A configuration value has not been provided for microservice.private-mode, defaulting to true")
+      logger.warn("A configuration value has not been provided for microservice.private-mode, defaulting to true")
       // $COVERAGE-ON$
       true
     }
@@ -68,7 +68,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
     .flatMap(flag => Try(flag.toBoolean).toOption)
     .getOrElse {
       // $COVERAGE-OFF$
-      Logger.debug("A configuration value has not been provided for microservice.external-test-mode, defaulting to false")
+      logger.debug("A configuration value has not been provided for microservice.external-test-mode, defaulting to false")
       // $COVERAGE-ON$
       false
     }
@@ -77,7 +77,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
     .map { applicationIds => applicationIds.split(",").toSeq }.getOrElse(Seq.empty)
 
   // $COVERAGE-OFF$
-  Logger.info(s"""\n${"*" * 80}\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
+  logger.info(s"""\n${"*" * 80}\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
   // $COVERAGE-ON$
 
   def desEnvironment: String = maybeString("microservice.services.des.env").getOrElse("")
@@ -116,8 +116,8 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
   def stubAuthUrl: String = stubURL("auth")
 
   // $COVERAGE-OFF$
-  Logger.info(s"""\nStub: DES URL: ${stubDesUrl}    Stub Auth URL: ${stubAuthUrl}""")
-  Logger.info(s"""\nDES URL: ${desUrl}    AUTH URL: ${authUrl}""")
+  logger.info(s"""\nStub: DES URL: ${stubDesUrl}    Stub Auth URL: ${stubAuthUrl}""")
+  logger.info(s"""\nDES URL: ${desUrl}    AUTH URL: ${authUrl}""")
   // $COVERAGE-ON$
 
   def ninoPattern(): String = maybeString("microservice.ninoRegex").getOrElse("")
@@ -125,7 +125,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
   def epsOrigPathEnabled(): Boolean = maybeBoolean("microservice.epsOrigPathEnabled").getOrElse(true)
 
   // $COVERAGE-OFF$
-  Logger.info(s"""\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n""")
+  logger.info(s"""\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n""")
   // $COVERAGE-ON$
 
   // scalastyle:off
@@ -133,6 +133,6 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
   // scalastyle:on
 
   // $COVERAGE-OFF$
-  Logger.info(s"""\n${"_" * 80}\n""")
+  logger.info(s"""\n${"_" * 80}\n""")
   // $COVERAGE-ON$
 }

@@ -17,14 +17,14 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
 import java.io.IOException
-
 import com.google.inject.{ImplementedBy, Inject}
 import org.slf4j.MDC
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._
+import uk.gov.hmrc.api.controllers.ErrorResponse
 import uk.gov.hmrc.apprenticeshiplevy.controllers.AuthError
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
@@ -54,7 +54,7 @@ class AuthActionImpl @Inject()(val authConnector: AuthConnector, val parser: Bod
 }
 
 class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, bodyParser: BodyParsers.Default)(implicit ec: ExecutionContext)
-  extends AuthorisedFunctions {
+  extends AuthorisedFunctions with Logging {
 
   def apply(empRef: EmploymentReference): AuthAction = new AuthAction {
 
@@ -73,9 +73,9 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
           if(isCorrectEmpRef) {
             Future.successful(Right(AuthenticatedRequest(request, payeRef)))
           } else {
-            Logger.warn(s"Unauthorized request of ${empRef.empref} from $payeRef")
+            logger.warn(s"Unauthorized request of ${empRef.empref} from $payeRef")
             Future.successful(Left(Unauthorized(
-              Json.toJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"Unauthorized request of ${empRef.empref}."))
+              Json.toJson[ErrorResponse](AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"Unauthorized request of ${empRef.empref}."))
             )))
           }
       }.recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
@@ -114,7 +114,7 @@ private object EnrolmentHelper {
     }
 }
 
-private object ErrorHandler {
+private object ErrorHandler extends Logging {
   private def extractReason(msg: String): String =
     Try(if (msg.contains("Response body")) {
       val str1 = msg.reverse.substring(1).reverse.substring(msg.indexOf("Response body") + 14).trim
@@ -132,29 +132,29 @@ private object ErrorHandler {
     }, API returning $description ${
       code
     }"
-    Logger.warn(message)
+    logger.warn(message)
   }
 
   def authErrorHandler(exc: Throwable): Result = {
     exc match {
       case e: SessionRecordNotFound =>
         logWarningAboutException(e, UNAUTHORIZED, "Unauthorized with code")
-        Unauthorized(Json.toJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"No active session error: ${
+        Unauthorized(Json.toJson[ErrorResponse](AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"No active session error: ${
           extractReason(e.getMessage)
         }")))
       case e: AuthorisationException =>
         logWarningAboutException(e, UNAUTHORIZED, "Unauthorized with code")
-        Unauthorized(Json.toJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"${
+        Unauthorized(Json.toJson[ErrorResponse](AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"${
           extractReason(e.getMessage)
         }")))
       case e: BadRequestException =>
         logWarningAboutException(e, SERVICE_UNAVAILABLE, "BadRequest with code")
-        BadRequest(Json.toJson(AuthError(SERVICE_UNAVAILABLE, "BAD_REQUEST", s"Bad request error: ${
+        BadRequest(Json.toJson[ErrorResponse](AuthError(SERVICE_UNAVAILABLE, "BAD_REQUEST", s"Bad request error: ${
           extractReason(e.getMessage)
         }")))
       case e: IOException =>
         logWarningAboutException(e, SERVICE_UNAVAILABLE, "ServiceUnavailable with code")
-        ServiceUnavailable(Json.toJson(AuthError(SERVICE_UNAVAILABLE, "IO", s"Auth connection error: ${
+        ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(SERVICE_UNAVAILABLE, "IO", s"Auth connection error: ${
           extractReason(e.getMessage)
         }")))
       case e: GatewayTimeoutException =>
@@ -165,13 +165,13 @@ private object ErrorHandler {
         }, API returning RequestTimeout with code ${
           GATEWAY_TIMEOUT
         }"
-        Logger.error(message, e)
-        RequestTimeout(Json.toJson(AuthError(REQUEST_TIMEOUT, "GATEWAY_TIMEOUT", s"Auth not responding error: ${
+        logger.error(message, e)
+        RequestTimeout(Json.toJson[ErrorResponse](AuthError(REQUEST_TIMEOUT, "GATEWAY_TIMEOUT", s"Auth not responding error: ${
           extractReason(e.getMessage)
         }")))
       case e: NotFoundException =>
         logWarningAboutException(e, NOT_FOUND, "NotFound with code")
-        NotFound(Json.toJson(AuthError(NOT_FOUND, "NOT_FOUND", s"Auth endpoint not found: ${
+        NotFound(Json.toJson[ErrorResponse](AuthError(NOT_FOUND, "NOT_FOUND", s"Auth endpoint not found: ${
           extractReason(e.getMessage)
         }")))
       case e: UpstreamErrorResponse =>
@@ -185,22 +185,22 @@ private object ErrorHandler {
         }, $apiMessage ${
           e.reportAs
         }"
-        Logger.warn(message)
+        logger.warn(message)
         e.statusCode match {
-          case FORBIDDEN => Forbidden(Json.toJson(AuthError(e.reportAs, "FORBIDDEN", s"Auth forbidden error: ${
+          case FORBIDDEN => Forbidden(Json.toJson[ErrorResponse](AuthError(e.reportAs, "FORBIDDEN", s"Auth forbidden error: ${
             extractReason(e.getMessage)
           }")))
-          case TOO_MANY_REQUESTS => TooManyRequests(Json.toJson(AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"Auth too many requests: ${
+          case TOO_MANY_REQUESTS => TooManyRequests(Json.toJson[ErrorResponse](AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"Auth too many requests: ${
             extractReason(e.getMessage)
           }")))
-          case REQUEST_TIMEOUT => RequestTimeout(Json.toJson(AuthError(REQUEST_TIMEOUT, "TIMEOUT", s"Auth not responding error: ${
+          case REQUEST_TIMEOUT => RequestTimeout(Json.toJson[ErrorResponse](AuthError(REQUEST_TIMEOUT, "TIMEOUT", s"Auth not responding error: ${
             extractReason(e.getMessage)
           }")))
           case _ =>
             if (e.statusCode >= 400 && e.statusCode < 500)
-              ServiceUnavailable(Json.toJson(AuthError(e.reportAs, "OTHER", s"Auth 4xx error: ${extractReason(e.getMessage)}")))
+              ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(e.reportAs, "OTHER", s"Auth 4xx error: ${extractReason(e.getMessage)}")))
             else
-              ServiceUnavailable(Json.toJson(AuthError(e.reportAs, "BACKEND_FAILURE", s"Auth 5xx error: ${extractReason(e.getMessage)}")))
+              ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(e.reportAs, "BACKEND_FAILURE", s"Auth 5xx error: ${extractReason(e.getMessage)}")))
         }
 
       case e: Throwable =>
@@ -211,8 +211,8 @@ private object ErrorHandler {
         }, API returning code ${
           INTERNAL_SERVER_ERROR
         }"
-        Logger.error(message, e)
-        InternalServerError(Json.toJson(AuthError(INTERNAL_SERVER_ERROR, "API", s"API or Auth internal server error: ${
+        logger.error(message, e)
+        InternalServerError(Json.toJson[ErrorResponse](AuthError(INTERNAL_SERVER_ERROR, "API", s"API or Auth internal server error: ${
           extractReason(e.getMessage)
         }")))
     }

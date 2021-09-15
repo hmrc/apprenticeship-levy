@@ -17,19 +17,18 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.net.URLEncoder
-
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.OptionValues
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 
 import scala.concurrent.ExecutionContext
 
-class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues with MockitoSugar {
+class EmprefControllerSpec extends AppLevyUnitSpec with OptionValues {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockAppContext: AppContext = mock[AppContext]
@@ -40,10 +39,10 @@ class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues 
       val hal = testController.prepareLinks(EmploymentReference(empref))
 
       hal.links.links should have size 4
-      hal.links.links.find(_.rel == "self").value.href shouldBe testController.emprefUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "declarations").value.href shouldBe testController.declarationsUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "fractions").value.href shouldBe testController.fractionsUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "employment-check").value.href shouldBe testController.employmentCheckUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "self").value shouldBe testController.emprefUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "declarations").value shouldBe testController.declarationsUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "fractions").value shouldBe testController.fractionsUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "employment-check").value shouldBe testController.employmentCheckUrl(EmploymentReference(empref))
     }
   }
 

@@ -17,13 +17,12 @@
 package uk.gov.hmrc.apprenticeshiplevy.metrics
 
 import java.util.concurrent.TimeUnit
-
 import com.codahale.metrics._
 import com.kenshoo.play.metrics.MetricsImpl
-import play.api.Logger
-import play.api.Play.current
+import play.api.Logging
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 
+import javax.inject.Inject
 import scala.util.Try
 
 sealed trait MetricEvent {
@@ -39,12 +38,12 @@ case class TimerEvent(name: String, delta: Long, timeUnit: TimeUnit) extends Met
   def metric(): String = name
 }
 
-trait GraphiteMetrics {
-  Logger.info("[Metrics] Registering metrics...")
+trait GraphiteMetrics extends Logging {
+  logger.info("[Metrics] Registering metrics...")
 
   def appContext: AppContext
 
-  def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(current.injector.instanceOf[MetricsImpl].defaultRegistry)).getOrElse(None) else None
+  def registry: Option[MetricRegistry]
 
   val AUTH_SERVICE_REQUEST = "auth-service"
   val DES_EMP_CHECK_REQUEST = "des-emp-check"
@@ -60,11 +59,11 @@ trait GraphiteMetrics {
     timer(name) match {
       case Some(tmr) => {
         // $COVERAGE-OFF$
-        Logger.trace(s"[Metrics][${name}] ${delta} ${timeUnit}")
+        logger.trace(s"[Metrics][${name}] ${delta} ${timeUnit}")
         // $COVERAGE-ON$
         tmr.update(delta, timeUnit)
       }
-      case _ => Logger.trace(s"[Metrics][${name}] Not enabled")
+      case _ => logger.trace(s"[Metrics][${name}] Not enabled")
     }
   }
 
@@ -72,13 +71,13 @@ trait GraphiteMetrics {
     meter(name) match {
       case Some(mtr) => {
         // $COVERAGE-OFF$
-        Logger.trace(s"[Metrics][${name}] ${mtr.getCount()}")
+        logger.trace(s"[Metrics][${name}] ${mtr.getCount()}")
         // $COVERAGE-ON$
         mtr.mark
       }
       case _ =>
         // $COVERAGE-OFF$
-        Logger.trace(s"[Metrics][${name}] Not enabled")
+        logger.trace(s"[Metrics][${name}] Not enabled")
         // $COVERAGE-ON$
     }
   }
@@ -98,11 +97,11 @@ trait GraphiteMetrics {
   registry match {
     case Some(_) =>
       // $COVERAGE-OFF$
-      Logger.info("[Metrics] Completed metrics registration.")
+      logger.info("[Metrics] Completed metrics registration.")
       // $COVERAGE-ON$
     case None =>
       // $COVERAGE-OFF$
-      Logger.warn("[Metrics] Metrics disabled either 'microservice.metrics.graphite.enabled' has been set to false or no Play Application started.")
+      logger.warn("[Metrics] Metrics disabled either 'microservice.metrics.graphite.enabled' has been set to false or no Play Application started.")
       // $COVERAGE-ON$
   }
 }

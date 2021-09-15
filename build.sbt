@@ -1,4 +1,4 @@
-import sbt._
+import scala.sys.process.ProcessLogger
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings, _}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
@@ -18,15 +18,15 @@ val generateAPIDocsTask = generateAPIDocs := {
   val cp: Seq[java.io.File] = Classpaths.managedJars(XsltConfig, artifactTypes, update.value).map(_.data)
   val log = ConsoleLogger(ConsoleOut.systemOut, true, true, ConsoleLogger.noSuppressedMessage)
   val logger = new ProcessLogger() {
-    def buffer[T](f: => T): T = {
+    override def buffer[T](f: => T): T = {
       f
     }
 
-    def error(s: => String): Unit = {
+    override def out(s: => String): Unit = {}
+
+    override def err(s: => String): Unit = {
       log.error(s)
     }
-
-    def info(s: => String): Unit = {}
   }
   val userDir = new File(System.getProperty("user.dir"))
   DocGeneration.generateAPIDocs(userDir, cp) ! logger
@@ -90,14 +90,14 @@ lazy val microservice = Project(appName, file("."))
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
-    unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest) (base => Seq(base / "it")),
-    unmanagedResourceDirectories in IntegrationTest <+= baseDirectory(_ / "public"),
+    unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest) (base => Seq(base / "it")).value,
+    unmanagedResourceDirectories in IntegrationTest += baseDirectory(_ / "public").value,
     addTestReportOption(IntegrationTest, "int-test-reports"),
     parallelExecution in IntegrationTest := false)
   .configs(AcceptanceTest)
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
   .settings(
-    unmanagedSourceDirectories in AcceptanceTest <<= (baseDirectory in AcceptanceTest) (base => Seq(base / "ac")),
-    unmanagedResourceDirectories in AcceptanceTest <+= baseDirectory(_ / "public"),
+    unmanagedSourceDirectories in AcceptanceTest := (baseDirectory in AcceptanceTest) (base => Seq(base / "ac")).value,
+    unmanagedResourceDirectories in AcceptanceTest += baseDirectory(_ / "public").value,
     addTestReportOption(AcceptanceTest, "ac-test-reports"))
   .settings(testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))

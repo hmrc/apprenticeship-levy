@@ -16,27 +16,25 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
-import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{reset, verify, when}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.mvc.BodyParsers.Default
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{stubControllerComponents, _}
+import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
-import uk.gov.hmrc.apprenticeshiplevy.utils.RetrievalOps
+import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, RetrievalOps}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{GGCredId, LegacyCredentials, PAClientId, ~}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
-import uk.gov.hmrc.play.test.UnitSpec
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthActionSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar with RetrievalOps with BeforeAndAfterEach {
+class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with RetrievalOps with BeforeAndAfterEach {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
   val stubComponents = stubControllerComponents()
