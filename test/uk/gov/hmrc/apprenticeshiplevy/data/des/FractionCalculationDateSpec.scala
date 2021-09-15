@@ -18,9 +18,9 @@ package uk.gov.hmrc.apprenticeshiplevy.data.des
 
 import org.joda.time.LocalDate
 import play.api.libs.json._
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 
-class FractionCalculationDateSpec extends UnitSpec {
+class FractionCalculationDateSpec extends AppLevyUnitSpec {
   "FractionCalculationDate" should {
     "With Json" must {
       "read" in {

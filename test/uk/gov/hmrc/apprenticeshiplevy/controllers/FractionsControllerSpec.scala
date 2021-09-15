@@ -18,7 +18,6 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.joda.time.LocalDate
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.bind
@@ -30,12 +29,11 @@ import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{FakePrivilegedAuthAction, PrivilegedAuthActionImpl}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsController
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import uk.gov.hmrc.apprenticeshiplevy.utils.MockAppContext
+import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, MockAppContext}
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.test.UnitSpec
 
-class FractionsControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar with GuiceOneAppPerSuite with Injecting {
+class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite with Injecting {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockHttp = mock[HttpClient]

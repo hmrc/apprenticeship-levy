@@ -16,12 +16,11 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.utils
 
-import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import org.mockito.Mockito.when
 import play.api.Mode
 
-object MockAppContext extends MockitoSugar {
+object MockAppContext extends AppLevyUnitSpec {
   val mocked = mock[AppContext]
 
   when(mocked.mode).thenReturn(Mode.Test)

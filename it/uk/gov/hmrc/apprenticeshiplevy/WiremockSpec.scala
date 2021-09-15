@@ -2,7 +2,6 @@ package uk.gov.hmrc.apprenticeshiplevy
 
 import org.scalacheck.Gen
 import org.scalatest._
-import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 import uk.gov.hmrc.apprenticeshiplevy.util.WiremockService
 
@@ -20,7 +19,7 @@ trait WiremockConfig extends BeforeAndAfterEach with Informing {
   }
 }
 
-trait WiremockFunSpec extends FunSpec with ScalaCheckDrivenPropertyChecks with WiremockConfig with IntegrationTestConfig {
+trait WiremockFunSpec extends FunSpec with WiremockConfig with IntegrationTestConfig {
     def standardDesHeaders(): Seq[(String,String)] = Seq(("ACCEPT"->"application/vnd.hmrc.1.0+json"),
                                                          ("Environment"->"isit"),
                                                          ("Authorization"->"Bearer 2423324"))

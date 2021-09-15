@@ -19,7 +19,6 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import org.mockito.Mockito.reset
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -27,16 +26,15 @@ import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Injecting}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
-import uk.gov.hmrc.play.test.UnitSpec
 import play.api.inject.bind
 import play.api.mvc.ControllerComponents
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{FakePrivilegedAuthAction, PrivilegedAuthActionImpl}
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.utils.MockAppContext
+import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, MockAppContext}
 
-class LevyDeclarationControllerSpec extends UnitSpec with ScalaFutures with MockitoSugar with GuiceOneAppPerSuite
+class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite
   with Injecting with BeforeAndAfterEach{
 
   val mockDesConnector = mock[LiveDesConnector]

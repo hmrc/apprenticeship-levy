@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import java.net.URLEncoder
 import org.scalatest.OptionValues
+
+import java.net.URLEncoder
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
@@ -39,10 +40,10 @@ class EmprefControllerSpec extends AppLevyUnitSpec with OptionValues {
       val hal = testController.prepareLinks(EmploymentReference(empref))
 
       hal.links.links should have size 4
-      hal.links.links.find(_.rel == "self").value shouldBe testController.emprefUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "declarations").value shouldBe testController.declarationsUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "fractions").value shouldBe testController.fractionsUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "employment-check").value shouldBe testController.employmentCheckUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "self").value.href shouldBe testController.emprefUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "declarations").value.href shouldBe testController.declarationsUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "fractions").value.href shouldBe testController.fractionsUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "employment-check").value.href shouldBe testController.employmentCheckUrl(EmploymentReference(empref))
     }
   }
 

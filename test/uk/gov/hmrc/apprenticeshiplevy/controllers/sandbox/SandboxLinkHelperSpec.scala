@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 
-class SandboxLinkHelperSpec extends UnitSpec {
+class SandboxLinkHelperSpec extends AppLevyUnitSpec {
   val devHelper = new SandboxLinkHelper {
     override def env: String = "Dev"
   }

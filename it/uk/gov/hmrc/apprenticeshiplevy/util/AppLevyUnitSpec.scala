@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.utils
+package uk.gov.hmrc.apprenticeshiplevy.util
 
 import akka.stream.Materializer
 import akka.util.ByteString
