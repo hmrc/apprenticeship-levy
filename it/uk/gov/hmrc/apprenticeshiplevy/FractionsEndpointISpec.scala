@@ -5,6 +5,7 @@ import org.scalacheck.Gen
 import org.scalatest.DoNotDiscover
 import org.scalatest.Matchers._
 import org.scalatestplus.play._
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -12,7 +13,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.des.{Fraction, FractionCalculation}
 import views.html.helper
 
 @DoNotDiscover
-class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer {
+class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with ScalaCheckPropertyChecks {
   describe("Fractions Endpoint") {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>

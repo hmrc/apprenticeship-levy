@@ -26,13 +26,13 @@ object AppDependencies {
   ).map(_ % "test")
 
   lazy val integrationTest: Seq[ModuleID] = Seq(
-    "org.scalatest"           %% "scalatest"          % "3.0.8",
+    "org.scalatest"           %% "scalatest"          % "3.1.1",
     "org.pegdown"              % "pegdown"            % "1.6.0",
     "com.typesafe.play"       %% "play-test"          % PlayVersion.current,
     "com.github.tomakehurst"   % "wiremock-jre8"      % "2.26.1",
     "org.scala-lang.modules"  %% "scala-xml"          % "1.2.0",
     "com.github.andyglow"     %% "scala-xml-diff"     % "2.0.4",
-    "org.scalacheck"          %% "scalacheck"         % "1.14.0",
+    "org.scalatestplus"       %% "scalacheck-1-14"    % "3.1.1.1",
     "org.scalatestplus.play"  %% "scalatestplus-play" % "5.1.0"
   ).map(_ % "test,it")
 

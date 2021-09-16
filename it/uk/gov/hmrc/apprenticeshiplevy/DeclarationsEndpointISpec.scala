@@ -2,22 +2,21 @@ package uk.gov.hmrc.apprenticeshiplevy
 
 import org.joda.time.{LocalDate, LocalDateTime}
 import org.scalacheck.Gen
-import org.scalacheck.Prop.forAll
 import org.scalatest.Assertions._
 import org.scalatest.DoNotDiscover
 import org.scalatest.Matchers._
 import org.scalatest.prop.TableDrivenPropertyChecks.whenever
 import org.scalatestplus.play._
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, PayrollPeriod}
-import uk.gov.hmrc.apprenticeshiplevy.util.AppLevyUnitSpec
 import views.html.helper
 
 @DoNotDiscover
-class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConfig with ConfiguredServer {
+class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConfig with ConfiguredServer with ScalaCheckPropertyChecks {
   describe("Declarations Endpoint") {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>
