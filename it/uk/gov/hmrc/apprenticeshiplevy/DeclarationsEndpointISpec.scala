@@ -2,10 +2,8 @@ package uk.gov.hmrc.apprenticeshiplevy
 
 import org.joda.time.{LocalDate, LocalDateTime}
 import org.scalacheck.Gen
-import org.scalatest.Assertions._
 import org.scalatest.DoNotDiscover
 import org.scalatest.Matchers._
-import org.scalatest.prop.TableDrivenPropertyChecks.whenever
 import org.scalatestplus.play._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json

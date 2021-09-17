@@ -18,18 +18,15 @@ package uk.gov.hmrc.apprenticeshiplevy.util
 
 import akka.stream.Materializer
 import akka.util.ByteString
-import org.mockito.Mockito
-import org.mockito.stubbing.Answer
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 
 import java.nio.charset.Charset
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.reflect.ClassTag
 
-trait AppLevyUnitSpec extends AnyWordSpec with Matchers {
+trait AppLevyUnitSpec extends AnyWordSpecLike with Matchers {
 
   import scala.concurrent.duration._
   import scala.concurrent.{Await, Future}
@@ -68,10 +65,4 @@ trait AppLevyUnitSpec extends AnyWordSpec with Matchers {
   def bodyOf(resultF: Future[Result])(implicit mat: Materializer): Future[String] = {
     resultF.map(bodyOf)
   }
-
-  def mock[T](implicit ev: ClassTag[T]): T =
-    Mockito.mock(ev.runtimeClass.asInstanceOf[Class[T]])
-
-  def mock[T](answer: Answer[Object])(implicit ev: ClassTag[T]): T =
-    Mockito.mock(ev.runtimeClass.asInstanceOf[Class[T]], answer)
 }

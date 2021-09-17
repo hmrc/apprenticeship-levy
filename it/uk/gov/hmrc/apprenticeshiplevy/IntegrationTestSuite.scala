@@ -10,7 +10,6 @@ import play.api.inject.guice._
 import play.api.{Application, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 import uk.gov.hmrc.apprenticeshiplevy.util._
-import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 
 import scala.util.Try
 
