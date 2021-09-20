@@ -19,10 +19,9 @@ package uk.gov.hmrc.apprenticeshiplevy.data.des
 import org.joda.time.DateTimeConstants.{APRIL, MAY}
 import org.joda.time.{LocalDate, LocalDateTime}
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, ClosedDateRange}
 
-class EmployerPaymentSummarySpec extends UnitSpec {
+class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
   "convertToDeclaration" should {
     val id = 123456L
     val submissionTime = LocalDateTime.now()

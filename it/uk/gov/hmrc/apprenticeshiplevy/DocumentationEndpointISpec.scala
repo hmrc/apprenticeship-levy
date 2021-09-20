@@ -1,12 +1,12 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
 import java.io.File
-
 import javax.xml.parsers.SAXParserFactory
 import org.scalacheck.Gen
 import org.scalatest.DoNotDiscover
 import org.scalatest.Matchers._
 import org.scalatestplus.play._
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.util._
@@ -15,7 +15,7 @@ import scala.io.Source
 import scala.xml.XML._
 
 @DoNotDiscover
-class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
+class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer with ScalaCheckPropertyChecks {
   def asString(filename: String): String = {
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
   }

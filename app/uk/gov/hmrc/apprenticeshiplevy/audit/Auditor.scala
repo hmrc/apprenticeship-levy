@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.audit
 
 import java.io.IOException
-import play.api.Logger
+import play.api.Logging
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -25,14 +25,14 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-trait Auditor  {
+trait Auditor extends Logging {
   def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = {
     block andThen {
       case Success(_) => auditConnector.map(_.sendEvent(event.toDataEvent(200)))
       case Failure(t) => {
         val httpStatus = exceptionToMessage(t)
         auditConnector.map(_.sendEvent(event.toDataEvent(httpStatus, t)))
-        Logger.warn(s"Failed to '${event.name}' Server ${httpStatus}: ${t.getMessage()}")
+        logger.warn(s"Failed to '${event.name}' Server ${httpStatus}: ${t.getMessage()}")
       }
     }
   }

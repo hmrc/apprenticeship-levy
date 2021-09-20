@@ -21,15 +21,12 @@ import org.joda.time.{LocalDate, LocalDateTime}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{when, reset => mockReset}
 import org.mockito._
-import org.scalatest.Matchers._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
@@ -44,9 +41,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DesConnectorSpec
-  extends BaseSpec
+  extends AppLevyUnitSpec
     with GuiceOneAppPerSuite
-    with MockitoSugar
     with ScalaFutures
     with WireMockHelper {
 

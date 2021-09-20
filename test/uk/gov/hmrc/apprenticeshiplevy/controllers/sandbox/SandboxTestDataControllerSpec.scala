@@ -16,17 +16,15 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
-import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
 import play.api.mvc.ControllerComponents
 import play.api.test.Helpers.stubControllerComponents
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data.SandboxTestDataController
-import uk.gov.hmrc.apprenticeshiplevy.utils.DataTransformer
+import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, DataTransformer}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class SandboxTestDataControllerSpec extends PlaySpec with MockitoSugar {
+class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
 
   def controller(dummyResponse: Boolean) = {
     val servicesConfig = mock[ServicesConfig]
@@ -44,26 +42,26 @@ class SandboxTestDataControllerSpec extends PlaySpec with MockitoSugar {
         val inputEmpRef = "EMPREF"
         val file = "/sandbox/data/apprenticeship-levy/employers/%s/employed/SC111111A?fromDate=2017-01-01&toDate=2017-12-31"
         val result = controller(true).getFileName(file.format(inputEmpRef))
-        result mustBe file.format("840MODES17")
+        result shouldBe file.format("840MODES17")
       }
 
       "file matches EmpRef regex, EmpRef has / and returnDummyResponse is true" in {
         val (empRefStart, empRefEnd) = ("EMP", "REF")
         val file = "/sandbox/data/paye/employer/%s/%s/designatory-details/communication"
         val result = controller(true).getFileName(file.format(empRefStart, empRefEnd))
-        result mustBe file.format("840", "MODES17")
+        result shouldBe file.format("840", "MODES17")
       }
     }
 
     "not replace file EmpRef" when {
       "file does not match regex" in {
         val file = "/unmatched/file/840MODES17/EMPREF"
-        controller(true).getFileName(file) mustBe file
+        controller(true).getFileName(file) shouldBe file
       }
 
       "returnDummyResponse is false" in {
         val file = "/sandbox/data/paye/employer/EMP/REF/designatory-details/communication"
-        controller(false).getFileName(file) mustBe file
+        controller(false).getFileName(file) shouldBe file
       }
     }
 
@@ -72,7 +70,7 @@ class SandboxTestDataControllerSpec extends PlaySpec with MockitoSugar {
         val inputNino = "AA000001A"
         val file = "/sandbox/data/apprenticeship-levy/employers/840MODES17/employed/%s?fromDate=2017-01-01&toDate=2017-12-31"
         val result = controller(true).getFileName(file.format(inputNino))
-        result mustBe file.format("SC111111A")
+        result shouldBe file.format("SC111111A")
       }
     }
 
@@ -82,7 +80,7 @@ class SandboxTestDataControllerSpec extends PlaySpec with MockitoSugar {
         val inputNino = "AA000001A"
         val file = "/sandbox/data/apprenticeship-levy/employers/%s/employed/%s?fromDate=2017-01-01&toDate=2017-12-31"
         val result = controller(true).getFileName(file.format(inputEmpRef, inputNino))
-        result mustBe file.format("840MODES17", "SC111111A")
+        result shouldBe file.format("840MODES17", "SC111111A")
       }
     }
   }

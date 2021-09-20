@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.data.des
+package uk.gov.hmrc.apprenticeshiplevy.data.api
 
 import org.joda.time.LocalDateTime
-import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 
-class LevyDeclarationSpec extends UnitSpec {
+class LevyDeclarationSpec extends AppLevyUnitSpec {
   "LevyDeclaration" should {
     "have a rti submission field" in {
       val rtiId = 123L

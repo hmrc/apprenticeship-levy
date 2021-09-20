@@ -28,7 +28,7 @@ class LiveRootController @Inject()(val authAction: AuthActionImpl,
                                    val parser: BodyParsers.Default,
                                    val controllerComponents: ControllerComponents) extends RootController {
 
-  override def rootUrl: String = routes.LiveRootController.root().url
+  override def rootUrl: String = routes.LiveRootController.root.url
 
   override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url
 }

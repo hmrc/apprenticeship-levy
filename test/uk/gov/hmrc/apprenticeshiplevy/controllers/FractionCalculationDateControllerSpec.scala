@@ -22,7 +22,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents, Result}
 import play.api.test.FakeRequest
@@ -31,13 +30,13 @@ import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
+import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.{Authorization, HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FractionCalculationDateControllerSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
+class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeAndAfterEach {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockAppContext = mock[AppContext]

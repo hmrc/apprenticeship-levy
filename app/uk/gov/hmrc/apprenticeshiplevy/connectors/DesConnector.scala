@@ -16,11 +16,14 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
+import com.codahale.metrics.MetricRegistry
+
 import java.net.URLDecoder
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.google.inject.Inject
+import com.kenshoo.play.metrics.MetricsImpl
 import org.joda.time.LocalDate
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
@@ -39,7 +42,7 @@ import java.util.UUID
 import scala.concurrent.Future
 import scala.util.Try
 
-trait EmployerDetailsEndpoint extends Timer {
+trait EmployerDetailsEndpoint extends Timer with Logging {
   des: DesConnector =>
 
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] = {
@@ -52,7 +55,7 @@ trait EmployerDetailsEndpoint extends Timer {
     val url = s"${des.baseUrl}/paye/employer/${office}/${ref}/designatory-details"
 
     // $COVERAGE-OFF$
-    Logger.debug(s"Calling DES at $url")
+    logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
     timer(RequestEvent(DES_EMPREF_DETAILS_REQUEST, Some(empref))) {
@@ -61,7 +64,7 @@ trait EmployerDetailsEndpoint extends Timer {
         des.httpClient.GET[HodDesignatoryDetailsLinks](url, Seq(), headers).flatMap { response =>
           val details = DesignatoryDetails(Some(empref))
           response.links.map { links =>
-            Logger.debug((links.employer ++ links.communication).mkString(" "))
+            logger.debug((links.employer ++ links.communication).mkString(" "))
             val getEmployer = links.employer.map(getDetails(_)).getOrElse(Future.successful(None))
             val getComms = links.communication.map(getDetails(_)).getOrElse(Future.successful(None))
             for {
@@ -82,7 +85,7 @@ trait EmployerDetailsEndpoint extends Timer {
   protected val errorHandler: PartialFunction[Throwable, Option[DesignatoryDetailsData]] = {
         case e => {
           // $COVERAGE-OFF$
-          Logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
+          logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
           // $COVERAGE-ON$
           None
         }
@@ -98,7 +101,7 @@ trait EmploymentCheckEndpoint extends Timer {
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?${dateParams}"
 
     // $COVERAGE-OFF$
-    Logger.debug(s"Calling DES at $url")
+    logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
     timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
@@ -116,7 +119,7 @@ trait FractionsEndpoint extends Timer {
     val dateParams = dateRange.toParams
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions?$dateParams"
     // $COVERAGE-OFF$
-    Logger.debug(s"Calling DES at $url")
+    logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
     timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
@@ -132,7 +135,7 @@ trait FractionsEndpoint extends Timer {
     val url = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
 
     // $COVERAGE-OFF$
-    Logger.debug(s"Calling DES at $url")
+    logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
     timer(RequestEvent(DES_FRACTIONS_DATE_REQUEST, None)) {
@@ -158,7 +161,7 @@ trait LevyDeclarationsEndpoint extends Timer {
         val headers = createDesHeaders
         des.httpClient.GET[HttpResponse](url, Seq(), headers).map { response =>
           marshall(empref, response.body).getOrElse {
-            Logger.error(s""" |DES url ${url}
+            logger.error(s""" |DES url ${url}
                               |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
                               |  Status: ${response.status}
                               |  Headers: ${response.allHeaders.mkString(" ")}
@@ -204,7 +207,7 @@ trait LevyDeclarationsEndpoint extends Timer {
       case Some(EmployerPaymentsSummaryVersion0(empref, eps)) =>
         Some(EmployerPaymentsSummary(empref, eps))
       case Some(EmployerPaymentsError(reason)) => {
-        Logger.error(s"DES reported error reason '${reason}' on HTTP 200 response.")
+        logger.error(s"DES reported error reason '${reason}' on HTTP 200 response.")
         throw UpstreamErrorResponse.apply(s"DES returned error code object on HTTP 200 response (treating as error). DES error reason: '${reason}'.", PRECONDITION_FAILED)
       }
       case Some(EmptyEmployerPayments(empref)) =>
@@ -212,7 +215,7 @@ trait LevyDeclarationsEndpoint extends Timer {
       case Some(EmployerPaymentsSummary(empref,eps)) =>
         Some(EmployerPaymentsSummary(empref, eps))
       case Some(_) => {
-        Logger.error(s"Got Some(_) unknown type - unclear how to handle")
+        logger.error(s"Got Some(_) unknown type - unclear how to handle")
         None
       }
       case None => {
@@ -264,9 +267,12 @@ trait DesConnector extends FractionsEndpoint
 
 class LiveDesConnector @Inject()(val httpClient: HttpClient,
                                  auditConnector: AuditConnector,
-                                 val appContext: AppContext) extends DesConnector{
+                                 val appContext: AppContext,
+                                 metrics: MetricsImpl) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = Some(auditConnector)
   def baseUrl: String = appContext.desUrl
+
+  override def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(metrics.defaultRegistry)).getOrElse(None) else None
 
   override def desAuthorization: String = appContext.desToken
 
@@ -274,9 +280,12 @@ class LiveDesConnector @Inject()(val httpClient: HttpClient,
 }
 
 class SandboxDesConnector @Inject()(val httpClient: HttpClient,
-                                    val appContext: AppContext) extends DesConnector{
+                                    val appContext: AppContext,
+                                    metrics: MetricsImpl) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = None
   def baseUrl: String = appContext.stubDesUrl
+
+  override def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(metrics.defaultRegistry)).getOrElse(None) else None
 
   override def desAuthorization: String = appContext.desToken
 

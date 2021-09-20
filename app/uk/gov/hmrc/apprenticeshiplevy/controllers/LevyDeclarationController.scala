@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.joda.time._
 import org.slf4j.MDC
-import play.api.Logger
+import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
@@ -33,7 +33,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
 import scala.concurrent.Future
 
-trait LevyDeclarationController {
+trait LevyDeclarationController extends Logging {
   self: DesController =>
 
   val appContext: AppContext
@@ -65,7 +65,7 @@ trait LevyDeclarationController {
         * if it wants to return a 404 if all calls to `charges` return no results.
          */
         case t: NotFoundException => {
-          Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${t.getMessage()}, API returning empty sequence")
+          logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${t.getMessage()}, API returning empty sequence")
           Seq.empty
         }
       }
@@ -83,7 +83,7 @@ trait LevyDeclarationController {
       Ok(Json.toJson(LevyDeclarations(empref, ds)))
     }
     else {
-      Logger.warn(s"Client ${MDC.get("X-Client-ID")} DES returned empty list of declarations: API returning not found")
+      logger.warn(s"Client ${MDC.get("X-Client-ID")} DES returned empty list of declarations: API returning not found")
       ErrorNotFound.result
     }
   }

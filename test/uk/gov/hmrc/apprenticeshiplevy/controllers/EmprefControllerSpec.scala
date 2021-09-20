@@ -16,20 +16,20 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import java.net.URLEncoder
+import org.scalatest.OptionValues
 
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import org.scalatestplus.mockito.MockitoSugar
+import java.net.URLEncoder
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 
 import scala.concurrent.ExecutionContext
 
-class EmprefControllerSpec extends WordSpecLike with Matchers with OptionValues with MockitoSugar {
+class EmprefControllerSpec extends AppLevyUnitSpec with OptionValues {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockAppContext: AppContext = mock[AppContext]

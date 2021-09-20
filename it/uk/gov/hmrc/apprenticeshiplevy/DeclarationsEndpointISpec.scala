@@ -5,6 +5,7 @@ import org.scalacheck.Gen
 import org.scalatest.DoNotDiscover
 import org.scalatest.Matchers._
 import org.scalatestplus.play._
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -13,7 +14,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, PayrollPeriod}
 import views.html.helper
 
 @DoNotDiscover
-class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConfig with ConfiguredServer {
+class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConfig with ConfiguredServer with ScalaCheckPropertyChecks {
   describe("Declarations Endpoint") {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { case (context) =>

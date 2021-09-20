@@ -1,7 +1,6 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
 import java.io.File
-
 import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatestplus.play._
@@ -9,7 +8,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.apprenticeshiplevy.util.AppLevyUnitSpec
 
 import scala.io.Source
 
@@ -65,7 +64,7 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
 }
 
 @DoNotDiscover
-class PublicDefinitionEndpointISpec extends UnitSpec with IntegrationTestConfig with ConfiguredServer {
+class PublicDefinitionEndpointISpec extends AppLevyUnitSpec with IntegrationTestConfig with ConfiguredServer {
   def asString(filename: String): String = {
     Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
   }

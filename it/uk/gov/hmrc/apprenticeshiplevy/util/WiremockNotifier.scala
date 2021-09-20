@@ -6,9 +6,9 @@ import java.util.Date
 import com.github.tomakehurst.wiremock.common._
 import org.scalactic.source
 import org.scalatest.{Informer, Informing}
-import play.api.Logger
+import play.api.Logging
 
-trait WiremockNotifier extends Notifier {
+trait WiremockNotifier extends Notifier with Logging {
   protected def verboseWiremockOutput: Boolean
   protected def handleMessage(msg: String): Unit
 
@@ -55,13 +55,13 @@ trait NullInformer {
 
 object NullInformer extends NullInformer
 
-trait LoggerInformer {
+trait LoggerInformer extends Logging {
   lazy val info = new Informer {
     def apply(message: String, payload: Option[Any] = None)(implicit pos:source.Position): Unit = {
       if (message.contains("ERROR"))
-        Logger("wiremock").error(message)
+        logger.error(message)
       else
-        Logger("wiremock").info(message)
+        logger.info(message)
     }
   }
 }
