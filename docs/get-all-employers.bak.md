@@ -56,75 +56,69 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/
   </thead>
   <tbody>
 <tr><td>401 Unauthorized</td>
-    <td>INVALID_CREDENTIALS</td>
+    <td>AUTH_ERROR_UNAUTHORIZED</td>
     <td>The request requires correct authentication headers with valid token.</td>
     <td><code>{
-  "code": "INVALID_CREDENTIALS",
-  "message": "Invalid Authentication information provided"
+  "code": "AUTH_ERROR_UNAUTHORIZED",
+  "message": "No active session error"
 }</code></td></tr><tr><td>401 Unauthorized</td>
     <td>AUTH_ERROR_UNAUTHORIZED</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "AUTH_ERROR_UNAUTHORIZED",
-  "message": "Auth unauthorised error: GET of 'http://localhost:8080/auth/authority' returned 401. Response body: ''"
+  "message": "The Authorization token provided wasn't valid"
 }</code></td></tr><tr><td>403 Forbidden</td>
     <td>AUTH_ERROR_FORBIDDEN</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "AUTH_ERROR_FORBIDDEN",
-  "message": "Auth forbidden error: GET of 'http://localhost:8080/auth/authority' returned 403. Response body: ''"
+  "message": "Auth forbidden error"
 }</code></td></tr><tr><td>404 Not Found</td>
     <td>AUTH_ERROR_NOT_FOUND</td>
     <td>Endpoint or internal system has become unavailable.</td>
     <td><code>{
   "code": "AUTH_ERROR_NOT_FOUND",
-  "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
+  "message": "Auth endpoint not found"
 }</code></td></tr><tr><td>408 Request Time-out</td>
     <td>AUTH_ERROR_REQUEST_TIMEOUT</td>
     <td>Endpoint or internal system has become unresponsive.</td>
     <td><code>{
   "code": "AUTH_ERROR_REQUEST_TIMEOUT",
-  "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
+  "message": "Auth not responding error"
 }</code></td></tr><tr><td>408 Gateway Request Time-out</td>
     <td>AUTH_ERROR_GATEWAY_TIMEOUT</td>
     <td>Endpoint or internal system has become unresponsive.</td>
     <td><code>{
   "code": "AUTH_ERROR_GATEWAY_TIMEOUT",
-  "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
+  "message": "Auth not responding error"
 }</code></td></tr><tr><td>409 Internal API error</td>
     <td>AUTH_ERROR_TOO_MANY_REQUESTS</td>
     <td>Endpoint API has experienced too many requests.</td>
     <td><code>{
   "code": "AUTH_ERROR_TOO_MANY_REQUESTS",
-  "message": "Auth too many requests:  ...."
-}</code></td></tr><tr><td>498 Wrong token supplied.</td>
-    <td>AUTH_ERROR_WRONG_TOKEN</td>
-    <td>Endpoint or internal system has experienced an internal error.</td>
-    <td><code>{
-  "code": "AUTH_ERROR_WRONG_TOKEN",
-  "message": "Auth unauthorised error: OAUTH 2 User Token Required not TOTP"
+  "message": "Auth too many requests"
 }</code></td></tr><tr><td>500 Internal API error</td>
     <td>AUTH_ERROR_INTERNAL_SERVER_ERROR</td>
     <td>Endpoint API has experienced an internal error.</td>
     <td><code>{
   "code": "AUTH_ERROR_INTERNAL_SERVER_ERROR",
-  "message": "API or Auth internal server error: ...."
+  "message": "API or Auth internal server error"
 }</code></td></tr><tr><td>503 Service Unavailable</td>
     <td>AUTH_ERROR_BACKEND_FAILURE</td>
     <td>Endpoint or internal system has experienced an internal error.</td>
     <td><code>{
   "code": "AUTH_ERROR_BACKEND_FAILURE",
-  "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
+  "message": "Auth 5xx error"
 }</code></td></tr><tr><td>503 Other backend system error with 4xx reponse.</td>
     <td>AUTH_ERROR_OTHER</td>
     <td>Endpoint or internal system has experienced an internal error.</td>
     <td><code>{
   "code": "AUTH_ERROR_OTHER",
-  "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
+  "message": "Auth 5xx error"
 }</code></td></tr><tr><td>503 Backend system IO failure</td>
     <td>AUTH_ERROR_IO</td>
     <td>Endpoint API has experienced IO failure</td>
     <td><code>{
   "code": "AUTH_ERROR_IO",
-  "message": "Auth connection error:  ...."
+  "message": "Auth connection error"
 }</code></td></tr></table>

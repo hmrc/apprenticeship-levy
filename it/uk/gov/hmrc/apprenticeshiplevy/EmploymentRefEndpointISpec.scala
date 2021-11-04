@@ -52,7 +52,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             status(result) shouldBe 400
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error: Bad request"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
           }
 
           it (s"when DES returns unauthorized should return 401") {
@@ -65,7 +65,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             status(result) shouldBe 401
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error: Not authorized"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
           }
 
           it (s"when DES returns forbidden should return 403") {
@@ -78,7 +78,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             status(result) shouldBe 403
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error: Forbidden"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
           }
 
           it (s"when DES returns 404 should return 404") {
@@ -91,7 +91,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             status(result) shouldBe 404
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint not found: Not found"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
           }
         }
 
@@ -106,7 +106,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error: Remotely closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           it (s"should return 503 when response is empty") {
@@ -119,7 +119,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error: Remotely closed"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           it (s"should return 408 when timed out") {
@@ -132,7 +132,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsString(result) should include ("DES not responding error: GET of 'http://localhost:8080/paye/employer/777/AB12345/designatory-details' timed out with message")
+            contentAsString(result) should include ("DES not responding error")
           }
 
           it (s"should return 503 when DES returns 500") {
@@ -145,7 +145,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error: Internal error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
           it (s"should return 503 when DES returns 503") {
@@ -158,7 +158,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
             // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error: Backend system error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
           it (s"should return the declarations and fractions link for each empref when employment details does not respond") {
