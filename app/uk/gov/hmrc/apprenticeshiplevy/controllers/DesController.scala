@@ -52,23 +52,23 @@ trait DesController extends ApiController with Logging {
           // $COVERAGE-OFF$
           logger.error(s"Client ${MDC.get("X-Client-ID")} DES returned bad json: ${e.getMessage()}, API returning  code ${INTERNAL_SERVER_ERROR}")
           // $COVERAGE-ON$
-          InternalServerError(Json.toJson[ErrorResponse](DESError(INTERNAL_SERVER_ERROR, "JSON_FAILURE", s"DES and/or BACKEND server returned bad json.")))
+          InternalServerError(Json.toJson[ErrorResponse](DESError(INTERNAL_SERVER_ERROR, "JSON_FAILURE", "DES and/or BACKEND server returned bad json.")))
         }
         case e: IllegalArgumentException => {
           // $COVERAGE-OFF$
           logger.error(s"Client ${MDC.get("X-Client-ID")} DES returned bad json: ${e.getMessage()}, API returning  code ${INTERNAL_SERVER_ERROR}")
           // $COVERAGE-ON$
-          InternalServerError(Json.toJson[ErrorResponse](DESError(INTERNAL_SERVER_ERROR, "JSON_FAILURE", s"DES and/or BACKEND server returned bad json.")))
+          InternalServerError(Json.toJson[ErrorResponse](DESError(INTERNAL_SERVER_ERROR, "JSON_FAILURE", "DES and/or BACKEND server returned bad json.")))
         }
         case e: BadRequestException => {
           logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning BadRequest with code ${SERVICE_UNAVAILABLE}")
-          BadRequest(Json.toJson[ErrorResponse](DESError(SERVICE_UNAVAILABLE, "BAD_REQUEST", s"Bad request error")))
+          BadRequest(Json.toJson[ErrorResponse](DESError(SERVICE_UNAVAILABLE, "BAD_REQUEST", "Bad request error")))
         }
         case e: IOException => {
           // $COVERAGE-OFF$
           logger.error(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning ServiceUnavailable with code ${SERVICE_UNAVAILABLE}", e)
           // $COVERAGE-ON$
-          ServiceUnavailable(Json.toJson[ErrorResponse](DESError(SERVICE_UNAVAILABLE, "IO", s"DES connection error")))
+          ServiceUnavailable(Json.toJson[ErrorResponse](DESError(SERVICE_UNAVAILABLE, "IO", "DES connection error")))
         }
         case e: GatewayTimeoutException => {
           // $COVERAGE-OFF$

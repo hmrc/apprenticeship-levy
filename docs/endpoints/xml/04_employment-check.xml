@@ -115,6 +115,16 @@
           <code>BAD_REQUEST</code>
         </http>
         <http status="400" msg="Bad Request">
+          <description>A request parameter is incorrect or unknown, or from date is after to date.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "NINO_INVALID",
+  "message": "NINO_INVALID: '...' is in the wrong format. Should have a prefix (one of '...') and suffix (one of '...') and url encoded."
+}]]></content-type>
+          </body>
+          <code>NINO-INVALID</code>
+        </http>
+        <http status="400" msg="Bad Request">
           <description>Employer reference (EMPREF) request parameter is incorrect.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
@@ -144,85 +154,285 @@
           </body>
           <code>_400</code>
         </http>
-        <http status="400" msg="Bad Request">
-          <description>A request parameter is incorrect.</description>
+        <http status="404" msg="Not Found">
+          <description>Empref can not be found</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "DES_ERROR",
-  "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
+  "code": "EPAYE_UNKNOWN",
+  "message": "Auth endpoint not found"
 }]]></content-type>
           </body>
-          <code>EPAYE_EMPREF_INVALID</code>
+          <code>EPAYE_UNKNOWN</code>
         </http>
         <http status="401" msg="Unauthorized">
           <description>The request requires correct authentication headers with valid token.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "INVALID_CREDENTIALS",
-  "message": "Invalid Authentication information provided"
+  "code": "AUTH_ERROR_UNAUTHORIZED",
+  "message": "Unauthorized request of {empref}"
 }]]></content-type>
           </body>
-          <code>INVALID_CREDENTIALS</code>
+          <code>AUTH_ERROR_UNAUTHORIZED</code>
+        </http>
+        <http status="400" msg="Bad Request">
+          <description>The request is invalid</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "AUTH_ERROR_BAD_REQUEST",
+  "message": "Bad request error"
+}]]></content-type>
+          </body>
+          <code>AUTH_ERROR_BAD_REQUEST</code>
+        </http>
+        <http status="401" msg="Unauthorized">
+          <description>The request requires correct authentication headers with valid token.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "AUTH_ERROR_UNAUTHORIZED",
+  "message": "No active session error"
+}]]></content-type>
+          </body>
+          <code>AUTH_ERROR_UNAUTHORIZED</code>
         </http>
         <http status="401" msg="Unauthorized">
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "DES_ERROR",
-  "message": "Auth unauthorised error: GET of '...' returned 401. Response body: ''"
+  "code": "AUTH_ERROR_UNAUTHORIZED",
+  "message": "The Authorization token provided wasn't valid"
 }]]></content-type>
           </body>
-          <code>DES_ERROR</code>
+          <code>AUTH_ERROR_UNAUTHORIZED</code>
         </http>
         <http status="403" msg="Forbidden">
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "DES_ERROR",
-  "message": "Auth forbidden error: GET of '...' returned 403. Response body: ''"
+  "code": "AUTH_ERROR_FORBIDDEN",
+  "message": "Auth forbidden error"
 }]]></content-type>
           </body>
-          <code>DES_ERROR</code>
+          <code>AUTH_ERROR_FORBIDDEN</code>
         </http>
         <http status="404" msg="Not Found">
-          <description>Endpoint or internal system has become unavailable or either NINO or EMPREF are not found. EPAYE_NINO_UNKNOWN and EPAYE_EMPREF_UNKNOWN have been withdrawn as backend systems will not distinguish 404 errors between unknown NINO or unknown EMPREF.</description>
+          <description>Endpoint or internal system has become unavailable.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "EPAYE_UNKNOWN",
-  "message": "The provided NINO or EMPREF was not recognised'"
+  "code": "AUTH_ERROR_NOT_FOUND",
+  "message": "Auth endpoint not found"
 }]]></content-type>
           </body>
-          <code>EPAYE_UNKNOWN</code>
+          <code>AUTH_ERROR_NOT_FOUND</code>
+        </http>
+        <http status="406" msg="Accept Header Invalid">
+          <description>Request has an invalid or missing Accept header</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "ACCEPT_HEADER_INVALID",
+  "message": "The accept header is missing or invalid"
+}]]></content-type>
+          </body>
+          <code>ACCEPT_HEADER_INVALID</code>
         </http>
         <http status="408" msg="Request Time-out">
           <description>Endpoint or internal system has become unresponsive.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "DES_ERROR",
-  "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
+  "code": "AUTH_ERROR_REQUEST_TIMEOUT",
+  "message": "Auth not responding error"
 }]]></content-type>
           </body>
-          <code>DES_ERROR</code>
+          <code>AUTH_ERROR_REQUEST_TIMEOUT</code>
         </http>
-        <http status="429" msg="Too many requests">
-          <description>Too many requests have been made to this endpoint</description>
+        <http status="408" msg="Gateway Request Time-out">
+          <description>Endpoint or internal system has become unresponsive.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "DES_ERROR",
-  "message": "Too many requests"
+  "code": "AUTH_ERROR_GATEWAY_TIMEOUT",
+  "message": "Auth not responding error"
 }]]></content-type>
           </body>
-          <code>DES_ERROR</code>
+          <code>AUTH_ERROR_GATEWAY_TIMEOUT</code>
+        </http>
+        <http status="429" msg="Too many requests">
+          <description>The service is receiving too many requests and has hit the rate limit.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "AUTH_ERROR_TOO_MANY_REQUESTS",
+  "message": "Auth too many requests"
+}]]></content-type>
+          </body>
+          <code>AUTH_ERROR_TOO-MANY_REQUESTS</code>
         </http>
         <http status="503" msg="Service Unavailable">
           <description>Endpoint or internal system has experienced an internal error.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "DES_ERROR",
-  "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
+  "code": "AUTH_ERROR_BACKEND_FAILURE",
+  "message": "Auth 5xx error"
 }]]></content-type>
           </body>
-          <code>DES_ERROR</code>
+          <code>AUTH_ERROR_BACKEND_FAILURE</code>
+        </http>
+        <http status="503" msg="Other backend system error with 4xx reponse.">
+          <description>Endpoint or internal system has experienced an internal error.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "AUTH_ERROR_OTHER",
+  "message": "Auth 5xx error"
+}]]></content-type>
+          </body>
+          <code>AUTH_ERROR_OTHER</code>
+        </http>
+        <http status="500" msg="Internal API error">
+          <description>Endpoint API has experienced an internal error.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "AUTH_ERROR_INTERNAL_SERVER_ERROR",
+  "message": "API or Auth internal server error"
+}]]></content-type>
+          </body>
+          <code>AUTH_ERROR_INTERNAL_SERVER_ERROR</code>
+        </http>
+        <http status="409" msg="Internal API error">
+          <description>Endpoint API has experienced too many requests.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "AUTH_ERROR_TOO_MANY_REQUESTS",
+  "message": "Auth too many requests"
+}]]></content-type>
+          </body>
+          <code>AUTH_ERROR_TOO_MANY_REQUESTS</code>
+        </http>
+        <http status="503" msg="Backend system IO failure">
+          <description>Endpoint API has experienced IO failure</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "AUTH_ERROR_IO",
+  "message": "Auth connection error"
+}]]></content-type>
+          </body>
+          <code>AUTH_ERROR_IO</code>
+        </http>
+        <http status="500" msg="Invalid Json returned from DES">
+          <description>Endpoint API has returned invalid Json</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_JSON_FAILURE",
+  "message": "DES and/or BACKEND server returned bad json."
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_JSON_FAILURE</code>
+        </http>
+        <http status="400" msg="BadRequestException returned from DES">
+          <description>Endpoint API has returned bad request</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_BAD_REQUEST",
+  "message": "Bad request error"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_BAD_REQUEST</code>
+        </http>
+        <http status="503" msg="IOException returned from DES">
+          <description>Endpoint API has returned IOExceptionn</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_IO",
+  "message": "DES connection error"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_IO</code>
+        </http>
+        <http status="408" msg="Request Timeout has occurred">
+          <description>Endpoint API has returned invalid Json</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_GATEWAY_TIMEOUT",
+  "message": "DES responding error"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_GATEWAY_TIMEOUT</code>
+        </http>
+        <http status="400" msg="Bad Request">
+          <description>The request is invalid</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_BAD_REQUEST",
+  "message": "DES endpoint or EmpRef not found"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_BAD_REQUEST</code>
+        </http>
+        <http status="420" msg="Precondition Failed">
+          <description>The request didn't meet the precondition</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_BACKEND_FAILURE",
+  "message": "DES backend error"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_BACKEND_FAILURE</code>
+        </http>
+        <http status="403" msg="Forbidden">
+          <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_FORBIDDEN",
+  "message": "DES forbidden error"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_FORBIDDEN</code>
+        </http>
+        <http status="401" msg="Unauthorized">
+          <description>The request requires correct authentication headers with valid token.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_UNAUTHORIZED",
+  "message": "DES unauthorized error"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_UNAUTHORIZED</code>
+        </http>
+        <http status="429" msg="Too many requests">
+          <description>The service is receiving too many requests and has hit the rate limit.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_TOO_MANY_REQUESTS",
+  "message": "DES too many requests"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_TOO_MANY_REQUESTS</code>
+        </http>
+        <http status="503" msg="Other backend system error with 4xx reponse.">
+          <description>Endpoint or internal system has experienced an internal error.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_OTHER",
+  "message": "DES 5xx error"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_OTHER</code>
+        </http>
+        <http status="503" msg="Service Unavailable">
+          <description>Endpoint or internal system has experienced an internal error.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_BACKEND_FAILURE",
+  "message": "DES 5xx error"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_BACKEND_FAILURE</code>
+        </http>
+        <http status="500" msg="Internal API error">
+          <description>Endpoint API has experienced an internal error.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "DES_ERROR_API",
+  "message": "API or DES internal server error"
+}]]></content-type>
+          </body>
+          <code>DES_ERROR_API</code>
         </http>
       </responses>
     </version>
