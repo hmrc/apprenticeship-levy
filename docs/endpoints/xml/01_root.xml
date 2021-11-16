@@ -68,16 +68,6 @@
           </body>
         </http>
         <http status="400" msg="Bad Request">
-          <description>A request parameter is incorrect.</description>
-          <body>
-            <content-type mimeType="application/json"><![CDATA[{
-  "statusCode": "400",
-  "message": "EMPREF_INVALID: '...' is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."
-}]]></content-type>
-          </body>
-          <code>EMPREF_INVALID</code>
-        </http>
-        <http status="400" msg="Bad Request">
           <description>The request is invalid</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
