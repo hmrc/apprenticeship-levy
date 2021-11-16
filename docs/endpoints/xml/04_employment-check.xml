@@ -115,7 +115,7 @@
           <code>BAD_REQUEST</code>
         </http>
         <http status="400" msg="Bad Request">
-          <description>A request parameter is incorrect or unknown, or from date is after to date.</description>
+          <description>Nino request parameter is incorrect</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "NINO_INVALID",
