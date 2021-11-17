@@ -96,7 +96,7 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/employed/
     <td>A request parameter is incorrect.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
+  "message": "Auth unauthorised error"
 }</code></td></tr><tr><td>401 Unauthorized</td>
     <td>INVALID_CREDENTIALS</td>
     <td>The request requires correct authentication headers with valid token.</td>
@@ -108,13 +108,13 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/employed/
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth unauthorised error: GET of '...' returned 401. Response body: ''"
+  "message": "Auth unauthorised error"
 }</code></td></tr><tr><td>403 Forbidden</td>
     <td>DES_ERROR</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth forbidden error: GET of '...' returned 403. Response body: ''"
+  "message": "Auth forbidden error"
 }</code></td></tr><tr><td>404 Not Found</td>
     <td>EPAYE_UNKNOWN</td>
     <td>Endpoint or internal system has become unavailable or either NINO or EMPREF are not found. EPAYE_NINO_UNKNOWN and EPAYE_EMPREF_UNKNOWN have been withdrawn as backend systems will not distinguish 404 errors between unknown NINO or unknown EMPREF.</td>
@@ -126,7 +126,7 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/employed/
     <td>Endpoint or internal system has become unresponsive.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
+  "message": "Auth not responding error"
 }</code></td></tr><tr><td>429 Too many requests</td>
     <td>DES_ERROR</td>
     <td>Too many requests have been made to this endpoint</td>
@@ -138,5 +138,5 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/employed/
     <td>Endpoint or internal system has experienced an internal error.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
+  "message": "Auth 5xx error"
 }</code></td></tr></table>

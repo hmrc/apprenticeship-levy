@@ -139,24 +139,16 @@ private object ErrorHandler extends Logging {
     exc match {
       case e: SessionRecordNotFound =>
         logWarningAboutException(e, UNAUTHORIZED, "Unauthorized with code")
-        Unauthorized(Json.toJson[ErrorResponse](AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"No active session error: ${
-          extractReason(e.getMessage)
-        }")))
+        Unauthorized(Json.toJson[ErrorResponse](AuthError(UNAUTHORIZED, "UNAUTHORIZED", "No active session error")))
       case e: AuthorisationException =>
         logWarningAboutException(e, UNAUTHORIZED, "Unauthorized with code")
-        Unauthorized(Json.toJson[ErrorResponse](AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"${
-          extractReason(e.getMessage)
-        }")))
+        Unauthorized(Json.toJson[ErrorResponse](AuthError(UNAUTHORIZED, "UNAUTHORIZED", "The Authorization token provided wasn't valid")))
       case e: BadRequestException =>
         logWarningAboutException(e, SERVICE_UNAVAILABLE, "BadRequest with code")
-        BadRequest(Json.toJson[ErrorResponse](AuthError(SERVICE_UNAVAILABLE, "BAD_REQUEST", s"Bad request error: ${
-          extractReason(e.getMessage)
-        }")))
+        BadRequest(Json.toJson[ErrorResponse](AuthError(SERVICE_UNAVAILABLE, "BAD_REQUEST", "Bad request error")))
       case e: IOException =>
         logWarningAboutException(e, SERVICE_UNAVAILABLE, "ServiceUnavailable with code")
-        ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(SERVICE_UNAVAILABLE, "IO", s"Auth connection error: ${
-          extractReason(e.getMessage)
-        }")))
+        ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(SERVICE_UNAVAILABLE, "IO", s"Auth connection error")))
       case e: GatewayTimeoutException =>
         val message = s"Client ${
           MDC.get("X-Client-ID")
@@ -166,14 +158,10 @@ private object ErrorHandler extends Logging {
           GATEWAY_TIMEOUT
         }"
         logger.error(message, e)
-        RequestTimeout(Json.toJson[ErrorResponse](AuthError(REQUEST_TIMEOUT, "GATEWAY_TIMEOUT", s"Auth not responding error: ${
-          extractReason(e.getMessage)
-        }")))
+        RequestTimeout(Json.toJson[ErrorResponse](AuthError(REQUEST_TIMEOUT, "GATEWAY_TIMEOUT", "Auth not responding error")))
       case e: NotFoundException =>
         logWarningAboutException(e, NOT_FOUND, "NotFound with code")
-        NotFound(Json.toJson[ErrorResponse](AuthError(NOT_FOUND, "NOT_FOUND", s"Auth endpoint not found: ${
-          extractReason(e.getMessage)
-        }")))
+        NotFound(Json.toJson[ErrorResponse](AuthError(NOT_FOUND, "NOT_FOUND", "Auth endpoint not found")))
       case e: UpstreamErrorResponse =>
         val apiMessage = if (e.statusCode >= 400 && e.statusCode < 500) "API returning code" else "API returning ServiceUnavailable with code"
         val message = s"Client ${
@@ -187,20 +175,14 @@ private object ErrorHandler extends Logging {
         }"
         logger.warn(message)
         e.statusCode match {
-          case FORBIDDEN => Forbidden(Json.toJson[ErrorResponse](AuthError(e.reportAs, "FORBIDDEN", s"Auth forbidden error: ${
-            extractReason(e.getMessage)
-          }")))
-          case TOO_MANY_REQUESTS => TooManyRequests(Json.toJson[ErrorResponse](AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"Auth too many requests: ${
-            extractReason(e.getMessage)
-          }")))
-          case REQUEST_TIMEOUT => RequestTimeout(Json.toJson[ErrorResponse](AuthError(REQUEST_TIMEOUT, "TIMEOUT", s"Auth not responding error: ${
-            extractReason(e.getMessage)
-          }")))
+          case FORBIDDEN => Forbidden(Json.toJson[ErrorResponse](AuthError(e.reportAs, "FORBIDDEN", s"Auth forbidden error")))
+          case TOO_MANY_REQUESTS => TooManyRequests(Json.toJson[ErrorResponse](AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"Auth too many requests")))
+          case REQUEST_TIMEOUT => RequestTimeout(Json.toJson[ErrorResponse](AuthError(REQUEST_TIMEOUT, "TIMEOUT", s"Auth not responding error")))
           case _ =>
             if (e.statusCode >= 400 && e.statusCode < 500)
-              ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(e.reportAs, "OTHER", s"Auth 4xx error: ${extractReason(e.getMessage)}")))
+              ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(e.reportAs, "OTHER", s"Auth 4xx error")))
             else
-              ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(e.reportAs, "BACKEND_FAILURE", s"Auth 5xx error: ${extractReason(e.getMessage)}")))
+              ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(e.reportAs, "BACKEND_FAILURE", s"Auth 5xx error")))
         }
 
       case e: Throwable =>
@@ -212,9 +194,7 @@ private object ErrorHandler extends Logging {
           INTERNAL_SERVER_ERROR
         }"
         logger.error(message, e)
-        InternalServerError(Json.toJson[ErrorResponse](AuthError(INTERNAL_SERVER_ERROR, "API", s"API or Auth internal server error: ${
-          extractReason(e.getMessage)
-        }")))
+        InternalServerError(Json.toJson[ErrorResponse](AuthError(INTERNAL_SERVER_ERROR, "API", s"API or Auth internal server error")))
     }
   }
 }

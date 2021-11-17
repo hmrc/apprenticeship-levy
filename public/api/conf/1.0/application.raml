@@ -67,6 +67,15 @@ annotationTypes:
             application/json:
               type: !include schemas/get-all-employers.json
               example: !include examples/get-all-employers.json
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+               400_AUTH_ERROR_BAD_REQUEST:
+                 description: The request made is not valid.
+                 value:
+                   code: AUTH_ERROR_BAD_REQUEST
         401:
           body:
             application/json:
@@ -187,10 +196,14 @@ annotationTypes:
                       description: A request parameter is incorrect.
                       value:
                         code: EMPREF_INVALID
-                    400_EPAYE_EMPREF_INVALID:
-                      description: A request parameter is incorrect.
+                    400_AUTH_ERROR_BAD_REQUEST:
+                      description: The request made is not valid.
                       value:
-                        code: EPAYE_EMPREF_INVALID
+                        code: AUTH_ERROR_BAD_REQUEST
+                    400_DES_ERROR_BAD_REQUEST:
+                      description: The request made is not valid.
+                      value:
+                        code: DES_ERROR_BAD_REQUEST
             401:
               body:
                 application/json:
@@ -200,19 +213,27 @@ annotationTypes:
                       description: The request requires correct authentication headers with valid token.
                       value:
                         code: INVALID_CREDENTIALS
-                    401_AUTH_ERROR:
+                    401_AUTH_ERROR_UNAUTHORIZED:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
-                        code: AUTH_ERROR
+                        code: AUTH_ERROR_UNAUTHORIZED
+                    401_DES_ERROR_UNAUTHORIZED:
+                      description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                      value:
+                        code: DES_ERROR_UNAUTHORIZED
             403:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    403_AUTH_ERROR:
+                    403_AUTH_ERROR_FORBIDDEN:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
-                        code: AUTH_ERROR
+                        code: AUTH_ERROR_FORBIDDEN
+                    403_DES_ERROR_FORBIDDEN:
+                      description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                      value:
+                        code: DES_ERROR_FORBIDDEN
             404:
               body:
                 application/json:
@@ -222,33 +243,89 @@ annotationTypes:
                       description: Employer reference is unknown or endpoint not found.
                       value:
                         code: EPAYE_EMPREF_UNKNOWN
+                    404_AUTH_ERROR_NOT_FOUND:
+                      description: Endpoint or internal system has become unavailable.
+                      value:
+                        code: AUTH_ERROR_NOT_FOUND
+                    404_DES_ERROR_NOT_FOUND:
+                      description: Endpoint or internal system has become unavailable.
+                      value:
+                        code: DES_ERROR_NOT_FOUND
             408:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    408_DES_ERROR:
+                    408_AUTH_ERROR_REQUEST_TIMEOUT:
                       description: Endpoint or internal system has become unresponsive.
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_REQUEST_TIMEOUT
+                    408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                      description: Endpoint or internal system has become unresponsive.
+                      value:
+                        code: AUTH_ERROR_GATEWAY_TIMEOUT
+                    408_DES_ERROR_GATEWAY_TIMEOUT:
+                      description: Endpoint or internal system has become unresponsive.
+                      value:
+                        code: DES_ERROR-GATEWAY_TIMEOUT
             429:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    429_DES_ERROR:
+                    429_AUTH_ERROR_TOO_MANY_REQUESTS:
                       description: Too many requests have been made to this endpoint
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_TOO_MANY_REQUESTS
+                    429_DES_ERROR_TOO_MANY_REQUESTS:
+                      description: Too many requests have been made to this endpoint
+                      value:
+                        code: DES_ERROR_TOO_MANY_REQUESTS
+            500:
+              body:
+                application/json:
+                  type: types.errorResponse
+                  examples:
+                    500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                      description: Endpoint API has experienced an internal error.
+                      value:
+                        code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+                    500_DES_ERROR_JSON_FAILURE:
+                      description: Endpoint API has returned invalid JSON.
+                      value:
+                        code: DES_ERROR_JSON_FAILURE
+                    500_DES_ERROR_API:
+                      description: Endpoint API has experienced an internal error.
+
             503:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    503_DES_ERROR:
+                    503_AUTH_ERROR_BACKEND_FAILURE:
                       description: Endpoint or internal system has experienced an internal error.
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_BACKEND_FAILURE
+                    503_AUTH_ERROR_OTHER:
+                      description: Endpoint or internal system has experienced an internal error.
+                      value:
+                        code: AUTH_ERROR_OTHER
+                    503_AUTH_ERROR_IO:
+                      description: Endpoint API has experienced IO failure
+                      value:
+                        code: AUTH_ERROR_IO
+                    503_DES_ERROR_BACKEND_FAILURE:
+                      description: Endpoint or internal system has experienced an internal error.
+                      value:
+                        code: DES_ERROR_BACKEND_FAILURE
+                     503_DES_ERROR_OTHER:
+                       description: Endpoint or internal system has experienced an internal error.
+                       value:
+                         code: DES_ERROR_OTHER
+                    503_DES_ERROR_IO:
+                      description: Endpoint API has experienced IO failure
+                      value:
+                        code: DES_ERROR_IO
       /declarations:
         get:
           displayName: Get employer levy declarations
@@ -290,10 +367,15 @@ annotationTypes:
                       description: Date(s) request parameter(s) is incorrect.
                       value:
                         code: DATE_INVALID
-                    400_EPAYE_EMPREF_INVALID:
-                      description: Employer reference (EMPREF) request parameter is incorrect.
+                    400_AUTH_ERROR_BAD_REQUEST:
+                      description: The request made is not valid.
                       value:
-                        code: EPAYE_EMPREF_INVALID
+                        code: AUTH_ERROR_BAD_REQUEST
+                    400_DES_ERROR_BAD_REQUEST:
+                      description: The request made is not valid.
+                      value:
+                        code: DES_ERROR_BAD_REQUEST
+
             401:
               body:
                 application/json:
@@ -303,19 +385,27 @@ annotationTypes:
                       description: The request requires correct authentication headers with valid token.
                       value:
                         code: INVALID_CREDENTIALS
-                    401_DES_ERROR:
+                    401_AUTH_ERROR_UNAUTHORIZED:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_UNAUTHORIZED
+                    401_DES_ERROR_UNAUTHORIZED:
+                      description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                      value:
+                        code: DES_ERROR_UNAUTHORIZED
             403:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    403_DES_ERROR:
+                    403_AUTH_ERROR_FORBIDDEN:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_FORBIDDEN
+                    403_DES_ERROR_FORBIDDEN:
+                      description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                      value:
+                        code: DES_ERROR_FORBIDDEN
             404:
               body:
                 application/json:
@@ -325,29 +415,53 @@ annotationTypes:
                       description: Employer reference is unknown or endpoint not found.
                       value:
                         code: EPAYE_EMPREF_UNKNOWN
+                    404_AUTH_ERROR_NOT_FOUND:
+                      description: Endpoint or internal system has become unavailable.
+                      value:
+                        code: AUTH_ERROR_NOT_FOUND
+                    404_DES_ERROR_NOT_FOUND:
+                      description: Endpoint or internal system has become unavailable.
+                      value:
+                        code: DES_ERROR_NOT_FOUND
             408:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    408_DES_ERROR:
+                    408_AUTH_ERROR_REQUEST_TIMEOUT:
                       description: Endpoint or internal system has become unresponsive.
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_REQUEST_TIMEOUT
+                    408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                      description: Endpoint or internal system has become unresponsive.
+                      value:
+                        code: AUTH_ERROR_GATEWAY_TIMEOUT
+                    408_DES_ERROR_GATEWAY_TIMEOUT:
+                      description: Endpoint or internal system has become unresponsive.
+                      value:
+                        code: DES_ERROR-GATEWAY_TIMEOUT
             429:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    429_DES_ERROR:
+                    429_AUTH_ERROR_TOO_MANY_REQUESTS:
                       description: Too many requests have been made to this endpoint
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_TOO_MANY_REQUESTS
+                    429_DES_ERROR_TOO_MANY_REQUESTS:
+                      description: Too many requests have been made to this endpoint
+                      value:
+                        code: DES_ERROR_TOO_MANY_REQUESTS
             500:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
+                    500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                      description: Endpoint API has experienced an internal error.
+                      value:
+                        code: AUTH_ERROR_INTERNAL_SERVER_ERROR
                     500_DES_ERROR_JSON_FAILURE:
                       description: DES or backend system has returned invalid json which can not be relayed to API caller.
                       value:
@@ -361,10 +475,30 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    503_DES_ERROR:
+                    503_AUTH_ERROR_BACKEND_FAILURE:
                       description: Endpoint or internal system has experienced an internal error.
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_BACKEND_FAILURE
+                    503_AUTH_ERROR_OTHER:
+                      description: Endpoint or internal system has experienced an internal error.
+                      value:
+                        code: AUTH_ERROR_OTHER
+                    503_AUTH_ERROR_IO:
+                      description: Endpoint API has experienced IO failure
+                      value:
+                        code: AUTH_ERROR_IO
+                    503_DES_ERROR_BACKEND_FAILURE:
+                      description: Endpoint or internal system has experienced an internal error.
+                      value:
+                        code: DES_ERROR_BACKEND_FAILURE
+                    503_DES_ERROR_OTHER:
+                      description: Endpoint or internal system has experienced an internal error.
+                      value:
+                        code: DES_ERROR_OTHER
+                    503_DES_ERROR_IO:
+                      description: Endpoint API has experienced IO failure
+                      value:
+                        code: DES_ERROR_IO
       /fractions:
         get:
           displayName: Get employer fraction calculations
@@ -398,10 +532,6 @@ annotationTypes:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    400_BAD_REQUEST:
-                      description: A request parameter is incorrect or unknown, or from date is after to date.
-                      value:
-                        code: BAD_REQUEST
                     400_EMPREF_INVALID:
                       description: Employer reference (EMPREF) request parameter is incorrect.
                       value:
@@ -410,10 +540,14 @@ annotationTypes:
                       description: Date(s) request parameter(s) is incorrect.
                       value:
                         code: DATE_INVALID
-                    400_EPAYE_EMPREF_INVALID:
-                      description: Employer reference (EMPREF) request parameter is unknown.
+                    400_AUTH_ERROR_BAD_REQUEST:
+                      description: The request made is not valid.
                       value:
-                        code: EPAYE_EMPREF_INVALID
+                        code: AUTH_ERROR_BAD_REQUEST
+                    400_DES_ERROR_BAD_REQUEST:
+                      description: The request made is not valid.
+                      value:
+                        code: DES_ERROR_BAD_REQUEST
             401:
               body:
                 application/json:
@@ -423,19 +557,27 @@ annotationTypes:
                       description: The request requires correct authentication headers with valid token.
                       value:
                         code: INVALID_CREDENTIALS
-                    401_DES_ERROR:
+                    401_AUTH_ERROR_UNAUTHORIZED:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_UNAUTHORIZED
+                    401_DES_ERROR_UNAUTHORIZED:
+                      description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                      value:
+                        code: DES_ERROR_UNAUTHORIZED
             403:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    403_DES_ERROR:
+                    403_AUTH_ERROR_FORBIDDEN:
                       description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_FORBIDDEN
+                    403_DES_ERROR_FORBIDDEN:
+                      description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                      value:
+                        code: DES_ERROR_FORBIDDEN
             404:
               body:
                 application/json:
@@ -445,33 +587,90 @@ annotationTypes:
                       description: Endpoint or internal system has become unavailable.
                       value:
                         code: EPAYE_EMPREF_UNKNOWN
+                    404_AUTH_ERROR_NOT_FOUND:
+                      description: Endpoint or internal system has become unavailable.
+                      value:
+                        code: AUTH_ERROR_NOT_FOUND
+                    404_DES_ERROR_NOT_FOUND:
+                      description: Endpoint or internal system has become unavailable.
+                      value:
+                        code: DES_ERROR_NOT_FOUND
             408:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    408_DES_ERROR:
+                    408_AUTH_ERROR_REQUEST_TIMEOUT:
                       description: Endpoint or internal system has become unresponsive.
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_REQUEST_TIMEOUT
+                    408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                      description: Endpoint or internal system has become unresponsive.
+                      value:
+                        code: AUTH_ERROR_GATEWAY_TIMEOUT
+                    408_DES_ERROR_GATEWAY_TIMEOUT:
+                      description: Endpoint or internal system has become unresponsive.
+                      value:
+                        code: DES_ERROR-GATEWAY_TIMEOUT
             429:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    429_DES_ERROR:
+                    429_AUTH_ERROR_TOO_MANY_REQUESTS:
                       description: Too many requests have been made to this endpoint
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_TOO_MANY_REQUESTS
+                    429_DES_ERROR_TOO_MANY_REQUESTS:
+                      description: Too many requests have been made to this endpoint
+                      value:
+                        code: DES_ERROR_TOO_MANY_REQUESTS
+            500:
+              body:
+                application/json:
+                  type: types.errorResponse
+                  examples:
+                    500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                      description: Endpoint API has experienced an internal error.
+                      value:
+                        code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+                    500_DES_ERROR_JSON_FAILURE:
+                      description: DES or backend system has returned invalid json which can not be relayed to API caller.
+                      value:
+                        code: DES_ERROR_JSON_FAILURE
+                    500_DES_ERROR_BACKEND_FAILURE:
+                      description: DES returned unexpected Json error response type on a HTTP 200 response.
+                      value:
+                        code: DES_ERROR_BACKEND_FAILURE
             503:
               body:
                 application/json:
                   type: types.errorResponse
                   examples:
-                    503_DES_ERROR:
+                    503_AUTH_ERROR_BACKEND_FAILURE:
                       description: Endpoint or internal system has experienced an internal error.
                       value:
-                        code: DES_ERROR
+                        code: AUTH_ERROR_BACKEND_FAILURE
+                    503_AUTH_ERROR_OTHER:
+                      description: Endpoint or internal system has experienced an internal error.
+                      value:
+                        code: AUTH_ERROR_OTHER
+                    503_AUTH_ERROR_IO:
+                      description: Endpoint API has experienced IO failure
+                      value:
+                        code: AUTH_ERROR_IO
+                    503_DES_ERROR_BACKEND_FAILURE:
+                      description: Endpoint or internal system has experienced an internal error.
+                      value:
+                        code: DES_ERROR_BACKEND_FAILURE
+                    503_DES_ERROR_OTHER:
+                      description: Endpoint or internal system has experienced an internal error.
+                      value:
+                        code: DES_ERROR_OTHER
+                    503_DES_ERROR_IO:
+                      description: Endpoint API has experienced IO failure
+                      value:
+                        code: DES_ERROR_IO
       /employed:
         /{nino}:
           uriParameters:
@@ -511,10 +710,6 @@ annotationTypes:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      400_BAD_REQUEST:
-                        description: A request parameter is incorrect or unknown, or from date is after to date.
-                        value:
-                          code: BAD_REQUEST
                       400_EMPREF_INVALID:
                         description: Employer reference (EMPREF) request parameter is incorrect.
                         value:
@@ -523,14 +718,18 @@ annotationTypes:
                         description: Date request parameter is incorrect.
                         value:
                           code: DATE_INVALID
-                      400__400:
-                        description: Date(s) request parameter(s) is missing.
+                      400_NINO_INVALID:
+                        description: Nino request parameter is incorrect
                         value:
-                          code: _400
-                      400_EPAYE_EMPREF_INVALID:
-                        description: A request parameter is incorrect.
+                          code: NINO_INVALID
+                      400_AUTH_ERROR_BAD_REQUEST:
+                        description: The request made is not valid.
                         value:
-                          code: EPAYE_EMPREF_INVALID
+                          code: AUTH_ERROR_BAD_REQUEST
+                      400_DES_ERROR_BAD_REQUEST:
+                        description: The request made is not valid.
+                        value:
+                          code: DES_ERROR_BAD_REQUEST
               401:
                 body:
                   application/json:
@@ -540,19 +739,27 @@ annotationTypes:
                         description: The request requires correct authentication headers with valid token.
                         value:
                           code: INVALID_CREDENTIALS
-                      401_DES_ERROR:
+                      401_AUTH_ERROR_UNAUTHORIZED:
                         description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                         value:
-                          code: DES_ERROR
+                          code: AUTH_ERROR_UNAUTHORIZED
+                        401_DES_ERROR_UNAUTHORIZED:
+                          description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                          value:
+                            code: DES_ERROR_UNAUTHORIZED
               403:
                 body:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      403_DES_ERROR:
+                      403_AUTH_ERROR_FORBIDDEN:
                         description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                         value:
-                          code: DES_ERROR
+                          code: AUTH_ERROR_FORBIDDEN
+                      403_DES_ERROR_FORBIDDEN:
+                        description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                        value:
+                          code: DES_ERROR_FORBIDDEN
               404:
                 body:
                   application/json:
@@ -562,33 +769,90 @@ annotationTypes:
                         description: Endpoint or internal system has become unavailable or either NINO or EMPREF are not found. EPAYE_NINO_UNKNOWN and EPAYE_EMPREF_UNKNOWN have been withdrawn as backend systems will not distinguish 404 errors between unknown NINO or unknown EMPREF.
                         value:
                           code: EPAYE_UNKNOWN
+                      404_AUTH_ERROR_NOT_FOUND:
+                        description: Endpoint or internal system has become unavailable.
+                        value:
+                          code: AUTH_ERROR_NOT_FOUND
+                      404_DES_ERROR_NOT_FOUND:
+                        description: Endpoint or internal system has become unavailable.
+                        value:
+                          code: DES_ERROR_NOT_FOUND
               408:
                 body:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      408_DES_ERROR:
+                      408_AUTH_ERROR_REQUEST_TIMEOUT:
                         description: Endpoint or internal system has become unresponsive.
                         value:
-                          code: DES_ERROR
+                          code: AUTH_ERROR_REQUEST_TIMEOUT
+                      408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                        description: Endpoint or internal system has become unresponsive.
+                        value:
+                          code: AUTH_ERROR_GATEWAY_TIMEOUT
+                      408_DES_ERROR_GATEWAY_TIMEOUT:
+                        description: Endpoint or internal system has become unresponsive.
+                        value:
+                          code: DES_ERROR-GATEWAY_TIMEOUT
               429:
                 body:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      429_DES_ERROR:
+                      429_AUTH_ERROR_TOO_MANY_REQUESTS:
                         description: Too many requests have been made to this endpoint
                         value:
-                          code: DES_ERROR
+                          code: AUTH_ERROR_TOO_MANY_REQUESTS
+                      429_DES_ERROR_TOO_MANY_REQUESTS:
+                        description: Too many requests have been made to this endpoint
+                        value:
+                          code: DES_ERROR_TOO_MANY_REQUESTS
+              500:
+                body:
+                  application/json:
+                    type: types.errorResponse
+                    examples:
+                      500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                        description: Endpoint API has experienced an internal error.
+                        value:
+                          code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+                      500_DES_ERROR_JSON_FAILURE:
+                        description: DES or backend system has returned invalid json which can not be relayed to API caller.
+                        value:
+                          code: DES_ERROR_JSON_FAILURE
+                      500_DES_ERROR_BACKEND_FAILURE:
+                        description: DES returned unexpected Json error response type on a HTTP 200 response
+                        value:
+                          code: DES_ERROR_BACKEND_FAILURE
               503:
                 body:
                   application/json:
                     type: types.errorResponse
                     examples:
-                      503_DES_ERROR:
+                      503_AUTH_ERROR_BACKEND_FAILURE:
                         description: Endpoint or internal system has experienced an internal error.
                         value:
-                          code: DES_ERROR
+                          code: AUTH_ERROR_BACKEND_FAILURE
+                      503_AUTH_ERROR_OTHER:
+                        description: Endpoint or internal system has experienced an internal error.
+                        value:
+                          code: AUTH_ERROR_OTHER
+                      503_AUTH_ERROR_IO:
+                        description: Endpoint API has experienced IO failure
+                        value:
+                          code: AUTH_ERROR_IO
+                      503_DES_ERROR_BACKEND_FAILURE:
+                        description: Endpoint or internal system has experienced an internal error.
+                        value:
+                          code: DES_ERROR_BACKEND_FAILURE
+                      503_DES_ERROR_OTHER:
+                        description: Endpoint or internal system has experienced an internal error.
+                        value:
+                          code: DES_ERROR_OTHER
+                      503_DES_ERROR_IO:
+                        description: Endpoint API has experienced IO failure
+                        value:
+                          code: DES_ERROR_IO
   /fraction-calculation-date:
     get:
       displayName: Get latest fraction calculation date
@@ -606,6 +870,19 @@ annotationTypes:
             application/json:
               type: !include schemas/get-latest-fraction-calculation-date.json
               example: !include examples/get-latest-fraction-calculation-date.json
+        400:
+          body:
+            application/json:
+              type: types.errorResponse
+              examples:
+                400_AUTH_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: AUTH_ERROR_BAD_REQUEST
+                400_DES_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: DES_ERROR_BAD_REQUEST
         401:
           body:
             application/json:
@@ -615,6 +892,10 @@ annotationTypes:
                   description: The request requires correct authentication headers with valid token.
                   value:
                     code: INVALID_CREDENTIALS
+                401_AUTH_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_UNAUTHORIZED
                 401_DES_ERROR_UNAUTHORIZED:
                   description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                   value:
@@ -624,6 +905,10 @@ annotationTypes:
             application/json:
               type: types.errorResponse
               examples:
+                403_AUTH_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_FORBIDDEN
                 403_DES_ERROR_FORBIDDEN:
                   description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
                   value:
@@ -633,6 +918,10 @@ annotationTypes:
             application/json:
               type: types.errorResponse
               examples:
+                404_AUTH_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: AUTH_ERROR_NOT_FOUND
                 404_DES_ERROR_NOT_FOUND:
                   description: Endpoint or internal system has become unavailable.
                   value:
@@ -642,6 +931,14 @@ annotationTypes:
             application/json:
               type: types.errorResponse
               examples:
+                408_AUTH_ERROR_REQUEST_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_REQUEST_TIMEOUT
+                408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_GATEWAY_TIMEOUT
                 408_DES_ERROR_REQUEST_TIMEOUT:
                   description: Endpoint or internal system has become unresponsive.
                   value:
@@ -655,20 +952,44 @@ annotationTypes:
                   description: Too many requests have been made to the back-end systems.
                   value:
                     code: DES_ERROR_TOO_MANY_REQUESTS
+                429_DES_ERROR_TOO_MANY_REQUESTS:
+                  description: Too many requests have been made to the back-end systems.
+                  value:
+                    code: DES_ERROR_TOO_MANY_REQUESTS
         500:
           body:
             application/json:
               type: types.errorResponse
               examples:
-                500_DES_ERROR_API:
-                  description: API has experienced an internal error.
+                500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                  description: Endpoint API has experienced an internal error.
                   value:
-                    code: DES_ERROR_API
+                    code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+                500_DES_ERROR_JSON_FAILURE:
+                  description: Endpoint API has returned invalid JSON.
+                  value:
+                    code: DES_ERROR_JSON_FAILURE
+                500_DES_ERROR_API:
+                description: Endpoint API has experienced an internal error.
+                value:
+                  code: DES_ERROR_API
         503:
           body:
             application/json:
               type: types.errorResponse
               examples:
+                503_AUTH_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_BACKEND_FAILURE
+                503_AUTH_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_OTHER
+                503_AUTH_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: AUTH_ERROR_IO
                 503_DES_ERROR_IO:
                   description: Internal system has become unresponsive causing an IO error.
                   value:

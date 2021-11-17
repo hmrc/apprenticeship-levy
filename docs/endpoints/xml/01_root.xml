@@ -67,22 +67,32 @@
             </description>
           </body>
         </http>
+        <http status="400" msg="Bad Request">
+          <description>The request is invalid</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "AUTH_ERROR_BAD_REQUEST",
+  "message": "No active session error"
+}]]></content-type>
+          </body>
+          <code>AUTH_ERROR_BAD_REQUEST</code>
+        </http>
         <http status="401" msg="Unauthorized">
           <description>The request requires correct authentication headers with valid token.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
-  "code": "INVALID_CREDENTIALS",
-  "message": "Invalid Authentication information provided"
+  "code": "AUTH_ERROR_UNAUTHORIZED",
+  "message": "No active session error"
 }]]></content-type>
           </body>
-          <code>INVALID_CREDENTIALS</code>
+          <code>AUTH_ERROR_UNAUTHORIZED</code>
         </http>
         <http status="401" msg="Unauthorized">
           <description>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "AUTH_ERROR_UNAUTHORIZED",
-  "message": "Auth unauthorised error: GET of 'http://localhost:8080/auth/authority' returned 401. Response body: ''"
+  "message": "The Authorization token provided wasn't valid"
 }]]></content-type>
           </body>
           <code>AUTH_ERROR_UNAUTHORIZED</code>
@@ -92,7 +102,7 @@
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "AUTH_ERROR_FORBIDDEN",
-  "message": "Auth forbidden error: GET of 'http://localhost:8080/auth/authority' returned 403. Response body: ''"
+  "message": "Auth forbidden error"
 }]]></content-type>
           </body>
           <code>AUTH_ERROR_FORBIDDEN</code>
@@ -102,17 +112,27 @@
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "AUTH_ERROR_NOT_FOUND",
-  "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
+  "message": "Auth endpoint not found"
 }]]></content-type>
           </body>
           <code>AUTH_ERROR_NOT_FOUND</code>
+        </http>
+        <http status="406" msg="Accept Header Invalid">
+          <description>Request has an invalid or missing Accept header</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "ACCEPT_HEADER_INVALID",
+  "message": "The accept header is missing or invalid"
+}]]></content-type>
+          </body>
+          <code>ACCEPT_HEADER_INVALID</code>
         </http>
         <http status="408" msg="Request Time-out">
           <description>Endpoint or internal system has become unresponsive.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "AUTH_ERROR_REQUEST_TIMEOUT",
-  "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
+  "message": "Auth not responding error"
 }]]></content-type>
           </body>
           <code>AUTH_ERROR_REQUEST_TIMEOUT</code>
@@ -122,7 +142,17 @@
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "AUTH_ERROR_GATEWAY_TIMEOUT",
-  "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
+  "message": "Auth not responding error"
+}]]></content-type>
+          </body>
+          <code>AUTH_ERROR_GATEWAY_TIMEOUT</code>
+        </http>
+        <http status="429" msg="Too many requests">
+          <description>The service is receiving too many requests and has hit the rate limit.</description>
+          <body>
+            <content-type mimeType="application/json"><![CDATA[{
+  "code": "AUTH_ERROR_TOO_MANY_REQUESTS",
+  "message": "Auth too many requests"
 }]]></content-type>
           </body>
           <code>AUTH_ERROR_GATEWAY_TIMEOUT</code>
@@ -132,7 +162,7 @@
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "AUTH_ERROR_BACKEND_FAILURE",
-  "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
+  "message": "Auth 5xx error"
 }]]></content-type>
           </body>
           <code>AUTH_ERROR_BACKEND_FAILURE</code>
@@ -142,27 +172,17 @@
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "AUTH_ERROR_OTHER",
-  "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
+  "message": "Auth 5xx error"
 }]]></content-type>
           </body>
           <code>AUTH_ERROR_OTHER</code>
-        </http>
-        <http status="498" msg="Wrong token supplied.">
-          <description>Endpoint or internal system has experienced an internal error.</description>
-          <body>
-            <content-type mimeType="application/json"><![CDATA[{
-  "code": "AUTH_ERROR_WRONG_TOKEN",
-  "message": "Auth unauthorised error: OAUTH 2 User Token Required not TOTP"
-}]]></content-type>
-          </body>
-          <code>AUTH_ERROR_WRONG_TOKEN</code>
         </http>
         <http status="500" msg="Internal API error">
           <description>Endpoint API has experienced an internal error.</description>
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "AUTH_ERROR_INTERNAL_SERVER_ERROR",
-  "message": "API or Auth internal server error: ...."
+  "message": "API or Auth internal server error"
 }]]></content-type>
           </body>
           <code>AUTH_ERROR_INTERNAL_SERVER_ERROR</code>
@@ -172,7 +192,7 @@
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "AUTH_ERROR_TOO_MANY_REQUESTS",
-  "message": "Auth too many requests:  ...."
+  "message": "Auth too many requests"
 }]]></content-type>
           </body>
           <code>AUTH_ERROR_TOO_MANY_REQUESTS</code>
@@ -182,7 +202,7 @@
           <body>
             <content-type mimeType="application/json"><![CDATA[{
   "code": "AUTH_ERROR_IO",
-  "message": "Auth connection error:  ...."
+  "message": "Auth connection error"
 }]]></content-type>
           </body>
           <code>AUTH_ERROR_IO</code>

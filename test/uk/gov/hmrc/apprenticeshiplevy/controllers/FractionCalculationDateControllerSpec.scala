@@ -126,7 +126,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
       // check
       status(response) shouldBe 503
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error: Backend systems not working"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
     }
   }
 }
