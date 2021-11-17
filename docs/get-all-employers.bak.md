@@ -56,17 +56,17 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/
   </thead>
   <tbody>
 <tr><td>401 Unauthorized</td>
-    <td>AUTH_ERROR_UNAUTHORIZED</td>
+    <td>INVALID_CREDENTIALS</td>
     <td>The request requires correct authentication headers with valid token.</td>
     <td><code>{
-  "code": "AUTH_ERROR_UNAUTHORIZED",
-  "message": "No active session error"
+  "code": "INVALID_CREDENTIALS",
+  "message": "Invalid Authentication information provided"
 }</code></td></tr><tr><td>401 Unauthorized</td>
     <td>AUTH_ERROR_UNAUTHORIZED</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "AUTH_ERROR_UNAUTHORIZED",
-  "message": "The Authorization token provided wasn't valid"
+  "message": "Auth unauthorised error"
 }</code></td></tr><tr><td>403 Forbidden</td>
     <td>AUTH_ERROR_FORBIDDEN</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
@@ -97,12 +97,18 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/
     <td><code>{
   "code": "AUTH_ERROR_TOO_MANY_REQUESTS",
   "message": "Auth too many requests"
+}</code></td></tr><tr><td>498 Wrong token supplied.</td>
+    <td>AUTH_ERROR_WRONG_TOKEN</td>
+    <td>Endpoint or internal system has experienced an internal error.</td>
+    <td><code>{
+  "code": "AUTH_ERROR_WRONG_TOKEN",
+  "message": "Auth unauthorised error: OAUTH 2 User Token Required not TOTP"
 }</code></td></tr><tr><td>500 Internal API error</td>
     <td>AUTH_ERROR_INTERNAL_SERVER_ERROR</td>
     <td>Endpoint API has experienced an internal error.</td>
     <td><code>{
   "code": "AUTH_ERROR_INTERNAL_SERVER_ERROR",
-  "message": "API or Auth internal server error"
+  "message": "API or Auth internal server error: ...."
 }</code></td></tr><tr><td>503 Service Unavailable</td>
     <td>AUTH_ERROR_BACKEND_FAILURE</td>
     <td>Endpoint or internal system has experienced an internal error.</td>

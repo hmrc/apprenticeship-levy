@@ -56,19 +56,19 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/fraction-calculation-dat
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "DES_ERROR_UNAUTHORIZED",
-  "message": "Auth unauthorised error: GET of '...' returned 401. Response body: ''"
+  "message": "Auth unauthorised error"
 }</code></td></tr><tr><td>403 Forbidden</td>
     <td>DES_ERROR_FORBIDDEN</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "DES_ERROR_FORBIDDEN",
-  "message": "Auth forbidden error: GET of '...' returned 403. Response body: ''"
+  "message": "Auth forbidden error"
 }</code></td></tr><tr><td>404 Not Found</td>
     <td>DES_ERROR_NOT_FOUND</td>
     <td>Endpoint or internal system has become unavailable.</td>
     <td><code>{
               "code":"DES_ERROR_NOT_FOUND",
-              "message":"DES endpoint not found: Not found"
+              "message":"DES endpoint not found"
             }</code></td></tr><tr><td>408 Request Time-out</td>
     <td>DES_ERROR_REQUEST_TIMEOUT</td>
     <td>Endpoint or internal system has become unresponsive.</td>
@@ -80,13 +80,13 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/fraction-calculation-dat
     <td>Too many requests have been made to the back-end systems.</td>
     <td><code>{
   "code": "DES_ERROR_TOO_MANY_REQUESTS",
-  "message": "DES too many requests: ...''"
+  "message": "DES too many requests"
 }</code></td></tr><tr><td>500 Internal server error</td>
     <td>DES_ERROR_API</td>
     <td>API has experienced an internal error.</td>
     <td><code>{
   "code": "DES_ERROR_API",
-  "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
+  "message": "Auth 5xx erro"
 }</code></td></tr><tr><td>503 Service Unavailable</td>
     <td>DES_ERROR_IO</td>
     <td>Internal system has become unresponsive causing an IO error.</td>
@@ -98,11 +98,11 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/fraction-calculation-dat
     <td>Endpoint or internal system has experienced an internal error.</td>
     <td><code>{
   "code": "DES_ERROR_OTHER",
-  "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
+  "message": "Auth 5xx error"
 }</code></td></tr><tr><td>503 Service Unavailable</td>
     <td>DES_ERROR_BACKEND_FAILURE</td>
     <td>Backend has experiences a server 5xx error.</td>
     <td><code>{
   "code": "DES_ERROR_BACKEND_FAILURE",
-  "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
+  "message": "Auth 5xx error"
 }</code></td></tr></table>

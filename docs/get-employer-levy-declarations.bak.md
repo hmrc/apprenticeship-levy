@@ -147,7 +147,7 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/declarati
     <td>Employer reference (EMPREF) request parameter is incorrect.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth unauthorised error: GET of '....' returned 401. Response body: ''"
+  "message": "Auth unauthorised error"
 }</code></td></tr><tr><td>401 Unauthorized</td>
     <td>INVALID_CREDENTIALS</td>
     <td>The request requires correct authentication headers with valid token.</td>
@@ -159,25 +159,25 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/declarati
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth unauthorised error: GET of '...' returned 401. Response body: ''"
+  "message": "Auth unauthorised error"
 }</code></td></tr><tr><td>403 Forbidden</td>
     <td>DES_ERROR</td>
     <td>The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth forbidden error: GET of '...' returned 403. Response body: ''"
+  "message": "Auth forbidden error"
 }</code></td></tr><tr><td>404 Not Found</td>
     <td>EPAYE_EMPREF_UNKNOWN</td>
     <td>Employer reference is unknown or endpoint not found.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth endpoint not found: GET of '....' returned 404 (Not Found). Response body: ''"
+  "message": "Auth endpoint not found"
 }</code></td></tr><tr><td>408 Request Time-out</td>
     <td>DES_ERROR</td>
     <td>Endpoint or internal system has become unresponsive.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth not responding error: GET of '...' timed out with message 'Request timeout to localhost/127.0.0.1:8080 after 500 ms'"
+  "message": "Auth not responding error"
 }</code></td></tr><tr><td>429 Too many requests</td>
     <td>DES_ERROR</td>
     <td>Too many requests have been made to this endpoint</td>
@@ -195,11 +195,11 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}/declarati
     <td>DES returned unexpected Json error response type on a HTTP 200 response.</td>
     <td><code>{
   "code": "DES_ERROR_BACKEND_FAILURE",
-  "message": "DES backend error: DES returned error code object on HTTP 200 response (treating as error). DES error reason: '<message from RTI here>'."
+  "message": "DES backend error."
 }</code></td></tr><tr><td>503 Service Unavailable</td>
     <td>DES_ERROR</td>
     <td>Endpoint or internal system has experienced an internal error.</td>
     <td><code>{
   "code": "DES_ERROR",
-  "message": "Auth 5xx error: GET of '....' returned 500. Response body: ''"
+  "message": "Auth 5xx error"
 }</code></td></tr></table>
