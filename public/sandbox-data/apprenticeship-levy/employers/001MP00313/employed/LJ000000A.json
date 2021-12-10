@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "jsonBody": {
+    "empref": "001/MP00313",
+    "nino": "LJ000000A",
+    "fromDate": "2019-05-27",
+    "toDate": "2020-02-31",
+    "employed": true
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "status": 400,
+  "jsonBody": {
+    "code": "AUTH_ERROR_BAD-REQUEST",
+    "message":"Endpoint or internal system has become unresponsive"
+  }
+}
