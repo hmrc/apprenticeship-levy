@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.utils
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class DataTransformerSpec extends WordSpec with Matchers {
+class DataTransformerSpec extends AnyWordSpec with Matchers {
 
   val sut = new DataTransformer()
 

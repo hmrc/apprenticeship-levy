@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
-import java.io.IOException
 import com.google.inject.{ImplementedBy, Inject}
 import org.slf4j.MDC
 import play.api.Logging
@@ -30,19 +29,19 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
+import java.io.IOException
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class AuthActionImpl @Inject()(val authConnector: AuthConnector, val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
   extends AuthAction with AuthorisedFunctions {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
     authorised().retrieve(Retrievals.allEnrolments) {
       case Enrolments(enrolments) =>
@@ -62,10 +61,10 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
     override def executionContext: ExecutionContext = ec
 
     override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
-      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
       implicit val ec: ExecutionContext = executionContext
-      authorised(EnrolmentHelper.enrolmentPredicate or AuthProviders(PrivilegedApplication)).retrieve(Retrievals.allEnrolments and Retrievals.authProviderId) {
-        case _ ~ PAClientId(_) =>
+      authorised(EnrolmentHelper.enrolmentPredicate or AuthProviders(PrivilegedApplication)).retrieve(Retrievals.allEnrolments and Retrievals.credentials) {
+        case _ ~ Some(_) => //how do I typecheck this?
           Future.successful(Right(AuthenticatedRequest(request, None)))
         case Enrolments(enrolments) ~ _ =>
           val payeRef: Option[EmpRef] = EnrolmentHelper.getEmpRef(enrolments)
@@ -87,7 +86,7 @@ class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector, val p
   extends AuthAction with AuthorisedFunctions {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, None)
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
     authorised(AuthProviders(PrivilegedApplication)) {
       Future.successful(Right(AuthenticatedRequest(request, None)))
@@ -115,15 +114,6 @@ private object EnrolmentHelper {
 }
 
 private object ErrorHandler extends Logging {
-  private def extractReason(msg: String): String =
-    Try(if (msg.contains("Response body")) {
-      val str1 = msg.reverse.substring(1).reverse.substring(msg.indexOf("Response body") + 14).trim
-      val m = if (str1.startsWith("{")) str1 else str1.substring(str1.indexOf("{"))
-      Try((Json.parse(m) \ "reason").as[String]) getOrElse (Json.parse(m) \ "Reason").as[String]
-    } else {
-      msg
-    }) getOrElse msg
-
   private def logWarningAboutException(e: Throwable, code: Int, description: String): Unit = {
     val message = s"Client ${
       MDC.get("X-Client-ID")

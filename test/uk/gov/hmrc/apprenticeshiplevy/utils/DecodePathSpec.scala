@@ -16,9 +16,11 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.utils
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class DecodePathSpec extends WordSpec with Matchers {
+
+class DecodePathSpec extends AnyWordSpec with Matchers {
 
   "DecodePath" should {
     "decode a double encoded path" in {

@@ -85,7 +85,8 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     generateAPIDocsTask,
-    resolvers += Resolver.jcenterRepo
+    resolvers += Resolver.jcenterRepo,
+    scalacOptions ++= Seq("-P:silencer:pathFilters=routes")
   )
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)

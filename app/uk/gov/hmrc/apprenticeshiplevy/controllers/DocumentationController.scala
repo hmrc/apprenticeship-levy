@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.io.InputStream
 import com.google.inject.{Inject, Singleton}
-import play.Logger
+import play.api.Logging
 import play.api.Mode
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.{Json, _}
@@ -31,8 +31,11 @@ import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class DocumentationController @Inject()(cc: ControllerComponents,
-                                        appContext: AppContext) extends BackendController(cc){
+class DocumentationController @Inject()
+  (cc: ControllerComponents,
+   appContext: AppContext)
+  extends BackendController(cc)
+    with Logging {
 
   private lazy val environment = appContext.environment
 
@@ -68,7 +71,7 @@ class DocumentationController @Inject()(cc: ControllerComponents,
       }
       case _ => {
         // $COVERAGE-OFF$
-        Logger.error(s"Assets controller failed to serve a file: ${rootPath}/${file}.")
+        logger.error(s"Assets controller failed to serve a file: ${rootPath}/${file}.")
         // $COVERAGE-ON$
         NotFound
       }
@@ -93,7 +96,7 @@ class DocumentationController @Inject()(cc: ControllerComponents,
       }
       case _ => {
         // $COVERAGE-OFF$
-        Logger.error(s"Documentation controller failed to serve a file: public/api/definition.json as not found")
+        logger.error(s"Documentation controller failed to serve a file: public/api/definition.json as not found")
         // $COVERAGE-ON$
         Future.successful(NotFound)
       }

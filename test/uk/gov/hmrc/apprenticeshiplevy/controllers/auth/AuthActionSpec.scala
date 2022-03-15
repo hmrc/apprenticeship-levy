@@ -131,7 +131,7 @@ class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with Retri
     "be allowed access" in {
 
       when(mockAuthConnector.authorise[Unit](any(), any())(any(), any()))
-        .thenReturn(Future.successful())
+        .thenReturn(Future.successful(()))
 
       val authAction = new PrivilegedAuthActionImpl(mockAuthConnector, defaultParser)
       val controller = new Harness(authAction)

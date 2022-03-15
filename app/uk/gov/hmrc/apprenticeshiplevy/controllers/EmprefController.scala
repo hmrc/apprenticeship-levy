@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.hal.{Hal, HalLink, HalResource}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
@@ -24,7 +23,8 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath._
-import scala.concurrent.ExecutionContext
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait EmprefController extends DesController {
 

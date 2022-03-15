@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.utils
 
-import org.scalatest.{BeforeAndAfterEach, WordSpecLike}
+import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.BeforeAndAfterEach
 
-trait BaseSpec extends WordSpecLike with NinoGenerator with BeforeAndAfterEach {
+trait BaseSpec extends AnyWordSpecLike with NinoGenerator with BeforeAndAfterEach {
 }
