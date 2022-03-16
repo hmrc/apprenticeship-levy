@@ -83,7 +83,6 @@ lazy val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies.generateApiTask,
     parallelExecution in Test := false,
     retrieveManaged := true,
-    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     generateAPIDocsTask,
     resolvers += Resolver.jcenterRepo,
     scalacOptions ++= Seq("-P:silencer:pathFilters=routes")

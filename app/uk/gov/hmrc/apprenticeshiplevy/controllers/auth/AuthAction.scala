@@ -29,7 +29,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -64,7 +64,7 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
       implicit val ec: ExecutionContext = executionContext
       authorised(EnrolmentHelper.enrolmentPredicate or AuthProviders(PrivilegedApplication)).retrieve(Retrievals.allEnrolments and Retrievals.credentials) {
-        case _ ~ Some(_) => //how do I typecheck this?
+        case _ ~ Some(Credentials(_, "paClientId")) =>
           Future.successful(Right(AuthenticatedRequest(request, None)))
         case Enrolments(enrolments) ~ _ =>
           val payeRef: Option[EmpRef] = EnrolmentHelper.getEmpRef(enrolments)
@@ -77,7 +77,8 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
               Json.toJson[ErrorResponse](AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"Unauthorized request of ${empRef.empref}."))
             )))
           }
-      }.recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
+      }.recover { case e: Throwable => {println(e)
+        Left(ErrorHandler.authErrorHandler(e))} }
     }
   }
 }

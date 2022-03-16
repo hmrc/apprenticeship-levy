@@ -1,6 +1,6 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest._
 import org.scalatestplus.play._
 import play.api.test.FakeRequest
