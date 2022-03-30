@@ -50,5 +50,10 @@ object AppDependencies {
     )
   }
 
-  val all: Seq[ModuleID] = compile ++ test ++ integrationTest ++ acceptanceTest
+  private val silencerDependencies: Seq[ModuleID] = Seq(
+    compilerPlugin("com.github.ghik" % "silencer-plugin" % "1.7.0" cross CrossVersion.full),
+    "com.github.ghik" % "silencer-lib" % "1.7.0" % Provided cross CrossVersion.full
+  )
+
+  val all: Seq[ModuleID] = compile ++ test ++ integrationTest ++ acceptanceTest ++ silencerDependencies
 }

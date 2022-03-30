@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -164,7 +164,7 @@ trait LevyDeclarationsEndpoint extends Timer {
             logger.error(s""" |DES url ${url}
                               |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
                               |  Status: ${response.status}
-                              |  Headers: ${response.allHeaders.mkString(" ")}
+                              |  Headers: ${response.headers.mkString(" ")}
                               |  Body: '${response.body}'""".stripMargin('|'))
             throw new IllegalArgumentException(s"DES returned unexpected JSON on 200 response: ${response.body}")
           }

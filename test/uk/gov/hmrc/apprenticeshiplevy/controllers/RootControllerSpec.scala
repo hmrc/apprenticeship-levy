@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import java.net.URLEncoder
+import org.scalatest.wordspec.AnyWordSpecLike
 
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import java.net.URLEncoder
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.OptionValues
 import play.api.mvc.BodyParsers.Default
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
@@ -27,7 +29,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 
 import scala.concurrent.ExecutionContext
 
-class RootControllerSpec extends WordSpecLike with Matchers with OptionValues{
+class RootControllerSpec extends AnyWordSpecLike with Matchers with OptionValues{
 
   val stubComponents: ControllerComponents = stubControllerComponents()
 

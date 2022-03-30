@@ -1,7 +1,7 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, stubFor, urlEqualTo}
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest._
 import org.scalatestplus.play._
 import play.api.libs.json.Json
@@ -22,7 +22,9 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer  
                              |    { "key": "TaxOfficeReference", "value": "AB12345" }],
                              |    "state": "Activated"
                              |  }
-                             |  ],"authProviderId": { "paClientId": "123" }}""".stripMargin
+                             |  ],"authProviderId": { "paClientId": "123" },
+                             |  "optionalCredentials": { "providerId": "123",
+                             |  "providerType": "paClientId"}}""".stripMargin
             stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withBody(response)))
             // set up
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES17").withHeaders(standardDesHeaders: _*)

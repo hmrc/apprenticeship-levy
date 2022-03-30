@@ -2,7 +2,7 @@ package uk.gov.hmrc.apprenticeshiplevy
 
 import org.scalacheck.Gen
 import org.scalatest.DoNotDiscover
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatestplus.play._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
