@@ -53,15 +53,15 @@
 
     <logger name="com.google.inject" level="WARN"/>
 
-    <logger name="org" level="${logger.uk.gov:-WARN"/>
+    <logger name="org" level="${logger.org:-WARN}"/>
 
-    <logger name="application" level="${logger.uk.gov:-DEBUG"/>
+    <logger name="application" level="${logger.application:-DEBUG}"/>
 
-    <logger name="test-config" level="${logger.uk.gov:-OFF"/>
+    <logger name="test-config" level="${logger.test.config:-OFF}"/>
 
-    <logger name="root-endpoint" level="${logger.uk.gov:-DEBUG"/>
+    <logger name="root-endpoint" level="${logger.root.endpoint:-DEBUG}"/>
 
-    <logger name="connector" level="${logger.uk.gov:-DEBUG">
+    <logger name="connector" level="${logger.connector:-DEBUG}">
     </logger>
 
     <root level="WARN">

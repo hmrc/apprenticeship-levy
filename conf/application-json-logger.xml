@@ -17,7 +17,7 @@
 
     <logger name="play.core.netty" additivity="false" level="WARN"/>
 
-    <root level="${logger.application:-WARN}">
+    <root level="${logger.root:-WARN}">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
