@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import scala.util.matching.Regex
 object QueryBinders {
   val datePattern = "^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$".r
 
-  implicit def bindableLocalDate: QueryStringBindable[LocalDate] = new QueryStringBindable[LocalDate] {
+  implicit def bindableLocalDate(implicit stringBinder: QueryStringBindable[String]): QueryStringBindable[LocalDate] = new QueryStringBindable[LocalDate] {
     def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, LocalDate]] = {
       params.get(key).flatMap(_.headOption).map { date: String => (Try {
         date match {

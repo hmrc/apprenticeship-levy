@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.http.Fault
 import org.scalatest._
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.Logging
+import play.Logger
 import play.api.inject.guice._
 import play.api.{Application, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
@@ -23,7 +23,7 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
                                            new FractionsCalculationDateEndpointISpec,
                                            new RootEndpointISpec,
                                            new TestDataEndpointISpec)
-  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with GuiceOneServerPerSuite with AppLevyUnitSpec with Logging {
+  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with GuiceOneServerPerSuite with AppLevyUnitSpec {
 
   WiremockService.start()
   override implicit lazy final val app: Application = new GuiceApplicationBuilder()
@@ -41,8 +41,8 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
     System.err.println("Starting Play...")
 
     sys.props.get("play.http.secret.key") match {
-      case Some(_) => logger.info(s"play.http.secret.key system property set.")
-      case _ => logger.warn(s"play.http.secret.key system property not set. Tests will fail.")
+      case Some(_) => Logger.info(s"play.http.secret.key system property set.")
+      case _ => Logger.warn(s"play.http.secret.key system property not set. Tests will fail.")
     }
 
     Try("/authorise/read/epaye/AB12345?confidenceLevel=50&privilegedAccess=read:apprenticeship-levy").foreach { (validReadURL1) =>

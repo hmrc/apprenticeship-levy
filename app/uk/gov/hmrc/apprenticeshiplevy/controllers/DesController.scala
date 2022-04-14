@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ trait DesController extends ApiController with Logging {
         }
         case e: UpstreamErrorResponse => {
           // $COVERAGE-OFF$
-          logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()} with ${e.statusCode}, API returning code ${e.reportAs}", e)
+          logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()} with ${e.upstreamResponseCode}, API returning code ${e.reportAs}", e)
           // $COVERAGE-ON$
           e.statusCode match {
             case PRECONDITION_FAILED =>

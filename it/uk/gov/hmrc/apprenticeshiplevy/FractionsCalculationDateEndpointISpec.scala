@@ -3,7 +3,7 @@ package uk.gov.hmrc.apprenticeshiplevy
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{status => _, _}
 import com.github.tomakehurst.wiremock.http.Fault
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatestplus.play._
 import play.api.libs.json.Json
