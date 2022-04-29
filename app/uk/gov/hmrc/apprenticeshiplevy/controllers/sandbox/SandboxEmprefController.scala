@@ -37,20 +37,31 @@ class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
                                         val controllerComponents: ControllerComponents,
                                         environment: Environment) extends EmprefController with SandboxLinkHelper {
 
-  override val authAction: EmploymentReference => SandboxPrivilegedAuthAction = _ => auth
+  override val authAction: EmploymentReference => SandboxPrivilegedAuthAction =
+    _ => auth
 
-  override val env = appContext.mode.toString
+  override val env: String =
+    appContext.mode.toString
 
-  override def emprefUrl(empref: EmploymentReference): String = routes.SandboxEmprefController.empref(empref).url
+  override def emprefUrl(empref: EmploymentReference): String =
+    routes.SandboxEmprefController.empref(empref).url
 
-  override def declarationsUrl(empref: EmploymentReference): String = routes.SandboxLevyDeclarationController.declarations(empref, None, None).url
+  override def declarationsUrl(empref: EmploymentReference): String =
+    routes.SandboxLevyDeclarationController.declarations(empref, None, None).url
 
-  override def fractionsUrl(empref: EmploymentReference): String = routes.SandboxFractionsController.fractions(empref, None, None).url
+  override def fractionsUrl(empref: EmploymentReference): String =
+    routes.SandboxFractionsController.fractions(empref, None, None).url
 
-  override def employmentCheckUrl(empref: EmploymentReference): String = {
-    routes.SandboxEmploymentCheckController.check(empref, Nino("nino"), new LocalDate, new LocalDate)
-      .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
-  }
+  override def employmentCheckUrl(empref: EmploymentReference): String =
+    routes.SandboxEmploymentCheckController.check(
+      empref   = empref,
+      nino     = Nino("nino"),
+      fromDate = new LocalDate,
+      toDate   = new LocalDate
+    )
+      .url
+      .replaceAll("\\?.*", "")
+      .replaceAll("nino", "{nino}")
 
   override def processLink(l: HalLink): HalLink = stripSandboxForNonDev(l)
 

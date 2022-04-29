@@ -36,10 +36,9 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer {
                 |  }
                 |}""".stripMargin
             stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withBody(response)))
-            // set up
+
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES17").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
             status(result) shouldBe 200
@@ -55,52 +54,40 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
         describe("with invalid parameters") {
           it(s"when DES returns 400 should return 400") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             status(result) shouldBe 400
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
           }
 
           it(s"when DES returns unauthorized should return 401") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             status(result) shouldBe 401
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
           }
 
           it(s"when DES returns forbidden should return 403") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             status(result) shouldBe 403
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
           }
 
           it(s"when DES returns 404 should return 404") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             status(result) shouldBe 404
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
@@ -109,78 +96,60 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
         describe("when backend systems failing") {
           it(s"should return 503 when connection closed") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           it(s"should return 503 when response is empty") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           it(s"should return 408 when timed out") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
             contentAsString(result) should include("DES not responding error")
           }
 
           it(s"should return 503 when DES returns 500") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
           it(s"should return 503 when DES returns 503") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             status(result) shouldBe 503
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
           it(s"should return the declarations and fractions link for each empref when employment details does not respond") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES18").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             contentType(result) shouldBe Some("application/hal+json")
             val json = contentAsJson(result)
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES18"
@@ -191,13 +160,10 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           }
 
           it(s"should return the declarations and fractions link for each empref when communication details does not respond") {
-            // set up
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES19").withHeaders(standardDesHeaders(): _*)
 
-            // test
             val result = route(app, request).get
 
-            // check
             contentType(result) shouldBe Some("application/hal+json")
             val json = contentAsJson(result)
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES19"

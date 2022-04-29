@@ -28,23 +28,36 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
 import scala.concurrent.ExecutionContext
 
-class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
-                                     val auth: AllProviderAuthActionImpl,
-                                     val executionContext: ExecutionContext,
-                                     val parser: BodyParsers.Default,
-                                     val appContext: AppContext,
-                                     val controllerComponents: ControllerComponents) extends EmprefController {
+class LiveEmprefController @Inject()(
+  val desConnector: LiveDesConnector,
+  val auth: AllProviderAuthActionImpl,
+  val executionContext: ExecutionContext,
+  val parser: BodyParsers.Default,
+  val appContext: AppContext,
+  val controllerComponents: ControllerComponents
+) extends EmprefController {
 
-  override val authAction: EmploymentReference => AuthAction = auth(_)
+  override val authAction: EmploymentReference => AuthAction =
+    auth(_)
 
-  override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url
+  override def emprefUrl(empref: EmploymentReference): String =
+    routes.LiveEmprefController.empref(empref).url
 
-  override def declarationsUrl(empref: EmploymentReference): String = routes.LiveLevyDeclarationController.declarations(empref, None, None).url
+  override def declarationsUrl(empref: EmploymentReference): String =
+    routes.LiveLevyDeclarationController.declarations(empref, None, None).url
 
-  override def fractionsUrl(empref: EmploymentReference): String = routes.LiveFractionsController.fractions(empref, None, None).url
+  override def fractionsUrl(empref: EmploymentReference): String =
+    routes.LiveFractionsController.fractions(empref, None, None).url
 
   override def employmentCheckUrl(empref: EmploymentReference): String =
-    routes.LiveEmploymentCheckController.check(empref, Nino("nino"), new LocalDate, new LocalDate)
-      .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
+    routes.LiveEmploymentCheckController.check(
+      empref = empref,
+      nino = Nino("nino"),
+      fromDate = new LocalDate,
+      toDate = new LocalDate
+    )
+      .url
+      .replaceAll("\\?.*", "")
+      .replaceAll("nino", "{nino}")
 
 }

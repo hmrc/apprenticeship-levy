@@ -15,16 +15,16 @@ import scala.util.Try
 
 class IntegrationTestsSuite
   extends Suites(
-//    new ConfigurationISpec
-    new DeclarationsEndpointISpec
-//    new DefinitionEndpointISpec,
-//    new DocumentationEndpointISpec,
-//    new EmploymentCheckEndpointISpec,
-//    new EmploymentRefEndpointISpec,
-//    new FractionsEndpointISpec,
-//    new FractionsCalculationDateEndpointISpec,
-//    new RootEndpointISpec,
-//    new TestDataEndpointISpec
+    new ConfigurationISpec,
+    new DeclarationsEndpointISpec,
+    new DefinitionEndpointISpec,
+    new DocumentationEndpointISpec,
+    new EmploymentCheckEndpointISpec,
+    new EmploymentRefEndpointISpec,
+    new FractionsEndpointISpec,
+    new FractionsCalculationDateEndpointISpec,
+    new RootEndpointISpec,
+    new TestDataEndpointISpec
   ) with BeforeAndAfterAllConfigMap
     with IntegrationTestConfig
     with GuiceOneServerPerSuite

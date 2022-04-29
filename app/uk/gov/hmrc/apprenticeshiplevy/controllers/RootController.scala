@@ -35,20 +35,26 @@ trait RootController extends ApiController {
   def processLink(l: HalLink): HalLink = identity(l)
 
   // scalastyle:off
-  def root: Action[AnyContent] = (withValidAcceptHeader andThen authAction) { implicit request =>
-    // scalastyle:on
+  def root: Action[AnyContent] =
+    (withValidAcceptHeader andThen authAction) {
+      implicit request =>
+        // scalastyle:on
 
-    val empRef: Seq[String] = request.empRef.fold(Seq.empty[String])(empRef => Seq(empRef.toString))
+        val empRef: Seq[String] = request.empRef.fold(Seq.empty[String])(empRef => Seq(empRef.toString))
 
-    ok(transformEmpRefs(empRef))
-  }
+        ok(transformEmpRefs(empRef))
+    }
 
   private[controllers] def transformEmpRefs(empRefs: Seq[String]): HalResource = {
-    val links = selfLink(decodeAnyDoubleEncoding(rootUrl)) +: empRefs.map(empref =>
-      HalLink(empref, decodeAnyDoubleEncoding(emprefUrl(EmploymentReference(empref))))
-    )
-    val body = Json.toJson(Map("emprefs" -> empRefs)).as[JsObject]
+    val links =
+      selfLink(decodeAnyDoubleEncoding(rootUrl)) +: empRefs.map(
+        empref =>
+          HalLink(empref, decodeAnyDoubleEncoding(emprefUrl(EmploymentReference(empref))))
+      )
 
-    HalResource(HalLinks(links.map(processLink).toVector), body)
+    HalResource(
+      links = HalLinks(links.map(processLink).toVector),
+      state = Json.toJson(Map("emprefs" -> empRefs)).as[JsObject]
+    )
   }
 }

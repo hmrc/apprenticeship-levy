@@ -23,7 +23,6 @@ import play.api.mvc._
 import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
-import scala.util.Try
 
 trait ApiController extends BackendBaseController with HeaderValidator {
 
@@ -35,27 +34,22 @@ trait ApiController extends BackendBaseController with HeaderValidator {
     val hc = super.hc(rh)
     updateMDC
     val headersMap = rh.headers.toSimpleMap
-    val clientId = headersMap.getOrElse("X-Client-ID","Unknown caller")
-    val user = headersMap.getOrElse("X-Client-Authorization-Token","Unknown caller")
+    val clientId = headersMap.getOrElse("X-Client-ID", "Unknown caller")
+    val user = headersMap.getOrElse("X-Client-Authorization-Token", "Unknown caller")
 
-    hc.copy(extraHeaders = Seq(("X-Client-ID",clientId),("X-Client-Authorization-Token",user)) ++ hc.extraHeaders)
+    hc.copy(extraHeaders = Seq(("X-Client-ID", clientId), ("X-Client-Authorization-Token", user)) ++ hc.extraHeaders)
   }
 
   def selfLink(url: String): HalLink = HalLink("self", url)
 
-  def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).as("application/hal+json")
+  def ok(hal: HalResource): Result =
+    Ok(Json.toJson(hal)).as("application/hal+json")
 
   protected def updateMDC(implicit rh: RequestHeader): Unit = {
-    MDC.put("X-Client-ID",rh.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller"))
-    MDC.put("Authorization",rh.headers.toSimpleMap.getOrElse("X-Client-Authorization-Token","Unknown caller"))
+    MDC.put("X-Client-ID", rh.headers.toSimpleMap.getOrElse("X-Client-ID", "Unknown caller"))
+    MDC.put("Authorization", rh.headers.toSimpleMap.getOrElse("X-Client-Authorization-Token", "Unknown caller"))
   }
 
-  protected val withValidAcceptHeader: ActionBuilder[Request, AnyContent] = validateAccept(acceptHeaderValidationRules)
-
-  protected def extractReason(msg: String) =
-    Try(if (msg.contains("Response body")) {
-      val str1 = msg.reverse.substring(1).reverse.substring(msg.indexOf("Response body") + 14).trim
-      val m = if (str1.startsWith("{")) str1 else str1.substring(str1.indexOf("{"))
-      Try((Json.parse(m) \ "reason").as[String]) getOrElse ((Json.parse(m) \ "Reason").as[String])
-    } else {msg}) getOrElse(msg)
+  protected val withValidAcceptHeader: ActionBuilder[Request, AnyContent] =
+    validateAccept(acceptHeaderValidationRules)
 }

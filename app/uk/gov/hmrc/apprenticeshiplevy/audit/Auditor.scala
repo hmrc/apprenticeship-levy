@@ -28,12 +28,12 @@ import scala.util.{Failure, Success}
 trait Auditor extends Logging {
   def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = {
     block andThen {
-      case Success(_) => auditConnector.map(_.sendEvent(event.toDataEvent(200)))
-      case Failure(t) => {
+      case Success(_) =>
+        auditConnector.map(_.sendEvent(event.toDataEvent(200)))
+      case Failure(t) =>
         val httpStatus = exceptionToMessage(t)
         auditConnector.map(_.sendEvent(event.toDataEvent(httpStatus, t)))
-        logger.warn(s"Failed to '${event.name}' Server ${httpStatus}: ${t.getMessage()}")
-      }
+        logger.warn(s"Failed to '${event.name}' Server $httpStatus: ${t.getMessage}")
     }
   }
 

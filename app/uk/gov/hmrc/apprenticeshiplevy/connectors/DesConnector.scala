@@ -45,14 +45,20 @@ import scala.concurrent.Future
 import scala.util.Try
 import scala.util.matching.Regex
 
-trait EmployerDetailsEndpoint extends Timer with Logging {
+trait EmployerDetailsEndpoint
+  extends Timer
+    with Logging {
   des: DesConnector =>
 
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] = {
     val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
-    val (office, ref) = URLDecoder.decode(empref, "UTF-8") match {
-      case emprefParts(part1, _, part2) => (part1, part2)
-      case _ => throw new IllegalArgumentException(s"Empref is not valid.")
+
+    val (office, ref) =
+      URLDecoder.decode(empref, "UTF-8") match {
+        case emprefParts(part1, _, part2) =>
+          (part1, part2)
+        case _ =>
+          throw new IllegalArgumentException(s"Empref is not valid.")
     }
 
     val url = s"${des.baseUrl}/paye/employer/$office/$ref/designatory-details"
@@ -61,47 +67,64 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
     logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
+    val details = DesignatoryDetails(Some(empref))
+
     timer(RequestEvent(DES_EMPREF_DETAILS_REQUEST, Some(empref))) {
       audit(ALAEvent("readEmprefDetails", empref)) {
-        val headers = createDesHeaders
-        des.httpClient.GET[HodDesignatoryDetailsLinks](url, Seq(), headers).flatMap { response =>
-          val details = DesignatoryDetails(Some(empref))
-          response.links.map { links =>
-            logger.debug((links.employer ++ links.communication).mkString(" "))
-            val getEmployer = links.employer.map(getDetails(_)).getOrElse(Future.successful(None))
-            val getComms = links.communication.map(getDetails(_)).getOrElse(Future.successful(None))
-            for {
-              e <- getEmployer
-              c <- getComms
-            } yield details.copy(employer = e, communication = c)
-          }.getOrElse(Future.successful(details))
+        des.httpClient.GET[Either[UpstreamErrorResponse, HodDesignatoryDetailsLinks]](
+          url         = url,
+          queryParams = Seq(),
+          headers     = createDesHeaders
+        ) flatMap {
+          case Right(response) =>
+            response.links.map { links =>
+              logger.debug((links.employer ++ links.communication).mkString(" "))
+              for {
+                e <- links.employer.map(getDetails(_)).getOrElse(Future.successful(None))
+                c <- links.communication.map(getDetails(_)).getOrElse(Future.successful(None))
+              } yield {
+                details.copy(employer = e, communication = c)
+              }
+            }.getOrElse(Future.successful(details))
+          case Left(e: UpstreamErrorResponse) =>
+            if (e.statusCode == BAD_REQUEST)
+              throw new BadRequestException(e.message)
+            if (e.statusCode == NOT_FOUND)
+              throw new NotFoundException(e.message)
+            else
+              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
         }
       }
     }
   }
 
   protected def getDetails(path: String)(implicit hc: HeaderCarrier): Future[Option[DesignatoryDetailsData]] = {
-    val headers = createDesHeaders
-    des.httpClient.GET[DesignatoryDetailsData](s"${des.baseUrl}$path", Seq(), headers).map {
-      data => Some(data)
-    }.recover(errorHandler)
-  }
-
-  protected val errorHandler: PartialFunction[Throwable, Option[DesignatoryDetailsData]] = {
-    case e =>
-      // $COVERAGE-OFF$
-      logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
-      // $COVERAGE-ON$
-      None
+    des.httpClient.GET[Either[UpstreamErrorResponse, DesignatoryDetailsData]](
+      url         = s"${des.baseUrl}$path",
+      queryParams = Seq(),
+      headers     = createDesHeaders
+    ) map {
+      case Right(data) =>
+        Some(data)
+      case Left(e: UpstreamErrorResponse) =>
+        if (e.statusCode == BAD_REQUEST)
+          throw new BadRequestException(e.message)
+        if (e.statusCode == NOT_FOUND)
+          throw new NotFoundException(e.message)
+        else
+          logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
+          None
+    }
   }
 }
 
-trait EmploymentCheckEndpoint extends Timer {
+trait EmploymentCheckEndpoint
+  extends Timer {
   des: DesConnector =>
 
-  def check(empref: String, nino: String, dateRange: ClosedDateRange)
-    (implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
+  def check(empref: String, nino: String, dateRange: ClosedDateRange)(implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
     val dateParams = dateRange.toParams
+
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?$dateParams"
 
     // $COVERAGE-OFF$
@@ -110,19 +133,33 @@ trait EmploymentCheckEndpoint extends Timer {
 
     timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
       audit(ALAEvent("employmentCheck", empref, nino, dateParams)) {
-        des.httpClient.GET[EmploymentCheckStatus](url, Seq(), createDesHeaders).recover {
-          case _: NotFoundException => Unknown
+        des.httpClient.GET[Either[UpstreamErrorResponse, EmploymentCheckStatus]](
+          url         = url,
+          queryParams = Seq(),
+          headers     = createDesHeaders
+        ) map {
+          case Right(response) =>
+            response
+          case Left(e: UpstreamErrorResponse) =>
+            if (e.statusCode == BAD_REQUEST)
+              throw new BadRequestException(e.message)
+            if (e.statusCode == NOT_FOUND)
+              Unknown
+            else
+              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
         }
       }
     }
   }
 }
 
-trait FractionsEndpoint extends Timer {
+trait FractionsEndpoint
+  extends Timer {
   des: DesConnector =>
 
   def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Fractions] = {
     val dateParams = dateRange.toParams
+
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions?$dateParams"
     // $COVERAGE-OFF$
     logger.debug(s"Calling DES at $url")
@@ -130,8 +167,20 @@ trait FractionsEndpoint extends Timer {
 
     timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
       audit(ALAEvent("readFractions", empref, "", dateParams)) {
-        des.httpClient.GET[Fractions](url, Seq(), createDesHeaders).map { fraction =>
-          fraction.copy(empref = convertEmpref(fraction.empref))
+        des.httpClient.GET[Either[UpstreamErrorResponse, Fractions]](
+          url         = url,
+          queryParams = Seq(),
+          headers     = createDesHeaders
+        ) map {
+          case Right(fraction) =>
+            fraction.copy(empref = convertEmpref(fraction.empref))
+          case Left(e: UpstreamErrorResponse) =>
+            if (e.statusCode == BAD_REQUEST)
+              throw new BadRequestException(e.message)
+            if (e.statusCode == NOT_FOUND)
+              throw new NotFoundException(e.message)
+            else
+              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
         }
       }
     }
@@ -146,42 +195,66 @@ trait FractionsEndpoint extends Timer {
 
     timer(RequestEvent(DES_FRACTIONS_DATE_REQUEST, None)) {
       audit(ALAEvent("readFractionCalculationDate")) {
-        val headers = createDesHeaders
-        des.httpClient.GET[FractionCalculationDate](url, Seq(), headers).map {
-          _.date
+        des.httpClient.GET[Either[UpstreamErrorResponse, FractionCalculationDate]](
+          url         = url,
+          queryParams = Seq(),
+          headers     = createDesHeaders
+        ) map {
+          case Right(response) =>
+            response.date
+          case Left(e: UpstreamErrorResponse) =>
+            if (e.statusCode == BAD_REQUEST)
+              throw new BadRequestException(e.message)
+            if (e.statusCode == NOT_FOUND)
+              throw new NotFoundException(e.message)
+            else
+              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
         }
       }
     }
   }
 }
 
-trait LevyDeclarationsEndpoint extends Timer {
+trait LevyDeclarationsEndpoint
+  extends Timer {
   des: DesConnector =>
 
   def appContext: AppContext
 
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams
+
     val url = s"${desURL(empref)}?$dateParams"
 
     timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
       audit(ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
-        val headers = createDesHeaders
-        des.httpClient.GET[HttpResponse](url, Seq(), headers).map { response =>
-          marshall(empref, response.body).getOrElse {
-            logger.error(s""" |DES url $url
-                              |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
-                              |  Status: ${response.status}
-                              |  Headers: ${response.headers.mkString(" ")}
-                              |  Body: '${response.body}'""".stripMargin('|'))
-            throw new IllegalArgumentException(s"DES returned unexpected JSON on 200 response: ${response.body}")
-          }
+        des.httpClient.GET[Either[UpstreamErrorResponse, HttpResponse]](
+          url         = url,
+          queryParams = Seq(),
+          headers     = createDesHeaders
+        ) map {
+          case Right(response) =>
+            marshall(empref, response.body).getOrElse {
+              logger.error(s"""|DES url $url
+                               |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
+                               |Status: ${response.status}
+                               |Headers: ${response.headers.mkString(" ")}
+                               |Body: '${response.body}'""".stripMargin('|'))
+              throw new IllegalArgumentException(s"DES returned unexpected JSON on 200 response: ${response.body}")
+            }
+          case Left(e: UpstreamErrorResponse) =>
+            if (e.statusCode == BAD_REQUEST)
+              throw new BadRequestException(e.message)
+            if (e.statusCode == NOT_FOUND)
+              throw new NotFoundException(e.message)
+            else
+              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
         }
       }
     }
   }
 
-  protected[connectors] def marshall(empref: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
+  protected[connectors] def marshall(empref: String, jsonStr: String): Option[EmployerPaymentsSummary] =
     Seq(
       "EmployerPaymentsSummary",
       "EmployerPaymentsSummaryVersion0",
@@ -192,16 +265,20 @@ trait LevyDeclarationsEndpoint extends Timer {
       .flatMap(toEmployerPaymentsSummary(_, jsonStr))
       .map(
         eps =>
-          if (eps.empref.isEmpty) eps.copy(empref = convertEmpref(empref))
-          else eps.copy(empref = convertEmpref(eps.empref))
+          if (eps.empref.isEmpty)
+            eps.copy(empref = convertEmpref(empref))
+          else
+            eps.copy(empref = convertEmpref(eps.empref))
       )
-  }
 
   protected[connectors] def toEmployerPaymentsSummary(className: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
-    def toEPSResponse[A <: EPSResponse](jsResult: JsResult[A]): Option[EPSResponse] = jsResult match {
-      case JsSuccess(response, _) => Some[EPSResponse](response)
-      case JsError(_) => None
-    }
+    def toEPSResponse[A <: EPSResponse](jsResult: JsResult[A]): Option[EPSResponse] =
+      jsResult match {
+        case JsSuccess(response, _) =>
+          Some[EPSResponse](response)
+        case JsError(_) =>
+          None
+      }
 
     def maybeEPSResponse(className: String, jsonStr: String): Option[EPSResponse] = {
       // As noted above this feels likes generics and ClassTag should be used but hotfix required
@@ -233,12 +310,14 @@ trait LevyDeclarationsEndpoint extends Timer {
     }
   }
 
-  protected[connectors] def isEpsOrigPathEnabled: Boolean = appContext.epsOrigPathEnabled()
+  protected[connectors] def isEpsOrigPathEnabled: Boolean =
+    appContext.epsOrigPathEnabled()
 
-  protected[connectors] def desURL(empref: String): String = if (isEpsOrigPathEnabled)
-    s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"
-  else
-    s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/declarations"
+  protected[connectors] def desURL(empref: String): String =
+    if (isEpsOrigPathEnabled)
+      s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"
+    else
+      s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/declarations"
 }
 
 trait DesConnector
@@ -264,14 +343,13 @@ trait DesConnector
       case _ => empref
     }
 
-  def createDesHeaders(implicit hc: HeaderCarrier): Seq[(String, String)] = {
+  def createDesHeaders(implicit hc: HeaderCarrier): Seq[(String, String)] =
     Seq(
       "X-Client-ID" -> getHeaderValueByKey("X-Client-ID"),
       "Authorization" -> s"Bearer $desAuthorization",
       "Environment" -> desEnvironment,
       "CorrelationId" -> UUID.randomUUID().toString
     )
-  }
 
   private def getHeaderValueByKey(key: String)(implicit headerCarrier: HeaderCarrier): String =
     headerCarrier.headers(Seq(key)).toMap.getOrElse(key, "")
