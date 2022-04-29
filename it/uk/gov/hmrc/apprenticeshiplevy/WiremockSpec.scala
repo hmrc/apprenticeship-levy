@@ -21,18 +21,22 @@ trait WiremockConfig extends BeforeAndAfterEach with Informing {
 }
 
 trait WiremockFunSpec extends AnyFunSpec with WiremockConfig with IntegrationTestConfig {
-    def standardDesHeaders(): Seq[(String,String)] = Seq(("ACCEPT"->"application/vnd.hmrc.1.0+json"),
-                                                         ("Environment"->"isit"),
-                                                         ("Authorization"->"Bearer 2423324"))
-    def genEmpref: Gen[String] = (for {
-      c <- Gen.alphaLowerChar
-      cs <- Gen.listOf(Gen.alphaNumChar)
-    } yield (c::cs).mkString).suchThat(_.forall(c => c.isLetter || c.isDigit))
+  def standardDesHeaders(): Seq[(String, String)] =
+    Map(
+      "ACCEPT" -> "application/vnd.hmrc.1.0+json",
+      "Environment" -> "isit",
+      "Authorization" -> "Bearer 2423324"
+    ).toSeq
 
-    def genNino: Gen[String] = (for {
-      c1 <- Gen.alphaUpperChar
-      c2 <- Gen.alphaUpperChar
-      cs <- Gen.listOf(Gen.numChar)
-      c3 <- Gen.oneOf('A', 'B', 'C', 'D')
-    } yield (c1+c2+cs.mkString+c3)).suchThat(_.forall(c => c.isLetter || c.isDigit))
+  def genEmpref: Gen[String] = (for {
+    c <- Gen.alphaLowerChar
+    cs <- Gen.listOf(Gen.alphaNumChar)
+  } yield (c :: cs).mkString).suchThat(_.forall(c => c.isLetter || c.isDigit))
+
+  def genNino: Gen[String] = (for {
+    c1 <- Gen.alphaUpperChar
+    c2 <- Gen.alphaUpperChar
+    cs <- Gen.listOf(Gen.numChar)
+    c3 <- Gen.oneOf('A', 'B', 'C', 'D')
+  } yield c1 + c2 + cs.mkString + c3).suchThat(_.forall(c => c.isLetter || c.isDigit))
 }

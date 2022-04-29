@@ -1,3 +1,5 @@
+import sbt.internal.util.ConsoleAppender
+
 import scala.sys.process.ProcessLogger
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings, _}
@@ -8,15 +10,15 @@ val appName: String = "apprenticeship-levy"
 
 val XsltConfig = config("api-docs")
 val generateAPIDocs = TaskKey[Unit]("api-docs", "Generates HMRC API Documentation files")
-managedClasspath in generateAPIDocs := {
+generateAPIDocs / managedClasspath := {
   // these are the types of artifacts to include
-  val artifactTypes: Set[String] = (classpathTypes in generateAPIDocs).value
+  val artifactTypes: Set[String] = (generateAPIDocs / classpathTypes).value
   Classpaths.managedJars(XsltConfig, artifactTypes, update.value)
 }
 val generateAPIDocsTask = generateAPIDocs := {
   val artifactTypes = Set("jar")
   val cp: Seq[java.io.File] = Classpaths.managedJars(XsltConfig, artifactTypes, update.value).map(_.data)
-  val log = ConsoleLogger(ConsoleOut.systemOut, true, true, ConsoleLogger.noSuppressedMessage)
+  val log = ConsoleLogger(ConsoleOut.systemOut, true, true, ConsoleAppender.noSuppressedMessage)
   val logger = new ProcessLogger() {
     override def buffer[T](f: => T): T = {
       f
@@ -81,7 +83,7 @@ lazy val microservice = Project(appName, file("."))
     ivyConfigurations += XsltConfig,
     libraryDependencies ++= AppDependencies.all,
     libraryDependencies ++= AppDependencies.generateApiTask,
-    parallelExecution in Test := false,
+    Test / parallelExecution := false,
     retrieveManaged := true,
     generateAPIDocsTask,
     resolvers += Resolver.jcenterRepo,
@@ -90,14 +92,14 @@ lazy val microservice = Project(appName, file("."))
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
-    unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest) (base => Seq(base / "it")).value,
-    unmanagedResourceDirectories in IntegrationTest += baseDirectory(_ / "public").value,
+    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
+    IntegrationTest / unmanagedResourceDirectories += baseDirectory(_ / "public").value,
     addTestReportOption(IntegrationTest, "int-test-reports"),
-    parallelExecution in IntegrationTest := false)
+    IntegrationTest / parallelExecution := false)
   .configs(AcceptanceTest)
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
   .settings(
-    unmanagedSourceDirectories in AcceptanceTest := (baseDirectory in AcceptanceTest) (base => Seq(base / "ac")).value,
-    unmanagedResourceDirectories in AcceptanceTest += baseDirectory(_ / "public").value,
+    AcceptanceTest / unmanagedSourceDirectories := (AcceptanceTest / baseDirectory) (base => Seq(base / "ac")).value,
+    AcceptanceTest / unmanagedResourceDirectories += baseDirectory(_ / "public").value,
     addTestReportOption(AcceptanceTest, "ac-test-reports"))
-  .settings(testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))
+  .settings(Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))

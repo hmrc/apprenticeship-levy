@@ -77,8 +77,9 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
               Json.toJson[ErrorResponse](AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"Unauthorized request of ${empRef.empref}."))
             )))
           }
-      }.recover { case e: Throwable => {println(e)
-        Left(ErrorHandler.authErrorHandler(e))} }
+      }.recover { case e: Throwable =>
+        Left(ErrorHandler.authErrorHandler(e))
+      }
     }
   }
 }

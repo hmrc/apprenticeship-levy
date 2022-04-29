@@ -37,37 +37,44 @@ trait LevyDeclarationController extends Logging {
   self: DesController =>
 
   val appContext: AppContext
+
   def desConnector: DesConnector
+
   val authAction: AuthAction
 
   // scalastyle:off
-  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async { implicit request =>
-  // scalastyle:on
-    if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get))
-      Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
-    else
-      retrieveDeclarations(toDESFormat(ref.empref), toDateRange(fromDate, toDate))
-        .map { ds =>
-          val results = ds.sortWith{ (first:LevyDeclaration,second:LevyDeclaration) =>
-            first.submissionTime.isAfter(second.submissionTime) && first.id >= second.id
-          }
-          buildResult(results, ref.empref)
-        }.recover(desErrorHandler)
-  }
+  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] =
+    (withValidAcceptHeader andThen authAction).async {
+      implicit request =>
+        // scalastyle:on
+        if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get))
+          Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
+        else
+          retrieveDeclarations(toDESFormat(ref.empref), toDateRange(fromDate, toDate))
+            .map { ds =>
+              val results = ds.sortWith { (first: LevyDeclaration, second: LevyDeclaration) =>
+                first.submissionTime.isAfter(second.submissionTime) && first.id >= second.id
+              }
+              buildResult(results, ref.empref)
+            }.recover(desErrorHandler)
+    }
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
-    desConnector.eps(empref, dateRange)
-      .map( employerPayments => employerPayments.eps.flatMap(EmployerPaymentSummary.toDeclarations(_)))
+    desConnector
+      .eps(empref, dateRange)
+      .map(
+        employerPayments =>
+          employerPayments.eps.flatMap(EmployerPaymentSummary.toDeclarations)
+      )
       .recover {
         /*
         * The etmp charges call can return 404 if either the empref is unknown or there is no data for the tax year.
         * We don't know which one it might be, so convert a 404 to an empty result. The controller can decide
         * if it wants to return a 404 if all calls to `charges` return no results.
          */
-        case t: NotFoundException => {
+        case t: NotFoundException =>
           logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${t.getMessage()}, API returning empty sequence")
           Seq.empty
-        }
       }
   }
 
