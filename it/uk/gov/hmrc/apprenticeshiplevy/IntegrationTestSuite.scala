@@ -11,20 +11,21 @@ import play.api.{Application, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config._
 import uk.gov.hmrc.apprenticeshiplevy.util._
 
+import java.util.UUID
 import scala.util.Try
 
-class IntegrationTestsSuite
+class IntegrationTestSuite
   extends Suites(
-    new ConfigurationISpec,
-    new DeclarationsEndpointISpec,
-    new DefinitionEndpointISpec,
-    new DocumentationEndpointISpec,
-    new EmploymentCheckEndpointISpec,
+//    new ConfigurationISpec,
+//    new DeclarationsEndpointISpec,
+//    new DefinitionEndpointISpec,
+//    new DocumentationEndpointISpec,
+//    new EmploymentCheckEndpointISpec,
     new EmploymentRefEndpointISpec,
-    new FractionsEndpointISpec,
-    new FractionsCalculationDateEndpointISpec,
-    new RootEndpointISpec,
-    new TestDataEndpointISpec
+//    new FractionsEndpointISpec,
+//    new FractionsCalculationDateEndpointISpec,
+//    new RootEndpointISpec,
+//    new TestDataEndpointISpec
   ) with BeforeAndAfterAllConfigMap
     with IntegrationTestConfig
     with GuiceOneServerPerSuite
@@ -32,18 +33,19 @@ class IntegrationTestsSuite
     with Logging {
 
   WiremockService.start()
-  override implicit lazy final val app: Application = new GuiceApplicationBuilder()
-    .configure(additionalConfiguration)
-    .in(Mode.Test)
-    .build()
+  override implicit lazy final val app: Application =
+    new GuiceApplicationBuilder()
+      .configure(additionalConfiguration)
+      .in(Mode.Test)
+      .build()
 
-  lazy val auuid1 = randomUUID()
-  lazy val auuid2 = randomUUID()
-  lazy val auuid3 = randomUUID()
-  lazy val auuid4 = randomUUID()
-  lazy val auuid5 = randomUUID()
+  lazy val auuid1: UUID = randomUUID()
+  lazy val auuid2: UUID = randomUUID()
+  lazy val auuid3: UUID = randomUUID()
+  lazy val auuid4: UUID = randomUUID()
+  lazy val auuid5: UUID = randomUUID()
 
-  override def beforeAll(cm: ConfigMap) {
+  override def beforeAll(cm: ConfigMap): Unit = {
     System.err.println("Starting Play...")
 
     sys.props.get("play.http.secret.key") match {
@@ -72,33 +74,7 @@ class IntegrationTestsSuite
     }
   }
 
-  override def afterAll(cm: ConfigMap) {
+  override def afterAll(cm: ConfigMap): Unit = {
     WiremockService.stop()
-  }
-}
-
-class NoWiremockIntegrationTestsSuite
-  extends Suites(
-    new PublicDefinitionEndpointISpec
-  ) with BeforeAndAfterAllConfigMap
-    with IntegrationTestConfig
-    with GuiceOneServerPerSuite
-    with AppLevyUnitSpec {
-
-  override def stubConfigPath = "./it/no-mappings"
-
-  override def additionalConfiguration: Map[String, Any] = (super.additionalConfiguration - "microservice.private-mode") ++ Map(
-    "microservice.private-mode" -> "false",
-    "microservice.whitelisted-applications" -> "none")
-
-  override implicit lazy final val app: Application = new GuiceApplicationBuilder()
-    .configure(additionalConfiguration)
-    .in(Mode.Test)
-    .build()
-
-  override def beforeAll(cm: ConfigMap) {
-  }
-
-  override def afterAll(cm: ConfigMap) {
   }
 }

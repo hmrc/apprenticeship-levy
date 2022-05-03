@@ -18,7 +18,12 @@ generateAPIDocs / managedClasspath := {
 val generateAPIDocsTask = generateAPIDocs := {
   val artifactTypes = Set("jar")
   val cp: Seq[java.io.File] = Classpaths.managedJars(XsltConfig, artifactTypes, update.value).map(_.data)
-  val log = ConsoleLogger(ConsoleOut.systemOut, true, true, ConsoleAppender.noSuppressedMessage)
+  val log = ConsoleLogger(
+    out = ConsoleOut.systemOut,
+    ansiCodesSupported = true,
+    useFormat = true,
+    suppressedMessage = ConsoleAppender.noSuppressedMessage
+  )
   val logger = new ProcessLogger() {
     override def buffer[T](f: => T): T = {
       f
@@ -34,7 +39,7 @@ val generateAPIDocsTask = generateAPIDocs := {
   DocGeneration.generateAPIDocs(userDir, cp) ! logger
 }
 
-lazy val AcceptanceTest = config("ac") extend (Test)
+lazy val AcceptanceTest = config("ac") extend Test
 
 lazy val plugins: Seq[Plugins] = Seq(
   play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory

@@ -10,7 +10,9 @@ import play.api.test.Helpers._
 
 //noinspection ScalaStyle
 @DoNotDiscover
-class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer {
+class EmploymentRefEndpointISpec
+  extends WiremockFunSpec
+    with ConfiguredServer {
   describe("Empref Endpoint") {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { context =>
@@ -35,6 +37,7 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer {
                 |    "providerType": "paClientId"
                 |  }
                 |}""".stripMargin
+
             stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withBody(response)))
 
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES17").withHeaders(standardDesHeaders(): _*)
@@ -150,8 +153,10 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
             val result = route(app, request).get
 
-            contentType(result) shouldBe Some("application/hal+json")
             val json = contentAsJson(result)
+
+            status(result) shouldBe 200
+            contentType(result) shouldBe Some("application/hal+json")
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES18"
             (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES18/fractions"
             (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/840%2FMODES18/declarations"
@@ -164,8 +169,10 @@ class EmploymentRefEndpointISpec extends WiremockFunSpec with ConfiguredServer {
 
             val result = route(app, request).get
 
-            contentType(result) shouldBe Some("application/hal+json")
             val json = contentAsJson(result)
+
+            status(result) shouldBe 200
+            contentType(result) shouldBe Some("application/hal+json")
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES19"
             (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES19/fractions"
             (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/840%2FMODES19/declarations"
