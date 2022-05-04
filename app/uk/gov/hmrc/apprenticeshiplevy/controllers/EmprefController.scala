@@ -44,23 +44,23 @@ trait EmprefController extends DesController {
   def processLink(l: HalLink): HalLink = identity(l)
 
   // scalastyle:off
-  def empref(ref: EmploymentReference): Action[AnyContent] = (withValidAcceptHeader andThen authAction(ref)).async { implicit request =>
-  // scalastyle:on
-    desConnector.designatoryDetails(ref.empref).map { details =>
-      val hal = prepareLinks(ref)
-      ok(hal.copy(state = Json.toJson(details).as[JsObject]))
-    }.recover(desErrorHandler)
-  }
+  def empref(ref: EmploymentReference): Action[AnyContent] =
+    (withValidAcceptHeader andThen authAction(ref)).async {
+      implicit request =>
+        // scalastyle:on
+        desConnector.designatoryDetails(ref.empref) map {
+          details =>
+            ok(prepareLinks(ref).copy(state = Json.toJson(details).as[JsObject]))
+        } recover desErrorHandler
+    }
 
-  private[controllers] def prepareLinks(empref: EmploymentReference): HalResource = {
-    //links will be url encoded so need to decode them before sending back
-    val links = Seq(
+  private[controllers] def prepareLinks(empref: EmploymentReference): HalResource =
+    Hal.linksSeq(
+      Seq(
         selfLink(decodeAnyDoubleEncoding(emprefUrl(empref))),
         HalLink("declarations", decodeAnyDoubleEncoding(declarationsUrl(empref))),
         HalLink("fractions", decodeAnyDoubleEncoding(fractionsUrl(empref))),
         HalLink("employment-check", decodeAnyDoubleEncoding(employmentCheckUrl(empref)))
-      )
-
-    Hal.linksSeq(links.map(processLink))
-  }
+      ).map(processLink)
+    )
 }
