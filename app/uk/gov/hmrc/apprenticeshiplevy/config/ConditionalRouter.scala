@@ -22,25 +22,20 @@ import javax.inject.Inject
 import play.api.routing.Router.Routes
 import play.api.routing.SimpleRouter
 
-trait IsInExternalTest {
-  def isInExternalTest: Boolean
-}
-
-class ConditionalRouter @Inject() (externalTestRoutes: externaltest.Routes,
-                                   nonexternaltestRoutes: nonexternaltest.Routes,
-                                   appContext: AppContext) extends SimpleRouter with IsInExternalTest with Logging {
+class ConditionalRouter @Inject()(
+  externalTestRoutes: externaltest.Routes,
+  nonExternalTestRoutes: nonexternaltest.Routes,
+  appContext: AppContext
+) extends SimpleRouter with Logging {
   def isInExternalTest: Boolean = appContext.externalTestModeEnabled
 
   override def routes: Routes = {
-    isInExternalTest match {
-      case true => {
-        logger.debug("In External Test Environment: Using externaltest.routes")
-        externalTestRoutes.routes
-      }
-      case false => {
-        logger.debug("Not in External Test Environment: Using nonexternaltest.routes")
-        nonexternaltestRoutes.routes
-      }
+    if (isInExternalTest) {
+      logger.debug("In External Test Environment: Using externaltest.routes")
+      externalTestRoutes.routes
+    } else {
+      logger.debug("Not in External Test Environment: Using nonexternaltest.routes")
+      nonExternalTestRoutes.routes
     }
   }
 }

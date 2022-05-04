@@ -51,7 +51,8 @@ trait EmployerDetailsEndpoint
   des: DesConnector =>
 
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] = {
-    val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
+    val emprefParts: Regex =
+      "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
 
     val (office, ref) =
       URLDecoder.decode(empref, "UTF-8") match {
@@ -61,13 +62,15 @@ trait EmployerDetailsEndpoint
           throw new IllegalArgumentException(s"Empref is not valid.")
     }
 
-    val url = s"${des.baseUrl}/paye/employer/$office/$ref/designatory-details"
+    val url: String =
+      s"${des.baseUrl}/paye/employer/$office/$ref/designatory-details"
 
     // $COVERAGE-OFF$
     logger.debug(s"Calling DES at $url")
     // $COVERAGE-ON$
 
-    val details = DesignatoryDetails(Some(empref))
+    val details: DesignatoryDetails =
+      DesignatoryDetails(Some(empref))
 
     timer(RequestEvent(DES_EMPREF_DETAILS_REQUEST, Some(empref))) {
       audit(ALAEvent("readEmprefDetails", empref)) {
@@ -77,14 +80,30 @@ trait EmployerDetailsEndpoint
           headers     = createDesHeaders
         ) flatMap {
           case Right(response) =>
-            response.links.map { links =>
-              logger.debug((links.employer ++ links.communication).mkString(" "))
-              for {
-                e <- links.employer.map(getDetails(_)).getOrElse(Future.successful(None))
-                c <- links.communication.map(getDetails(_)).getOrElse(Future.successful(None))
-              } yield {
-                details.copy(employer = e, communication = c)
-              }
+            response.links.map {
+              links =>
+                val employer: Future[Option[DesignatoryDetailsData]] =
+                  links
+                    .employer
+                    .map(getDetails(_))
+                    .getOrElse(Future.successful(None))
+                val communication: Future[Option[DesignatoryDetailsData]] =
+                  links
+                    .communication
+                    .map(getDetails(_))
+                    .getOrElse(Future.successful(None))
+
+                employer.flatMap {
+                  emp =>
+                    communication.flatMap {
+                      com =>
+                        Future.successful(details.copy(employer = emp, communication = com))
+                    }
+                }.recoverWith {
+                  case e: Throwable =>
+                    logger.error(s"getDetails call failed: ${e.getMessage}")
+                    Future.successful(details)
+                }
             }.getOrElse(Future.successful(details))
           case Left(e: UpstreamErrorResponse) =>
             if (e.statusCode == BAD_REQUEST)
@@ -98,7 +117,7 @@ trait EmployerDetailsEndpoint
     }
   }
 
-  protected def getDetails(path: String)(implicit hc: HeaderCarrier): Future[Option[DesignatoryDetailsData]] = {
+  protected def getDetails(path: String)(implicit hc: HeaderCarrier): Future[Option[DesignatoryDetailsData]] =
     des.httpClient.GET[Either[UpstreamErrorResponse, DesignatoryDetailsData]](
       url         = s"${des.baseUrl}$path",
       queryParams = Seq(),
@@ -115,7 +134,6 @@ trait EmployerDetailsEndpoint
           logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
           None
     }
-  }
 }
 
 trait EmploymentCheckEndpoint

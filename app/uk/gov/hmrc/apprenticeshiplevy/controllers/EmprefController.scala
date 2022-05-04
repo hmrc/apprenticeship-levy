@@ -48,14 +48,13 @@ trait EmprefController extends DesController {
     (withValidAcceptHeader andThen authAction(ref)).async {
       implicit request =>
         // scalastyle:on
-        desConnector.designatoryDetails(ref.empref).map {
+        desConnector.designatoryDetails(ref.empref) map {
           details =>
-            val hal = prepareLinks(ref)
-            ok(hal.copy(state = Json.toJson(details).as[JsObject]))
+            ok(prepareLinks(ref).copy(state = Json.toJson(details).as[JsObject]))
         } recover desErrorHandler
     }
 
-  private[controllers] def prepareLinks(empref: EmploymentReference): HalResource = {
+  private[controllers] def prepareLinks(empref: EmploymentReference): HalResource =
     Hal.linksSeq(
       Seq(
         selfLink(decodeAnyDoubleEncoding(emprefUrl(empref))),
@@ -64,5 +63,4 @@ trait EmprefController extends DesController {
         HalLink("employment-check", decodeAnyDoubleEncoding(employmentCheckUrl(empref)))
       ).map(processLink)
     )
-  }
 }
