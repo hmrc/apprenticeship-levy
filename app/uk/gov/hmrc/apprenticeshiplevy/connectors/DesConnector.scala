@@ -125,6 +125,7 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
         if (e.statusCode == NOT_FOUND)
           throw new NotFoundException(e.message)
         else
+          // $COVERAGE-OFF$
           logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
           // $COVERAGE-ON$
           None
