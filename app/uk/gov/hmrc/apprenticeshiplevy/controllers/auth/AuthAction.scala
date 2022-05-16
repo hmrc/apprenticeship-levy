@@ -29,7 +29,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
+import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -58,18 +58,23 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
   def apply(empRef: EmploymentReference): AuthAction = new AuthAction {
 
     override def parser: BodyParsers.Default = bodyParser
+
     override def executionContext: ExecutionContext = ec
 
     override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
       implicit val ec: ExecutionContext = executionContext
-      authorised(EnrolmentHelper.enrolmentPredicate or AuthProviders(PrivilegedApplication)).retrieve(Retrievals.allEnrolments and Retrievals.credentials) {
-        case _ ~ Some(Credentials(_, "paClientId")) =>
+      authorised(
+        EnrolmentHelper.enrolmentPredicate or AuthProviders(PrivilegedApplication)
+      ).retrieve(
+        Retrievals.allEnrolments and Retrievals.authProviderId
+      ) {
+        case _ ~ PAClientId(_) =>
           Future.successful(Right(AuthenticatedRequest(request, None)))
         case Enrolments(enrolments) ~ _ =>
           val payeRef: Option[EmpRef] = EnrolmentHelper.getEmpRef(enrolments)
           val isCorrectEmpRef: Boolean = payeRef.exists(_.value == empRef.empref)
-          if(isCorrectEmpRef) {
+          if (isCorrectEmpRef) {
             Future.successful(Right(AuthenticatedRequest(request, payeRef)))
           } else {
             logger.warn(s"Unauthorized request of ${empRef.empref} from $payeRef")
@@ -77,8 +82,11 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
               Json.toJson[ErrorResponse](AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"Unauthorized request of ${empRef.empref}."))
             )))
           }
-      }.recover { case e: Throwable => {println(e)
-        Left(ErrorHandler.authErrorHandler(e))} }
+      }.recover { case e: Throwable => {
+        println(e)
+        Left(ErrorHandler.authErrorHandler(e))
+      }
+      }
     }
   }
 }
@@ -102,6 +110,7 @@ trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with Ac
 private object EnrolmentHelper {
   val enrolmentKey: String = "IR-PAYE"
   val enrolmentPredicate: Enrolment = Enrolment(enrolmentKey)
+
   def getEmpRef(enrolments: Set[Enrolment]): Option[EmpRef] = enrolments.find(_.key == enrolmentKey)
     .flatMap { enrolment =>
       val taxOfficeNumber = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
