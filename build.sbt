@@ -85,12 +85,7 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged := true,
     generateAPIDocsTask,
     resolvers += Resolver.jcenterRepo,
-    scalacOptions ++= Seq(
-      "-Xfatal-warnings",
-      "-deprecation",
-      "-feature",
-      "-P:silencer:pathFilters=routes",
-    )
+    scalacOptions ++= Seq("-P:silencer:pathFilters=routes")
   )
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
