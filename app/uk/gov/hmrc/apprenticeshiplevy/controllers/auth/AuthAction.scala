@@ -67,6 +67,8 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
       authorised(
         EnrolmentHelper.enrolmentPredicate or AuthProviders(PrivilegedApplication)
       ).retrieve(
+        // warning silenced in build.sbt as credentials does support PrivilegedAccess sessions (PAClientId)
+        // https://confluence.tools.tax.service.gov.uk/pages/viewpage.action?spaceKey=GG&title=Retrievals+Reference#RetrievalsReference-credentials
         Retrievals.allEnrolments and Retrievals.authProviderId
       ) {
         case _ ~ PAClientId(_) =>

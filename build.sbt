@@ -1,22 +1,29 @@
-import scala.sys.process.ProcessLogger
+import sbt.internal.util.ConsoleAppender
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings, _}
+import uk.gov.hmrc.DefaultBuildSettings._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+
+import scala.sys.process.ProcessLogger
 
 val appName: String = "apprenticeship-levy"
 
 val XsltConfig = config("api-docs")
 val generateAPIDocs = TaskKey[Unit]("api-docs", "Generates HMRC API Documentation files")
-managedClasspath in generateAPIDocs := {
+generateAPIDocs / managedClasspath := {
   // these are the types of artifacts to include
-  val artifactTypes: Set[String] = (classpathTypes in generateAPIDocs).value
+  val artifactTypes: Set[String] = (generateAPIDocs / classpathTypes).value
   Classpaths.managedJars(XsltConfig, artifactTypes, update.value)
 }
 val generateAPIDocsTask = generateAPIDocs := {
   val artifactTypes = Set("jar")
   val cp: Seq[java.io.File] = Classpaths.managedJars(XsltConfig, artifactTypes, update.value).map(_.data)
-  val log = ConsoleLogger(ConsoleOut.systemOut, true, true, ConsoleLogger.noSuppressedMessage)
+  val log = ConsoleLogger(
+    out = ConsoleOut.systemOut,
+    ansiCodesSupported = true,
+    useFormat = true,
+    suppressedMessage = ConsoleAppender.noSuppressedMessage
+  )
   val logger = new ProcessLogger() {
     override def buffer[T](f: => T): T = {
       f
@@ -32,7 +39,7 @@ val generateAPIDocsTask = generateAPIDocs := {
   DocGeneration.generateAPIDocs(userDir, cp) ! logger
 }
 
-lazy val AcceptanceTest = config("ac") extend (Test)
+lazy val AcceptanceTest = config("ac") extend Test
 
 lazy val plugins: Seq[Plugins] = Seq(
   play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory
@@ -81,23 +88,30 @@ lazy val microservice = Project(appName, file("."))
     ivyConfigurations += XsltConfig,
     libraryDependencies ++= AppDependencies.all,
     libraryDependencies ++= AppDependencies.generateApiTask,
-    parallelExecution in Test := false,
+    Test / parallelExecution := false,
     retrieveManaged := true,
     generateAPIDocsTask,
     resolvers += Resolver.jcenterRepo,
-    scalacOptions ++= Seq("-P:silencer:pathFilters=routes")
+    scalacOptions ++= Seq(
+      "-Xfatal-warnings",
+      "-deprecation",
+      "-feature",
+      "-P:silencer:pathFilters=routes",
+      "-P:silencer:pathFilters=target/.*",
+      "-P:silencer:pathFilters=app/uk/gov/hmrc/apprenticeshiplevy/controllers/auth/AuthAction.scala"
+    )
   )
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
-    unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest) (base => Seq(base / "it")).value,
-    unmanagedResourceDirectories in IntegrationTest += baseDirectory(_ / "public").value,
+    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
+    IntegrationTest / unmanagedResourceDirectories += baseDirectory(_ / "public").value,
     addTestReportOption(IntegrationTest, "int-test-reports"),
-    parallelExecution in IntegrationTest := false)
+    IntegrationTest / parallelExecution := false)
   .configs(AcceptanceTest)
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
   .settings(
-    unmanagedSourceDirectories in AcceptanceTest := (baseDirectory in AcceptanceTest) (base => Seq(base / "ac")).value,
-    unmanagedResourceDirectories in AcceptanceTest += baseDirectory(_ / "public").value,
+    AcceptanceTest / unmanagedSourceDirectories := (AcceptanceTest / baseDirectory) (base => Seq(base / "ac")).value,
+    AcceptanceTest / unmanagedResourceDirectories += baseDirectory(_ / "public").value,
     addTestReportOption(AcceptanceTest, "ac-test-reports"))
-  .settings(testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))
+  .settings(Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))
