@@ -32,12 +32,9 @@ class EmploymentRefEndpointISpec
                 |    ],
                 |    "state": "Activated"
                 |  }],
-                |  "authProviderId": {
-                |    "paClientId": "123"
-                |  },
                 |  "optionalCredentials": {
                 |    "providerId": "123",
-                |    "providerType": "paClientId"
+                |    "providerType": "PrivilegedApplication"
                 |  }
                 |}""".stripMargin
 
