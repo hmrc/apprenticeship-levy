@@ -28,20 +28,27 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, RetrievalOps}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.{GGCredId, LegacyCredentials, PAClientId, ~}
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with RetrievalOps with BeforeAndAfterEach {
+class AuthActionSpec
+  extends AppLevyUnitSpec
+    with GuiceOneAppPerSuite
+    with RetrievalOps
+    with BeforeAndAfterEach {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
   val stubComponents: ControllerComponents = stubControllerComponents()
   val defaultParser = new Default(stubComponents.parsers)
 
   class Harness(authAction: AuthAction) extends BackendBaseController {
-    def onPageLoad(): Action[AnyContent] = authAction { request => Ok(s"PAYE: ${request.empRef.getOrElse("None found")}") }
+    def onPageLoad(): Action[AnyContent] = authAction {
+      request =>
+        Ok(s"PAYE: ${request.empRef.getOrElse("None found")}")
+    }
 
     override def controllerComponents: ControllerComponents = stubComponents
   }
@@ -62,19 +69,19 @@ class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with Retri
       )
     )
 
-  val paRetrieval: Enrolments ~ LegacyCredentials =
-    Enrolments(Set()) ~ PAClientId("app-id")
+  val paRetrieval: Enrolments ~ Option[Credentials] =
+    Enrolments(Set()) ~ Some(Credentials("app-id", "PrivilegedApplication"))
 
-  val ggRetrieval: Enrolments ~ LegacyCredentials =
+  val ggRetrieval: Enrolments ~ Option[Credentials] =
     enrolments(
       Seq(
         EnrolmentIdentifier("TaxOfficeNumber", "123"),
         EnrolmentIdentifier("TaxOfficeReference", "ABCDEF")
       )
-    ) ~ GGCredId("")
+    ) ~ Some(Credentials("", "ggCredId"))
 
-  val emptyGGRetrieval: Enrolments ~ LegacyCredentials =
-    enrolments() ~ GGCredId("")
+  val emptyGGRetrieval: Enrolments ~ Option[Credentials] =
+    enrolments() ~ Some(Credentials("", "ggCredId"))
 
   "A user with no active session" should {
     "return UNAUTHORIZED" in {
@@ -174,7 +181,7 @@ class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with Retri
     }
 
     "authenticate a privileged application" in {
-      when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Enrolments ~ Option[Credentials]](any(), any())(any(), any()))
         .thenReturn(Future.successful(paRetrieval))
 
       val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference(""))
@@ -187,7 +194,7 @@ class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with Retri
 
     "authenticate an IR-PAYE enrolled user" when {
       "the request emp ref matches their emp ref" in {
-        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+        when(mockAuthConnector.authorise[Enrolments ~ Option[Credentials]](any(), any())(any(), any()))
           .thenReturn(Future.successful(ggRetrieval))
 
         val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
@@ -201,7 +208,7 @@ class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with Retri
 
     "return unauthorized for an IR-PAYE enrolled user" when {
       "the request emp ref does not match their emp ref" in {
-        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+        when(mockAuthConnector.authorise[Enrolments ~ Option[Credentials]](any(), any())(any(), any()))
           .thenReturn(Future.successful(ggRetrieval))
 
         val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123%2FABCDE"))
@@ -212,7 +219,7 @@ class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with Retri
       }
 
       "their is no emp ref returned" in {
-        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+        when(mockAuthConnector.authorise[Enrolments ~ Option[Credentials]](any(), any())(any(), any()))
           .thenReturn(Future.successful(emptyGGRetrieval))
 
         val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
