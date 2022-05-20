@@ -70,7 +70,7 @@ class AuthActionSpec
     )
 
   val paRetrieval: Enrolments ~ Option[Credentials] =
-    Enrolments(Set()) ~ Some(Credentials("app-id", "PrivilegedApplication"))
+    Enrolments(Set()) ~ Some(Credentials("PrivilegedApplication", "app-id"))
 
   val ggRetrieval: Enrolments ~ Option[Credentials] =
     enrolments(

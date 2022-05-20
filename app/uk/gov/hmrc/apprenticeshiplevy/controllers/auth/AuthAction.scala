@@ -69,7 +69,7 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
       ).retrieve(
         Retrievals.allEnrolments and Retrievals.credentials
       ) {
-        case _ ~ Some(Credentials(_, "PrivilegedApplication")) =>
+        case _ ~ Some(Credentials("PrivilegedApplication", _)) =>
           Future.successful(Right(AuthenticatedRequest(request, None)))
         case Enrolments(enrolments) ~ _ =>
           val payeRef: Option[EmpRef] = EnrolmentHelper.getEmpRef(enrolments)
