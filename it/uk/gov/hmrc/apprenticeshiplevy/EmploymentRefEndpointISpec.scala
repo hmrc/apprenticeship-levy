@@ -15,7 +15,7 @@ class EmploymentRefEndpointISpec
     with ConfiguredServer {
   describe("Empref Endpoint") {
     val contexts = Seq(
-//      "/sandbox",
+      "/sandbox",
       ""
     )
     contexts.foreach { context =>
@@ -33,8 +33,8 @@ class EmploymentRefEndpointISpec
                 |    "state": "Activated"
                 |  }],
                 |  "optionalCredentials": {
-                |    "providerId": "123",
-                |    "providerType": "PrivilegedApplication"
+                |    "providerId": "PrivilegedApplication",
+                |    "providerType": "123"
                 |  }
                 |}""".stripMargin
 
