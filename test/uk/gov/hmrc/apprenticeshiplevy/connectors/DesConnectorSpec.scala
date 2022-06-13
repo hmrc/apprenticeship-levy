@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{ok, _}
-import org.joda.time.{LocalDate, LocalDateTime}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{when, reset => mockReset}
 import org.mockito._
@@ -37,6 +36,7 @@ import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.DataEvent
 import views.html.helper
 
+import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -99,10 +99,10 @@ class DesConnectorSpec
       "when EDH not failing return local date instance of date" in {
 
         val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
-        val fractionCalculationDate = FractionCalculationDate(new LocalDate(2016,11,3))
+        val fractionCalculationDate = FractionCalculationDate(LocalDate.of(2016,11,3))
         val json = Json.toJson[FractionCalculationDate](fractionCalculationDate)
         val stubResponse = ok(json.toString)
-        val expectedResponse = new LocalDate(2016,11,3)
+        val expectedResponse = LocalDate.of(2016,11,3)
 
         stubGetServer(stubResponse, fractionsCalculationDateUrl)
 
@@ -122,7 +122,7 @@ class DesConnectorSpec
     "for Fractions endpoint" must {
       "when EDH not failing return fractions" in {
 
-        val localDate = new LocalDate(2016,4,22)
+        val localDate = LocalDate.of(2016,4,22)
         val dateRange = OpenEarlyDateRange(localDate)
         val dateRangeParams = dateRange.toParams
         val empRef = "123/AB12345"
@@ -152,7 +152,7 @@ class DesConnectorSpec
 
       val empRef = "123AB12345"
       val empRefWithSlash = "123/AB12345"
-      val localDate = new LocalDate(2016,11,3)
+      val localDate = LocalDate.of(2016,11,3)
       val dateRange = OpenEarlyDateRange(localDate)
       val dateRangeParams = dateRange.toParams
       val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, List[EmployerPaymentSummary]())
@@ -178,7 +178,7 @@ class DesConnectorSpec
 
       val empRef = "123AB12345"
       val empRefWithSlash = "123/AB12345"
-      val localDate = new LocalDate(2016,4,22)
+      val localDate = LocalDate.of(2016,4,22)
       val dateRange = OpenEarlyDateRange(localDate)
       val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?toDate=${localDate.toString()}"
       val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, List[EmployerPaymentSummary]())
@@ -206,7 +206,7 @@ class DesConnectorSpec
 
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
-        val localDate = new LocalDate(2016,4,22)
+        val localDate = LocalDate.of(2016,4,22)
         val dateRange = OpenEarlyDateRange(localDate)
         val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?toDate=${localDate.toString()}"
         val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, List[EmployerPaymentSummary]())
@@ -231,8 +231,8 @@ class DesConnectorSpec
 
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
-        val dateFrom = new LocalDate(2016,7,1)
-        val dateTo = new LocalDate(2016,7,15)
+        val dateFrom = LocalDate.of(2016,7,1)
+        val dateTo = LocalDate.of(2016,7,15)
         val dateRange = ClosedDateRange(dateFrom, dateTo)
         val dateRangeParams = dateRange.toParams
         val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
@@ -242,8 +242,8 @@ class DesConnectorSpec
           List(
             EmployerPaymentSummary(
               12345678L,
-              new LocalDateTime("2016-07-14T16:05:44.000"),
-              new LocalDateTime("2016-07-14T16:05:23.000"),"16-17",
+              LocalDateTime.parse("2016-07-14T16:05:44.000"),
+              LocalDateTime.parse("2016-07-14T16:05:23.000"),"16-17",
               apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(600.00), BigDecimal(15000),"11")))
           )
         )
@@ -286,8 +286,8 @@ class DesConnectorSpec
       "convert valid json values to valid objects" in {
 
         val empRef = "123AB12345"
-        val dateFrom = new LocalDate(2016,7,1)
-        val dateTo = new LocalDate(2016,7,15)
+        val dateFrom = LocalDate.of(2016,7,1)
+        val dateTo = LocalDate.of(2016,7,15)
         val dateRange = ClosedDateRange(dateFrom, dateTo)
         val dateRangeParams = dateRange.toParams
         val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
@@ -295,13 +295,13 @@ class DesConnectorSpec
         val expectedResponse =
           EmployerPaymentsSummary("123/AB12345",
             List(
-              EmployerPaymentSummary(12345678L,new LocalDateTime("2016-07-14T16:05:23.000"),new LocalDateTime("2016-07-14T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(600.00),BigDecimal(15000),"11"))),
-              EmployerPaymentSummary(12345679L,new LocalDateTime("2015-04-07T16:05:23.000"),new LocalDateTime("2015-04-07T16:05:23.000"),"15-16",Some(ClosedDateRange(new LocalDate("2016-12-13"),new LocalDate("2017-03-22")))),
-              EmployerPaymentSummary(12345680L,new LocalDateTime("2016-05-07T16:05:23.000"),new LocalDateTime("2016-05-07T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(500.00),BigDecimal(15000),"1"))),
-              EmployerPaymentSummary(12345681L,new LocalDateTime("2016-06-07T16:05:23.000"),new LocalDateTime("2016-06-07T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(1000.00),BigDecimal(15000),"2"))),
-              EmployerPaymentSummary(12345682L,new LocalDateTime("2016-06-15T16:20:23.000"),new LocalDateTime("2016-06-15T16:20:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(200.00),BigDecimal(15000),"2"))),
-              EmployerPaymentSummary(12345683L,new LocalDateTime("2016-07-15T16:05:23.000"),new LocalDateTime("2016-07-15T16:05:23.000"),"16-17",inactivePeriod=Some(ClosedDateRange(new LocalDate("2016-06-06"),new LocalDate("2016-09-05")))),
-              EmployerPaymentSummary(12345684L,new LocalDateTime("2016-10-15T16:05:23.000"),new LocalDateTime("2016-10-15T16:05:23.000"),"16-17",finalSubmission=Some(SchemeCeased(true,new LocalDate("2016-09-05"),None)))
+              EmployerPaymentSummary(12345678L,LocalDateTime.parse("2016-07-14T16:05:23.000"),LocalDateTime.parse("2016-07-14T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(600.00),BigDecimal(15000),"11"))),
+              EmployerPaymentSummary(12345679L,LocalDateTime.parse("2015-04-07T16:05:23.000"),LocalDateTime.parse("2015-04-07T16:05:23.000"),"15-16",Some(ClosedDateRange(new LocalDate("2016-12-13"),new LocalDate("2017-03-22")))),
+              EmployerPaymentSummary(12345680L,LocalDateTime.parse("2016-05-07T16:05:23.000"),LocalDateTime.parse("2016-05-07T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(500.00),BigDecimal(15000),"1"))),
+              EmployerPaymentSummary(12345681L,LocalDateTime.parse("2016-06-07T16:05:23.000"),LocalDateTime.parse("2016-06-07T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(1000.00),BigDecimal(15000),"2"))),
+              EmployerPaymentSummary(12345682L,LocalDateTime.parse("2016-06-15T16:20:23.000"),LocalDateTime.parse("2016-06-15T16:20:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(200.00),BigDecimal(15000),"2"))),
+              EmployerPaymentSummary(12345683L,LocalDateTime.parse("2016-07-15T16:05:23.000"),LocalDateTime.parse("2016-07-15T16:05:23.000"),"16-17",inactivePeriod=Some(ClosedDateRange(new LocalDate("2016-06-06"),new LocalDate("2016-09-05")))),
+              EmployerPaymentSummary(12345684L,LocalDateTime.parse("2016-10-15T16:05:23.000"),LocalDateTime.parse("2016-10-15T16:05:23.000"),"16-17",finalSubmission=Some(SchemeCeased(true,new LocalDate("2016-09-05"),None)))
             )
           )
 

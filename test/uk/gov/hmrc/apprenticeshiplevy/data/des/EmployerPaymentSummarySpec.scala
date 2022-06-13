@@ -16,12 +16,16 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import org.joda.time.DateTimeConstants.{APRIL, MAY}
-import org.joda.time.{LocalDate, LocalDateTime}
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, ClosedDateRange}
 
+import java.time.{LocalDate, LocalDateTime}
+
 class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
+
+  val APRIL = 4
+  val MAY = 5
+
   "convertToDeclaration" should {
     val id = 123456L
     val submissionTime = LocalDateTime.now()
@@ -29,8 +33,8 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
     val relatedTaxYear = "16-17"
 
     "create a unique id for levy declaration object" in {
-      val startNoPayment = new LocalDate("2016-05-06")
-      val endNoPayment = new LocalDate("2016-06-05")
+      val startNoPayment = LocalDate.parse("2016-05-06")
+      val endNoPayment = LocalDate.parse("2016-06-05")
 
       val expectedTaxMonth = 2
 

@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
@@ -44,7 +43,7 @@ class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
   override def fractionsUrl(empref: EmploymentReference): String = routes.LiveFractionsController.fractions(empref, None, None).url
 
   override def employmentCheckUrl(empref: EmploymentReference): String =
-    routes.LiveEmploymentCheckController.check(empref, Nino("nino"), new LocalDate, new LocalDate)
+    routes.LiveEmploymentCheckController.check(empref, Nino("nino"), LocalDate.now(), LocalDate.now())
       .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
 
 }

@@ -1,6 +1,5 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import org.joda.time.{LocalDate, LocalDateTime}
 import org.scalacheck.Gen
 import org.scalatest.DoNotDiscover
 import org.scalatest.matchers.should.Matchers._
