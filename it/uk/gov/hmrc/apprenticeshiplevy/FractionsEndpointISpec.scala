@@ -1,6 +1,5 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import org.joda.time.LocalDate
 import org.scalacheck.Gen
 import org.scalatest.DoNotDiscover
 import org.scalatest.matchers.should.Matchers._
@@ -11,6 +10,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.{Fraction, FractionCalculation}
 import views.html.helper
+
+import java.time.LocalDate
 
 @DoNotDiscover
 class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with ScalaCheckPropertyChecks {

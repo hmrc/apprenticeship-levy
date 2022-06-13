@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.api
 
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{LocalDate, LocalDateTime}
 import play.api.libs.json._
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime}
 
 case class PayrollPeriod(year: String, month: Int)
 
@@ -42,13 +41,13 @@ case class LevyDeclaration(id: Long,
 
 object LevyDeclaration {
   implicit val ldtFormats = new Format[LocalDateTime] {
-    val fmt = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+    val fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
 
     override def reads(json: JsValue): JsResult[LocalDateTime] = implicitly[Reads[JsString]].reads(json).map { js =>
-      fmt.parseDateTime(js.value).toLocalDateTime
+      LocalDateTime.parse(js.value, fmt)
     }
 
-    override def writes(o: LocalDateTime): JsValue = JsString(fmt.print(o))
+    override def writes(o: LocalDateTime): JsValue = JsString(o.format(fmt))
   }
 
   implicit val formats = Json.format[LevyDeclaration]

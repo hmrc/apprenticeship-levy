@@ -15,28 +15,28 @@ object AppDependencies {
   )
 
   lazy val test: Seq[ModuleID] = Seq(
-    "org.scalatest"          %% "scalatest"                    % "3.0.8",
+    "org.scalatest"          %% "scalatest"                    % "3.2.12",
     "com.typesafe.play"      %% "play-test"                    % PlayVersion.current,
     "org.pegdown"             % "pegdown"                      % "1.6.0",
     "org.scalamock"          %% "scalamock-scalatest-support"  % "3.6.0",
-    "org.mockito"            %  "mockito-core"                 % "3.6.0",
+    "org.mockito"            %  "mockito-core"                 % "4.6.1",
     "org.scalatestplus.play" %% "scalatestplus-play"           % "5.1.0",
     "com.github.tomakehurst" %  "wiremock-jre8"                % "2.27.2"
   ).map(_ % "test")
 
   lazy val integrationTest: Seq[ModuleID] = Seq(
-    "org.scalatest"           %% "scalatest"          % "3.1.1",
+    "org.scalatest"           %% "scalatest"          % "3.2.12",
     "org.pegdown"              % "pegdown"            % "1.6.0",
     "com.typesafe.play"       %% "play-test"          % PlayVersion.current,
-    "com.github.tomakehurst"   % "wiremock-jre8"      % "2.26.1",
-    "org.scala-lang.modules"  %% "scala-xml"          % "1.2.0",
-    "com.github.andyglow"     %% "scala-xml-diff"     % "2.0.4",
-    "org.scalatestplus"       %% "scalacheck-1-14"    % "3.1.1.1",
+    "com.github.tomakehurst"   % "wiremock-jre8"      % "2.27.2",
+    "org.scala-lang.modules"  %% "scala-xml"          % "2.1.0",
+    "com.github.andyglow"     %% "scala-xml-diff"     % "3.0.0",
+    "org.scalatestplus"       %% "scalacheck-1-14"    % "3.2.2.0",
     "org.scalatestplus.play"  %% "scalatestplus-play" % "5.1.0"
   ).map(_ % "test,it")
 
   lazy val acceptanceTest: Seq[ModuleID] = Seq(
-    "org.scalatest" %% "scalatest"    % "3.0.8",
+    "org.scalatest" %% "scalatest"    % "3.2.12",
     "org.pegdown"    % "pegdown"      % "1.6.0",
     "org.scalaj"    %% "scalaj-http"  % "2.4.2"
   ).map(_ % "test, ac")

@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.api
 
-import org.joda.time.LocalDateTime
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+
+import java.time.LocalDateTime
 
 class LevyDeclarationSpec extends AppLevyUnitSpec {
   "LevyDeclaration" should {

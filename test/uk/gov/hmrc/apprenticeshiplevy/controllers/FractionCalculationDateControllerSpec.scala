@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import com.codahale.metrics.MetricRegistry
-import org.joda.time.LocalDate
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
@@ -34,6 +33,7 @@ import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.{Authorization, HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeAndAfterEach {

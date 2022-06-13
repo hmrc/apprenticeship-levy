@@ -19,7 +19,6 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data
 import java.io.{File, FileInputStream, InputStream}
 import java.net.URLDecoder
 import com.google.inject.{Inject, Singleton}
-import org.joda.time._
 import org.slf4j.MDC
 import play.api.libs.json._
 import play.api.mvc._
@@ -31,7 +30,6 @@ import uk.gov.hmrc.play.bootstrap.controller.Utf8MimeTypes
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Try
-import play.api.libs.json.JodaReads._
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 @Singleton

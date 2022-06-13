@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import org.joda.time.LocalDate
 import play.api.libs.json._
-import play.api.libs.json.JodaWrites._
-import play.api.libs.json.JodaReads._
+
+import java.time.LocalDate
 
 case class FractionCalculationDate(date: LocalDate)
 

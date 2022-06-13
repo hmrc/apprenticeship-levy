@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import org.joda.time.LocalDate
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
@@ -32,6 +31,8 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, MockAppContext}
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+
+import java.time.LocalDate
 
 class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite with Injecting {
 

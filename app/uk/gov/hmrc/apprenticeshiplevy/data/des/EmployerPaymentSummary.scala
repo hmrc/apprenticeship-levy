@@ -16,10 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import org.joda.time.DateTimeConstants.APRIL
-import org.joda.time.Months.monthsBetween
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.{LocalDate, LocalDateTime, _}
 import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -28,6 +24,8 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FinalSubmission._
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime, MonthDay}
 import scala.util.{Failure, Success, Try}
 
 case class EmployerPaymentSummary(submissionId: Long,
@@ -42,11 +40,12 @@ case class EmployerPaymentSummary(submissionId: Long,
                                   questionsAndDeclarations: Option[QuestionsAndDeclaration] = None)
 
 object EmployerPaymentSummary extends Logging {
+  val APRIL = 4
   val TAX_YEAR_START_DAY = 6
   val BeginningOfTaxYear = new MonthDay(APRIL, TAX_YEAR_START_DAY)
 
   private[des] def calculateTaxMonth(to: LocalDate) = {
-    val monthDay = new MonthDay(to.getMonthOfYear, to.getDayOfMonth)
+    val monthDay = new MonthDay(to.getMonthValue, to.getDayOfMonth)
     val yearReference = if (monthDay.isBefore(BeginningOfTaxYear)) to.getYear - 1 else to.getYear
     monthsBetween(new LocalDate(yearReference, APRIL, TAX_YEAR_START_DAY), to).getMonths + 1
   }
@@ -101,12 +100,12 @@ object EmployerPaymentSummary extends Logging {
 
 
   implicit val jodaDateTimeFormat = new Format[LocalDateTime] {
-    val localDateTimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss")
+    val localDateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     val DateTime = "(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}){1}(.*)".r
 
     override def reads(json: JsValue): JsResult[LocalDateTime] = implicitly[Reads[JsString]].reads(json).map { js =>
       js.value match {
-        case DateTime(timestamp,_) => localDateTimeFormat.parseDateTime(timestamp).toLocalDateTime
+        case DateTime(timestamp,_) => LocalDateTime.parse(timestamp, localDateTimeFormat)
         case _ => {
           logger.warn(s"Bad date time value of '${js.value}' returned from DES so returning new LocalDateTime(0L)")
           new LocalDateTime(0L)
@@ -115,7 +114,7 @@ object EmployerPaymentSummary extends Logging {
 
     }
     // $COVERAGE-OFF$
-    override def writes(date: LocalDateTime): JsValue = JsString(localDateTimeFormat.print(date))
+    override def writes(date: LocalDateTime): JsValue = JsString(localDateTimeFormat.format(date))
     // $COVERAGE-ON$
   }
 

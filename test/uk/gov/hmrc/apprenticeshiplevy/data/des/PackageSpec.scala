@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import org.joda.time.LocalDate
 import play.api.libs.json._
-import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
-import play.api.libs.json.JodaWrites.DefaultJodaLocalDateWrites
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+
+import java.time.LocalDate
 
 class PackageSpec extends AppLevyUnitSpec {
   "Data Des Package" should {
