@@ -61,20 +61,20 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
 
   "validating fromDate" should {
     "should use default value if fromDate is omitted" in {
-      liveFractionsController.validateFromDate(None) shouldBe new LocalDate().minusMonths(liveFractionsController.defaultPriorMonthsForFromDate)
+      liveFractionsController.validateFromDate(None) shouldBe LocalDate.now().minusMonths(liveFractionsController.defaultPriorMonthsForFromDate)
     }
     "use date if supplied" in {
-      val date: LocalDate = new LocalDate("2013-07-22")
+      val date: LocalDate = LocalDate.parse("2013-07-22")
       liveFractionsController.validateToDate(Some(date)) shouldBe date
     }
   }
 
   "validating toDate" should {
     "should use default value if toDate is omitted" in {
-      liveFractionsController.validateToDate(None) shouldBe new LocalDate()
+      liveFractionsController.validateToDate(None) shouldBe LocalDate.now()
     }
     "use date if supplied" in {
-      val date: LocalDate = new LocalDate("2010-08-03")
+      val date: LocalDate = LocalDate.parse("2010-08-03")
       liveFractionsController.validateToDate(Some(date)) shouldBe date
     }
   }

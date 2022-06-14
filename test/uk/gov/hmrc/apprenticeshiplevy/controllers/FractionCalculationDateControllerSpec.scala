@@ -80,7 +80,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
-           .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
+           .thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
 
       // test
       await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
@@ -100,7 +100,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
-           .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
+           .thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
 
       // test
       await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",

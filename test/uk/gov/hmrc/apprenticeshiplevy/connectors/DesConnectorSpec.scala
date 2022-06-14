@@ -296,12 +296,12 @@ class DesConnectorSpec
           EmployerPaymentsSummary("123/AB12345",
             List(
               EmployerPaymentSummary(12345678L,LocalDateTime.parse("2016-07-14T16:05:23.000"),LocalDateTime.parse("2016-07-14T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(600.00),BigDecimal(15000),"11"))),
-              EmployerPaymentSummary(12345679L,LocalDateTime.parse("2015-04-07T16:05:23.000"),LocalDateTime.parse("2015-04-07T16:05:23.000"),"15-16",Some(ClosedDateRange(new LocalDate("2016-12-13"),new LocalDate("2017-03-22")))),
+              EmployerPaymentSummary(12345679L,LocalDateTime.parse("2015-04-07T16:05:23.000"),LocalDateTime.parse("2015-04-07T16:05:23.000"),"15-16",Some(ClosedDateRange(LocalDate.parse("2016-12-13"),LocalDate.parse("2017-03-22")))),
               EmployerPaymentSummary(12345680L,LocalDateTime.parse("2016-05-07T16:05:23.000"),LocalDateTime.parse("2016-05-07T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(500.00),BigDecimal(15000),"1"))),
               EmployerPaymentSummary(12345681L,LocalDateTime.parse("2016-06-07T16:05:23.000"),LocalDateTime.parse("2016-06-07T16:05:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(1000.00),BigDecimal(15000),"2"))),
               EmployerPaymentSummary(12345682L,LocalDateTime.parse("2016-06-15T16:20:23.000"),LocalDateTime.parse("2016-06-15T16:20:23.000"),"16-17",apprenticeshipLevy=Some(ApprenticeshipLevy(BigDecimal(200.00),BigDecimal(15000),"2"))),
-              EmployerPaymentSummary(12345683L,LocalDateTime.parse("2016-07-15T16:05:23.000"),LocalDateTime.parse("2016-07-15T16:05:23.000"),"16-17",inactivePeriod=Some(ClosedDateRange(new LocalDate("2016-06-06"),new LocalDate("2016-09-05")))),
-              EmployerPaymentSummary(12345684L,LocalDateTime.parse("2016-10-15T16:05:23.000"),LocalDateTime.parse("2016-10-15T16:05:23.000"),"16-17",finalSubmission=Some(SchemeCeased(true,new LocalDate("2016-09-05"),None)))
+              EmployerPaymentSummary(12345683L,LocalDateTime.parse("2016-07-15T16:05:23.000"),LocalDateTime.parse("2016-07-15T16:05:23.000"),"16-17",inactivePeriod=Some(ClosedDateRange(LocalDate.parse("2016-06-06"),LocalDate.parse("2016-09-05")))),
+              EmployerPaymentSummary(12345684L,LocalDateTime.parse("2016-10-15T16:05:23.000"),LocalDateTime.parse("2016-10-15T16:05:23.000"),"16-17",finalSubmission=Some(SchemeCeased(true,LocalDate.parse("2016-09-05"),None)))
             )
           )
 

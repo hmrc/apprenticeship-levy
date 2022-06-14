@@ -31,16 +31,16 @@ class PackageSpec extends AppLevyUnitSpec {
         // check
         result shouldBe a[JsString]
         result.as[String] shouldBe "2014-02-05"
-        result.as[LocalDate] shouldBe new LocalDate("2014-02-05")
+        result.as[LocalDate] shouldBe LocalDate.parse("2014-02-05")
       }
       "provide json write" in {
         // test
-        val result = Json.toJson(new LocalDate("2014-03-05"))
+        val result = Json.toJson(LocalDate.parse("2014-03-05"))
 
         // check
         result shouldBe a[JsString]
         result.as[String] shouldBe "2014-03-05"
-        result.as[LocalDate] shouldBe new LocalDate("2014-03-05")
+        result.as[LocalDate] shouldBe LocalDate.parse("2014-03-05")
       }
     }
   }

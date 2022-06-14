@@ -81,7 +81,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(mockHttp.GET[Fractions](anyString(), any(), any())(any(), any(), any()))
-           .thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
+           .thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
 
       // test
       await(controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()
@@ -104,7 +104,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
 
       when(mockHttp.GET[Fractions](anyString(), any(), any())(any(), any(), any()))
            .thenReturn(Future.successful(Fractions("123AB12345",
-                                                   List(FractionCalculation(new LocalDate(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
+                                                   List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
 
       // test
       await(controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()

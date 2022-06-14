@@ -108,8 +108,8 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
     }
 
     "convert a submission with no payment for period" in {
-      val startNoPayment = new LocalDate("2016-05-06")
-      val endNoPayment = new LocalDate("2016-06-05")
+      val startNoPayment = LocalDate.parse("2016-05-06")
+      val endNoPayment = LocalDate.parse("2016-06-05")
 
       val expectedTaxMonth = 2
 
@@ -128,19 +128,19 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
 
   "calculate tax month" should {
     "calculate month 1 for 6 Apr" in {
-      EmployerPaymentSummary.calculateTaxMonth(new LocalDate(2016, APRIL, 6)) shouldBe 1
+      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, APRIL, 6)) shouldBe 1
     }
 
     "calculate month 1 for 5 May" in {
-      EmployerPaymentSummary.calculateTaxMonth(new LocalDate(2016, MAY, 5)) shouldBe 1
+      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, MAY, 5)) shouldBe 1
     }
 
     "calculate month 2 for 6 May" in {
-      EmployerPaymentSummary.calculateTaxMonth(new LocalDate(2016, MAY, 5)) shouldBe 1
+      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, MAY, 5)) shouldBe 1
     }
 
     "calculate month 12 for 5 Apr" in {
-      EmployerPaymentSummary.calculateTaxMonth(new LocalDate(2016, APRIL, 5)) shouldBe 12
+      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, APRIL, 5)) shouldBe 12
     }
   }
 }

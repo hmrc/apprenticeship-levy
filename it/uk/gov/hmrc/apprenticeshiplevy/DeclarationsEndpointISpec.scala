@@ -12,6 +12,8 @@ import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, PayrollPeriod}
 import views.html.helper
 
+import java.time.{LocalDate, LocalDateTime}
+
 @DoNotDiscover
 class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConfig with ConfiguredServer with ScalaCheckPropertyChecks {
   describe("Declarations Endpoint") {
