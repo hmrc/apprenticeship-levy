@@ -42,10 +42,10 @@ case class EmployerPaymentSummary(submissionId: Long,
 object EmployerPaymentSummary extends Logging {
   val APRIL = 4
   val TAX_YEAR_START_DAY = 6
-  val BeginningOfTaxYear = new MonthDay(APRIL, TAX_YEAR_START_DAY)
+  val BeginningOfTaxYear = MonthDay.of(APRIL, TAX_YEAR_START_DAY)
 
   private[des] def calculateTaxMonth(to: LocalDate) = {
-    val monthDay = new MonthDay(to.getMonthValue, to.getDayOfMonth)
+    val monthDay = MonthDay.of(to.getMonthValue, to.getDayOfMonth)
     val yearReference = if (monthDay.isBefore(BeginningOfTaxYear)) to.getYear - 1 else to.getYear
     val taxYearStartDate = LocalDate.of(yearReference, APRIL, TAX_YEAR_START_DAY)
     val period = Period.between(taxYearStartDate, to)
@@ -110,7 +110,7 @@ object EmployerPaymentSummary extends Logging {
         case DateTime(timestamp,_) => LocalDateTime.parse(timestamp, formatter)
         case _ => {
           logger.warn(s"Bad date time value of '${js.value}' returned from DES so returning new LocalDateTime(0L)")
-          new LocalDateTime(0L)
+          LocalDateTime.MIN
         }
       }
 

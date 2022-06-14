@@ -30,7 +30,7 @@ case class LastSubmission(forYear: Boolean) extends FinalSubmission
 object FinalSubmission {
   implicit val combinedFinalSubmissionReads: Reads[FinalSubmission] = (
     (JsPath \ "schemeCeased").readNullable[Boolean] and
-    (JsPath \ "schemeCeasedDate").readNullable[LocalDate](DefaultJodaLocalDateReads) and
+    (JsPath \ "schemeCeasedDate").readNullable[LocalDate] and
     (JsPath \ "forYear").readNullable[Boolean]
   )(FinalSubmission.apply _)
 

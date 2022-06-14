@@ -24,7 +24,7 @@ import play.api.libs.json._
 import play.api.mvc._
 import play.api.{Logger, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.utils.DataTransformer
+import uk.gov.hmrc.apprenticeshiplevy.utils.{DataTransformer, Interval}
 import uk.gov.hmrc.play.bootstrap.controller.Utf8MimeTypes
 
 import scala.concurrent.Future
@@ -32,7 +32,7 @@ import scala.io.Source
 import scala.util.Try
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import java.time.{Instant, LocalDate, LocalDateTime, LocalTime, ZoneId, ZoneOffset}
+import java.time.{Instant, LocalDate, LocalDateTime, ZoneId, ZoneOffset}
 
 @Singleton
 class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
@@ -195,16 +195,16 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
         (request.getQueryString("fromDate"), request.getQueryString("toDate")) match {
           case (maybeFrom,maybeTo) if maybeFrom.isDefined && maybeTo.isDefined  => {
             logger.debug(s"Filtering results to: ${maybeFrom} ${maybeTo}")
-            val queryInterval = new Interval(maybeFrom.map(toInstant(_)).get,
+            val queryInterval = Interval(maybeFrom.map(toInstant(_)).get,
                                              maybeTo.map(toInstant(_, 1)).get)
             val EmployedCheck = "([A-Za-z\\-/0-9]*)(employed)([A-Za-z\\-/0-9]*)".r
             val Fractions = "([A-Za-z\\-/0-9%]*)(fractions)".r
             val Declarations = "([A-Za-z\\-/0-9%]*)(employer-payment-summary)".r
             path match {
               case EmployedCheck(_,_,_) => {
-                val interval = new Interval(toInstant(json \ "jsonBody" \ "fromDate"),
+                val interval = Interval(toInstant(json \ "jsonBody" \ "fromDate"),
                                             toInstant(json \ "jsonBody" \ "toDate", 1))
-                if (interval.overlap(queryInterval) != null) {
+                if (interval.overlap(queryInterval)) {
                   Future.successful(result(jsonOutStr))
                 } else {
                   Future.successful(result(((json \ "jsonBody").as[JsObject] - "employed") + ("employed" -> Json.toJson(false))))
