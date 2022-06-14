@@ -32,6 +32,8 @@ import scala.io.Source
 import scala.util.Try
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
+import java.time.{Instant, LocalDate, LocalDateTime, LocalTime, ZoneId, ZoneOffset}
+
 @Singleton
 class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
                                           appContext: AppContext,
@@ -162,30 +164,26 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
   }
 
   protected def toInstant(dateStr: String): Instant = {
-    val time = LocalTime.MIDNIGHT
-    val zone = DateTimeZone.getDefault()
-    LocalDate.parse(dateStr).toDateTime(time, zone).toInstant()
+    val zone = ZoneId.systemDefault()
+    LocalDate.parse(dateStr).atStartOfDay(zone).toInstant()
   }
 
   protected def toInstant(dateStr: String, days: Int): Instant = {
-    val time = LocalTime.MIDNIGHT
-    val zone = DateTimeZone.getDefault()
-    LocalDate.parse(dateStr).plusDays(days).toDateTime(time, zone).toInstant()
+    val zone = ZoneId.systemDefault()
+    LocalDate.parse(dateStr).plusDays(days).atStartOfDay(zone).toInstant()
   }
 
   protected def toInstant(json: JsLookupResult): Instant = {
-    val time = LocalTime.MIDNIGHT
-    val zone = DateTimeZone.getDefault()
-    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{
-      case _: Throwable => LocalDateTime.parse(json.as[String]).toDateTime().toInstant()
+    val zone = ZoneId.systemDefault()
+    Try(json.as[LocalDate].atStartOfDay(zone).toInstant()).recover {
+      case _: Throwable => LocalDateTime.parse(json.as[String]).toInstant(ZoneOffset.UTC)
     }.get
   }
 
   protected def toInstant(json: JsLookupResult, days: Int): Instant = {
-    val time = LocalTime.MIDNIGHT
-    val zone = DateTimeZone.getDefault()
-    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{
-      case _: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toDateTime().toInstant()
+    val zone = ZoneId.systemDefault()
+    Try(json.as[LocalDate].atStartOfDay(zone).toInstant()).recover {
+      case _: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toInstant(ZoneOffset.UTC)
     }.get
   }
 
