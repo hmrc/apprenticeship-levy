@@ -25,7 +25,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.des.FinalSubmission._
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, MonthDay}
+import java.time.{LocalDate, LocalDateTime, MonthDay, Period}
 import scala.util.{Failure, Success, Try}
 
 case class EmployerPaymentSummary(submissionId: Long,
@@ -47,7 +47,9 @@ object EmployerPaymentSummary extends Logging {
   private[des] def calculateTaxMonth(to: LocalDate) = {
     val monthDay = new MonthDay(to.getMonthValue, to.getDayOfMonth)
     val yearReference = if (monthDay.isBefore(BeginningOfTaxYear)) to.getYear - 1 else to.getYear
-    monthsBetween(new LocalDate(yearReference, APRIL, TAX_YEAR_START_DAY), to).getMonths + 1
+    val taxYearStartDate = LocalDate.of(yearReference, APRIL, TAX_YEAR_START_DAY)
+    val period = Period.between(taxYearStartDate, to)
+    period.getMonths + 1
   }
 
   private[des] val toNoPayment: PartialFunction[EmployerPaymentSummary, LevyDeclaration] = {
