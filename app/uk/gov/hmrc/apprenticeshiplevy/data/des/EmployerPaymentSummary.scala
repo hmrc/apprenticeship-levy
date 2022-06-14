@@ -101,13 +101,13 @@ object EmployerPaymentSummary extends Logging {
     }
 
 
-  implicit val jodaDateTimeFormat = new Format[LocalDateTime] {
-    val localDateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+  implicit val localDateTimeFormat = new Format[LocalDateTime] {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     val DateTime = "(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}){1}(.*)".r
 
     override def reads(json: JsValue): JsResult[LocalDateTime] = implicitly[Reads[JsString]].reads(json).map { js =>
       js.value match {
-        case DateTime(timestamp,_) => LocalDateTime.parse(timestamp, localDateTimeFormat)
+        case DateTime(timestamp,_) => LocalDateTime.parse(timestamp, formatter)
         case _ => {
           logger.warn(s"Bad date time value of '${js.value}' returned from DES so returning new LocalDateTime(0L)")
           new LocalDateTime(0L)
@@ -116,7 +116,7 @@ object EmployerPaymentSummary extends Logging {
 
     }
     // $COVERAGE-OFF$
-    override def writes(date: LocalDateTime): JsValue = JsString(localDateTimeFormat.format(date))
+    override def writes(date: LocalDateTime): JsValue = JsString(formatter.format(date))
     // $COVERAGE-ON$
   }
 
