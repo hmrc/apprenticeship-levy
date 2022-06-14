@@ -48,7 +48,7 @@ class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
   override def fractionsUrl(empref: EmploymentReference): String = routes.SandboxFractionsController.fractions(empref, None, None).url
 
   override def employmentCheckUrl(empref: EmploymentReference): String = {
-    routes.SandboxEmploymentCheckController.check(empref, Nino("nino"), new LocalDate, new LocalDate)
+    routes.SandboxEmploymentCheckController.check(empref, Nino("nino"), LocalDate.now(), LocalDate.now())
       .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
   }
 
