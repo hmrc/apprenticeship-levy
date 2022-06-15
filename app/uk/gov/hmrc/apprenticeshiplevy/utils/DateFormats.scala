@@ -25,7 +25,7 @@ import scala.util.Try
 object DateFormats {
 
   val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-  val datePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+  val datePattern = DateTimeFormatter.ISO_LOCAL_DATE
 
   implicit def localDateTimeReads: Reads[LocalDateTime] = new Reads[LocalDateTime] {
     override def reads(json: JsValue): JsResult[LocalDateTime] =
