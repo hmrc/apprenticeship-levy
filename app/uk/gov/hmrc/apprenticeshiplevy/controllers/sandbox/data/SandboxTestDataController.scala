@@ -204,7 +204,7 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
               case EmployedCheck(_,_,_) => {
                 val interval = Interval(toInstant(json \ "jsonBody" \ "fromDate"),
                                             toInstant(json \ "jsonBody" \ "toDate", 1))
-                if (interval.overlap(queryInterval)) {
+                if (interval.overlaps(queryInterval)) {
                   Future.successful(result(jsonOutStr))
                 } else {
                   Future.successful(result(((json \ "jsonBody").as[JsObject] - "employed") + ("employed" -> Json.toJson(false))))

@@ -20,11 +20,12 @@ import java.time.Instant
 
 case class Interval(begin: Instant, end: Instant) {
 
-  def overlap(other: Interval): Boolean = {
-    true
+  def overlaps(other: Interval): Boolean = {
+    !(end.isBefore(other.begin) || begin.isAfter(other.end))
   }
 
   def contains(instant: Instant): Boolean = {
-    true
+    (instant.isAfter(begin) || instant.equals(begin)) &&
+      (instant.isBefore(end) || instant.equals(end))
   }
 }
