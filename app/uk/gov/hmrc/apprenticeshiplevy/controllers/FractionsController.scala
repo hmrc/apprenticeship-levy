@@ -23,6 +23,7 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
+import uk.gov.hmrc.apprenticeshiplevy.utils.DateFormats.localDateFormat
 
 import java.time.LocalDate
 import scala.concurrent.Future
