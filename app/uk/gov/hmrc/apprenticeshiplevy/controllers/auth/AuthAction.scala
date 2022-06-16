@@ -29,7 +29,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, PAClientId, ~}
+import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -67,9 +67,9 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
       authorised(
         EnrolmentHelper.enrolmentPredicate or AuthProviders(PrivilegedApplication)
       ).retrieve(
-        Retrievals.allEnrolments and Retrievals.credentials
+        Retrievals.allEnrolments and Retrievals.authProviderId
       ) {
-        case _ ~ Some(Credentials("PrivilegedApplication", _)) =>
+        case _ ~ PAClientId(_) =>
           Future.successful(Right(AuthenticatedRequest(request, None)))
         case Enrolments(enrolments) ~ _ =>
           val payeRef: Option[EmpRef] = EnrolmentHelper.getEmpRef(enrolments)

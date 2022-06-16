@@ -33,7 +33,7 @@ class EmploymentRefEndpointISpec
                 |    "state": "Activated"
                 |  }],
                 |  "optionalCredentials": {
-                |    "providerId": "PrivilegedApplication",
+                |    "providerId": "paClientId",
                 |    "providerType": "123"
                 |  }
                 |}""".stripMargin
