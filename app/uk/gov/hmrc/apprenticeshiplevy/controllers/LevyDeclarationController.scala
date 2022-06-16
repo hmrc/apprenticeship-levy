@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import org.joda.time._
 import org.slf4j.MDC
 import play.api.Logging
 import play.api.libs.json.Json
@@ -31,6 +30,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 trait LevyDeclarationController extends Logging {
@@ -77,10 +77,10 @@ trait LevyDeclarationController extends Logging {
   }
 
   private[controllers] def toDateRange(fromDate: Option[LocalDate], toDate: Option[LocalDate]): DateRange = (fromDate, toDate) match {
-    case (None, None) => ClosedDateRange(new LocalDate().minusYears(appContext.defaultNumberOfDeclarationYears), new LocalDate())
+    case (None, None) => ClosedDateRange(LocalDate.now().minusYears(appContext.defaultNumberOfDeclarationYears), LocalDate.now())
     case (Some(from), Some(to)) => ClosedDateRange(from, to)
     case (None, Some(to)) => ClosedDateRange(to.minusYears(appContext.defaultNumberOfDeclarationYears), to)
-    case (Some(from), None) => ClosedDateRange(from, new LocalDate())
+    case (Some(from), None) => ClosedDateRange(from, LocalDate.now())
   }
 
   private[controllers] def buildResult(ds: Seq[LevyDeclaration], empref: String): Result = {

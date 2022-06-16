@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import org.joda.time.LocalDate
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
@@ -32,6 +31,8 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, MockAppContext}
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+
+import java.time.LocalDate
 
 class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite with Injecting {
 
@@ -60,20 +61,20 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
 
   "validating fromDate" should {
     "should use default value if fromDate is omitted" in {
-      liveFractionsController.validateFromDate(None) shouldBe new LocalDate().minusMonths(liveFractionsController.defaultPriorMonthsForFromDate)
+      liveFractionsController.validateFromDate(None) shouldBe LocalDate.now().minusMonths(liveFractionsController.defaultPriorMonthsForFromDate)
     }
     "use date if supplied" in {
-      val date: LocalDate = new LocalDate("2013-07-22")
+      val date: LocalDate = LocalDate.parse("2013-07-22")
       liveFractionsController.validateToDate(Some(date)) shouldBe date
     }
   }
 
   "validating toDate" should {
     "should use default value if toDate is omitted" in {
-      liveFractionsController.validateToDate(None) shouldBe new LocalDate()
+      liveFractionsController.validateToDate(None) shouldBe LocalDate.now()
     }
     "use date if supplied" in {
-      val date: LocalDate = new LocalDate("2010-08-03")
+      val date: LocalDate = LocalDate.parse("2010-08-03")
       liveFractionsController.validateToDate(Some(date)) shouldBe date
     }
   }

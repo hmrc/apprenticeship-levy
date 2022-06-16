@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
@@ -26,6 +25,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentCheck, EmploymentRefer
 import uk.gov.hmrc.apprenticeshiplevy.data.des.{Employed, NotEmployed, Unknown}
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 trait EmploymentCheckController extends DesController {

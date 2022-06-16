@@ -17,11 +17,11 @@
 package uk.gov.hmrc.apprenticeshiplevy.config
 
 import java.net.{URLDecoder, URLEncoder}
-
-import org.joda.time.LocalDate
 import play.api.mvc.{PathBindable, QueryStringBindable}
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
-import uk.gov.hmrc.time.DateConverter
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import scala.util.Try
 import scala.util.matching.Regex
 
@@ -32,7 +32,7 @@ object QueryBinders {
     def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, LocalDate]] = {
       params.get(key).flatMap(_.headOption).map { date: String => (Try {
         date match {
-          case datePattern(year, _*) if year.toInt >= 2000 => Right(DateConverter.parseToLocalDate(date))
+          case datePattern(year, _*) if year.toInt >= 2000 => Right(LocalDate.parse(date))
           case _ =>
             Left(s"DATE_INVALID: '${date}' date parameter is in the wrong format. Should be '${datePattern.toString()}' where date format is yyyy-MM-dd and year is 2000 or later.")
         }
@@ -42,7 +42,7 @@ object QueryBinders {
       }
     }
 
-    def unbind(key: String, value: LocalDate): String = QueryStringBindable.bindableString.unbind(key, DateConverter.formatToString(value))
+    def unbind(key: String, value: LocalDate): String = QueryStringBindable.bindableString.unbind(key, value.format(DateTimeFormatter.ISO_LOCAL_DATE))
   }
 }
 

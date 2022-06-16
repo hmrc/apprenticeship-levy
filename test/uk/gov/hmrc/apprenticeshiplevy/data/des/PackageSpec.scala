@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import org.joda.time.LocalDate
 import play.api.libs.json._
-import play.api.libs.json.JodaReads.DefaultJodaLocalDateReads
-import play.api.libs.json.JodaWrites.DefaultJodaLocalDateWrites
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+import uk.gov.hmrc.apprenticeshiplevy.utils.DateFormats.localDateFormat
+
+import java.time.LocalDate
 
 class PackageSpec extends AppLevyUnitSpec {
   "Data Des Package" should {
@@ -32,16 +32,16 @@ class PackageSpec extends AppLevyUnitSpec {
         // check
         result shouldBe a[JsString]
         result.as[String] shouldBe "2014-02-05"
-        result.as[LocalDate] shouldBe new LocalDate("2014-02-05")
+        result.as[LocalDate] shouldBe LocalDate.parse("2014-02-05")
       }
       "provide json write" in {
         // test
-        val result = Json.toJson(new LocalDate("2014-03-05"))
+        val result = Json.toJson(LocalDate.parse("2014-03-05"))
 
         // check
         result shouldBe a[JsString]
         result.as[String] shouldBe "2014-03-05"
-        result.as[LocalDate] shouldBe new LocalDate("2014-03-05")
+        result.as[LocalDate] shouldBe LocalDate.parse("2014-03-05")
       }
     }
   }

@@ -17,13 +17,15 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
+import uk.gov.hmrc.apprenticeshiplevy.utils.DateFormats.localDateFormat
+
+import java.time.LocalDate
 import scala.concurrent.Future
 
 trait FractionsController {
@@ -54,14 +56,14 @@ trait FractionsController {
   def validateFromDate(fromDate: Option[LocalDate]): LocalDate = {
     fromDate match {
       case Some(date) => date
-      case None => new LocalDate().minusMonths(defaultPriorMonthsForFromDate)
+      case None => LocalDate.now().minusMonths(defaultPriorMonthsForFromDate)
     }
   }
 
   def validateToDate(toDate: Option[LocalDate]): LocalDate = {
     toDate match {
       case Some(date) => date
-      case None => new LocalDate()
+      case None => LocalDate.now()
     }
   }
 }
@@ -72,8 +74,6 @@ trait FractionsController {
   */
 trait FractionsCalculationDateController {
   self: DesController =>
-
-  import play.api.libs.json.JodaWrites._
 
   def desConnector: DesConnector
 

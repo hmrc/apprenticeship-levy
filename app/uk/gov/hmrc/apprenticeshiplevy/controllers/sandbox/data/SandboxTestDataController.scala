@@ -16,23 +16,23 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data
 
-import java.io.{File, FileInputStream, InputStream}
-import java.net.URLDecoder
 import com.google.inject.{Inject, Singleton}
-import org.joda.time._
 import org.slf4j.MDC
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.{Logger, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.utils.DataTransformer
+import uk.gov.hmrc.apprenticeshiplevy.utils.DateFormats.localDateReads
+import uk.gov.hmrc.apprenticeshiplevy.utils.{DataTransformer, Interval}
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.play.bootstrap.controller.Utf8MimeTypes
 
+import java.io.{File, FileInputStream, InputStream}
+import java.net.URLDecoder
+import java.time._
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Try
-import play.api.libs.json.JodaReads._
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 @Singleton
 class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
@@ -164,30 +164,26 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
   }
 
   protected def toInstant(dateStr: String): Instant = {
-    val time = LocalTime.MIDNIGHT
-    val zone = DateTimeZone.getDefault()
-    LocalDate.parse(dateStr).toDateTime(time, zone).toInstant()
+    val zone = ZoneId.systemDefault()
+    LocalDate.parse(dateStr).atStartOfDay(zone).toInstant()
   }
 
   protected def toInstant(dateStr: String, days: Int): Instant = {
-    val time = LocalTime.MIDNIGHT
-    val zone = DateTimeZone.getDefault()
-    LocalDate.parse(dateStr).plusDays(days).toDateTime(time, zone).toInstant()
+    val zone = ZoneId.systemDefault()
+    LocalDate.parse(dateStr).plusDays(days).atStartOfDay(zone).toInstant()
   }
 
   protected def toInstant(json: JsLookupResult): Instant = {
-    val time = LocalTime.MIDNIGHT
-    val zone = DateTimeZone.getDefault()
-    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{
-      case _: Throwable => LocalDateTime.parse(json.as[String]).toDateTime().toInstant()
+    val zone = ZoneId.systemDefault()
+    Try(json.as[LocalDate].atStartOfDay(zone).toInstant()).recover {
+      case _: Throwable => LocalDateTime.parse(json.as[String]).toInstant(ZoneOffset.UTC)
     }.get
   }
 
   protected def toInstant(json: JsLookupResult, days: Int): Instant = {
-    val time = LocalTime.MIDNIGHT
-    val zone = DateTimeZone.getDefault()
-    Try(json.as[LocalDate].toDateTime(time, zone).toInstant()).recover{
-      case _: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toDateTime().toInstant()
+    val zone = ZoneId.systemDefault()
+    Try(json.as[LocalDate].atStartOfDay(zone).toInstant()).recover {
+      case _: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toInstant(ZoneOffset.UTC)
     }.get
   }
 
@@ -199,16 +195,16 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
         (request.getQueryString("fromDate"), request.getQueryString("toDate")) match {
           case (maybeFrom,maybeTo) if maybeFrom.isDefined && maybeTo.isDefined  => {
             logger.debug(s"Filtering results to: ${maybeFrom} ${maybeTo}")
-            val queryInterval = new Interval(maybeFrom.map(toInstant(_)).get,
+            val queryInterval = Interval(maybeFrom.map(toInstant(_)).get,
                                              maybeTo.map(toInstant(_, 1)).get)
             val EmployedCheck = "([A-Za-z\\-/0-9]*)(employed)([A-Za-z\\-/0-9]*)".r
             val Fractions = "([A-Za-z\\-/0-9%]*)(fractions)".r
             val Declarations = "([A-Za-z\\-/0-9%]*)(employer-payment-summary)".r
             path match {
               case EmployedCheck(_,_,_) => {
-                val interval = new Interval(toInstant(json \ "jsonBody" \ "fromDate"),
+                val interval = Interval(toInstant(json \ "jsonBody" \ "fromDate"),
                                             toInstant(json \ "jsonBody" \ "toDate", 1))
-                if (interval.overlap(queryInterval) != null) {
+                if (interval.overlaps(queryInterval)) {
                   Future.successful(result(jsonOutStr))
                 } else {
                   Future.successful(result(((json \ "jsonBody").as[JsObject] - "employed") + ("employed" -> Json.toJson(false))))

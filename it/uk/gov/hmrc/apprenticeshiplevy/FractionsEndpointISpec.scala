@@ -1,6 +1,5 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import org.joda.time.LocalDate
 import org.scalacheck.Gen
 import org.scalatest.DoNotDiscover
 import org.scalatest.matchers.should.Matchers._
@@ -11,6 +10,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.{Fraction, FractionCalculation}
 import views.html.helper
+
+import java.time.LocalDate
 
 @DoNotDiscover
 class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with ScalaCheckPropertyChecks {
@@ -33,7 +34,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
-            fractions should contain atLeastOneOf(FractionCalculation(new LocalDate(2016, 12, 23), f1), FractionCalculation(new LocalDate(2015, 8, 18), f2))
+            fractions should contain atLeastOneOf(FractionCalculation(LocalDate.of(2016, 12, 23), f1), FractionCalculation(LocalDate.of(2015, 8, 18), f2))
           }
 
           it(s"should return fractions with correct empref values") {
@@ -66,7 +67,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
-            fractions should contain atLeastOneOf(FractionCalculation(new LocalDate(2016, 12, 23), f1), FractionCalculation(new LocalDate(2016, 8, 18), f2))
+            fractions should contain atLeastOneOf(FractionCalculation(LocalDate.of(2016, 12, 23), f1), FractionCalculation(LocalDate.of(2016, 8, 18), f2))
           }
 
           it(s"?toDate=2017-09-01 should return fractions") {
@@ -84,7 +85,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
-            fractions should contain atLeastOneOf(FractionCalculation(new LocalDate(2016, 12, 23), f1), FractionCalculation(new LocalDate(2016, 8, 18), f2))
+            fractions should contain atLeastOneOf(FractionCalculation(LocalDate.of(2016, 12, 23), f1), FractionCalculation(LocalDate.of(2016, 8, 18), f2))
           }
 
           it(s"?fromDate=2017-08-01&toDate=2017-09-01 should return fractions") {
@@ -102,7 +103,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
-            fractions should contain atLeastOneOf(FractionCalculation(new LocalDate(2016, 12, 23), f1), FractionCalculation(new LocalDate(2016, 8, 18), f2))
+            fractions should contain atLeastOneOf(FractionCalculation(LocalDate.of(2016, 12, 23), f1), FractionCalculation(LocalDate.of(2016, 8, 18), f2))
           }
         }
 

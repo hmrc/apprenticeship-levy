@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.data.des
+package uk.gov.hmrc.apprenticeshiplevy.utils
 
-import play.api.libs.json._
+import java.time.Instant
 
-import java.time.LocalDate
+case class Interval(begin: Instant, end: Instant) {
 
-case class FractionCalculation(calculatedAt: LocalDate, fractions: List[Fraction])
+  def overlaps(other: Interval): Boolean = {
+    !(end.isBefore(other.begin) || begin.isAfter(other.end))
+  }
 
-object FractionCalculation {
-  implicit val formats = Json.format[FractionCalculation]
+  def contains(instant: Instant): Boolean = {
+    (instant.isAfter(begin) || instant.equals(begin)) &&
+      (instant.isBefore(end) || instant.equals(end))
+  }
 }

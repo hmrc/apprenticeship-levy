@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import org.joda.time.LocalDate
 import play.api.libs.json._
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+
+import java.time.LocalDate
 
 class FractionCalculationDateSpec extends AppLevyUnitSpec {
   "FractionCalculationDate" should {
@@ -32,12 +33,12 @@ class FractionCalculationDateSpec extends AppLevyUnitSpec {
          val fractionCalculationDateOption : Option[FractionCalculationDate] = json.validate[FractionCalculationDate].fold(invalid = { _ => None }, valid = { fcd => Some(fcd) })
 
         // check
-        fractionCalculationDateOption shouldBe Some(FractionCalculationDate(new LocalDate(2016,11,19)))
+        fractionCalculationDateOption shouldBe Some(FractionCalculationDate(LocalDate.of(2016,11,19)))
       }
 
       "write" in {
         // set up
-        val obj = FractionCalculationDate(new LocalDate(2015,3,6))
+        val obj = FractionCalculationDate(LocalDate.of(2015,3,6))
 
         // test
         val result = Json.toJson(obj)

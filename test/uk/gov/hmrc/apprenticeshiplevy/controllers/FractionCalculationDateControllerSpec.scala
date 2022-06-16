@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import com.codahale.metrics.MetricRegistry
-import org.joda.time.LocalDate
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, verify, when}
@@ -34,6 +33,7 @@ import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.{Authorization, HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeAndAfterEach {
@@ -80,7 +80,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
-           .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
+           .thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
 
       // test
       await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
@@ -100,7 +100,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
-           .thenReturn(Future.successful(FractionCalculationDate(new LocalDate(2016,11,3))))
+           .thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
 
       // test
       await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",

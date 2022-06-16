@@ -16,9 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.live
 
-
 import com.google.inject.Inject
-import org.joda.time.LocalDate
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
@@ -26,6 +24,7 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AllProviderAuthActionImpl, AuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
 class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
@@ -44,7 +43,7 @@ class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
   override def fractionsUrl(empref: EmploymentReference): String = routes.LiveFractionsController.fractions(empref, None, None).url
 
   override def employmentCheckUrl(empref: EmploymentReference): String =
-    routes.LiveEmploymentCheckController.check(empref, Nino("nino"), new LocalDate, new LocalDate)
+    routes.LiveEmploymentCheckController.check(empref, Nino("nino"), LocalDate.now(), LocalDate.now())
       .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
 
 }

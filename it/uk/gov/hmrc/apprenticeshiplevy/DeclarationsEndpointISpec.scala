@@ -1,6 +1,5 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import org.joda.time.{LocalDate, LocalDateTime}
 import org.scalacheck.Gen
 import org.scalatest.DoNotDiscover
 import org.scalatest.matchers.should.Matchers._
@@ -12,6 +11,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, PayrollPeriod}
 import views.html.helper
+
+import java.time.{LocalDate, LocalDateTime}
 
 @DoNotDiscover
 class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConfig with ConfiguredServer with ScalaCheckPropertyChecks {
