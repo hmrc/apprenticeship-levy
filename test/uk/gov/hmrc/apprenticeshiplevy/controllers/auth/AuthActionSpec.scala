@@ -28,7 +28,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, RetrievalOps}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
+import uk.gov.hmrc.auth.core.retrieve.{GGCredId, LegacyCredentials, PAClientId, ~}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -69,19 +69,19 @@ class AuthActionSpec
       )
     )
 
-  val paRetrieval: Enrolments ~ Option[Credentials] =
-    Enrolments(Set()) ~ Some(Credentials("PrivilegedApplication", "app-id"))
+  val paRetrieval: Enrolments ~ LegacyCredentials =
+    Enrolments(Set()) ~ PAClientId("app-id")
 
-  val ggRetrieval: Enrolments ~ Option[Credentials] =
+  val ggRetrieval: Enrolments ~ LegacyCredentials =
     enrolments(
       Seq(
         EnrolmentIdentifier("TaxOfficeNumber", "123"),
         EnrolmentIdentifier("TaxOfficeReference", "ABCDEF")
       )
-    ) ~ Some(Credentials("", "ggCredId"))
+    ) ~ GGCredId("")
 
-  val emptyGGRetrieval: Enrolments ~ Option[Credentials] =
-    enrolments() ~ Some(Credentials("", "ggCredId"))
+  val emptyGGRetrieval: Enrolments ~ LegacyCredentials =
+    enrolments() ~ GGCredId("")
 
   "A user with no active session" should {
     "return UNAUTHORIZED" in {
@@ -181,7 +181,7 @@ class AuthActionSpec
     }
 
     "authenticate a privileged application" in {
-      when(mockAuthConnector.authorise[Enrolments ~ Option[Credentials]](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
         .thenReturn(Future.successful(paRetrieval))
 
       val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference(""))
@@ -194,7 +194,7 @@ class AuthActionSpec
 
     "authenticate an IR-PAYE enrolled user" when {
       "the request emp ref matches their emp ref" in {
-        when(mockAuthConnector.authorise[Enrolments ~ Option[Credentials]](any(), any())(any(), any()))
+        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
           .thenReturn(Future.successful(ggRetrieval))
 
         val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
@@ -208,7 +208,7 @@ class AuthActionSpec
 
     "return unauthorized for an IR-PAYE enrolled user" when {
       "the request emp ref does not match their emp ref" in {
-        when(mockAuthConnector.authorise[Enrolments ~ Option[Credentials]](any(), any())(any(), any()))
+        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
           .thenReturn(Future.successful(ggRetrieval))
 
         val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123%2FABCDE"))
@@ -219,7 +219,7 @@ class AuthActionSpec
       }
 
       "their is no emp ref returned" in {
-        when(mockAuthConnector.authorise[Enrolments ~ Option[Credentials]](any(), any())(any(), any()))
+        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
           .thenReturn(Future.successful(emptyGGRetrieval))
 
         val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
