@@ -6,7 +6,7 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     ws,
-    "uk.gov.hmrc" %% "bootstrap-backend-play-28" % "5.24.0",
+    "uk.gov.hmrc" %% "bootstrap-backend-play-28" % "6.3.0",
     "uk.gov.hmrc" %% "play-hmrc-api"             % "6.4.0-play-28",
     "uk.gov.hmrc" %% "play-hal"                  % "3.1.0-play-28",
     "uk.gov.hmrc" %% "domain"                    % "8.1.0-play-28",
@@ -14,7 +14,7 @@ object AppDependencies {
   )
 
   lazy val test: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"            %% "bootstrap-test-play-28"      % "5.24.0",
+    "uk.gov.hmrc"            %% "bootstrap-test-play-28"      % "6.3.0",
     "com.typesafe.play"      %% "play-test"                   % PlayVersion.current,
     "org.pegdown"             % "pegdown"                     % "1.6.0",
     "org.scalamock"          %% "scalamock-scalatest-support" % "3.6.0",
