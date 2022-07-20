@@ -33,7 +33,7 @@ object AppDependencies {
   ).map(_ % "test,it")
 
   lazy val acceptanceTest: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"   %% "bootstrap-test-play-28" % "5.24.0",
+    "uk.gov.hmrc"   %% "bootstrap-test-play-28" % "6.3.0",
     "org.pegdown"    % "pegdown"                % "1.6.0",
     "org.scalaj"    %% "scalaj-http"            % "2.4.2",
   ).map(_ % "test, ac")
