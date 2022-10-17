@@ -1,0 +1,2045 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Apprenticeship Levy",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.service.hmrc.gov.uk/"
+    }
+  ],
+  "paths": {
+    "/apprenticeship-levy/": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Get all employer references",
+                  "example": {
+                    "_links": {
+                      "self": {
+                        "href": "/"
+                      },
+                      "123/AB12345": {
+                        "href": "/epaye/123%2FAB12345"
+                      }
+                    },
+                    "emprefs": [
+                      "123/AB12345"
+                    ]
+                  },
+                  "includePath": "schemas/get-all-employers.json",
+                  "type": "object",
+                  "properties": {
+                    "_links": {
+                      "type": "object",
+                      "properties": {
+                        "{empref}": {
+                          "type": "object",
+                          "properties": {
+                            "href": {
+                              "description": "The relative link to fetch the details for this employer reference",
+                              "example": "/epaye/840%2FMODES17",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "href"
+                          ]
+                        },
+                        "self": {
+                          "type": "object",
+                          "properties": {
+                            "href": {
+                              "description": "The relative link to fetch this data",
+                              "example": "/",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "href"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "{empref}",
+                        "self"
+                      ]
+                    },
+                    "emprefs": {
+                      "type": "array",
+                      "items": {
+                        "pattern": "^\\d{3}/[A-Za-z0-9]+$",
+                        "description": "Employer's reference, consisting of 3 numbers of tax office and remaining string being employer's reference",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [
+                    "_links",
+                    "emprefs"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "400_AUTH_ERROR_BAD_REQUEST": {
+                    "code": "AUTH_ERROR_BAD_REQUEST"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "401_INVALID_CREDENTIALS": {
+                    "code": "INVALID_CREDENTIALS"
+                  },
+                  "401_AUTH_ERROR_UNAUTHORIZED": {
+                    "code": "AUTH_ERROR_UNAUTHORIZED"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "403_AUTH_ERROR_FORBIDDEN": {
+                    "code": "AUTH_ERROR_FORBIDDEN"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "404_AUTH_ERROR_NOT_FOUND": {
+                    "code": "AUTH_ERROR_NOT_FOUND"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "408_AUTH_ERROR_REQUEST_TIMEOUT": {
+                    "code": "AUTH_ERROR_REQUEST_TIMEOUT"
+                  },
+                  "408_AUTH_ERROR_GATEWAY_TIMEOUT": {
+                    "code": "AUTH_ERROR_GATEWAY_TIMEOUT"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "409_AUTH_ERROR_TOO_MANY_REQUESTS": {
+                    "code": "AUTH_ERROR_TOO_MANY_REQUESTS"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "498": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "498_AUTH_ERROR_WRONG_TOKEN": {
+                    "code": "AUTH_ERROR_WRONG_TOKEN"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "500_AUTH_ERROR_INTERNAL_SERVER_ERROR": {
+                    "code": "AUTH_ERROR_INTERNAL_SERVER_ERROR"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "503_AUTH_ERROR_BACKEND_FAILURE": {
+                    "code": "AUTH_ERROR_BACKEND_FAILURE"
+                  },
+                  "503_AUTH_ERROR_OTHER": {
+                    "code": "AUTH_ERROR_OTHER"
+                  },
+                  "503_AUTH_ERROR_IO": {
+                    "code": "AUTH_ERROR_IO"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns a list of valid links indexed by empref in HAL format\n\nDepartmental Access with a Time-based One-Time Password (**TOTP**) in cases where the application needs to track amendments for schemes where the OAuth access token has expired is *NOT* applicable to this endpoint.",
+        "operationId": "Get all employers",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/trait_headers.acceptHeader_Accept"
+          }
+        ],
+        "x-annotation-annotations.scope": "read:apprenticeship-levy",
+        "x-annotation-annotations.sandboxData": "There is only one response to this endpoint in both the sandbox and external test\nenvironments. Both will return responses similar to where the employer references\nincluded *may* be replaced by the employer reference associated with your test account:\n\n<pre class=\"code--block\">\n{\n  \"_links\": {\n    \"840/MODES17\": {\n      \"href\": \"/epaye/840%2FMODES17\"\n    },\n    \"self\": {\n      \"href\": \"/\"\n    }\n  },\n  \"emprefs\": [\n    \"840/MODES17\"\n  ]\n}\n</pre>\n"
+      }
+    },
+    "/apprenticeship-levy/epaye/{empref}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Get employer's details",
+                  "example": {
+                    "_links": {
+                      "self": {
+                        "href": "/epaye/123%2FAB12345"
+                      },
+                      "declarations": {
+                        "href": "/epaye/123%2FAB12345/declarations"
+                      },
+                      "fractions": {
+                        "href": "/epaye/123%2FAB12345/fractions"
+                      },
+                      "employment-check": {
+                        "href": "/epaye/123%2FAB12345/employed"
+                      }
+                    },
+                    "empref": "123/AB12345",
+                    "employer": {
+                      "name": {
+                        "nameLine1": "Foo Bar Ltd."
+                      }
+                    }
+                  },
+                  "includePath": "schemas/get-employer-details.json",
+                  "type": "object",
+                  "properties": {
+                    "_links": {
+                      "type": "object",
+                      "properties": {
+                        "fractions": {
+                          "type": "object",
+                          "properties": {
+                            "href": {
+                              "description": "The relative link to fetch English percentage for this employer reference",
+                              "example": "/epaye/123%2FAB12345/fractions",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "href"
+                          ]
+                        },
+                        "declarations": {
+                          "type": "object",
+                          "properties": {
+                            "href": {
+                              "description": "The relative link to fetch levy declarations for this employer reference",
+                              "example": "/epaye/123%2FAB12345/declarations",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "href"
+                          ]
+                        },
+                        "employment-check": {
+                          "type": "object",
+                          "properties": {
+                            "href": {
+                              "description": "The relative link to fetch employee employment status for this employer reference",
+                              "example": "/epaye/123%2FAB12345/employed/{nino}",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "href"
+                          ]
+                        },
+                        "self": {
+                          "type": "object",
+                          "properties": {
+                            "href": {
+                              "description": "The relative link to fetch contact details this employer reference",
+                              "example": "/epaye/123%2FAB12345",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "href"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "fractions",
+                        "declarations",
+                        "employment-check",
+                        "self"
+                      ]
+                    },
+                    "empref": {
+                      "description": "The PAYE Reference for the employer. This will be the same as provided in the URL.",
+                      "example": "123/AB12345",
+                      "type": "string"
+                    },
+                    "employer": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "nameLine1": {
+                              "description": "The first line of the employer's name",
+                              "example": "KILL-JOY PLC THE FUNERAL",
+                              "type": "string"
+                            },
+                            "nameLine2": {
+                              "description": "The second line of the employer's name",
+                              "example": "COMPANY",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "nameLine1",
+                            "nameLine2"
+                          ]
+                        },
+                        "address": {
+                          "type": "object",
+                          "properties": {
+                            "addressLine1": {
+                              "description": "The first line of the employer's address",
+                              "example": "Foreign Address Line 1",
+                              "type": "string"
+                            },
+                            "addressLine2": {
+                              "description": "The second line of the employer's address",
+                              "example": "Foreign Address Line 2",
+                              "type": "string"
+                            },
+                            "addressLine3": {
+                              "description": "The third line of the employer's address",
+                              "example": "Foreign Address Line 3",
+                              "type": "string"
+                            },
+                            "addressLine4": {
+                              "description": "The forth line of the employer's address",
+                              "example": "Foreign Address Line 4",
+                              "type": "string"
+                            },
+                            "addressLine5": {
+                              "description": "The fifth line of the employer's address",
+                              "example": "Foreign Address Line 5",
+                              "type": "string"
+                            },
+                            "postcode": {
+                              "description": "The fifth line of the employer's address",
+                              "example": "NE30 4XX",
+                              "type": "string"
+                            },
+                            "foreignCountry": {
+                              "description": "The country of the employer's address",
+                              "example": "France",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "addressLine1",
+                            "addressLine2",
+                            "addressLine3",
+                            "addressLine4",
+                            "addressLine5",
+                            "postcode",
+                            "foreignCountry"
+                          ]
+                        },
+                        "contact": {
+                          "type": "object",
+                          "properties": {
+                            "telephone": {
+                              "type": "object",
+                              "properties": {
+                                "telephoneNumber": {
+                                  "description": "The employer's main contact telephone number",
+                                  "example": "0123 456789",
+                                  "type": "string"
+                                },
+                                "fax": {
+                                  "description": "The employer's main contact telephone number",
+                                  "example": "0123 456789",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "telephoneNumber",
+                                "fax"
+                              ]
+                            },
+                            "email": {
+                              "type": "object",
+                              "properties": {
+                                "primary": {
+                                  "description": "The fifth line of the employer's address",
+                                  "example": "someone@hmrc.gov.uk",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "primary"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "telephone",
+                            "email"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "address",
+                        "contact"
+                      ]
+                    },
+                    "communication": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "nameLine1": {
+                              "description": "The first line of the employer's name",
+                              "example": "KILL-JOY PLC THE FUNERAL",
+                              "type": "string"
+                            },
+                            "nameLine2": {
+                              "description": "The second line of the employer's name",
+                              "example": "COMPANY",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "nameLine1",
+                            "nameLine2"
+                          ]
+                        },
+                        "address": {
+                          "type": "object",
+                          "properties": {
+                            "addressLine1": {
+                              "description": "The first line of the employer's address",
+                              "example": "Foreign Address Line 1",
+                              "type": "string"
+                            },
+                            "addressLine2": {
+                              "description": "The second line of the employer's address",
+                              "example": "Foreign Address Line 2",
+                              "type": "string"
+                            },
+                            "addressLine3": {
+                              "description": "The third line of the employer's address",
+                              "example": "Foreign Address Line 3",
+                              "type": "string"
+                            },
+                            "addressLine4": {
+                              "description": "The forth line of the employer's address",
+                              "example": "Foreign Address Line 4",
+                              "type": "string"
+                            },
+                            "addressLine5": {
+                              "description": "The fifth line of the employer's address",
+                              "example": "Foreign Address Line 5",
+                              "type": "string"
+                            },
+                            "postcode": {
+                              "description": "The fifth line of the employer's address",
+                              "example": "NE30 4XX",
+                              "type": "string"
+                            },
+                            "foreignCountry": {
+                              "description": "The country of the employer's address",
+                              "example": "France",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "addressLine1",
+                            "addressLine2",
+                            "addressLine3",
+                            "addressLine4",
+                            "addressLine5",
+                            "postcode",
+                            "foreignCountry"
+                          ]
+                        },
+                        "contact": {
+                          "type": "object",
+                          "properties": {
+                            "telephone": {
+                              "type": "object",
+                              "properties": {
+                                "telephoneNumber": {
+                                  "description": "The employer's main contact telephone number",
+                                  "example": "0123 456789",
+                                  "type": "string"
+                                },
+                                "fax": {
+                                  "description": "The employer's main contact telephone number",
+                                  "example": "0123 456789",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "telephoneNumber",
+                                "fax"
+                              ]
+                            },
+                            "email": {
+                              "type": "object",
+                              "properties": {
+                                "primary": {
+                                  "description": "The fifth line of the employer's address",
+                                  "example": "someone@hmrc.gov.uk",
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "primary"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "telephone",
+                            "email"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "address",
+                        "contact"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "_links",
+                    "empref",
+                    "employer",
+                    "communication"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "400_EMPREF_INVALID": {
+                    "code": "EMPREF_INVALID"
+                  },
+                  "400_AUTH_ERROR_BAD_REQUEST": {
+                    "code": "AUTH_ERROR_BAD_REQUEST"
+                  },
+                  "400_DES_ERROR_BAD_REQUEST": {
+                    "code": "DES_ERROR_BAD_REQUEST"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "401_INVALID_CREDENTIALS": {
+                    "code": "INVALID_CREDENTIALS"
+                  },
+                  "401_AUTH_ERROR_UNAUTHORIZED": {
+                    "code": "AUTH_ERROR_UNAUTHORIZED"
+                  },
+                  "401_DES_ERROR_UNAUTHORIZED": {
+                    "code": "DES_ERROR_UNAUTHORIZED"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "403_AUTH_ERROR_FORBIDDEN": {
+                    "code": "AUTH_ERROR_FORBIDDEN"
+                  },
+                  "403_DES_ERROR_FORBIDDEN": {
+                    "code": "DES_ERROR_FORBIDDEN"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "404_EPAYE_EMPREF_UNKNOWN": {
+                    "code": "EPAYE_EMPREF_UNKNOWN"
+                  },
+                  "404_AUTH_ERROR_NOT_FOUND": {
+                    "code": "AUTH_ERROR_NOT_FOUND"
+                  },
+                  "404_DES_ERROR_NOT_FOUND": {
+                    "code": "DES_ERROR_NOT_FOUND"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "408_AUTH_ERROR_REQUEST_TIMEOUT": {
+                    "code": "AUTH_ERROR_REQUEST_TIMEOUT"
+                  },
+                  "408_AUTH_ERROR_GATEWAY_TIMEOUT": {
+                    "code": "AUTH_ERROR_GATEWAY_TIMEOUT"
+                  },
+                  "408_DES_ERROR_GATEWAY_TIMEOUT": {
+                    "code": "DES_ERROR-GATEWAY_TIMEOUT"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "429_AUTH_ERROR_TOO_MANY_REQUESTS": {
+                    "code": "AUTH_ERROR_TOO_MANY_REQUESTS"
+                  },
+                  "429_DES_ERROR_TOO_MANY_REQUESTS": {
+                    "code": "DES_ERROR_TOO_MANY_REQUESTS"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "500_AUTH_ERROR_INTERNAL_SERVER_ERROR": {
+                    "code": "AUTH_ERROR_INTERNAL_SERVER_ERROR"
+                  },
+                  "500_DES_ERROR_JSON_FAILURE": {
+                    "code": "DES_ERROR_JSON_FAILURE"
+                  },
+                  "500_DES_ERROR_API": {
+                    "code": "DES_ERROR_API"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "503_AUTH_ERROR_BACKEND_FAILURE": {
+                    "code": "AUTH_ERROR_BACKEND_FAILURE"
+                  },
+                  "503_AUTH_ERROR_OTHER": {
+                    "code": "AUTH_ERROR_OTHER"
+                  },
+                  "503_AUTH_ERROR_IO": {
+                    "code": "AUTH_ERROR_IO"
+                  },
+                  "503_DES_ERROR_BACKEND_FAILURE": {
+                    "code": "DES_ERROR_BACKEND_FAILURE"
+                  },
+                  "503_DES_ERROR_OTHER": {
+                    "code": "DES_ERROR_OTHER"
+                  },
+                  "503_DES_ERROR_IO": {
+                    "code": "DES_ERROR_IO"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns more details about an empref including details about the employer and a list of available endpoints that apply to the empref.\n\nDepartmental Access with a Time-based One-Time Password (**TOTP**) in cases where the application needs to track amendments for schemes where the OAuth access token has expired is *NOT* applicable to this endpoint.",
+        "operationId": "Get employer details",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/trait_headers.acceptHeader_Accept"
+          }
+        ],
+        "x-annotation-annotations.scope": "read:apprenticeship-levy",
+        "x-annotation-annotations.sandboxData": "##### External Test Environment\n\nYou will need to create a [test user](https://test-developer.service.hmrc.gov.uk/api-test-user) when using the external test environment.\n\n*Please ensure your parameters are URL encoded.*\n\n##### Available Data\n\n<table>\n    <thead>\n        <tr>\n        <th style=\"width:37%\">Empref Parameters</th>\n        <th style=\"width:63%\">Response</th>\n        </tr>\n    </thead>\n    <tbody>\n    <tr>\n      <td><code class='code--slim'>111%2FAA00001</code></td>\n      <td><pre class='code--block'>\n{\n\"_links\": {\n    \"declarations\": {\n        \"href\": \"/epaye/111%2FAA00001/declarations\"\n    },\n    \"employment-check\": {\n        \"href\": \"/epaye/111%2FAA00001/employed/{nino}\"\n    },\n    \"fractions\": {\n        \"href\": \"/epaye/111%2FAA00001/fractions\"\n    },\n    \"self\": {\n        \"href\": \"/epaye/111%2FAA00001\"\n    }\n},\n\"empref\": \"111/AA00001\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>222%2FAA00001</code></td>\n      <td><pre class='code--block'>\n{\n\"_links\": {\n    \"declarations\": {\n        \"href\": \"/epaye/111%2FAA00001/declarations\"\n    },\n    \"employment-check\": {\n        \"href\": \"/epaye/111%2FAA00001/employed/{nino}\"\n    },\n    \"fractions\": {\n        \"href\": \"/epaye/111%2FAA00001/fractions\"\n    },\n    \"self\": {\n        \"href\": \"/epaye/111%2FAA00001\"\n    }\n},\n\"empref\": \"111/AA00001\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>222%2FAA00002</code></td>\n      <td><pre class='code--block'>\n{\n\"_links\": {\n    \"declarations\": {\n        \"href\": \"/epaye/111%2FAA00001/declarations\"\n    },\n    \"employment-check\": {\n        \"href\": \"/epaye/111%2FAA00001/employed/{nino}\"\n    },\n    \"fractions\": {\n        \"href\": \"/epaye/111%2FAA00001/fractions\"\n    },\n    \"self\": {\n        \"href\": \"/epaye/111%2FAA00001\"\n    }\n},\n\"empref\": \"111/AA00001\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>222%2FAA00003</code></td>\n      <td><pre class='code--block'>\n{\n\"_links\": {\n    \"declarations\": {\n        \"href\": \"/epaye/111%2FAA00001/declarations\"\n    },\n    \"employment-check\": {\n        \"href\": \"/epaye/111%2FAA00001/employed/{nino}\"\n    },\n    \"fractions\": {\n        \"href\": \"/epaye/111%2FAA00001/fractions\"\n    },\n    \"self\": {\n        \"href\": \"/epaye/111%2FAA00001\"\n    }\n},\n\"empref\": \"111/AA00001\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>333%2FAA00001</code></td>\n      <td><pre class='code--block'>\n{\n\"_links\": {\n    \"declarations\": {\n        \"href\": \"/epaye/111%2FAA00001/declarations\"\n    },\n    \"employment-check\": {\n        \"href\": \"/epaye/111%2FAA00001/employed/{nino}\"\n    },\n    \"fractions\": {\n        \"href\": \"/epaye/111%2FAA00001/fractions\"\n    },\n    \"self\": {\n        \"href\": \"/epaye/111%2FAA00001\"\n    }\n},\n\"empref\": \"111/AA00001\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>840%2FMODES17</code></td>\n      <td><pre class='code--block'>\n{\n\"_links\": {\n    \"declarations\": {\n        \"href\": \"/epaye/111%2FAA00001/declarations\"\n    },\n    \"employment-check\": {\n        \"href\": \"/epaye/111%2FAA00001/employed/{nino}\"\n    },\n    \"fractions\": {\n        \"href\": \"/epaye/111%2FAA00001/fractions\"\n    },\n    \"self\": {\n        \"href\": \"/epaye/111%2FAA00001\"\n    }\n},\n\"empref\": \"111/AA00001\"\n}\n</pre>\n      </td>\n    </tr>\n    </tbody>\n</table>\n"
+      },
+      "parameters": [
+        {
+          "name": "empref",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "A valid (URL encoded) employer reference for the PAYE scheme."
+        }
+      ]
+    },
+    "/apprenticeship-levy/epaye/{empref}/declarations": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Employer Levy Declarations.",
+                  "example": {
+                    "empref": "123/AB12345",
+                    "declarations": [
+                      {
+                        "id": 12345684,
+                        "submissionTime": "2016-10-15T16:05:23.000",
+                        "dateCeased": "2016-09-05"
+                      },
+                      {
+                        "id": 12345683,
+                        "submissionTime": "2016-07-15T16:05:23.000",
+                        "inactiveFrom": "2016-06-06",
+                        "inactiveTo": "2016-09-05"
+                      },
+                      {
+                        "id": 12345682,
+                        "submissionTime": "2016-06-15T16:05:23.000",
+                        "payrollPeriod": {
+                          "year": "16-17",
+                          "month": 2
+                        },
+                        "levyDueYTD": 200,
+                        "levyAllowanceForFullYear": 15000
+                      },
+                      {
+                        "id": 12345681,
+                        "submissionTime": "2016-06-07T16:05:23.000",
+                        "payrollPeriod": {
+                          "year": "16-17",
+                          "month": 2
+                        },
+                        "levyDueYTD": 1000,
+                        "levyAllowanceForFullYear": 15000
+                      },
+                      {
+                        "id": 12345680,
+                        "submissionTime": "2016-05-07T16:05:23.000",
+                        "payrollPeriod": {
+                          "year": "16-17",
+                          "month": 1
+                        },
+                        "levyDueYTD": 500,
+                        "levyAllowanceForFullYear": 15000
+                      },
+                      {
+                        "id": 12345679,
+                        "submissionTime": "2015-04-07T16:05:23.000",
+                        "payrollPeriod": {
+                          "year": "15-16",
+                          "month": 12
+                        },
+                        "noPaymentForPeriod": true
+                      },
+                      {
+                        "id": 12345678,
+                        "submissionTime": "2016-03-07T16:05:23.000",
+                        "payrollPeriod": {
+                          "year": "15-16",
+                          "month": 11
+                        },
+                        "levyDueYTD": 600,
+                        "levyAllowanceForFullYear": 15000
+                      }
+                    ]
+                  },
+                  "includePath": "schemas/get-employer-levy-declarations.json",
+                  "type": "object",
+                  "properties": {
+                    "empref": {
+                      "description": "The PAYE Reference for the employer. This will be the same as provided in the URL.",
+                      "example": "123/AB12345",
+                      "type": "string"
+                    },
+                    "declarations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "description": "A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed. Dividing this identifier by 10 (ignoring the remainder) gives the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed. Taking this identifier modulo 10 gives the type of entry: 0, no entry; 1, inactive; 2, levy declaration; 3, ceased.",
+                            "example": "12345684",
+                            "type": "number"
+                          },
+                          "dateCeased": {
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                            "description": "If present, indicates the date that the payroll scheme was ceased.",
+                            "example": "2016–03–17",
+                            "type": "string"
+                          },
+                          "inactiveFrom": {
+                            "pattern": "^\\d{4}-\\d{2}-06$",
+                            "description": "Indicates the the payroll scheme will be inactive starting from this date. Should always be the 6th of the month of the first inactive payroll period.",
+                            "example": "2016–06–06",
+                            "type": "string"
+                          },
+                          "inactiveTo": {
+                            "pattern": "^\\d{4}-\\d{2}-05$",
+                            "description": "The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period.",
+                            "example": "2016–09–05",
+                            "type": "string"
+                          },
+                          "noPaymentForPeriod": {
+                            "description": "If present, will always have the value true and indicates that no declaration was necessary for this period. This can be interpreted to mean that the YTD levy balance is unchanged from the previous submitted value.",
+                            "example": true,
+                            "type": "boolean"
+                          },
+                          "submissionTime": {
+                            "description": "The time at which the EPS submission that this declaration relates to was received by HMRC. If the backend systems return a bad date that can not be handled this will be set to 1970-01-01T01:00:00.000.",
+                            "example": "2016–02–21T16:05:23.000.000",
+                            "type": "string"
+                          },
+                          "payrollPeriod": {
+                            "type": "object",
+                            "properties": {
+                              "year": {
+                                "description": "The tax year of the payroll period against which the declaration was made.",
+                                "example": "15-16",
+                                "type": "string"
+                              },
+                              "month": {
+                                "description": "The tax month of the payroll period against which the declaration was made. Month 1 is April.",
+                                "example": "1",
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "year",
+                              "month"
+                            ]
+                          },
+                          "levyDueYTD": {
+                            "description": "The amount of apprenticeship levy that was declared in the payroll month.",
+                            "example": "600.20",
+                            "type": "number"
+                          },
+                          "allowance": {
+                            "description": "The annual amount of apprenticeship levy allowance that has been allocated to this payroll scheme. If absent then the value can be taken as 0. The maximum value in the 2017/18 will be 15,000.",
+                            "example": "15000",
+                            "type": "number"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "dateCeased",
+                          "inactiveFrom",
+                          "inactiveTo",
+                          "noPaymentForPeriod",
+                          "submissionTime",
+                          "payrollPeriod",
+                          "levyDueYTD",
+                          "allowance"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "empref",
+                    "declarations"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "400_EMPREF_INVALID": {
+                    "code": "EMPREF_INVALID"
+                  },
+                  "400_DATE_INVALID": {
+                    "code": "DATE_INVALID"
+                  },
+                  "400_AUTH_ERROR_BAD_REQUEST": {
+                    "code": "AUTH_ERROR_BAD_REQUEST"
+                  },
+                  "400_DES_ERROR_BAD_REQUEST": {
+                    "code": "DES_ERROR_BAD_REQUEST"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "401_INVALID_CREDENTIALS": {
+                    "code": "INVALID_CREDENTIALS"
+                  },
+                  "401_AUTH_ERROR_UNAUTHORIZED": {
+                    "code": "AUTH_ERROR_UNAUTHORIZED"
+                  },
+                  "401_DES_ERROR_UNAUTHORIZED": {
+                    "code": "DES_ERROR_UNAUTHORIZED"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "403_AUTH_ERROR_FORBIDDEN": {
+                    "code": "AUTH_ERROR_FORBIDDEN"
+                  },
+                  "403_DES_ERROR_FORBIDDEN": {
+                    "code": "DES_ERROR_FORBIDDEN"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "404_EPAYE_EMPREF_UNKNOWN": {
+                    "code": "EPAYE_EMPREF_UNKNOWN"
+                  },
+                  "404_AUTH_ERROR_NOT_FOUND": {
+                    "code": "AUTH_ERROR_NOT_FOUND"
+                  },
+                  "404_DES_ERROR_NOT_FOUND": {
+                    "code": "DES_ERROR_NOT_FOUND"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "408_AUTH_ERROR_REQUEST_TIMEOUT": {
+                    "code": "AUTH_ERROR_REQUEST_TIMEOUT"
+                  },
+                  "408_AUTH_ERROR_GATEWAY_TIMEOUT": {
+                    "code": "AUTH_ERROR_GATEWAY_TIMEOUT"
+                  },
+                  "408_DES_ERROR_GATEWAY_TIMEOUT": {
+                    "code": "DES_ERROR-GATEWAY_TIMEOUT"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "429_AUTH_ERROR_TOO_MANY_REQUESTS": {
+                    "code": "AUTH_ERROR_TOO_MANY_REQUESTS"
+                  },
+                  "429_DES_ERROR_TOO_MANY_REQUESTS": {
+                    "code": "DES_ERROR_TOO_MANY_REQUESTS"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "500_AUTH_ERROR_INTERNAL_SERVER_ERROR": {
+                    "code": "AUTH_ERROR_INTERNAL_SERVER_ERROR"
+                  },
+                  "500_DES_ERROR_JSON_FAILURE": {
+                    "code": "DES_ERROR_JSON_FAILURE"
+                  },
+                  "500_DES_ERROR_BACKEND_FAILURE": {
+                    "code": "DES_ERROR_BACKEND_FAILURE"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "503_AUTH_ERROR_BACKEND_FAILURE": {
+                    "code": "AUTH_ERROR_BACKEND_FAILURE"
+                  },
+                  "503_AUTH_ERROR_OTHER": {
+                    "code": "AUTH_ERROR_OTHER"
+                  },
+                  "503_AUTH_ERROR_IO": {
+                    "code": "AUTH_ERROR_IO"
+                  },
+                  "503_DES_ERROR_BACKEND_FAILURE": {
+                    "code": "DES_ERROR_BACKEND_FAILURE"
+                  },
+                  "503_DES_ERROR_OTHER": {
+                    "code": "DES_ERROR_OTHER"
+                  },
+                  "503_DES_ERROR_IO": {
+                    "code": "DES_ERROR_IO"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns a list of levy declarations for a given employer reference.\n\n",
+        "operationId": "Get employer levy declarations",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/trait_headers.acceptHeader_Accept"
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "The date of the earliest record to return. If no date is supplied the default date of current month/year - 6 years will be used.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "The date of the latest record to return. If no date is supplied the default date of 'now'/'today' will be used.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "x-annotation-annotations.scope": "read:apprenticeship-levy",
+        "x-annotation-annotations.sandboxData": "##### External Test Environment\n\nYou will need to create a [test user](https://test-developer.service.hmrc.gov.uk/api-test-user) when using the external test environment.\n\n*Please ensure your parameters are URL encoded.*\n\n##### Available Data\n<table>\n    <thead>\n        <tr>\n        <th style=\"width:37%\">Empref Parameters</th>\n        <th style=\"width:63%\">Response</th>\n        </tr>\n    </thead>\n    <tbody>\n    <tr>\n      <td><code class='code--slim'>123/AB12345</code></td>\n      <td><pre class='code--block'>\n{\n\"declarations\": [\n    {\n        \"dateCeased\": \"2016-09-05\",\n        \"id\": 123456843,\n        \"submissionId\": 12345684,\n        \"submissionTime\": \"2016-10-15T16:05:23.000\"\n    },\n    {\n        \"id\": 123456831,\n        \"inactiveFrom\": \"2016-06-06\",\n        \"inactiveTo\": \"2016-09-05\",\n        \"submissionId\": 12345683,\n        \"submissionTime\": \"2016-07-15T16:05:23.000\"\n    },\n    {\n        \"id\": 123456782,\n        \"levyAllowanceForFullYear\": 15000,\n        \"levyDueYTD\": 600,\n        \"payrollPeriod\": {\n            \"month\": 11,\n            \"year\": \"16-17\"\n        },\n        \"submissionId\": 12345678,\n        \"submissionTime\": \"2016-07-14T16:05:23.000\"\n    },\n    {\n        \"id\": 123456822,\n        \"levyAllowanceForFullYear\": 15000,\n        \"levyDueYTD\": 200,\n        \"payrollPeriod\": {\n            \"month\": 2,\n            \"year\": \"16-17\"\n        },\n        \"submissionId\": 12345682,\n        \"submissionTime\": \"2016-06-15T16:20:23.000\"\n    },\n    {\n        \"id\": 123456812,\n        \"levyAllowanceForFullYear\": 15000,\n        \"levyDueYTD\": 1000,\n        \"payrollPeriod\": {\n            \"month\": 2,\n            \"year\": \"16-17\"\n        },\n        \"submissionId\": 12345681,\n        \"submissionTime\": \"2016-06-07T16:05:23.000\"\n    },\n    {\n        \"id\": 123456802,\n        \"levyAllowanceForFullYear\": 15000,\n        \"levyDueYTD\": 500,\n        \"payrollPeriod\": {\n            \"month\": 1,\n            \"year\": \"16-17\"\n        },\n        \"submissionId\": 12345680,\n        \"submissionTime\": \"2016-05-07T16:05:23.000\"\n    },\n    {\n        \"id\": 123456790,\n        \"noPaymentForPeriod\": true,\n        \"payrollPeriod\": {\n            \"month\": 12,\n            \"year\": \"15-16\"\n        },\n        \"submissionId\": 12345679,\n        \"submissionTime\": \"2015-04-07T16:05:23.000\"\n    }\n],\n\"empref\": \"123/AB12345\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>840/FZ00065</code></td>\n      <td><pre class='code--block'>\n{\n\"declarations\": [\n    {\n        \"id\": 924352,\n        \"levyAllowanceForFullYear\": 1000,\n        \"levyDueYTD\": 700,\n        \"payrollPeriod\": {\n            \"month\": 1,\n            \"year\": \"17-18\"\n        },\n        \"submissionId\": 92435,\n        \"submissionTime\": \"2017-04-20T11:30:50.000\"\n    },\n    {\n        \"id\": 552661,\n        \"inactiveFrom\": \"2014-12-06\",\n        \"inactiveTo\": \"2015-09-05\",\n        \"submissionId\": 55266,\n        \"submissionTime\": \"2014-12-05T15:16:26.000\"\n    },\n    {\n        \"id\": 552651,\n        \"inactiveFrom\": \"2014-12-06\",\n        \"inactiveTo\": \"2015-08-05\",\n        \"submissionId\": 55265,\n        \"submissionTime\": \"2014-12-05T15:16:24.000\"\n    },\n    {\n        \"id\": 552631,\n        \"inactiveFrom\": \"2014-12-06\",\n        \"inactiveTo\": \"2015-09-05\",\n        \"submissionId\": 55263,\n        \"submissionTime\": \"2014-12-05T15:16:23.000\"\n    },\n    {\n        \"id\": 552640,\n        \"noPaymentForPeriod\": true,\n        \"payrollPeriod\": {\n            \"month\": 6,\n            \"year\": \"14-15\"\n        },\n        \"submissionId\": 55264,\n        \"submissionTime\": \"2014-12-05T15:16:23.000\"\n    },\n    {\n        \"id\": 552641,\n        \"inactiveFrom\": \"2014-12-06\",\n        \"inactiveTo\": \"2015-08-05\",\n        \"submissionId\": 55264,\n        \"submissionTime\": \"2014-12-05T15:16:23.000\"\n    },\n    {\n        \"dateCeased\": \"2014-06-10\",\n        \"id\": 552643,\n        \"submissionId\": 55264,\n        \"submissionTime\": \"2014-12-05T15:16:23.000\"\n    },\n    {\n        \"id\": 552621,\n        \"inactiveFrom\": \"2014-12-06\",\n        \"inactiveTo\": \"2015-08-05\",\n        \"submissionId\": 55262,\n        \"submissionTime\": \"2014-12-05T15:16:21.000\"\n    },\n    {\n        \"id\": 552601,\n        \"inactiveFrom\": \"2014-12-06\",\n        \"inactiveTo\": \"2015-09-05\",\n        \"submissionId\": 55260,\n        \"submissionTime\": \"2014-12-05T15:16:19.000\"\n    },\n    {\n        \"id\": 552611,\n        \"inactiveFrom\": \"2014-12-06\",\n        \"inactiveTo\": \"2015-09-05\",\n        \"submissionId\": 55261,\n        \"submissionTime\": \"2014-12-05T15:16:19.000\"\n    },\n    {\n        \"id\": 552590,\n        \"noPaymentForPeriod\": true,\n        \"payrollPeriod\": {\n            \"month\": 6,\n            \"year\": \"14-15\"\n        },\n        \"submissionId\": 55259,\n        \"submissionTime\": \"2014-12-05T14:54:26.000\"\n    },\n    {\n        \"id\": 552591,\n        \"inactiveFrom\": \"2014-12-06\",\n        \"inactiveTo\": \"2015-08-05\",\n        \"submissionId\": 55259,\n        \"submissionTime\": \"2014-12-05T14:54:26.000\"\n    },\n    {\n        \"dateCeased\": \"2014-05-05\",\n        \"id\": 552593,\n        \"submissionId\": 55259,\n        \"submissionTime\": \"2014-12-05T14:54:26.000\"\n    },\n    {\n        \"dateCeased\": \"2013-04-06\",\n        \"id\": 884433,\n        \"submissionId\": 88443,\n        \"submissionTime\": \"2013-04-06T12:22:33.000\"\n    },\n    {\n        \"dateCeased\": \"2013-04-06\",\n        \"id\": 884703,\n        \"submissionId\": 88470,\n        \"submissionTime\": \"2013-04-06T12:22:33.000\"\n    }\n],\n\"empref\": \"840/FZ00065\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>840/UZ00038</code></td>\n      <td><pre class='code--block'>\n{\n\"declarations\": [\n    {\n        \"dateCeased\": \"2014-04-06\",\n        \"id\": 294423,\n        \"submissionId\": 29442,\n        \"submissionTime\": \"2014-04-28T12:22:33.000\"\n    }\n],\n\"empref\": \"840/UZ00038\"\n}\n</pre>\n      </td>\n    </tr>\n    </tbody>\n</table>\n"
+      },
+      "parameters": [
+        {
+          "name": "empref",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "A valid (URL encoded) employer reference for the PAYE scheme."
+        }
+      ]
+    },
+    "/apprenticeship-levy/epaye/{empref}/fractions": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Employer Fraction Calculations.",
+                  "example": {
+                    "empref": "123/AB12345",
+                    "fractionCalculations": [
+                      {
+                        "calculatedAt": "2016-03-15",
+                        "fractions": [
+                          {
+                            "region": "England",
+                            "value": 0.83
+                          }
+                        ]
+                      },
+                      {
+                        "calculatedAt": "2015-11-18",
+                        "fractions": [
+                          {
+                            "region": "England",
+                            "value": 0.78
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "includePath": "schemas/get-employer-fraction-calculations.json",
+                  "type": "object",
+                  "properties": {
+                    "empref": {
+                      "description": "The PAYE Reference for the employer. This will be the same as provided in the URL.",
+                      "example": "123/AB12345",
+                      "type": "string"
+                    },
+                    "fractionCalculations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "calculatedAt": {
+                            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                            "description": "The date that the fractions were calculated.",
+                            "example": "2015–11–18",
+                            "type": "string"
+                          },
+                          "fractions": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "region": {
+                                  "description": "The region the specific fraction applies to. Will always be England for the forseeable future.",
+                                  "example": "England",
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "description": "The fraction calculated for the region. Will be a decimal in the range 0 to 1.",
+                                  "example": "0.83",
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "region",
+                                "value"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "calculatedAt",
+                          "fractions"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "empref",
+                    "fractionCalculations"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "400_EMPREF_INVALID": {
+                    "code": "EMPREF_INVALID"
+                  },
+                  "400_DATE_INVALID": {
+                    "code": "DATE_INVALID"
+                  },
+                  "400_AUTH_ERROR_BAD_REQUEST": {
+                    "code": "AUTH_ERROR_BAD_REQUEST"
+                  },
+                  "400_DES_ERROR_BAD_REQUEST": {
+                    "code": "DES_ERROR_BAD_REQUEST"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "401_INVALID_CREDENTIALS": {
+                    "code": "INVALID_CREDENTIALS"
+                  },
+                  "401_AUTH_ERROR_UNAUTHORIZED": {
+                    "code": "AUTH_ERROR_UNAUTHORIZED"
+                  },
+                  "401_DES_ERROR_UNAUTHORIZED": {
+                    "code": "DES_ERROR_UNAUTHORIZED"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "403_AUTH_ERROR_FORBIDDEN": {
+                    "code": "AUTH_ERROR_FORBIDDEN"
+                  },
+                  "403_DES_ERROR_FORBIDDEN": {
+                    "code": "DES_ERROR_FORBIDDEN"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "404_EPAYE_EMPREF_UNKNOWN": {
+                    "code": "EPAYE_EMPREF_UNKNOWN"
+                  },
+                  "404_AUTH_ERROR_NOT_FOUND": {
+                    "code": "AUTH_ERROR_NOT_FOUND"
+                  },
+                  "404_DES_ERROR_NOT_FOUND": {
+                    "code": "DES_ERROR_NOT_FOUND"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "408_AUTH_ERROR_REQUEST_TIMEOUT": {
+                    "code": "AUTH_ERROR_REQUEST_TIMEOUT"
+                  },
+                  "408_AUTH_ERROR_GATEWAY_TIMEOUT": {
+                    "code": "AUTH_ERROR_GATEWAY_TIMEOUT"
+                  },
+                  "408_DES_ERROR_GATEWAY_TIMEOUT": {
+                    "code": "DES_ERROR-GATEWAY_TIMEOUT"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "429_AUTH_ERROR_TOO_MANY_REQUESTS": {
+                    "code": "AUTH_ERROR_TOO_MANY_REQUESTS"
+                  },
+                  "429_DES_ERROR_TOO_MANY_REQUESTS": {
+                    "code": "DES_ERROR_TOO_MANY_REQUESTS"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "500_AUTH_ERROR_INTERNAL_SERVER_ERROR": {
+                    "code": "AUTH_ERROR_INTERNAL_SERVER_ERROR"
+                  },
+                  "500_DES_ERROR_JSON_FAILURE": {
+                    "code": "DES_ERROR_JSON_FAILURE"
+                  },
+                  "500_DES_ERROR_BACKEND_FAILURE": {
+                    "code": "DES_ERROR_BACKEND_FAILURE"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "503_AUTH_ERROR_BACKEND_FAILURE": {
+                    "code": "AUTH_ERROR_BACKEND_FAILURE"
+                  },
+                  "503_AUTH_ERROR_OTHER": {
+                    "code": "AUTH_ERROR_OTHER"
+                  },
+                  "503_AUTH_ERROR_IO": {
+                    "code": "AUTH_ERROR_IO"
+                  },
+                  "503_DES_ERROR_BACKEND_FAILURE": {
+                    "code": "DES_ERROR_BACKEND_FAILURE"
+                  },
+                  "503_DES_ERROR_OTHER": {
+                    "code": "DES_ERROR_OTHER"
+                  },
+                  "503_DES_ERROR_IO": {
+                    "code": "DES_ERROR_IO"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns a list of fraction calculations for a given employer reference.\n\nHMRC will calculate the English Fraction values for all PAYE schemes on a regular, but infrequent, basis, most likely quarterly. The estimate for the number of schemes that are connected to DAS accounts in the first year is placed at 33,000, rising to 60,000 after three years, so refreshing the English Fraction values will be costly, and not something we’d want to do on a daily basis given how infrequently the values are updated.\n\nThis API endpoint will let DAS ask the HMRC system for the date that the most recent English Fraction batch calculation was done. DAS can call this endpoint on a frequent basis, perhaps daily, store the date and only refresh the scheme values when it changes.\n      \n\n",
+        "operationId": "Get employer fraction calculations",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/trait_headers.acceptHeader_Accept"
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "The date of the earliest calculation to return. Defaults to 72 months prior to current date.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "The date of the latest calculation to return. Defaults to current date.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "x-annotation-annotations.scope": "read:apprenticeship-levy",
+        "x-annotation-annotations.sandboxData": "##### External Test Environment\n\nYou will need to create a [test user](https://test-developer.service.hmrc.gov.uk/api-test-user) when using the external test environment.\n\n*Please ensure your parameters are URL encoded.*\n\n##### Available Data\n\n<table>\n    <thead>\n        <tr>\n            <th style=\"width:37%\">Empref Parameters</th>\n            <th style=\"width:63%\">Response</th>\n        </tr>\n    </thead>\n    <tbody>\n    <tr>\n      <td><code class='code--slim'>111/AA00001</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"111/AA00001\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2017-03-15\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 1\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>123/AB12345</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"123/AB12345\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2016-12-23\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.83\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-08-18\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.78\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>222/AA00001</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"222/AA00001\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2017-03-15\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 1\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>222/AA00002</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"222/AA00002\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2017-03-15\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 1\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>222/AA00003</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"222/AA00003\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2017-03-15\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 1\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>333/AA00001</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"333/AA00001\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2017-03-15\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 1\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>754/LZ00047</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"754/LZ00047\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2016-05-12\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.1231\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-08-11\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.12525\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-11-10\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.12525\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2017-02-12\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.12828\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>754/NZ00046</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"754/NZ00046\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2016-04-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.34567\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-07-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.34567\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-10-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.34585\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2017-01-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.34585\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2015-04-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.34585\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2015-07-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.34595\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2015-10-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.34588\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-01-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.36785\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2014-04-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.41015\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2014-07-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.41015\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2014-10-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.41015\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2015-01-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.42064\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2013-04-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.42345\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2013-07-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.43566\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2013-10-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.43566\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2014-01-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.44511\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2012-04-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.44511\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2012-07-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.44511\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2012-10-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.44628\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2013-01-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.45675\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2011-07-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.51225\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2011-10-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.51346\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2012-01-21\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.51467\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>754/TZ00047</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"754/TZ00047\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2016-05-07\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-08-07\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-11-09\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2017-02-08\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>754/TZ00058</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"840/HZ00064\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2016-05-07\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-08-07\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-11-09\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2017-02-08\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>840/HZ00064</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"840/HZ00064\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2016-05-07\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.65612\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-08-07\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.68605\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-11-09\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.69511\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2017-02-08\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.72405\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>840/MODES17</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"840/MODES17\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2017-03-15\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 0.71\n            },\n            {\n                \"region\": \"Wales\",\n                \"value\": 0.1\n            },\n            {\n                \"region\": \"Scotland\",\n                \"value\": 0.1\n            },\n            {\n                \"region\": \"Northern Ireland\",\n                \"value\": 0.09\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>923/YZ00062</code></td>\n      <td><pre class='code--block'>\n{\n\"empref\": \"923/YZ00062\",\n\"fractionCalculations\": [\n    {\n        \"calculatedAt\": \"2016-06-12\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 1\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-09-12\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 1\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2016-12-12\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 1\n            }\n        ]\n    },\n    {\n        \"calculatedAt\": \"2017-03-12\",\n        \"fractions\": [\n            {\n                \"region\": \"England\",\n                \"value\": 1\n            }\n        ]\n    }\n]\n}\n</pre>\n      </td>\n    </tr>\n    </tbody>\n</table>\n"
+      },
+      "parameters": [
+        {
+          "name": "empref",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "A valid (URL encoded) employer reference for the PAYE scheme."
+        }
+      ]
+    },
+    "/apprenticeship-levy/epaye/{empref}/employed/{nino}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Employer Check.",
+                  "example": {
+                    "empref": "123/AB12345",
+                    "nino": "XY654321Z",
+                    "fromDate": "2016-03-06",
+                    "toDate": "2016-04-05",
+                    "employed": true
+                  },
+                  "includePath": "schemas/get-employment-status.json",
+                  "type": "object",
+                  "properties": {
+                    "empref": {
+                      "description": "The PAYE Reference for the employer. This will be the same as provided in the URL.",
+                      "example": "123/AB12345",
+                      "type": "string"
+                    },
+                    "nino": {
+                      "description": "The NINO of the individual being checked. This will be the same as provided in the URL.",
+                      "example": "XY654321Z",
+                      "type": "string"
+                    },
+                    "fromDate": {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "description": "The start date of the range the check should be made for.",
+                      "example": "2016-03-06",
+                      "type": "string"
+                    },
+                    "toDate": {
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                      "description": "The end date of the range the check should be made for.",
+                      "example": "2016-04-05",
+                      "type": "string"
+                    },
+                    "employed": {
+                      "description": "Whether or not the individual was employed in the scheme at any time with the date range.",
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "empref",
+                    "nino",
+                    "fromDate",
+                    "toDate",
+                    "employed"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "400_EMPREF_INVALID": {
+                    "code": "EMPREF_INVALID"
+                  },
+                  "400_DATE_INVALID": {
+                    "code": "DATE_INVALID"
+                  },
+                  "400_NINO_INVALID": {
+                    "code": "NINO_INVALID"
+                  },
+                  "400_AUTH_ERROR_BAD_REQUEST": {
+                    "code": "AUTH_ERROR_BAD_REQUEST"
+                  },
+                  "400_DES_ERROR_BAD_REQUEST": {
+                    "code": "DES_ERROR_BAD_REQUEST"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "401_INVALID_CREDENTIALS": {
+                    "code": "INVALID_CREDENTIALS"
+                  },
+                  "401_AUTH_ERROR_UNAUTHORIZED": {
+                    "code": "AUTH_ERROR_UNAUTHORIZED"
+                  },
+                  "401_DES_ERROR_UNAUTHORIZED": {
+                    "code": "DES_ERROR_UNAUTHORIZED"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "403_AUTH_ERROR_FORBIDDEN": {
+                    "code": "AUTH_ERROR_FORBIDDEN"
+                  },
+                  "403_DES_ERROR_FORBIDDEN": {
+                    "code": "DES_ERROR_FORBIDDEN"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "404_EPAYE_UNKNOWN": {
+                    "code": "EPAYE_UNKNOWN"
+                  },
+                  "404_AUTH_ERROR_NOT_FOUND": {
+                    "code": "AUTH_ERROR_NOT_FOUND"
+                  },
+                  "404_DES_ERROR_NOT_FOUND": {
+                    "code": "DES_ERROR_NOT_FOUND"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "408_AUTH_ERROR_REQUEST_TIMEOUT": {
+                    "code": "AUTH_ERROR_REQUEST_TIMEOUT"
+                  },
+                  "408_AUTH_ERROR_GATEWAY_TIMEOUT": {
+                    "code": "AUTH_ERROR_GATEWAY_TIMEOUT"
+                  },
+                  "408_DES_ERROR_GATEWAY_TIMEOUT": {
+                    "code": "DES_ERROR-GATEWAY_TIMEOUT"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "429_AUTH_ERROR_TOO_MANY_REQUESTS": {
+                    "code": "AUTH_ERROR_TOO_MANY_REQUESTS"
+                  },
+                  "429_DES_ERROR_TOO_MANY_REQUESTS": {
+                    "code": "DES_ERROR_TOO_MANY_REQUESTS"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "500_AUTH_ERROR_INTERNAL_SERVER_ERROR": {
+                    "code": "AUTH_ERROR_INTERNAL_SERVER_ERROR"
+                  },
+                  "500_DES_ERROR_JSON_FAILURE": {
+                    "code": "DES_ERROR_JSON_FAILURE"
+                  },
+                  "500_DES_ERROR_BACKEND_FAILURE": {
+                    "code": "DES_ERROR_BACKEND_FAILURE"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "503_AUTH_ERROR_BACKEND_FAILURE": {
+                    "code": "AUTH_ERROR_BACKEND_FAILURE"
+                  },
+                  "503_AUTH_ERROR_OTHER": {
+                    "code": "AUTH_ERROR_OTHER"
+                  },
+                  "503_AUTH_ERROR_IO": {
+                    "code": "AUTH_ERROR_IO"
+                  },
+                  "503_DES_ERROR_BACKEND_FAILURE": {
+                    "code": "DES_ERROR_BACKEND_FAILURE"
+                  },
+                  "503_DES_ERROR_OTHER": {
+                    "code": "DES_ERROR_OTHER"
+                  },
+                  "503_DES_ERROR_IO": {
+                    "code": "DES_ERROR_IO"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Checks the employment status of an individual in a payroll scheme.\n\n",
+        "operationId": "Get employment status",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/trait_headers.acceptHeader_Accept"
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "required": true,
+            "description": "Starting date of the period to check employment for.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": true,
+            "description": "Ending date of the period to check employment for.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "x-annotation-annotations.scope": "read:apprenticeship-levy",
+        "x-annotation-annotations.sandboxData": "##### External Test Environment\n\nYou will need to create a [test user](https://test-developer.service.hmrc.gov.uk/api-test-user) when using the external test environment.\n\n*Please ensure your parameters are URL encoded.*\n\n##### Available Data\n<table>\n    <thead>\n        <tr>\n            <th style=\"width:63%\" colspan=\"4\">Parameters</th>\n            <th style=\"width:37%\">Response</th>\n        </tr>\n        <tr>\n            <th style=\"width:20%\">Empref</th>\n            <th style=\"width:25%\">NI</th>\n            <th style=\"width:22.5%\">From Date</th>\n            <th style=\"width:22.5%\">To Date</th>\n            <th>&nbsp;</th>\n        </tr>\n    </thead>\n    <tbody>\n    <tr>\n      <td><code class='code--slim'>123%2FAB12345</code></td>\n      <td><code class='code--slim'>SC111111A</code></td>\n      <td><code class='code--slim'>2010-01-01</code></td>\n      <td><code class='code--slim'>2018-01-01</code></td>\n      <td><pre class='code--block'>\n{\n\"employed\": true,\n\"empref\": \"123/AB12345\",\n\"fromDate\": \"2010-01-01\",\n\"nino\": \"SC111111A\",\n\"toDate\": \"2018-01-01\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>840%2FMODES17</code></td>\n      <td><code class='code--slim'>SC111111A</code></td>\n      <td><code class='code--slim'>2010-01-01</code></td>\n      <td><code class='code--slim'>2018-01-01</code></td>\n      <td><pre class='code--block'>\n{\n\"employed\": true,\n\"empref\": \"840/MODES17\",\n\"fromDate\": \"2010-01-01\",\n\"nino\": \"SC111111A\",\n\"toDate\": \"2018-01-01\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>840%2FMODES17</code></td>\n      <td><code class='code--slim'>AA123456C</code></td>\n      <td><code class='code--slim'>2010-01-01</code></td>\n      <td><code class='code--slim'>2018-01-01</code></td>\n      <td><pre class='code--block'>\n{\n\"employed\": false,\n\"empref\": \"840/MODES17\",\n\"fromDate\": \"2010-01-01\",\n\"nino\": \"AA123456C\",\n\"toDate\": \"2018-01-01\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>111%2FAA00001</code></td>\n      <td><code class='code--slim'>AA123456C</code></td>\n      <td><code class='code--slim'>2010-01-01</code></td>\n      <td><code class='code--slim'>2018-01-01</code></td>\n      <td><pre class='code--block'>\n{\n\"employed\": false,\n\"empref\": \"111/AA00001\",\n\"fromDate\": \"2010-01-01\",\n\"nino\": \"AA123456C\",\n\"toDate\": \"2018-01-01\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>840%2FHZ00064</code></td>\n      <td><code class='code--slim'>AS960509A</code></td>\n      <td><code class='code--slim'>2010-01-01</code></td>\n      <td><code class='code--slim'>2018-01-01</code></td>\n      <td><pre class='code--block'>\n{\n\"employed\": true,\n\"empref\": \"840/HZ00064\",\n\"fromDate\": \"2010-01-01\",\n\"nino\": \"AS960509A\",\n\"toDate\": \"2018-01-01\"\n}\n</pre>\n      </td>\n    </tr>\n    <tr>\n      <td><code class='code--slim'>923%2FEZ00059</code></td>\n      <td><code class='code--slim'>PR555555A</code></td>\n      <td><code class='code--slim'>2010-01-01</code></td>\n      <td><code class='code--slim'>2018-01-01</code></td>\n      <td><pre class='code--block'>\n{\n\"employed\": false,\n\"empref\": \"923/EZ00059\",\n\"fromDate\": \"2010-01-01\",\n\"nino\": \"PR555555A\",\n\"toDate\": \"2018-01-01\"\n}\n</pre>\n      </td>\n    </tr>\n    </tbody>\n</table>\n"
+      },
+      "parameters": [
+        {
+          "name": "nino",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "A valid National Insurance Number (nino) for the individual being checked."
+        },
+        {
+          "name": "empref",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "A valid (URL encoded) employer reference for the PAYE scheme."
+        }
+      ]
+    },
+    "/apprenticeship-levy/fraction-calculation-date": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Fraction Calculation Date. Returns date the English percentage was last calculated. Unlikely to change more than once a quarter.",
+                  "example": "2016-04-05",
+                  "includePath": "schemas/get-latest-fraction-calculation-date.json",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "400_AUTH_ERROR_BAD_REQUEST": {
+                    "code": "AUTH_ERROR_BAD_REQUEST"
+                  },
+                  "400_DES_ERROR_BAD_REQUEST": {
+                    "code": "DES_ERROR_BAD_REQUEST"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "401_INVALID_CREDENTIALS": {
+                    "code": "INVALID_CREDENTIALS"
+                  },
+                  "401_AUTH_ERROR_UNAUTHORIZED": {
+                    "code": "AUTH_ERROR_UNAUTHORIZED"
+                  },
+                  "401_DES_ERROR_UNAUTHORIZED": {
+                    "code": "DES_ERROR_UNAUTHORIZED"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "403_AUTH_ERROR_FORBIDDEN": {
+                    "code": "AUTH_ERROR_FORBIDDEN"
+                  },
+                  "403_DES_ERROR_FORBIDDEN": {
+                    "code": "DES_ERROR_FORBIDDEN"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "404_AUTH_ERROR_NOT_FOUND": {
+                    "code": "AUTH_ERROR_NOT_FOUND"
+                  },
+                  "404_DES_ERROR_NOT_FOUND": {
+                    "code": "DES_ERROR_NOT_FOUND"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "408": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "408_AUTH_ERROR_REQUEST_TIMEOUT": {
+                    "code": "AUTH_ERROR_REQUEST_TIMEOUT"
+                  },
+                  "408_AUTH_ERROR_GATEWAY_TIMEOUT": {
+                    "code": "AUTH_ERROR_GATEWAY_TIMEOUT"
+                  },
+                  "408_DES_ERROR_REQUEST_TIMEOUT": {
+                    "code": "DES_ERROR_REQUEST_TIMEOUT"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "429_DES_ERROR_TOO_MANY_REQUESTS": {
+                    "code": "DES_ERROR_TOO_MANY_REQUESTS"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "500_AUTH_ERROR_INTERNAL_SERVER_ERROR": {
+                    "code": "AUTH_ERROR_INTERNAL_SERVER_ERROR"
+                  },
+                  "500_DES_ERROR_JSON_FAILURE": {
+                    "code": "DES_ERROR_JSON_FAILURE"
+                  },
+                  "500_DES_ERROR_API": {
+                    "code": "DES_ERROR_API"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "503_AUTH_ERROR_BACKEND_FAILURE": {
+                    "code": "AUTH_ERROR_BACKEND_FAILURE"
+                  },
+                  "503_AUTH_ERROR_OTHER": {
+                    "code": "AUTH_ERROR_OTHER"
+                  },
+                  "503_AUTH_ERROR_IO": {
+                    "code": "AUTH_ERROR_IO"
+                  },
+                  "503_DES_ERROR_IO": {
+                    "code": "DES_ERROR_IO"
+                  },
+                  "503_DES_ERROR_OTHER": {
+                    "code": "DES_ERROR_OTHER"
+                  },
+                  "503_DES_ERROR_BACKEND_FAILURE": {
+                    "code": "DES_ERROR_BACKEND_FAILURE"
+                  }
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/types.errorResponse"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns the date of the most recent fraction calculation batch run.\n\nHMRC will calculate the English Fraction values for all PAYE schemes on a regular, but infrequent, basis, most likely quarterly. The estimate for the number of schemes that are connected to DAS accounts in the first year is placed at 33,000, rising to 60,000 after three years, so refreshing the English Fraction values will be costly, and not something we’d want to do on a daily basis given how infrequently the values are updated.\n\nThis API endpoint will let consumers of this API (namely DAS) to ask the HMRC system for the date that the most recent English Fraction batch calculation was completed. DAS can call this endpoint on a frequent basis, perhaps daily, store the date and only refresh the scheme values when it changes.\n\nThe response will take the form of a date, in the standard `YYYY-MM-DD` format used by MTDP APIs. The HMRC system will ensure that the fraction values for all schemes have been recalculated before updating the calculation date.",
+        "operationId": "Get latest fraction calculation date",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/trait_headers.acceptHeader_Accept"
+          }
+        ],
+        "x-annotation-annotations.scope": "read:apprenticeship-levy",
+        "x-annotation-annotations.sandboxData": "There is only one response to this endpoint in both the sandbox and external test\nenvironments. Both will return the same (fixed) date, namely, <code class='code--slim'>\"2017-01-17\"</code>.\n"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "types.errorResponse": {
+        "includePath": "https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/types.raml",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      }
+    },
+    "responses": {},
+    "parameters": {
+      "trait_headers.acceptHeader_Accept": {
+        "name": "Accept",
+        "in": "header",
+        "required": true,
+        "description": "Specifies the response format and the [version](/api-documentation/docs/reference-guide#versioning) of the API to be used.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "examples": {},
+    "requestBodies": {},
+    "headers": {},
+    "securitySchemes": {},
+    "links": {},
+    "callbacks": {}
+  }
+}
