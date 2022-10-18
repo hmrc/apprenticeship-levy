@@ -25,22 +25,22 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer w
   }
 
   describe (s"API Documentation Endpoint") {
-    describe (s"should provide RAML documentation") {
+    describe (s"should provide YAML documentation") {
       val versions = Seq("1.0")
       versions.foreach { case (version) =>
-        it (s"${localMicroserviceUrl}/api/conf/$version/application.raml is defined") {
+        it (s"${localMicroserviceUrl}/api/conf/$version/application.yaml is defined") {
           // set up
-          val request = FakeRequest(GET, s"/api/conf/$version/application.raml")
+          val request = FakeRequest(GET, s"/api/conf/$version/application.yaml")
 
           // test
           val result = route(app, request).get
 
           // check
           status(result) shouldBe 200
-          contentAsString(result).startsWith("#%RAML 1.0") shouldBe true
+          contentAsString(result).startsWith("{\n  \"openapi\": \"3.0.0\"") shouldBe true
         }
 
-        val definitionFile = new File(s"./public/api/conf/$version/application.raml")
+        val definitionFile = new File(s"./public/api/conf/$version/application.yaml")
         val includes = Source.fromFile(definitionFile).getLines.filter(_.contains("!include")).map((line)=>line.substring(line.indexOf("!include "))).toList.filterNot(_.matches(".*(errors|versioning).md")).toSet
         includes.zipWithIndex.foreach { case (include, _) =>
           it (s"and serve file for $include") {
