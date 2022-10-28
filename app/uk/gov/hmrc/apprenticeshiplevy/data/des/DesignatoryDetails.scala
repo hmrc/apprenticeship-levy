@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.des
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat, OWrites, Reads}
 
 case class HodName(nameLine1: Option[String] = None, nameLine2: Option[String] = None)
 
@@ -44,16 +44,20 @@ case class DesignatoryDetailsLinks(employer: Option[String], communication: Opti
 case class HodDesignatoryDetailsLinks(links: Option[DesignatoryDetailsLinks])
 
 object DesignatoryDetails {
-  implicit val hnformat = Json.format[HodName]
-  implicit val haformat = Json.format[HodAddress]
-  implicit val htformat = Json.format[HodTelephone]
-  implicit val heformat = Json.format[HodEmail]
-  implicit val hcformat = Json.format[HodContact]
-  implicit val dddformat = Json.format[DesignatoryDetailsData]
-  implicit val ddlformat = Json.format[DesignatoryDetailsLinks]
+  implicit val hnformat: OFormat[HodName] = Json.format[HodName]
+  implicit val haformat: OFormat[HodAddress] = Json.format[HodAddress]
+  implicit val htformat: OFormat[HodTelephone] = Json.format[HodTelephone]
+  implicit val heformat: OFormat[HodEmail] = Json.format[HodEmail]
+  implicit val hcformat: OFormat[HodContact] = Json.format[HodContact]
+  implicit val dddformat: OFormat[DesignatoryDetailsData] = Json.format[DesignatoryDetailsData]
 
-  implicit val readDesignatoryDetailsFormat = Json.reads[DesignatoryDetails]
-  implicit val writeDesignatoryDetailsFormat = Json.writes[DesignatoryDetails]
-  implicit val readDesignatoryDetailsLinksFormat = Json.reads[HodDesignatoryDetailsLinks]
-  implicit val writeDesignatoryDetailsLinksFormat = Json.writes[HodDesignatoryDetailsLinks]
+  implicit val readDesignatoryDetailsFormat: Reads[DesignatoryDetails] = Json.reads[DesignatoryDetails]
+  implicit val writeDesignatoryDetailsFormat: OWrites[DesignatoryDetails] = Json.writes[DesignatoryDetails]
+}
+
+object HodDesignatoryDetailsLinks {
+  implicit val ddlformat: OFormat[DesignatoryDetailsLinks] = Json.format[DesignatoryDetailsLinks]
+
+  implicit val readDesignatoryDetailsLinksFormat: Reads[HodDesignatoryDetailsLinks] = Json.reads[HodDesignatoryDetailsLinks]
+  implicit val writeDesignatoryDetailsLinksFormat: OWrites[HodDesignatoryDetailsLinks] = Json.writes[HodDesignatoryDetailsLinks]
 }

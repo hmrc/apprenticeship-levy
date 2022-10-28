@@ -81,8 +81,7 @@ class DocumentationController @Inject()
   def documentation(version: String, endpoint: String): Action[AnyContent]  =
     at(s"public/documentation/$version", s"${endpoint.replaceAll(" ", "-")}.xml")
 
-  def definition: Action[AnyContent]  = Action.async {
-    val filename = "definition.json"
+  def definition(filename: String = "definition.json"): Action[AnyContent]  = Action.async {
     retrieve("public/api", filename) match {
       case Some(fileToServe) => {
         if (appContext.privateModeEnabled) {

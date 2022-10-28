@@ -86,7 +86,6 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
                     .communication
                     .map(getDetails(_))
                     .getOrElse(Future.successful(None))
-
                 employer.flatMap {
                   emp =>
                     communication.flatMap {
@@ -120,14 +119,16 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
       case Right(data) =>
         Some(data)
       case Left(e: UpstreamErrorResponse) =>
-        if (e.statusCode == BAD_REQUEST)
+        if (e.statusCode == BAD_REQUEST) {
           throw new BadRequestException(e.message)
-        if (e.statusCode == NOT_FOUND)
+        }
+        if (e.statusCode == NOT_FOUND) {
           throw new NotFoundException(e.message)
-        else
+        } else {
           // $COVERAGE-OFF$
           logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
-          // $COVERAGE-ON$
+        }
+        // $COVERAGE-ON$
           None
         }
 }

@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.data.api
+package uk.gov.hmrc.apprenticeshiplevy.data.des
 
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
-import java.time.LocalDateTime
 
-class LevyDeclarationSpec extends AppLevyUnitSpec {
-  "LevyDeclaration" should {
-    "have a rti submission field" in {
-      val rtiId = 123L
-      val levyDeclaration = LevyDeclaration(id = 456L, submissionTime = LocalDateTime.now(), submissionId = rtiId)
-      levyDeclaration.submissionId shouldBe rtiId
-    }
+class EmploymentCheckStatusSpec extends AppLevyUnitSpec {
 
-    "have a unique id field" in {
-      val id = 456L
-      val levyDeclaration = LevyDeclaration(id = id, submissionTime = LocalDateTime.now(), submissionId = 123534L)
-      levyDeclaration.id shouldBe id
+  "apply" should {
+    "return Employed" when {
+      "isEmployed is true" in {
+        val employed = EmploymentCheckStatus.apply(true)
+
+        employed shouldBe Employed
+      }
+      "isEmployed is false" in {
+        val employed = EmploymentCheckStatus.apply(false)
+
+        employed shouldBe NotEmployed
+      }
     }
   }
 }

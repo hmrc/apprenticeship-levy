@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
+import play.api.hal.HalLink
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 
 class SandboxLinkHelperSpec extends AppLevyUnitSpec {
@@ -50,6 +51,11 @@ class SandboxLinkHelperSpec extends AppLevyUnitSpec {
 
     "turn '/sandbox/foo/' into '/foo/'" in {
       prodHelper.stripSandboxForNonDev("/sandbox/foo/") shouldBe "/foo/"
+    }
+
+    "return a HalLink with the converted and supplied arguments" in {
+      val halLink = HalLink("rel", "link")
+      prodHelper.stripSandboxForNonDev(halLink) shouldBe HalLink("rel", "link")
     }
   }
 
