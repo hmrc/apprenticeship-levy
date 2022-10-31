@@ -21,8 +21,7 @@ object AppDependencies {
     "org.pegdown"             % "pegdown"                     % "1.6.0",
     "org.scalamock"          %% "scalamock-scalatest-support" % "3.6.0",
     "org.mockito"            %  "mockito-core"                % "4.6.1",
-    "com.github.tomakehurst" %  "wiremock-jre8"               % "2.27.2",
-    "uk.gov.hmrc"            %% "play-hal"                    % "3.1.0-play-28"
+    "com.github.tomakehurst" %  "wiremock-jre8"               % "2.27.2"
   ).map(_ % "test")
 
   lazy val integrationTest: Seq[ModuleID] = Seq(
