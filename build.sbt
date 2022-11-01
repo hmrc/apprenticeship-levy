@@ -42,7 +42,7 @@ val generateAPIDocsTask = generateAPIDocs := {
 lazy val AcceptanceTest = config("ac") extend Test
 
 lazy val plugins: Seq[Plugins] = Seq(
-  play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory
+  play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin
 )
 
 lazy val playSettings: Seq[Setting[_]] = Seq(routesImport ++= Seq(
@@ -63,6 +63,8 @@ lazy val scoverageSettings = {
     ".*assets.*",
     "uk.gov.hmrc.apprenticeshiplevy.metrics.*",
     "uk.gov.hmrc.apprenticeshiplevy.config.*",
+    "uk.gov.hmrc.apprenticeshiplevy.controllers.live.*",
+    "uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.*",
     "testOnlyDoNotUseInAppConf.*",
     "uk.gov.hmrc.BuildInfo"
   )

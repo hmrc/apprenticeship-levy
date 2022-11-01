@@ -17,20 +17,21 @@
 package uk.gov.hmrc.apprenticeshiplevy.data.api
 
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
-import java.time.LocalDateTime
 
-class LevyDeclarationSpec extends AppLevyUnitSpec {
-  "LevyDeclaration" should {
-    "have a rti submission field" in {
-      val rtiId = 123L
-      val levyDeclaration = LevyDeclaration(id = 456L, submissionTime = LocalDateTime.now(), submissionId = rtiId)
-      levyDeclaration.submissionId shouldBe rtiId
-    }
+class NinoSpec extends AppLevyUnitSpec {
 
-    "have a unique id field" in {
-      val id = 456L
-      val levyDeclaration = LevyDeclaration(id = id, submissionTime = LocalDateTime.now(), submissionId = 123534L)
-      levyDeclaration.id shouldBe id
+  "isValid" should {
+    "return true" when {
+      "the NINO is the correct format" in {
+        val validNino = "AA123456A"
+
+        Nino.isValid(validNino) shouldBe true
+      }
+      "the NINO is an incorrect format" in {
+        val invalidNino = "invalidNino"
+
+        Nino.isValid(invalidNino) shouldBe false
+      }
     }
   }
 }

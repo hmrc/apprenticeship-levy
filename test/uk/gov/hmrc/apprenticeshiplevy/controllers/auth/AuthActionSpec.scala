@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
+import java.io.IOException
+
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -29,6 +31,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, RetrievalOps}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{GGCredId, LegacyCredentials, PAClientId, ~}
+import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, MethodNotAllowedException, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -92,6 +95,34 @@ class AuthActionSpec
       val result = controller.onPageLoad()(FakeRequest("", ""))
       status(result) shouldBe UNAUTHORIZED
     }
+  }
+
+  "An unauthorized user" should {
+    def authError(testTitle: String, error: Exception, statusCode: Int): Unit =
+      s"return $testTitle" in {
+        when(mockAuthConnector.authorise(any(), any())(any(), any()))
+          .thenReturn(Future.failed(error))
+        val authAction = new AuthActionImpl(mockAuthConnector, new Default(stubComponents.parsers))
+        val controller = new Harness(authAction)
+        val result = controller.onPageLoad()(FakeRequest("", ""))
+        status(result) shouldBe statusCode
+      }
+
+    val input = Seq(
+      ("InsufficientConfidenceLevel when the Authorization token provided wasn't valid", new InsufficientConfidenceLevel, UNAUTHORIZED),
+      ("BadRequestException", new BadRequestException("Bad Request"), BAD_REQUEST),
+      ("IOException", new IOException, SERVICE_UNAVAILABLE),
+      ("GatewayTimeoutException", new GatewayTimeoutException("timeout"), REQUEST_TIMEOUT),
+      ("NotFoundException", new NotFoundException("not found"), NOT_FOUND),
+      ("UpstreamErrorResponse with SERVICE_UNAVAILABLE", UpstreamErrorResponse("", SERVICE_UNAVAILABLE, SERVICE_UNAVAILABLE), SERVICE_UNAVAILABLE),
+      ("UpstreamErrorResponse with FORBIDDEN", UpstreamErrorResponse("", FORBIDDEN, FORBIDDEN), FORBIDDEN),
+      ("UpstreamErrorResponse with TOO_MANY_REQUESTS", UpstreamErrorResponse("", TOO_MANY_REQUESTS, TOO_MANY_REQUESTS), TOO_MANY_REQUESTS),
+      ("UpstreamErrorResponse with TIMEOUT", UpstreamErrorResponse("", REQUEST_TIMEOUT, REQUEST_TIMEOUT), REQUEST_TIMEOUT),
+      ("UpstreamErrorResponse with SERVICE_UNAVAILABLE due to different 4xx error", UpstreamErrorResponse("", BAD_REQUEST, BAD_REQUEST), SERVICE_UNAVAILABLE),
+      ("An unknown exception", new MethodNotAllowedException("Method Not Allowed"), INTERNAL_SERVER_ERROR)
+    )
+
+    input.foreach(args => authError(args._1, args._2, args._3))
   }
 
   "A user that is logged in with a PAYE enrolment" must {

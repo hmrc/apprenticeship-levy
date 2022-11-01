@@ -75,15 +75,14 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
   }
 
   "getting fraction calculation date" should {
-    "propogate environment but not authorization headers on to connector" in {
+    "propagate environment but not authorization headers on to connector" in {
       // set up
 
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
-           .thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
+      when(mockHttp.GET[Either[UpstreamErrorResponse, FractionCalculationDate]](anyString(), any(), any())(any(), any(), any()))
+           .thenReturn(Future.successful(Right(FractionCalculationDate(LocalDate.of(2016,11,3)))))
 
-      // test
-      await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+      val response = await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                                     "Authorization"->"Bearer dsfda9080",
                                                                                                     "Environment"->"clone")))
 
@@ -94,6 +93,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
       actualHeaderCarrier.extraHeaders shouldBe List(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      status(response) shouldBe OK
     }
 
     "not fail if environment header not supplied" in {

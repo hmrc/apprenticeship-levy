@@ -16,7 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import org.mockito.Mockito.reset
+import java.time.{LocalDate, LocalDateTime}
+
+import org.mockito.ArgumentMatchers.{any, anyString}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -32,7 +35,11 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{FakePrivilegedAuthAction, PrivilegedAuthActionImpl}
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import uk.gov.hmrc.apprenticeshiplevy.data.des.{ApprenticeshipLevy, EmployerPaymentSummary, EmployerPaymentsSummary}
 import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, MockAppContext}
+import uk.gov.hmrc.http.NotFoundException
+
+import scala.concurrent.Future
 
 class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite
   with Injecting with BeforeAndAfterEach{
@@ -59,9 +66,141 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
   val liveFractionsController = inject[LiveLevyDeclarationController]
 
   "getting the levy declarations" should {
-    "return a Not Acceptable response if the Accept header is not correctly set" in {
-      val response = liveFractionsController.declarations(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
-      response.header.status shouldBe NOT_ACCEPTABLE
+    "return a Not Acceptable response" when {
+      "the accept header is not correct" in {
+        val response = liveFractionsController.declarations(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
+        response.header.status shouldBe NOT_ACCEPTABLE
+      }
+    }
+    "return a fromDateAfterToDate error" when {
+      "the supplied fromDate is after the toDate" in {
+        val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2021-01-01")), Some(LocalDate.parse("2020-01-01")))(FakeRequest().withHeaders(
+          "ACCEPT"->"application/vnd.hmrc.1.0+json",
+          "Authorization"->"Bearer dsfda9080",
+          "Environment"->"clone")).futureValue
+
+        response.header.status shouldBe BAD_REQUEST
+      }
+    }
+
+    "return a success" when {
+      "both the fromDate and toDate are supplied" in {
+        val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
+
+        when(mockDesConnector.eps(anyString(), any())(any()))
+          .thenReturn(Future.successful(EmployerPaymentsSummary(
+            "empref",
+            List(EmployerPaymentSummary(
+              submissionId = 123456,
+              hmrcSubmissionTime = LocalDateTime.now(),
+              rtiSubmissionTime = LocalDateTime.now(),
+              taxYear = "20-21",
+              apprenticeshipLevy = Some(appLevy))))))
+
+        val response = liveFractionsController.declarations(EmploymentReference("empref"), None, None)(FakeRequest().withHeaders(
+          "ACCEPT"->"application/vnd.hmrc.1.0+json",
+          "Authorization"->"Bearer dsfda9080",
+          "Environment"->"clone")).futureValue
+
+        response.header.status shouldBe OK
+      }
+
+      "None of the dates are supplied" in {
+        val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
+
+        when(mockDesConnector.eps(anyString(), any())(any()))
+          .thenReturn(Future.successful(EmployerPaymentsSummary(
+            "empref",
+            List(EmployerPaymentSummary(
+              submissionId = 123456,
+              hmrcSubmissionTime = LocalDateTime.now(),
+              rtiSubmissionTime = LocalDateTime.now(),
+              taxYear = "20-21",
+              apprenticeshipLevy = Some(appLevy))))))
+
+        val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2020-01-01")), Some(LocalDate.parse("2021-01-01")))(FakeRequest().withHeaders(
+          "ACCEPT"->"application/vnd.hmrc.1.0+json",
+          "Authorization"->"Bearer dsfda9080",
+          "Environment"->"clone")).futureValue
+
+        response.header.status shouldBe OK
+      }
+
+      "only the fromDate is supplied" in {
+        val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
+
+        when(mockDesConnector.eps(anyString(), any())(any()))
+          .thenReturn(Future.successful(EmployerPaymentsSummary(
+            "empref",
+            List(EmployerPaymentSummary(
+              submissionId = 123456,
+              hmrcSubmissionTime = LocalDateTime.now(),
+              rtiSubmissionTime = LocalDateTime.now(),
+              taxYear = "20-21",
+              apprenticeshipLevy = Some(appLevy))))))
+
+        val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2021-01-01")), None)(FakeRequest().withHeaders(
+          "ACCEPT"->"application/vnd.hmrc.1.0+json",
+          "Authorization"->"Bearer dsfda9080",
+          "Environment"->"clone")).futureValue
+
+        response.header.status shouldBe OK
+      }
+
+      "only the toDate is supplied" in {
+        val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
+
+        when(mockDesConnector.eps(anyString(), any())(any()))
+          .thenReturn(Future.successful(EmployerPaymentsSummary(
+            "empref",
+            List(EmployerPaymentSummary(
+              submissionId = 123456,
+              hmrcSubmissionTime = LocalDateTime.now(),
+              rtiSubmissionTime = LocalDateTime.now(),
+              taxYear = "20-21",
+              apprenticeshipLevy = Some(appLevy))))))
+
+        val response = liveFractionsController.declarations(EmploymentReference("empref"), None, Some(LocalDate.parse("2021-01-01")))(FakeRequest().withHeaders(
+          "ACCEPT"->"application/vnd.hmrc.1.0+json",
+          "Authorization"->"Bearer dsfda9080",
+          "Environment"->"clone")).futureValue
+
+        response.header.status shouldBe OK
+      }
+    }
+
+    "return a notFound" when {
+      "no data is found" in {
+
+        when(mockDesConnector.eps(anyString(), any())(any()))
+          .thenReturn(Future.successful(EmployerPaymentsSummary(
+            "empref",
+            List(EmployerPaymentSummary(
+              submissionId = 123456,
+              hmrcSubmissionTime = LocalDateTime.now(),
+              rtiSubmissionTime = LocalDateTime.now(),
+              taxYear = "20-21")))))
+
+        val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2020-01-01")), Some(LocalDate.parse("2021-01-01")))(FakeRequest().withHeaders(
+          "ACCEPT"->"application/vnd.hmrc.1.0+json",
+          "Authorization"->"Bearer dsfda9080",
+          "Environment"->"clone")).futureValue
+
+        response.header.status shouldBe NOT_FOUND
+      }
+
+      "the desConnector returns a 404" in {
+
+        when(mockDesConnector.eps(anyString(), any())(any()))
+          .thenReturn(Future.failed(new NotFoundException("Data Not Found")))
+
+        val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2020-01-01")), Some(LocalDate.parse("2021-01-01")))(FakeRequest().withHeaders(
+          "ACCEPT"->"application/vnd.hmrc.1.0+json",
+          "Authorization"->"Bearer dsfda9080",
+          "Environment"->"clone")).futureValue
+
+        response.header.status shouldBe NOT_FOUND
+      }
     }
   }
 }
