@@ -23,7 +23,7 @@ paths:
         - name: Authorization
           in: header
           description: |
-            An [OAuth 2.0 Bearer Token](/api-documentation/docs/authorisation/user-restricted-endpoints) with the write:apprenticeship-levy scope.
+            An [OAuth 2.0 Bearer Token](/api-documentation/docs/authorisation/user-restricted-endpoints) with the read:apprenticeship-levy scope.
 
             For example: Bearer bb7fed3fe10dd235a2ccda3d50fb
           required: true
@@ -212,7 +212,7 @@ paths:
       deprecated: false
       security:
         - User-Restricted:
-            - write:apprenticeship-levy
+            - read:apprenticeship-levy
   /apprenticeship-levy/epaye/{empref}:
     get:
       tags:
@@ -469,7 +469,7 @@ paths:
       deprecated: false
       security:
         - User-Restricted:
-            - write:apprenticeship-levy
+            - read:apprenticeship-levy
   /apprenticeship-levy/epaye/{empref}/declarations:
     get:
       tags:
@@ -805,7 +805,7 @@ paths:
       deprecated: false
       security:
           - User-Restricted:
-            - write:apprenticeship-levy
+            - read:apprenticeship-levy
   /apprenticeship-levy/epaye/{empref}/fractions:
     get:
       tags:
@@ -1074,7 +1074,7 @@ paths:
       deprecated: false
       security:
           - User-Restricted:
-            - write:apprenticeship-levy
+            - read:apprenticeship-levy
   /apprenticeship-levy/epaye/{empref}/employed/{nino}:
     get:
       tags:
@@ -1348,7 +1348,7 @@ paths:
       deprecated: false
       security:
           - User-Restricted:
-            - write:apprenticeship-levy
+            - read:apprenticeship-levy
   /apprenticeship-levy/fraction-calculation-date:
     get:
       tags:
@@ -1566,7 +1566,7 @@ paths:
       deprecated: false
       security:
           - User-Restricted:
-            - write:apprenticeship-levy
+            - read:apprenticeship-levy
 components:
   securitySchemes:
     User-Restricted:
@@ -1578,7 +1578,7 @@ components:
           tokenUrl: https://api.service.hmrc.gov.uk/oauth/token
           refreshUrl: https://api.service.hmrc.gov.uk/oauth/refresh
           scopes:
-            write:apprenticeship-levy: Access Apprenticeship Levy
+            read:apprenticeship-levy: Access Apprenticeship Levy
   schemas:
     errorResponse:
       title: errorResponse
