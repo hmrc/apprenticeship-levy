@@ -1,0 +1,1911 @@
+openapi: 3.0.3
+info:
+  title: Apprenticeship Levy
+  description: "The Skills Funding Agency (**SFA**) is a sub-department of the Department for Business, Innovation and Skills (**BIS**) responsible for, amongst other things, providing funding to employers for approved apprenticeship training schemes. From April 2017 a new Apprenticeship Levy will be applied to organisations with large payrolls (broadly speaking, payrolls in excess of £3 million). HMRC will be collecting the levy, but the SFA has responsibility for ensuring that the employers who paid the levy have access to those funds to spend on apprentices. The purpose of this api is to allow the Digital Apprenticeship Service (**DAS**), being built by the SFA, to access information about the levy that an organisation has paid. This document describes the API that is being built on the Multi-Channel Digital Tax Platform (**MDTP**) to serve DAS.\n\nAn employer makes levy declarations as part of an Employer Payment Summary (**EPS**) submission to the PAYE RTI system.  From April 2017 the schema for the EPS will be extended to include fields relating to the levy. These submissions are made in respect of a payroll scheme identified by an Employer Reference (**empref**) and will form the primary source of data for this API. See the [HMRC page about EPS](https://www.gov.uk/guidance/what-payroll-information-to-report-to-hmrc#eps-what-to-report) for details about what data appears on an EPS submission. For even more detail, including the specific XML schema and business rules that are applied to EPS submission, see the [RTI information pages for software developers](https://www.gov.uk/government/collections/real-time-information-online-internet-submissions-support-for-software-developers). The technical specifications sections for each tax year contain links to a `.zip` file that includes the XML Schema file and Schematron rules for the tax year. As of the date of writing this document the 2017/18 rules have not been defined so no specific information is available yet about the fields relating to the apprenticeship levy.\n\nMost submissions will include a year-to-date (**YTD**) figure for the total levy declared in the current tax year. However, there may be times that no levy or values for other fields are relevant, in which case the employer might file an EPS with an indication of a Period of Inactivity or No Payment for Period. The levy api needs to be able to reflect these situations out to DAS.\nWhen an API changes in a way that is backwards-incompatible, we increase the version number of the API. \nSee our [reference guide](/api-documentation/docs/reference-guide#versioning) for more on\nversioning.\nWe use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:\n* 200 to 299 if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action\n* 400 to 499 if it failed because of a client error by your application\n* 500 to 599 if it failed because of an error on our server\n\nErrors specific to each API are shown in the Endpoints section, under Response. \nSee our [reference guide](/api-documentation/docs/reference-guide#errors) for more on errors."
+  contact: {}
+  version: '1.0'
+servers:
+  - url: https://api.service.hmrc.gov.uk/
+    variables: {}
+paths:
+  /apprenticeship-levy/:
+    get:
+      tags:
+        - apprenticeship-levy
+      summary: Get all employers
+      description: >
+        Returns a list of valid links indexed by empref in HAL format
+
+
+        Departmental Access with a Time-based One-Time Password (**TOTP**) in cases where the application needs to track amendments for schemes where the OAuth access token has expired is *NOT* applicable to this endpoint.
+      operationId: Getallemployers
+      parameters:
+        - name: Authorization
+          in: header
+          description: |
+            An [OAuth 2.0 Bearer Token](/api-documentation/docs/authorisation/user-restricted-endpoints) with the write:apprenticeship-levy scope.
+
+            For example: Bearer bb7fed3fe10dd235a2ccda3d50fb
+          required: true
+          style: simple
+          schema:
+            type: string
+            enum: [
+              "Bearer bb7fed3fe10dd235a2ccda3d50fb"
+            ]
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApprenticeshipLevyresponse'
+                  - example:
+                      _links:
+                        self:
+                          href: /
+                        123/AB12345:
+                          href: /epaye/123%2FAB12345
+                      emprefs:
+                        - 123/AB12345
+              example:
+                _links:
+                  self:
+                    href: /
+                  123/AB12345:
+                    href: /epaye/123%2FAB12345
+                emprefs:
+                  - 123/AB12345
+        '400':
+          description: 'Bad Request'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_BAD_REQUEST
+              examples:
+                400_AUTH_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: AUTH_ERROR_BAD_REQUEST
+        '401':
+          description: 'Unauthorised'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: INVALID_CREDENTIALS
+              examples:
+                401_INVALID_CREDENTIALS:
+                  description: The request requires correct authentication headers with valid token.
+                  value:
+                    code: INVALID_CREDENTIALS
+                401_AUTH_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_UNAUTHORIZED
+        '403':
+          description: 'Forbidden'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_FORBIDDEN
+              examples:
+                403_AUTH_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_FORBIDDEN
+        '404':
+          description: 'Not Found'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_NOT_FOUND
+              examples:
+                404_AUTH_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: AUTH_ERROR_NOT_FOUND
+        '408':
+          description: 'Request Timeout'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_REQUEST_TIMEOUT
+              examples:
+                408_AUTH_ERROR_REQUEST_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_REQUEST_TIMEOUT
+                408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_GATEWAY_TIMEOUT
+        '409':
+          description: 'Conflict'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_TOO_MANY_REQUESTS
+              examples:
+                409_AUTH_ERROR_TOO_MANY_REQUESTS:
+                  description: Endpoint API has experienced too many requests.
+                  value:
+                    code: AUTH_ERROR_TOO_MANY_REQUESTS
+        '498':
+          description: 'Invalid Token'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_WRONG_TOKEN
+              examples:
+                498_AUTH_ERROR_WRONG_TOKEN:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_WRONG_TOKEN
+        '500':
+          description: 'Internal Server Error'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+              examples:
+                500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                  description: Endpoint API has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+        '503':
+          description: 'Service Unavailable'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_BACKEND_FAILURE
+              examples:
+                503_AUTH_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_BACKEND_FAILURE
+                503_AUTH_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_OTHER
+                503_AUTH_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: AUTH_ERROR_IO
+      deprecated: false
+      security:
+        - User-Restricted:
+            - write:apprenticeship-levy
+  /apprenticeship-levy/epaye/{empref}:
+    get:
+      tags:
+        - apprenticeship-levy
+      summary: Get employer details
+      description: >
+        Returns more details about an empref including details about the employer and a list of available endpoints that apply to the empref.
+
+
+        Departmental Access with a Time-based One-Time Password (**TOTP**) in cases where the application needs to track amendments for schemes where the OAuth access token has expired is *NOT* applicable to this endpoint.
+      operationId: Getemployerdetails
+      parameters:
+        - name: empref
+          in: path
+          description: A valid (URL encoded) employer reference for the PAYE scheme.
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: 123/AB12345
+        - name: Authorization
+          in: header
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: Bearer [token here]
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApprenticeshipLevyEpayeresponse'
+                  - example:
+                      _links:
+                        self:
+                          href: /epaye/123%2FAB12345
+                        declarations:
+                          href: /epaye/123%2FAB12345/declarations
+                        fractions:
+                          href: /epaye/123%2FAB12345/fractions
+                        employment-check:
+                          href: /epaye/123%2FAB12345/employed
+                      empref: 123/AB12345
+                      employer:
+                        name:
+                          nameLine1: Foo Bar Ltd.
+              example:
+                _links:
+                  self:
+                    href: /epaye/123%2FAB12345
+                  declarations:
+                    href: /epaye/123%2FAB12345/declarations
+                  fractions:
+                    href: /epaye/123%2FAB12345/fractions
+                  employment-check:
+                    href: /epaye/123%2FAB12345/employed
+                empref: 123/AB12345
+                employer:
+                  name:
+                    nameLine1: Foo Bar Ltd.
+        '400':
+          description: 'Bad Request'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: EMPREF_INVALID
+              examples:
+                400_EMPREF_INVALID:
+                  description: A request parameter is incorrect.
+                  value:
+                    code: EMPREF_INVALID
+                400_AUTH_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: AUTH_ERROR_BAD_REQUEST
+                400_DES_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: DES_ERROR_BAD_REQUEST
+        '401':
+          description: 'Unauthorised'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: INVALID_CREDENTIALS
+              examples:
+                401_INVALID_CREDENTIALS:
+                  description: The request requires correct authentication headers with valid token.
+                  value:
+                    code: INVALID_CREDENTIALS
+                401_AUTH_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_UNAUTHORIZED
+                401_DES_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: DES_ERROR_UNAUTHORIZED
+        '403':
+          description: 'Forbidden'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_FORBIDDEN
+              examples:
+                403_AUTH_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_FORBIDDEN
+                403_DES_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: DES_ERROR_FORBIDDEN
+        '404':
+          description: 'Not Found'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: EPAYE_EMPREF_UNKNOWN
+              examples:
+                404_EPAYE_EMPREF_UNKNOWN:
+                  description: Employer reference is unknown or endpoint not found.
+                  value:
+                    code: EPAYE_EMPREF_UNKNOWN
+                404_AUTH_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: AUTH_ERROR_NOT_FOUND
+                404_DES_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: DES_ERROR_NOT_FOUND
+        '408':
+          description: 'Request Timeout'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_REQUEST_TIMEOUT
+              examples:
+                408_AUTH_ERROR_REQUEST_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_REQUEST_TIMEOUT
+                408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_GATEWAY_TIMEOUT
+                408_DES_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: DES_ERROR-GATEWAY_TIMEOUT
+        '429':
+          description: 'Too Many Requests'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_TOO_MANY_REQUESTS
+              examples:
+                429_AUTH_ERROR_TOO_MANY_REQUESTS:
+                  description: Too many requests have been made to this endpoint
+                  value:
+                    code: AUTH_ERROR_TOO_MANY_REQUESTS
+                429_DES_ERROR_TOO_MANY_REQUESTS:
+                  description: Too many requests have been made to this endpoint
+                  value:
+                    code: DES_ERROR_TOO_MANY_REQUESTS
+        '500':
+          description: 'Internal Server Error'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+              examples:
+                500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                  description: Endpoint API has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+                500_DES_ERROR_JSON_FAILURE:
+                  description: Endpoint API has returned invalid JSON.
+                  value:
+                    code: DES_ERROR_JSON_FAILURE
+                500_DES_ERROR_API:
+                  description: Endpoint API has experienced an internal error.
+                  value:
+                    code: DES_ERROR_API
+        '503':
+          description: 'Service Unavailable'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_BACKEND_FAILURE
+              examples:
+                503_AUTH_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_BACKEND_FAILURE
+                503_AUTH_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_OTHER
+                503_AUTH_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: AUTH_ERROR_IO
+                503_DES_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: DES_ERROR_BACKEND_FAILURE
+                503_DES_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: DES_ERROR_OTHER
+                503_DES_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: DES_ERROR_IO
+      deprecated: false
+      security:
+        - User-Restricted:
+            - write:apprenticeship-levy
+  /apprenticeship-levy/epaye/{empref}/declarations:
+    get:
+      tags:
+        - apprenticeship-levy
+      summary: Get employer levy declarations
+      description: >
+        Returns a list of levy declarations for a given employer reference.
+      operationId: Getemployerlevydeclarations
+      parameters:
+        - name: empref
+          in: path
+          description: A valid (URL encoded) employer reference for the PAYE scheme.
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: 123/AB12345
+        - name: fromDate
+          in: query
+          description: The date of the earliest record to return. If no date is supplied the default date of current month/year - 6 years will be used.
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date
+            example: 2015-08-09
+        - name: toDate
+          in: query
+          description: The date of the latest record to return. If no date is supplied the default date of 'now'/'today' will be used.
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date
+            example: 2015-08-09
+        - name: Authorization
+          in: header
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: Bearer [token here]
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApprenticeshipLevyEpayeDeclarationsresponse'
+                  - example:
+                      empref: 123/AB12345
+                      declarations:
+                        - id: 12345684
+                          submissionTime: 2016-10-15T16:05:23.000
+                          dateCeased: 2016-09-05
+                        - id: 12345683
+                          submissionTime: 2016-07-15T16:05:23.000
+                          inactiveFrom: 2016-06-06
+                          inactiveTo: 2016-09-05
+                        - id: 12345682
+                          submissionTime: 2016-06-15T16:05:23.000
+                          payrollPeriod:
+                            year: 16-17
+                            month: 2
+                          levyDueYTD: 200
+                          levyAllowanceForFullYear: 15000
+                        - id: 12345681
+                          submissionTime: 2016-06-07T16:05:23.000
+                          payrollPeriod:
+                            year: 16-17
+                            month: 2
+                          levyDueYTD: 1000
+                          levyAllowanceForFullYear: 15000
+                        - id: 12345680
+                          submissionTime: 2016-05-07T16:05:23.000
+                          payrollPeriod:
+                            year: 16-17
+                            month: 1
+                          levyDueYTD: 500
+                          levyAllowanceForFullYear: 15000
+                        - id: 12345679
+                          submissionTime: 2015-04-07T16:05:23.000
+                          payrollPeriod:
+                            year: 15-16
+                            month: 12
+                          noPaymentForPeriod: true
+                        - id: 12345678
+                          submissionTime: 2016-03-07T16:05:23.000
+                          payrollPeriod:
+                            year: 15-16
+                            month: 11
+                          levyDueYTD: 600
+                          levyAllowanceForFullYear: 15000
+              example:
+                empref: 123/AB12345
+                declarations:
+                  - id: 12345684
+                    submissionTime: 2016-10-15T16:05:23.000
+                    dateCeased: 2016-09-05
+                  - id: 12345683
+                    submissionTime: 2016-07-15T16:05:23.000
+                    inactiveFrom: 2016-06-06
+                    inactiveTo: 2016-09-05
+                  - id: 12345682
+                    submissionTime: 2016-06-15T16:05:23.000
+                    payrollPeriod:
+                      year: 16-17
+                      month: 2
+                    levyDueYTD: 200
+                    levyAllowanceForFullYear: 15000
+                  - id: 12345681
+                    submissionTime: 2016-06-07T16:05:23.000
+                    payrollPeriod:
+                      year: 16-17
+                      month: 2
+                    levyDueYTD: 1000
+                    levyAllowanceForFullYear: 15000
+                  - id: 12345680
+                    submissionTime: 2016-05-07T16:05:23.000
+                    payrollPeriod:
+                      year: 16-17
+                      month: 1
+                    levyDueYTD: 500
+                    levyAllowanceForFullYear: 15000
+                  - id: 12345679
+                    submissionTime: 2015-04-07T16:05:23.000
+                    payrollPeriod:
+                      year: 15-16
+                      month: 12
+                    noPaymentForPeriod: true
+                  - id: 12345678
+                    submissionTime: 2016-03-07T16:05:23.000
+                    payrollPeriod:
+                      year: 15-16
+                      month: 11
+                    levyDueYTD: 600
+                    levyAllowanceForFullYear: 15000
+        '400':
+          description: 'Bad Request'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: EMPREF_INVALID
+              examples:
+                400_EMPREF_INVALID:
+                  description: Employer reference (EMPREF) request parameter is incorrect.
+                  value:
+                    code: EMPREF_INVALID
+                400_DATE_INVALID:
+                  description: Date(s) request parameter(s) is incorrect.
+                  value:
+                    code: DATE_INVALID
+                400_AUTH_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: AUTH_ERROR_BAD_REQUEST
+                400_DES_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: DES_ERROR_BAD_REQUEST
+        '401':
+          description: 'Unauthorised'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: INVALID_CREDENTIALS
+              examples:
+                401_INVALID_CREDENTIALS:
+                  description: The request requires correct authentication headers with valid token.
+                  value:
+                    code: INVALID_CREDENTIALS
+                401_AUTH_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_UNAUTHORIZED
+                401_DES_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: DES_ERROR_UNAUTHORIZED
+        '403':
+          description: 'Forbidden'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_FORBIDDEN
+              examples:
+                403_AUTH_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_FORBIDDEN
+                403_DES_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: DES_ERROR_FORBIDDEN
+        '404':
+          description: 'Not Found'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: EPAYE_EMPREF_UNKNOWN
+              examples:
+                404_EPAYE_EMPREF_UNKNOWN:
+                  description: Employer reference is unknown or endpoint not found.
+                  value:
+                    code: EPAYE_EMPREF_UNKNOWN
+                404_AUTH_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: AUTH_ERROR_NOT_FOUND
+                404_DES_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: DES_ERROR_NOT_FOUND
+        '408':
+          description: 'Request Timeout'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_REQUEST_TIMEOUT
+              examples:
+                408_AUTH_ERROR_REQUEST_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_REQUEST_TIMEOUT
+                408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_GATEWAY_TIMEOUT
+                408_DES_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: DES_ERROR-GATEWAY_TIMEOUT
+        '429':
+          description: 'Too Many Requests'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_TOO_MANY_REQUESTS
+              examples:
+                429_AUTH_ERROR_TOO_MANY_REQUESTS:
+                  description: Too many requests have been made to this endpoint
+                  value:
+                    code: AUTH_ERROR_TOO_MANY_REQUESTS
+                429_DES_ERROR_TOO_MANY_REQUESTS:
+                  description: Too many requests have been made to this endpoint
+                  value:
+                    code: DES_ERROR_TOO_MANY_REQUESTS
+        '500':
+          description: 'Internal Server Error'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+              examples:
+                500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                  description: Endpoint API has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+                500_DES_ERROR_JSON_FAILURE:
+                  description: DES or backend system has returned invalid json which can not be relayed to API caller.
+                  value:
+                    code: DES_ERROR_JSON_FAILURE
+                500_DES_ERROR_BACKEND_FAILURE:
+                  description: DES returned unexpected Json error response type on a HTTP 200 response.
+                  value:
+                    code: DES_ERROR_BACKEND_FAILURE
+        '503':
+          description: 'Service Unavailable'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_BACKEND_FAILURE
+              examples:
+                503_AUTH_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_BACKEND_FAILURE
+                503_AUTH_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_OTHER
+                503_AUTH_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: AUTH_ERROR_IO
+                503_DES_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: DES_ERROR_BACKEND_FAILURE
+                503_DES_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: DES_ERROR_OTHER
+                503_DES_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: DES_ERROR_IO
+      deprecated: false
+      security:
+          - User-Restricted:
+            - write:apprenticeship-levy
+  /apprenticeship-levy/epaye/{empref}/fractions:
+    get:
+      tags:
+        - apprenticeship-levy
+      summary: Get employer fraction calculations
+      description: "Returns a list of fraction calculations for a given employer reference.\n\nHMRC will calculate the English Fraction values for all PAYE schemes on a regular, but infrequent, basis, most likely quarterly. The estimate for the number of schemes that are connected to DAS accounts in the first year is placed at 33,000, rising to 60,000 after three years, so refreshing the English Fraction values will be costly, and not something we’d want to do on a daily basis given how infrequently the values are updated.\n\nThis API endpoint will let DAS ask the HMRC system for the date that the most recent English Fraction batch calculation was done. DAS can call this endpoint on a frequent basis, perhaps daily, store the date and only refresh the scheme values when it changes.\n      \n"
+      operationId: Getemployerfractioncalculations
+      parameters:
+        - name: empref
+          in: path
+          description: A valid (URL encoded) employer reference for the PAYE scheme.
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: 123/AB12345
+        - name: fromDate
+          in: query
+          description: The date of the earliest calculation to return. Defaults to 72 months prior to current date.
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date
+            example: 2015-08-09
+        - name: toDate
+          in: query
+          description: The date of the latest calculation to return. Defaults to current date.
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date
+            example: 2015-08-09
+        - name: Authorization
+          in: header
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: Bearer [token here]
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApprenticeshipLevyEpayeFractionsresponse'
+                  - example:
+                      empref: 123/AB12345
+                      fractionCalculations:
+                        - calculatedAt: 2016-03-15
+                          fractions:
+                            - region: England
+                              value: 0.83
+                        - calculatedAt: 2015-11-18
+                          fractions:
+                            - region: England
+                              value: 0.78
+              example:
+                empref: 123/AB12345
+                fractionCalculations:
+                  - calculatedAt: 2016-03-15
+                    fractions:
+                      - region: England
+                        value: 0.83
+                  - calculatedAt: 2015-11-18
+                    fractions:
+                      - region: England
+                        value: 0.78
+        '400':
+          description: 'Bad Request'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: EMPREF_INVALID
+              examples:
+                400_EMPREF_INVALID:
+                  description: Employer reference (EMPREF) request parameter is incorrect.
+                  value:
+                    code: EMPREF_INVALID
+                400_DATE_INVALID:
+                  description: Date(s) request parameter(s) is incorrect.
+                  value:
+                    code: DATE_INVALID
+                400_AUTH_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: AUTH_ERROR_BAD_REQUEST
+                400_DES_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: DES_ERROR_BAD_REQUEST
+        '401':
+          description: 'Unauthorised'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: INVALID_CREDENTIALS
+              examples:
+                401_INVALID_CREDENTIALS:
+                  description: The request requires correct authentication headers with valid token.
+                  value:
+                    code: INVALID_CREDENTIALS
+                401_AUTH_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_UNAUTHORIZED
+                401_DES_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: DES_ERROR_UNAUTHORIZED
+        '403':
+          description: 'Forbidden'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_FORBIDDEN
+              examples:
+                403_AUTH_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_FORBIDDEN
+                403_DES_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: DES_ERROR_FORBIDDEN
+        '404':
+          description: 'Not Found'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: EPAYE_EMPREF_UNKNOWN
+              examples:
+                404_EPAYE_EMPREF_UNKNOWN:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: EPAYE_EMPREF_UNKNOWN
+                404_AUTH_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: AUTH_ERROR_NOT_FOUND
+                404_DES_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: DES_ERROR_NOT_FOUND
+        '408':
+          description: 'Request Timeout'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_REQUEST_TIMEOUT
+              examples:
+                408_AUTH_ERROR_REQUEST_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_REQUEST_TIMEOUT
+                408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_GATEWAY_TIMEOUT
+                408_DES_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: DES_ERROR-GATEWAY_TIMEOUT
+        '429':
+          description: 'Too Many Requests'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_TOO_MANY_REQUESTS
+              examples:
+                429_AUTH_ERROR_TOO_MANY_REQUESTS:
+                  description: Too many requests have been made to this endpoint
+                  value:
+                    code: AUTH_ERROR_TOO_MANY_REQUESTS
+                429_DES_ERROR_TOO_MANY_REQUESTS:
+                  description: Too many requests have been made to this endpoint
+                  value:
+                    code: DES_ERROR_TOO_MANY_REQUESTS
+        '500':
+          description: 'Internal Server Error'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+              examples:
+                500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                  description: Endpoint API has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+                500_DES_ERROR_JSON_FAILURE:
+                  description: DES or backend system has returned invalid json which can not be relayed to API caller.
+                  value:
+                    code: DES_ERROR_JSON_FAILURE
+                500_DES_ERROR_BACKEND_FAILURE:
+                  description: DES returned unexpected Json error response type on a HTTP 200 response.
+                  value:
+                    code: DES_ERROR_BACKEND_FAILURE
+        '503':
+          description: 'Service Unavailable'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_BACKEND_FAILURE
+              examples:
+                503_AUTH_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_BACKEND_FAILURE
+                503_AUTH_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_OTHER
+                503_AUTH_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: AUTH_ERROR_IO
+                503_DES_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: DES_ERROR_BACKEND_FAILURE
+                503_DES_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: DES_ERROR_OTHER
+                503_DES_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: DES_ERROR_IO
+      deprecated: false
+      security:
+          - User-Restricted:
+            - write:apprenticeship-levy
+  /apprenticeship-levy/epaye/{empref}/employed/{nino}:
+    get:
+      tags:
+        - apprenticeship-levy
+      summary: Get employment status
+      description: >
+        Checks the employment status of an individual in a payroll scheme.
+      operationId: Getemploymentstatus
+      parameters:
+        - name: empref
+          in: path
+          description: A valid (URL encoded) employer reference for the PAYE scheme.
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: 123/AB12345
+        - name: nino
+          in: path
+          description: A valid National Insurance Number (nino) for the individual being checked.
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: XY654321Z
+        - name: fromDate
+          in: query
+          description: Starting date of the period to check employment for.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date
+            example: 2016-01-31
+        - name: toDate
+          in: query
+          description: Ending date of the period to check employment for.
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            format: date
+            example: 2016-01-31
+        - name: Authorization
+          in: header
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: Bearer [token here]
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApprenticeshipLevyEpayeEmployedresponse'
+                  - example:
+                      empref: 123/AB12345
+                      nino: XY654321Z
+                      fromDate: 2016-03-06
+                      toDate: 2016-04-05
+                      employed: true
+              example:
+                empref: 123/AB12345
+                nino: XY654321Z
+                fromDate: 2016-03-06
+                toDate: 2016-04-05
+                employed: true
+        '400':
+          description: 'Bad Request'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: EMPREF_INVALID
+              examples:
+                400_EMPREF_INVALID:
+                  description: Employer reference (EMPREF) request parameter is incorrect.
+                  value:
+                    code: EMPREF_INVALID
+                400_DATE_INVALID:
+                  description: Date request parameter is incorrect.
+                  value:
+                    code: DATE_INVALID
+                400_NINO_INVALID:
+                  description: Nino request parameter is incorrect
+                  value:
+                    code: NINO_INVALID
+                400_AUTH_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: AUTH_ERROR_BAD_REQUEST
+                400_DES_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: DES_ERROR_BAD_REQUEST
+        '401':
+          description: 'Unauthorised'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: INVALID_CREDENTIALS
+              examples:
+                401_INVALID_CREDENTIALS:
+                  description: The request requires correct authentication headers with valid token.
+                  value:
+                    code: INVALID_CREDENTIALS
+                401_AUTH_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_UNAUTHORIZED
+                401_DES_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: DES_ERROR_UNAUTHORIZED
+        '403':
+          description: 'Forbidden'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_FORBIDDEN
+              examples:
+                403_AUTH_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_FORBIDDEN
+                403_DES_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: DES_ERROR_FORBIDDEN
+        '404':
+          description: 'Not Found'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: EPAYE_UNKNOWN
+              examples:
+                404_EPAYE_UNKNOWN:
+                  description: Endpoint or internal system has become unavailable or either NINO or EMPREF are not found. EPAYE_NINO_UNKNOWN and EPAYE_EMPREF_UNKNOWN have been withdrawn as backend systems will not distinguish 404 errors between unknown NINO or unknown EMPREF.
+                  value:
+                    code: EPAYE_UNKNOWN
+                404_AUTH_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: AUTH_ERROR_NOT_FOUND
+                404_DES_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: DES_ERROR_NOT_FOUND
+        '408':
+          description: 'Request Timeout'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_REQUEST_TIMEOUT
+              examples:
+                408_AUTH_ERROR_REQUEST_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_REQUEST_TIMEOUT
+                408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_GATEWAY_TIMEOUT
+                408_DES_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: DES_ERROR-GATEWAY_TIMEOUT
+        '429':
+          description: 'Too Many Requests'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_TOO_MANY_REQUESTS
+              examples:
+                429_AUTH_ERROR_TOO_MANY_REQUESTS:
+                  description: Too many requests have been made to this endpoint
+                  value:
+                    code: AUTH_ERROR_TOO_MANY_REQUESTS
+                429_DES_ERROR_TOO_MANY_REQUESTS:
+                  description: Too many requests have been made to this endpoint
+                  value:
+                    code: DES_ERROR_TOO_MANY_REQUESTS
+        '500':
+          description: 'Internal Server Error'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+              examples:
+                500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                  description: Endpoint API has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+                500_DES_ERROR_JSON_FAILURE:
+                  description: DES or backend system has returned invalid json which can not be relayed to API caller.
+                  value:
+                    code: DES_ERROR_JSON_FAILURE
+                500_DES_ERROR_BACKEND_FAILURE:
+                  description: DES returned unexpected Json error response type on a HTTP 200 response
+                  value:
+                    code: DES_ERROR_BACKEND_FAILURE
+        '503':
+          description: 'Service Unavailable'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_BACKEND_FAILURE
+              examples:
+                503_AUTH_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_BACKEND_FAILURE
+                503_AUTH_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_OTHER
+                503_AUTH_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: AUTH_ERROR_IO
+                503_DES_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: DES_ERROR_BACKEND_FAILURE
+                503_DES_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: DES_ERROR_OTHER
+                503_DES_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: DES_ERROR_IO
+      deprecated: false
+      security:
+          - User-Restricted:
+            - write:apprenticeship-levy
+  /apprenticeship-levy/fraction-calculation-date:
+    get:
+      tags:
+        - apprenticeship-levy
+      summary: Get latest fraction calculation date
+      description: >
+        Returns the date of the most recent fraction calculation batch run.
+
+
+        HMRC will calculate the English Fraction values for all PAYE schemes on a regular, but infrequent, basis, most likely quarterly. The estimate for the number of schemes that are connected to DAS accounts in the first year is placed at 33,000, rising to 60,000 after three years, so refreshing the English Fraction values will be costly, and not something we’d want to do on a daily basis given how infrequently the values are updated.
+
+
+        This API endpoint will let consumers of this API (namely DAS) to ask the HMRC system for the date that the most recent English Fraction batch calculation was completed. DAS can call this endpoint on a frequent basis, perhaps daily, store the date and only refresh the scheme values when it changes.
+
+
+        The response will take the form of a date, in the standard `YYYY-MM-DD` format used by MTDP APIs. The HMRC system will ensure that the fraction values for all schemes have been recalculated before updating the calculation date.
+      operationId: Getlatestfractioncalculationdate
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: Bearer [token here]
+      responses:
+        '200':
+          description: 'OK'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: string
+                example: >
+                  "2016-04-05"
+              example: >
+                "2016-04-05"
+        '400':
+          description: 'Bad Request'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_BAD_REQUEST
+              examples:
+                400_AUTH_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: AUTH_ERROR_BAD_REQUEST
+                400_DES_ERROR_BAD_REQUEST:
+                  description: The request made is not valid.
+                  value:
+                    code: DES_ERROR_BAD_REQUEST
+        '401':
+          description: 'Unauthorised'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: INVALID_CREDENTIALS
+              examples:
+                401_INVALID_CREDENTIALS:
+                  description: The request requires correct authentication headers with valid token.
+                  value:
+                    code: INVALID_CREDENTIALS
+                401_AUTH_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_UNAUTHORIZED
+                401_DES_ERROR_UNAUTHORIZED:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: DES_ERROR_UNAUTHORIZED
+        '403':
+          description: 'Forbidden'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_FORBIDDEN
+              examples:
+                403_AUTH_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: AUTH_ERROR_FORBIDDEN
+                403_DES_ERROR_FORBIDDEN:
+                  description: The request requires user authentication. Please ensure Grant authority has been given and bearer token is supplied with the request headers.
+                  value:
+                    code: DES_ERROR_FORBIDDEN
+        '404':
+          description: 'Not Found'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_NOT_FOUND
+              examples:
+                404_AUTH_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: AUTH_ERROR_NOT_FOUND
+                404_DES_ERROR_NOT_FOUND:
+                  description: Endpoint or internal system has become unavailable.
+                  value:
+                    code: DES_ERROR_NOT_FOUND
+        '408':
+          description: 'Request Timeout'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_REQUEST_TIMEOUT
+              examples:
+                408_AUTH_ERROR_REQUEST_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_REQUEST_TIMEOUT
+                408_AUTH_ERROR_GATEWAY_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: AUTH_ERROR_GATEWAY_TIMEOUT
+                408_DES_ERROR_REQUEST_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: DES_ERROR_REQUEST_TIMEOUT
+        '429':
+          description: 'Too Many Requests'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: DES_ERROR_TOO_MANY_REQUESTS
+              examples:
+                429_DES_ERROR_TOO_MANY_REQUESTS:
+                  description: Too many requests have been made to the back-end systems.
+                  value:
+                    code: DES_ERROR_TOO_MANY_REQUESTS
+        '500':
+          description: 'Internal Server Error'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+              examples:
+                500_AUTH_ERROR_INTERNAL_SERVER_ERROR:
+                  description: Endpoint API has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_INTERNAL_SERVER_ERROR
+                500_DES_ERROR_JSON_FAILURE:
+                  description: Endpoint API has returned invalid JSON.
+                  value:
+                    code: DES_ERROR_JSON_FAILURE
+                500_DES_ERROR_API:
+                  description: Endpoint API has experienced an internal error.
+                  value:
+                    code: DES_ERROR_API
+        '503':
+          description: 'Service Unavailable'
+          headers: {}
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/errorResponse'
+                  - example:
+                      code: AUTH_ERROR_BACKEND_FAILURE
+              examples:
+                503_AUTH_ERROR_BACKEND_FAILURE:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_BACKEND_FAILURE
+                503_AUTH_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: AUTH_ERROR_OTHER
+                503_AUTH_ERROR_IO:
+                  description: Endpoint API has experienced IO failure
+                  value:
+                    code: AUTH_ERROR_IO
+                503_DES_ERROR_IO:
+                  description: Internal system has become unresponsive causing an IO error.
+                  value:
+                    code: DES_ERROR_IO
+                503_DES_ERROR_OTHER:
+                  description: Endpoint or internal system has experienced an internal error.
+                  value:
+                    code: DES_ERROR_OTHER
+                503_DES_ERROR_BACKEND_FAILURE:
+                  description: Backend has experiences a server 5xx error.
+                  value:
+                    code: DES_ERROR_BACKEND_FAILURE
+      deprecated: false
+      security:
+          - User-Restricted:
+            - write:apprenticeship-levy
+components:
+  securitySchemes:
+    User-Restricted:
+      type:  oauth2
+      description: HMRC supports OAuth 2.0 for authenticating User-restricted API requests
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.service.hmrc.gov.uk/oauth/authorize
+          tokenUrl: https://api.service.hmrc.gov.uk/oauth/token
+          refreshUrl: https://api.service.hmrc.gov.uk/oauth/refresh
+          scopes:
+            write:apprenticeship-levy: Access Apprenticeship Levy
+  schemas:
+    errorResponse:
+      title: errorResponse
+      required:
+        - code
+      type: object
+      properties:
+        code:
+          type: string
+    Address:
+      title: Address
+      type: object
+      properties:
+        addressLine1:
+          type: string
+          description: The first line of the employer's address
+          example: Foreign Address Line 1
+        addressLine2:
+          type: string
+          description: The second line of the employer's address
+          example: Foreign Address Line 2
+        addressLine3:
+          type: string
+          description: The third line of the employer's address
+          example: Foreign Address Line 3
+        addressLine4:
+          type: string
+          description: The forth line of the employer's address
+          example: Foreign Address Line 4
+        addressLine5:
+          type: string
+          description: The fifth line of the employer's address
+          example: Foreign Address Line 5
+        postcode:
+          type: string
+          description: The fifth line of the employer's address
+          example: NE30 4XX
+        foreignCountry:
+          type: string
+          description: The country of the employer's address
+          example: France
+    ApprenticeshipLevyEpayeDeclarationsresponse:
+      title: ApprenticeshipLevyEpayeDeclarationsresponse
+      type: object
+      properties:
+        empref:
+          type: string
+          description: The PAYE Reference for the employer. This will be the same as provided in the URL.
+          example: 123/AB12345
+        declarations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Declarations1'
+          description: ''
+      description: Employer Levy Declarations.
+    ApprenticeshipLevyEpayeEmployedresponse:
+      title: ApprenticeshipLevyEpayeEmployedresponse
+      type: object
+      properties:
+        empref:
+          type: string
+          description: The PAYE Reference for the employer. This will be the same as provided in the URL.
+          example: 123/AB12345
+        nino:
+          type: string
+          description: The NINO of the individual being checked. This will be the same as provided in the URL.
+          example: XY654321Z
+        fromDate:
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type: string
+          description: The start date of the range the check should be made for.
+          example: 2016-03-06
+        toDate:
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type: string
+          description: The end date of the range the check should be made for.
+          example: 2016-04-05
+        employed:
+          type: boolean
+          description: Whether or not the individual was employed in the scheme at any time with the date range.
+          example: true
+      description: Employer Check.
+    ApprenticeshipLevyEpayeFractionsresponse:
+      title: ApprenticeshipLevyEpayeFractionsresponse
+      type: object
+      properties:
+        empref:
+          type: string
+          description: The PAYE Reference for the employer. This will be the same as provided in the URL.
+          example: 123/AB12345
+        fractionCalculations:
+          type: array
+          items:
+            $ref: '#/components/schemas/FractionCalculation'
+          description: ''
+      description: Employer Fraction Calculations.
+    ApprenticeshipLevyEpayeresponse:
+      title: ApprenticeshipLevyEpayeresponse
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/Links1'
+        empref:
+          type: string
+          description: The PAYE Reference for the employer. This will be the same as provided in the URL.
+          example: 123/AB12345
+        employer:
+          $ref: '#/components/schemas/Employer'
+        communication:
+          $ref: '#/components/schemas/Communication'
+      description: Get employer's details
+    ApprenticeshipLevyresponse:
+      title: ApprenticeshipLevyresponse
+      type: object
+      properties:
+        _links:
+          $ref: '#/components/schemas/Links'
+        emprefs:
+          type: array
+          items:
+            pattern: ^\d{3}/[A-Za-z0-9]+$
+            type: string
+          description: ''
+      description: Get all employer references
+    Communication:
+      title: Communication
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        address:
+          $ref: '#/components/schemas/Address'
+        contact:
+          $ref: '#/components/schemas/Contact'
+    Contact:
+      title: Contact
+      type: object
+      properties:
+        telephone:
+          $ref: '#/components/schemas/Telephone'
+        email:
+          $ref: '#/components/schemas/Email'
+    Declarations:
+      title: Declarations
+      type: object
+      properties:
+        href:
+          type: string
+          description: The relative link to fetch levy declarations for this employer reference
+          example: /epaye/123%2FAB12345/declarations
+    Declarations1:
+      title: Declarations1
+      type: object
+      properties:
+        id:
+          type: number
+          description: 'A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed. Dividing this identifier by 10 (ignoring the remainder) gives the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed. Taking this identifier modulo 10 gives the type of entry: 0, no entry; 1, inactive; 2, levy declaration; 3, ceased.'
+          example: 12345684
+        dateCeased:
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type: string
+          description: If present, indicates the date that the payroll scheme was ceased.
+        inactiveFrom:
+          pattern: ^\d{4}-\d{2}-06$
+          type: string
+          description: Indicates the the payroll scheme will be inactive starting from this date. Should always be the 6th of the month of the first inactive payroll period.
+        inactiveTo:
+          pattern: ^\d{4}-\d{2}-05$
+          type: string
+          description: The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period.
+        noPaymentForPeriod:
+          type: boolean
+          description: If present, will always have the value true and indicates that no declaration was necessary for this period. This can be interpreted to mean that the YTD levy balance is unchanged from the previous submitted value.
+          example: true
+        submissionTime:
+          type: string
+          description: The time at which the EPS submission that this declaration relates to was received by HMRC. If the backend systems return a bad date that can not be handled this will be set to 1970-01-01T01:00:00.000.
+          example: 2016–02–21T16:05:23.000.000
+        payrollPeriod:
+          $ref: '#/components/schemas/PayrollPeriod'
+        levyDueYTD:
+          type: number
+          description: The amount of apprenticeship levy that was declared in the payroll month.
+          example: 600.2
+        allowance:
+          type: number
+          description: The annual amount of apprenticeship levy allowance that has been allocated to this payroll scheme. If absent then the value can be taken as 0. The maximum value in the 2017/18 will be 15,000.
+          example: 15000
+    Email:
+      title: Email
+      type: object
+      properties:
+        primary:
+          type: string
+          description: The fifth line of the employer's address
+          example: someone@hmrc.gov.uk
+    Employer:
+      title: Employer
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        address:
+          $ref: '#/components/schemas/Address'
+        contact:
+          $ref: '#/components/schemas/Contact'
+    EmploymentCheck:
+      title: EmploymentCheck
+      type: object
+      properties:
+        href:
+          type: string
+          description: The relative link to fetch employee employment status for this employer reference
+          example: /epaye/123%2FAB12345/employed/{nino}
+    Empref:
+      title: Empref
+      type: object
+      properties:
+        href:
+          type: string
+          description: The relative link to fetch the details for this employer reference
+          example: /epaye/840%2FMODES17
+    FractionCalculation:
+      title: FractionCalculation
+      type: object
+      properties:
+        calculatedAt:
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type: string
+          description: The date that the fractions were calculated.
+        fractions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Fractions1'
+          description: ''
+    Fractions:
+      title: Fractions
+      type: object
+      properties:
+        href:
+          type: string
+          description: The relative link to fetch English percentage for this employer reference
+          example: /epaye/123%2FAB12345/fractions
+    Fractions1:
+      title: Fractions1
+      type: object
+      properties:
+        region:
+          type: string
+          description: The region the specific fraction applies to. Will always be England for the forseeable future.
+          example: England
+        value:
+          type: number
+          description: The fraction calculated for the region. Will be a decimal in the range 0 to 1.
+          example: 0.83
+    Links:
+      title: Links
+      type: object
+      properties:
+        '{empref}':
+          $ref: '#/components/schemas/Empref'
+        self:
+          $ref: '#/components/schemas/Self'
+    Links1:
+      title: Links1
+      type: object
+      properties:
+        fractions:
+          $ref: '#/components/schemas/Fractions'
+        declarations:
+          $ref: '#/components/schemas/Declarations'
+        employment-check:
+          $ref: '#/components/schemas/EmploymentCheck'
+        self:
+          $ref: '#/components/schemas/Self1'
+    Name:
+      title: Name
+      type: object
+      properties:
+        nameLine1:
+          type: string
+          description: The first line of the employer's name
+          example: KILL-JOY PLC THE FUNERAL
+        nameLine2:
+          type: string
+          description: The second line of the employer's name
+          example: COMPANY
+    PayrollPeriod:
+      title: PayrollPeriod
+      type: object
+      properties:
+        year:
+          type: string
+          description: The tax year of the payroll period against which the declaration was made.
+          example: 15-16
+        month:
+          type: number
+          description: The tax month of the payroll period against which the declaration was made. Month 1 is April.
+          example: 1
+    Self:
+      title: Self
+      type: object
+      properties:
+        href:
+          type: string
+          description: The relative link to fetch this data
+          example: /
+    Self1:
+      title: Self1
+      type: object
+      properties:
+        href:
+          type: string
+          description: The relative link to fetch contact details this employer reference
+          example: /epaye/123%2FAB12345
+    Telephone:
+      title: Telephone
+      type: object
+      properties:
+        telephoneNumber:
+          type: string
+          description: The employer's main contact telephone number
+          example: 0123 456789
+        fax:
+          type: string
+          description: The employer's main contact telephone number
+          example: 0123 456789
+tags:
+  - name: apprenticeship-levy
+    description: ''
