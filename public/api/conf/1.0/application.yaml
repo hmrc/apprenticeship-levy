@@ -6,6 +6,7 @@ info:
   version: '1.0'
 servers:
   - url: https://api.service.hmrc.gov.uk/
+    description: Production
     variables: {}
 paths:
   /apprenticeship-levy/:
@@ -804,7 +805,7 @@ paths:
                     code: DES_ERROR_IO
       deprecated: false
       security:
-          - User-Restricted:
+        - User-Restricted:
             - read:apprenticeship-levy
   /apprenticeship-levy/epaye/{empref}/fractions:
     get:
@@ -1073,7 +1074,7 @@ paths:
                     code: DES_ERROR_IO
       deprecated: false
       security:
-          - User-Restricted:
+        - User-Restricted:
             - read:apprenticeship-levy
   /apprenticeship-levy/epaye/{empref}/employed/{nino}:
     get:
@@ -1347,7 +1348,7 @@ paths:
                     code: DES_ERROR_IO
       deprecated: false
       security:
-          - User-Restricted:
+        - User-Restricted:
             - read:apprenticeship-levy
   /apprenticeship-levy/fraction-calculation-date:
     get:
@@ -1565,7 +1566,7 @@ paths:
                     code: DES_ERROR_BACKEND_FAILURE
       deprecated: false
       security:
-          - User-Restricted:
+        - User-Restricted:
             - read:apprenticeship-levy
 components:
   securitySchemes:
