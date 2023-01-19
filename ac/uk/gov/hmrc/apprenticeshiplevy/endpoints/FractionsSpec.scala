@@ -1,8 +1,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.endpoints
 
 import java.io.File
-
-import org.scalatest.Matchers._
+import org.scalatest.matchers.should.Matchers._
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import play.api.libs.json.Json
@@ -13,7 +12,7 @@ class FractionsSpec extends FunctionalSpec with Eventually with IntegrationPatie
   describe("Fractions Endpoints") {
     contexts.foreach { case (pair) =>
       val context = pair._1
-      implicit val environment = pair._2
+      implicit val environment: String = pair._2
       val baseDir = s"$dir/${pair._2}"
       it (s"should when calling ${url}$context/fraction-calculation-date return date of last fraction calculation  (${environment})") {
         // set up
