@@ -81,12 +81,12 @@ trait GraphiteMetrics extends Logging {
 
   def successfulRequest(event: MetricEvent): Unit = event match {
     case RequestEvent(name, Some(_)) => mark(s"ala.success.${name}")
-    case _ => mark(s"ala.success.${event.name}")
+    case _ => mark(s"ala.success.${event.name()}")
   }
 
   def failedRequest(event: MetricEvent): Unit = event match {
     case RequestEvent(name, Some(_)) => mark(s"ala.failed.${name}")
-    case _ => mark(s"ala.failed.${event.name}")
+    case _ => mark(s"ala.failed.${event.name()}")
   }
 
   def processRequest(event: TimerEvent): Unit = log(s"ala.timers.${event.name}", event.delta, event.timeUnit)

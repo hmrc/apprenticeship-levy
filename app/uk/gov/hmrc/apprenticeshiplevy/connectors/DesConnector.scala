@@ -318,7 +318,7 @@ trait LevyDeclarationsEndpoint extends Timer {
     }
   }
 
-  protected[connectors] def isEpsOrigPathEnabled: Boolean = appContext.epsOrigPathEnabled
+  protected[connectors] def isEpsOrigPathEnabled: Boolean = appContext.epsOrigPathEnabled()
 
   protected[connectors] def desURL(empref: String): String = if (isEpsOrigPathEnabled)
                                                           s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"

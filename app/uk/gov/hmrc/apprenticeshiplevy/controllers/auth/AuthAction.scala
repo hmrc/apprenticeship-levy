@@ -29,7 +29,7 @@ import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, PAClientId, ~}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -63,13 +63,12 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
 
     override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
-      implicit val ec: ExecutionContext = executionContext
       authorised(
         EnrolmentHelper.enrolmentPredicate or AuthProviders(PrivilegedApplication)
       ).retrieve(
         // warning silenced in build.sbt as credentials does support PrivilegedAccess sessions (PAClientId)
         // https://confluence.tools.tax.service.gov.uk/pages/viewpage.action?spaceKey=GG&title=Retrievals+Reference#RetrievalsReference-credentials
-        Retrievals.allEnrolments and Retrievals.authProviderId
+        Retrievals.allEnrolments and Retrievals.credentials
       ) {
         case _ ~ PAClientId(_) =>
           Future.successful(Right(AuthenticatedRequest(request, None)))
