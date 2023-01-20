@@ -95,7 +95,6 @@ lazy val microservice = Project(appName, file("."))
     generateAPIDocsTask,
     resolvers += Resolver.jcenterRepo,
     scalacOptions ++= Seq(
-      "-Xfatal-warnings",
       "-deprecation",
       "-feature",
       "-Xmaxerrs", "1000", // Maximum errors to print

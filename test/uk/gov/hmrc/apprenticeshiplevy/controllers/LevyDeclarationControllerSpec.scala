@@ -54,7 +54,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
     mockAppContext.reset()
   }
 
-  override def fakeApplication: Application = GuiceApplicationBuilder()
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
     .overrides(
       bind[LiveDesConnector].toInstance(mockDesConnector),
       bind[PrivilegedAuthActionImpl].to[FakePrivilegedAuthAction],

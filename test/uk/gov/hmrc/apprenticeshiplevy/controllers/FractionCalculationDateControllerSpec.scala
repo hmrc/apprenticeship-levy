@@ -71,7 +71,8 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAppContext, mockHttp)
+    reset(mockAppContext)
+    reset(mockHttp)
   }
 
   "getting fraction calculation date" should {

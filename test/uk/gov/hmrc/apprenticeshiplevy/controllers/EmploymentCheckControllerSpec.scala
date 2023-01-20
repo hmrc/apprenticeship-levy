@@ -69,7 +69,8 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAppContext, mockHttp)
+    reset(mockAppContext)
+    reset(mockHttp)
   }
 
   "checking employment" should {

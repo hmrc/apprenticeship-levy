@@ -23,7 +23,7 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
                                            new FractionsCalculationDateEndpointISpec,
                                            new RootEndpointISpec,
                                            new TestDataEndpointISpec)
-  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with GuiceOneServerPerSuite with AppLevyUnitSpec with Logging {
+  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with GuiceOneServerPerSuite with AppLevyItUnitSpec with Logging {
 
   WiremockService.start()
   override implicit lazy final val app: Application = new GuiceApplicationBuilder()
@@ -72,7 +72,7 @@ class IntegrationTestsSuite extends Suites(new uk.gov.hmrc.apprenticeshiplevy.co
 }
 
 class NoWiremockIntegrationTestsSuite extends Suites(new PublicDefinitionEndpointISpec)
-  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with GuiceOneServerPerSuite with AppLevyUnitSpec {
+  with BeforeAndAfterAllConfigMap with IntegrationTestConfig with GuiceOneServerPerSuite with AppLevyItUnitSpec {
 
   override def stubConfigPath = "./it/no-mappings"
   override def additionalConfiguration: Map[String, Any] = (super.additionalConfiguration - "microservice.private-mode") ++ Map(
