@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
@@ -24,9 +23,11 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 import uk.gov.hmrc.apprenticeshiplevy.utils.DateFormats.localDateFormat
+import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
-import scala.concurrent.Future
+import scala.annotation.nowarn
+import scala.concurrent.{ExecutionContext, Future}
 
 trait FractionsController {
   self: DesController =>
@@ -38,7 +39,9 @@ trait FractionsController {
   val defaultPriorMonthsForFromDate = 72
 
   // scalastyle:off
-  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
+  // Is called from route GET /epaye/:empref/fractions
+  @nowarn
+  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate])(implicit hc: HeaderCarrier, ec: ExecutionContext): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
     implicit request =>
   // scalastyle:on
     val validatedFromDate = validateFromDate(fromDate)
@@ -80,9 +83,9 @@ trait FractionsCalculationDateController {
   val authAction: AuthAction
 
   // scalastyle:off
-  def fractionCalculationDate: Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
+  def fractionCalculationDate(implicit hc: HeaderCarrier, ec: ExecutionContext): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
     implicit request =>
-  // scalastyle:on
+      // scalastyle:on
       desConnector.fractionCalculationDate map { date =>
         Ok(Json.toJson(date))
       } recover desErrorHandler

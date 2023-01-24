@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import org.slf4j.MDC
 import play.api.Logging
 import play.api.libs.json.Json
@@ -31,7 +30,7 @@ import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
 import java.time.LocalDate
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait LevyDeclarationController extends Logging {
   self: DesController =>
@@ -41,7 +40,7 @@ trait LevyDeclarationController extends Logging {
   val authAction: AuthAction
 
   // scalastyle:off
-  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] =
+  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate])(implicit hc: HeaderCarrier, ec: ExecutionContext): Action[AnyContent] =
     (withValidAcceptHeader andThen authAction).async {
       implicit request =>
         // scalastyle:on
@@ -57,7 +56,7 @@ trait LevyDeclarationController extends Logging {
             }.recover(desErrorHandler)
     }
 
-  private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
+  private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[LevyDeclaration]] = {
     desConnector
       .eps(empref, dateRange)
       .map(

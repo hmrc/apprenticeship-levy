@@ -19,7 +19,6 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 import com.codahale.metrics.MetricRegistry
 
 import java.net.URLDecoder
-import scala.concurrent.ExecutionContext.Implicits.global
 import com.google.inject.Inject
 import com.kenshoo.play.metrics.MetricsImpl
 import play.api.Logging
@@ -40,13 +39,13 @@ import views.html.helper
 
 import java.time.LocalDate
 import java.util.UUID
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 trait EmployerDetailsEndpoint extends Timer with Logging {
   des: DesConnector =>
 
-  def designatoryDetails(empref: String)(implicit hc: HeaderCarrier): Future[DesignatoryDetails] = {
+  def designatoryDetails(empref: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] = {
     val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
 
     val (office, ref) =
@@ -57,7 +56,7 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
           throw new IllegalArgumentException(s"Empref is not valid.")
     }
 
-    val url = s"${des.baseUrl}/paye/employer/${office}/${ref}/designatory-details"
+    val url = s"${des.baseUrl}/paye/employer/$office/$ref/designatory-details"
 
     // $COVERAGE-OFF$
     logger.debug(s"Calling DES at $url")
@@ -110,7 +109,7 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
     }
   }
 
-  protected def getDetails(path: String)(implicit hc: HeaderCarrier): Future[Option[DesignatoryDetailsData]] =
+  protected def getDetails(path: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] =
     des.httpClient.GET[Either[UpstreamErrorResponse, DesignatoryDetailsData]](
       url         = s"${des.baseUrl}$path",
       queryParams = Seq(),
@@ -135,9 +134,9 @@ trait EmploymentCheckEndpoint extends Timer {
   des: DesConnector =>
 
   def check(empref: String, nino: String, dateRange: ClosedDateRange)
-           (implicit hc: HeaderCarrier): Future[EmploymentCheckStatus] = {
+           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmploymentCheckStatus] = {
     val dateParams = dateRange.toParams
-    val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?${dateParams}"
+    val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?$dateParams"
 
     // $COVERAGE-OFF$
     logger.debug(s"Calling DES at $url")
@@ -168,7 +167,7 @@ trait EmploymentCheckEndpoint extends Timer {
 trait FractionsEndpoint extends Timer {
   des: DesConnector =>
 
-  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Fractions] = {
+  def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Fractions] = {
     val dateParams = dateRange.toParams
     val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions?$dateParams"
     // $COVERAGE-OFF$
@@ -196,7 +195,7 @@ trait FractionsEndpoint extends Timer {
     }
   }
 
-  def fractionCalculationDate(implicit hc: HeaderCarrier): Future[LocalDate] = {
+  def fractionCalculationDate(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
     val url = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
 
     // $COVERAGE-OFF$
@@ -230,7 +229,7 @@ trait LevyDeclarationsEndpoint extends Timer {
 
   def appContext: AppContext
 
-  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[EmployerPaymentsSummary] = {
+  def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams
     val url = s"${desURL(empref)}?$dateParams"
 
