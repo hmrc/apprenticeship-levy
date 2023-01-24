@@ -87,7 +87,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
       "both the fromDate and toDate are supplied" in {
         val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
 
-        when(mockDesConnector.eps(anyString(), any())(any()))
+        when(mockDesConnector.eps(anyString(), any())(any(), any()))
           .thenReturn(Future.successful(EmployerPaymentsSummary(
             "empref",
             List(EmployerPaymentSummary(
@@ -108,7 +108,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
       "None of the dates are supplied" in {
         val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
 
-        when(mockDesConnector.eps(anyString(), any())(any()))
+        when(mockDesConnector.eps(anyString(), any())(any(), any()))
           .thenReturn(Future.successful(EmployerPaymentsSummary(
             "empref",
             List(EmployerPaymentSummary(
@@ -129,7 +129,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
       "only the fromDate is supplied" in {
         val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
 
-        when(mockDesConnector.eps(anyString(), any())(any()))
+        when(mockDesConnector.eps(anyString(), any())(any(), any()))
           .thenReturn(Future.successful(EmployerPaymentsSummary(
             "empref",
             List(EmployerPaymentSummary(
@@ -150,7 +150,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
       "only the toDate is supplied" in {
         val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
 
-        when(mockDesConnector.eps(anyString(), any())(any()))
+        when(mockDesConnector.eps(anyString(), any())(any(), any()))
           .thenReturn(Future.successful(EmployerPaymentsSummary(
             "empref",
             List(EmployerPaymentSummary(
@@ -172,7 +172,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
     "return a notFound" when {
       "no data is found" in {
 
-        when(mockDesConnector.eps(anyString(), any())(any()))
+        when(mockDesConnector.eps(anyString(), any())(any(), any()))
           .thenReturn(Future.successful(EmployerPaymentsSummary(
             "empref",
             List(EmployerPaymentSummary(
@@ -191,7 +191,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
 
       "the desConnector returns a 404" in {
 
-        when(mockDesConnector.eps(anyString(), any())(any()))
+        when(mockDesConnector.eps(anyString(), any())(any(), any()))
           .thenReturn(Future.failed(new NotFoundException("Data Not Found")))
 
         val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2020-01-01")), Some(LocalDate.parse("2021-01-01")))(FakeRequest().withHeaders(

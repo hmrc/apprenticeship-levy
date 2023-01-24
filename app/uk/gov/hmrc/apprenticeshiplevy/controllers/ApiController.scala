@@ -24,7 +24,11 @@ import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
 
+import scala.concurrent.ExecutionContext
+
 trait ApiController extends BackendBaseController with HeaderValidator {
+
+  implicit val ec: ExecutionContext = controllerComponents.executionContext
 
   implicit class ErrorResponseSyntax(er: ErrorResponse) {
     def result: Result = Status(er.httpStatusCode)(Json.toJson(er))

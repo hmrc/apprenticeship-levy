@@ -31,7 +31,7 @@ trait DesController extends ApiController with Logging {
   val appContext: AppContext
 
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
-    val hc = super.hc(rh).withExtraHeaders((("Environment",rh.headers.toSimpleMap.getOrElse("Environment",defaultDESEnvironment))))
+    val hc = super.hc(rh).withExtraHeaders(("Environment", rh.headers.toSimpleMap.getOrElse("Environment", defaultDESEnvironment)))
     hc.copy(authorization=Some(Authorization(s"Bearer ${defaultDESToken}")))
   }
   // $COVERAGE-OFF$

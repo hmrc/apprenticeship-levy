@@ -23,9 +23,6 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath._
-import uk.gov.hmrc.http.HeaderCarrier
-
-import scala.concurrent.ExecutionContext
 
 trait EmprefController extends DesController {
 
@@ -45,7 +42,7 @@ trait EmprefController extends DesController {
   def processLink(l: HalLink): HalLink = identity(l)
 
   // scalastyle:off
-  def empref(ref: EmploymentReference)(implicit ec: ExecutionContext, hc: HeaderCarrier): Action[AnyContent] =
+  def empref(ref: EmploymentReference): Action[AnyContent] =
     (withValidAcceptHeader andThen authAction(ref)).async {
       implicit request =>
         // scalastyle:on

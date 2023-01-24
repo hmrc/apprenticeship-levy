@@ -30,7 +30,7 @@ import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
 import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 trait LevyDeclarationController extends Logging {
   self: DesController =>
@@ -40,7 +40,7 @@ trait LevyDeclarationController extends Logging {
   val authAction: AuthAction
 
   // scalastyle:off
-  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate])(implicit hc: HeaderCarrier, ec: ExecutionContext): Action[AnyContent] =
+  def declarations(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] =
     (withValidAcceptHeader andThen authAction).async {
       implicit request =>
         // scalastyle:on
@@ -56,7 +56,7 @@ trait LevyDeclarationController extends Logging {
             }.recover(desErrorHandler)
     }
 
-  private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[LevyDeclaration]] = {
+  private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
     desConnector
       .eps(empref, dateRange)
       .map(
@@ -70,7 +70,7 @@ trait LevyDeclarationController extends Logging {
         * if it wants to return a 404 if all calls to `charges` return no results.
          */
         case t: NotFoundException =>
-          logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${t.getMessage()}, API returning empty sequence")
+          logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${t.getMessage}, API returning empty sequence")
           Seq.empty
       }
   }
