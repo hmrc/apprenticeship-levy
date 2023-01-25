@@ -10,4 +10,4 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.18")
 
 addSbtPlugin("com.orrsella" % "sbt-sublime" % "1.1.2")
 
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.0")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.9.3")
