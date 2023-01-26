@@ -63,7 +63,6 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
 
     override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
-      implicit val ec: ExecutionContext = executionContext
       authorised(
         EnrolmentHelper.enrolmentPredicate or AuthProviders(PrivilegedApplication)
       ).retrieve(

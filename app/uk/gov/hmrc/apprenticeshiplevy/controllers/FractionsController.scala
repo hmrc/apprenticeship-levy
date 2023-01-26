@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
@@ -38,19 +37,20 @@ trait FractionsController {
   val defaultPriorMonthsForFromDate = 72
 
   // scalastyle:off
-  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
-    implicit request =>
-  // scalastyle:on
-    val validatedFromDate = validateFromDate(fromDate)
-    val validatedToDate = validateToDate(toDate)
+  def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] =
+    (withValidAcceptHeader andThen authAction).async {
+      implicit request =>
+        // scalastyle:on
+        val validatedFromDate = validateFromDate(fromDate)
+        val validatedToDate = validateToDate(toDate)
 
-    if (validatedFromDate.isAfter(validatedToDate)) {
-      Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
-    } else {
-      desConnector.fractions(toDESFormat(ref.empref), ClosedDateRange(validatedFromDate, validatedToDate)) map { fs =>
-        Ok(Json.toJson(fs))
-      } recover desErrorHandler
-    }
+        if (validatedFromDate.isAfter(validatedToDate)) {
+          Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
+        } else {
+          desConnector.fractions(toDESFormat(ref.empref), ClosedDateRange(validatedFromDate, validatedToDate)) map { fs =>
+            Ok(Json.toJson(fs))
+          } recover desErrorHandler
+        }
   }
 
   def validateFromDate(fromDate: Option[LocalDate]): LocalDate = {
@@ -69,9 +69,9 @@ trait FractionsController {
 }
 
 /**
-  * This needs to be a separate trait as the fractions endpoint needs to have auth enabled, but
-  * the calculation date endpoint doesn't
-  */
+ * This needs to be a separate trait as the fractions endpoint needs to have auth enabled, but
+ * the calculation date endpoint doesn't
+ */
 trait FractionsCalculationDateController {
   self: DesController =>
 
@@ -80,11 +80,12 @@ trait FractionsCalculationDateController {
   val authAction: AuthAction
 
   // scalastyle:off
-  def fractionCalculationDate: Action[AnyContent] = (withValidAcceptHeader andThen authAction).async {
-    implicit request =>
-  // scalastyle:on
-      desConnector.fractionCalculationDate map { date =>
-        Ok(Json.toJson(date))
-      } recover desErrorHandler
-  }
+  def fractionCalculationDate: Action[AnyContent] =
+    (withValidAcceptHeader andThen authAction).async {
+      implicit request =>
+        // scalastyle:on
+        desConnector.fractionCalculationDate map { date =>
+          Ok(Json.toJson(date))
+        } recover desErrorHandler
+    }
 }

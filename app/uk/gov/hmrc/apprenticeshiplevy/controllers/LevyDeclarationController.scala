@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import org.slf4j.MDC
 import play.api.Logging
 import play.api.libs.json.Json
@@ -71,7 +70,7 @@ trait LevyDeclarationController extends Logging {
         * if it wants to return a 404 if all calls to `charges` return no results.
          */
         case t: NotFoundException =>
-          logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${t.getMessage()}, API returning empty sequence")
+          logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${t.getMessage}, API returning empty sequence")
           Seq.empty
       }
   }

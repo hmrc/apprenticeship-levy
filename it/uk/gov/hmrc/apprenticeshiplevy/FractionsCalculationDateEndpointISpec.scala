@@ -15,12 +15,12 @@ import uk.gov.hmrc.apprenticeshiplevy.util._
 class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
   describe("Fractions Calculation Date Endpoint") {
     val contexts = Seq("/sandbox", "")
-    contexts.foreach { case (context) =>
-      describe (s"should when calling ${localMicroserviceUrl}$context/fraction-calculation-date") {
-        describe (s"when no backend systems failing") {
-          it (s"return date") {
+    contexts.foreach { context =>
+      describe(s"should when calling $localMicroserviceUrl$context/fraction-calculation-date") {
+        describe(s"when no backend systems failing") {
+          it(s"return date") {
             // set up
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
@@ -32,121 +32,121 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
           }
         }
 
-        describe ("when backend systems failing") {
-          it (s"should return http status 503 when connection closed") {
+        describe("when backend systems failing") {
+          it("should return http status 503 when connection closed") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK)))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 503
+            status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 408 when timed out") {
+          it(s"should return http status 408 when timed out") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withStatus(200).withFixedDelay(1000*60)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withStatus(200).withFixedDelay(1000 * 60)))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 408
+            status(result) shouldBe REQUEST_TIMEOUT
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 503 when empty response") {
+          it(s"should return http status 503 when empty response") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withFault(Fault.EMPTY_RESPONSE)))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 503
+            status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 404 when DES HTTP 404") {
+          it(s"should return http status 404 when DES HTTP 404") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withStatus(404).withBody("""{"reason" : "Not found"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withStatus(404).withBody("""{"reason" : "Not found"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 404
+            status(result) shouldBe NOT_FOUND
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 503 when DES HTTP 500") {
+          it(s"should return http status 503 when DES HTTP 500") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withStatus(500).withBody("""{"reason" : "DES not working"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withStatus(500).withBody("""{"reason" : "DES not working"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 503
+            status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 503 when DES HTTP 503") {
+          it(s"should return http status 503 when DES HTTP 503") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withStatus(503).withBody("""{"reason" : "Backend systems not working"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withStatus(SERVICE_UNAVAILABLE).withBody("""{"reason" : "Backend systems not working"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 503
+            status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 401 when DES HTTP 401") {
+          it(s"should return http status 401 when DES HTTP 401") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withStatus(401).withBody("""{"reason" : "Not authorized"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withStatus(401).withBody("""{"reason" : "Not authorized"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
@@ -159,12 +159,12 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 403 when DES HTTP 403") {
+          it(s"should return http status 403 when DES HTTP 403") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withStatus(403).withBody("""{"reason" : "Forbidden"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withStatus(403).withBody("""{"reason" : "Forbidden"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
@@ -177,12 +177,12 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 429 when DES HTTP 429") {
+          it(s"should return http status 429 when DES HTTP 429") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withStatus(429).withBody("""{"reason" : "Drowning in requests"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withStatus(429).withBody("""{"reason" : "Drowning in requests"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
@@ -195,12 +195,12 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 408 when DES HTTP 408") {
+          it(s"should return http status 408 when DES HTTP 408") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withStatus(408).withBody("""{"reason" : "Not responding"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withStatus(408).withBody("""{"reason" : "Not responding"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
@@ -213,18 +213,18 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
 
-          it (s"should return http status 503 when DES HTTP 409") {
+          it(s"should return http status 503 when DES HTTP 409") {
             // set up
             WireMock.reset()
             stubFor(get(urlEqualTo("/apprenticeship-levy/fraction-calculation-date"))
-                    .withId(uuid).willReturn(aResponse().withStatus(409).withBody("""{"reason" : "Some 4xxx error"}""")))
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders: _*)
+              .withId(uuid).willReturn(aResponse().withStatus(409).withBody("""{"reason" : "Some 4xxx error"}""")))
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
 
             // test
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 503
+            status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_OTHER","message":"DES 4xx error"}""")
 

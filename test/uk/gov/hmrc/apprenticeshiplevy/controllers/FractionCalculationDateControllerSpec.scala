@@ -39,8 +39,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeAndAfterEach {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
-  val mockAppContext = mock[AppContext]
-  val mockHttp = mock[HttpClient]
+  val mockAppContext: AppContext = mock[AppContext]
+  val mockHttp: HttpClient = mock[HttpClient]
 
   def controller : FractionsCalculationDateController = new FractionsCalculationDateController with DesController {
     def desConnector: DesConnector = new DesConnector() {
@@ -71,7 +71,8 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAppContext, mockHttp)
+    reset(mockAppContext)
+    reset(mockHttp)
   }
 
   "getting fraction calculation date" should {
@@ -118,14 +119,16 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
     "recover from exceptions" in {
       // set up
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
-        .thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503. Response body: '{\"reason\" : \"Backend systems not working\"}'",500)))
+        .thenReturn(Future.failed(UpstreamErrorResponse.apply(
+          """DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503.
+            | Response body: '{"reason" : "Backend systems not working"}'""".stripMargin,500)))
 
       // test
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                                     "Authorization"->"Bearer dsfda9080"))
 
       // check
-      status(response) shouldBe 503
+      status(response) shouldBe SERVICE_UNAVAILABLE
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
     }
   }

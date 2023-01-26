@@ -69,8 +69,8 @@ object PathBinders {
                                    (implicit binder: PathBindable[A]): PathBindable[B] = new PathBindable[B] {
     override def bind(key: String, value: String): Either[String, B] = {
       for {
-        theA <- binder.bind(key, value).right
-        bAsStr <- validator(URLDecoder.decode(theA.toString(), "UTF-8"), code).right
+        theA <- binder.bind(key, value)
+        bAsStr <- validator(URLDecoder.decode(theA.toString(), "UTF-8"), code)
       } yield convertToB(bAsStr)
     }
 

@@ -47,7 +47,7 @@ class DocumentationController @Inject()
       "whitelistedApplicationIds" -> JsArray(whitelistedApplicationIds.map(JsString))
     ))
 
-  lazy val whitelistJsonTransformer = (__ \ 'api \ 'versions).json.update(
+  lazy val whitelistJsonTransformer = (__ \ Symbol("api") \ Symbol("versions")).json.update(
     __.read[JsArray].map { versions =>
       JsArray(versions.value.updated(0, versions(0).as[JsObject] ++ whitelist))
     })

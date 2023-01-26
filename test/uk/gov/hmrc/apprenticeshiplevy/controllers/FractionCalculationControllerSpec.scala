@@ -73,7 +73,8 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAppContext, mockHttp)
+    reset(mockAppContext)
+    reset(mockHttp)
   }
 
   "getting fraction calculations" should {

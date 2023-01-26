@@ -84,7 +84,7 @@ lazy val microservice = Project(appName, file("."))
     scalaSettings,
     publishingSettings,
     defaultSettings(),
-    scalaVersion := "2.12.12",
+    scalaVersion := "2.13.8",
     PlayKeys.playDefaultPort := 9470,
     majorVersion := 3,
     ivyConfigurations += XsltConfig,
@@ -95,12 +95,11 @@ lazy val microservice = Project(appName, file("."))
     generateAPIDocsTask,
     resolvers += Resolver.jcenterRepo,
     scalacOptions ++= Seq(
-      "-Xfatal-warnings",
       "-deprecation",
       "-feature",
-      "-P:silencer:pathFilters=routes",
-      "-P:silencer:pathFilters=target/.*",
-      "-P:silencer:pathFilters=app/uk/gov/hmrc/apprenticeshiplevy/controllers/auth/AuthAction.scala"
+      "-Xmaxerrs", "1000", // Maximum errors to print
+      "-Xmaxwarns", "1000", // Maximum warnings to print
+      "-Wconf:src=routes/.*:is,src=twirl/.*:is"
     )
   )
   .configs(IntegrationTest)

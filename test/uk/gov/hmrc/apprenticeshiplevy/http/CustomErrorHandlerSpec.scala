@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.http
 
 import java.time.Instant
-
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty

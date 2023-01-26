@@ -64,7 +64,7 @@ class EmploymentRefEndpointISpec
 
             val result = route(app, request).get
 
-            status(result) shouldBe 400
+            status(result) shouldBe BAD_REQUEST
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
           }
@@ -106,7 +106,7 @@ class EmploymentRefEndpointISpec
 
             val result = route(app, request).get
 
-            status(result) shouldBe 503
+            status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
@@ -116,7 +116,7 @@ class EmploymentRefEndpointISpec
 
             val result = route(app, request).get
 
-            status(result) shouldBe 503
+            status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
@@ -136,7 +136,7 @@ class EmploymentRefEndpointISpec
 
             val result = route(app, request).get
 
-            status(result) shouldBe 503
+            status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
@@ -146,7 +146,7 @@ class EmploymentRefEndpointISpec
 
             val result = route(app, request).get
 
-            status(result) shouldBe 503
+            status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }

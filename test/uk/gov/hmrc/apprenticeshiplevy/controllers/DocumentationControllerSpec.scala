@@ -45,7 +45,7 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
     mockAppContext.reset()
   }
 
-  override def fakeApplication: Application = GuiceApplicationBuilder()
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
     .overrides(
       bind[ControllerComponents].toInstance(stubComponents),
       bind[AppContext].toInstance(mockAppContext.mocked)

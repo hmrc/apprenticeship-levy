@@ -24,8 +24,6 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 trait EmprefController extends DesController {
 
   def desConnector: DesConnector

@@ -22,12 +22,12 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-
 import java.nio.charset.Charset
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.{implicitConversions, postfixOps}
 
-trait AppLevyUnitSpec extends AnyWordSpecLike with Matchers {
+
+trait AppLevyItUnitSpec extends AnyWordSpecLike with Matchers {
 
   import scala.concurrent.duration._
   import scala.concurrent.{Await, Future}

@@ -25,14 +25,11 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import java.nio.charset.Charset
-
-import org.scalamock.scalatest.MockFactory
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.reflect.ClassTag
 import scala.language.{implicitConversions, postfixOps}
 
-trait AppLevyUnitSpec extends AnyWordSpec with Matchers with MockFactory {
+trait AppLevyUnitSpec extends AnyWordSpec with Matchers {
 
   import scala.concurrent.duration._
   import scala.concurrent.{Await, Future}
