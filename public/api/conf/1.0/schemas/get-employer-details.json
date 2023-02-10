@@ -65,7 +65,7 @@
               "type": "string",
               "optional": true,
               "description": "The first line of the employer's name",
-              "example": "KILL-JOY PLC THE FUNERAL"
+              "example": "CHANNEL MASTERS BOATING"
             },
             "nameLine2": {
               "type": "string",
@@ -172,7 +172,7 @@
               "type": "string",
               "optional": true,
               "description": "The first line of the employer's name",
-              "example": "KILL-JOY PLC THE FUNERAL"
+              "example": "CHANNEL MASTERS BOATING"
             },
             "nameLine2": {
               "type": "string",
