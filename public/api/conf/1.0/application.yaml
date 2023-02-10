@@ -1862,7 +1862,7 @@ components:
         nameLine1:
           type: string
           description: The first line of the employer's name
-          example: KILL-JOY PLC THE FUNERAL
+          example: CHANNEL MASTERS BOATING
         nameLine2:
           type: string
           description: The second line of the employer's name

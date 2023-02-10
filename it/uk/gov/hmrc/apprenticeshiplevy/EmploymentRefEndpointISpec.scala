@@ -53,8 +53,8 @@ class EmploymentRefEndpointISpec
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES17"
             (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES17/fractions"
             (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/840%2FMODES17/declarations"
-            (json \ "employer" \ "name" \ "nameLine1").as[String] shouldBe "KILL-JOY PLC THE FUNERAL"
-            (json \ "communication" \ "name" \ "nameLine1").as[String] shouldBe "KILL-JOY PLC THE FUNERAL"
+            (json \ "employer" \ "name" \ "nameLine1").as[String] shouldBe "CHANNEL MASTERS BOATING"
+            (json \ "communication" \ "name" \ "nameLine1").as[String] shouldBe "CHANNEL MASTERS BOATING"
           }
         }
 
