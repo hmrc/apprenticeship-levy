@@ -17,8 +17,8 @@ import java.time.LocalDate
 class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with ScalaCheckPropertyChecks {
   describe("Fractions Endpoint") {
     val contexts = Seq("/sandbox", "")
-    contexts.foreach { case (context) =>
-      describe(s"should when calling ${localMicroserviceUrl}$context/epaye/<empref>/fractions") {
+    contexts.foreach { context =>
+      describe(s"should when calling $localMicroserviceUrl$context/epaye/<empref>/fractions") {
         describe(s"with no parameters") {
           it(s"should return fractions") {
             // set up
@@ -34,7 +34,9 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
-            fractions should contain atLeastOneOf(FractionCalculation(LocalDate.of(2016, 12, 23), f1), FractionCalculation(LocalDate.of(2015, 8, 18), f2))
+            val date_1 = LocalDate.of(2016, 12, 23)
+            val date_2 = LocalDate.of(2015, 8, 18)
+            fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
           }
 
           it(s"should return fractions with correct empref values") {
@@ -67,7 +69,9 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
-            fractions should contain atLeastOneOf(FractionCalculation(LocalDate.of(2016, 12, 23), f1), FractionCalculation(LocalDate.of(2016, 8, 18), f2))
+            val date_1 = LocalDate.of(2016, 12, 23)
+            val date_2 = LocalDate.of(2016, 8, 18)
+            fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
           }
 
           it(s"?toDate=2017-09-01 should return fractions") {
@@ -85,7 +89,9 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
-            fractions should contain atLeastOneOf(FractionCalculation(LocalDate.of(2016, 12, 23), f1), FractionCalculation(LocalDate.of(2016, 8, 18), f2))
+            val date_1 = LocalDate.of(2016, 12, 23)
+            val date_2 = LocalDate.of(2016, 8, 18)
+            fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
           }
 
           it(s"?fromDate=2017-08-01&toDate=2017-09-01 should return fractions") {
@@ -103,18 +109,20 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1 = List(Fraction("England", BigDecimal(0.83)))
             val f2 = List(Fraction("England", BigDecimal(0.78)))
-            fractions should contain atLeastOneOf(FractionCalculation(LocalDate.of(2016, 12, 23), f1), FractionCalculation(LocalDate.of(2016, 8, 18), f2))
+            val date_1 = LocalDate.of(2016, 12, 23)
+            val date_2 = LocalDate.of(2016, 8, 18)
+            fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
           }
         }
 
         describe("with invalid paramters") {
-          Seq("fromDate", "toDate").foreach { case (param) =>
+          Seq("fromDate", "toDate").foreach { param =>
             it(s"should return 400 when $param param is invalid") {
               // set up
               val dates = for {str <- Gen.listOf(Gen.alphaNumChar)} yield str.mkString
 
               forAll(dates) { (date: String) =>
-                whenever(!date.isEmpty) {
+                whenever(date.nonEmpty) {
                   val requestUrl = param match {
                     case "fromDate" => s"$context/epaye/123%2FAB12345/fractions?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
                     case _ => s"/sandbox/epaye/123%2FAB12345/fractions?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"

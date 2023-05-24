@@ -15,8 +15,8 @@ import views.html.helper
 class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer with ScalaCheckPropertyChecks {
   describe("Employment Check Endpoint") {
     val contexts = Seq("/sandbox", "")
-    contexts.foreach { case (context) =>
-      describe (s"should when calling ${localMicroserviceUrl}$context/epaye/<empref>/employed/<nino>") {
+    contexts.foreach { context =>
+      describe (s"should when calling $localMicroserviceUrl$context/epaye/<empref>/employed/<nino>") {
         describe ("with valid parameters") {
           it (s"?fromDate=2015-03-03&toDate=2015-06-30 should return 'employed'") {
             // set up
@@ -66,7 +66,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             val emprefs = for { empref <- genEmpref } yield empref
 
             forAll(emprefs) { (empref: String) =>
-              whenever (!empref.isEmpty) {
+              whenever (empref.nonEmpty) {
                 val request = FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
                 // test
@@ -87,7 +87,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             val ninos = for { nino <- genNino } yield nino
 
             forAll(ninos) { (nino: String) =>
-              whenever (!nino.isEmpty) {
+              whenever (nino.nonEmpty) {
                 val request = FakeRequest(GET, s"$context/epaye/444%2FAB12345/employed/${helper.urlEncode(nino)}?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
                 // test
@@ -102,14 +102,14 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             }
           }
 
-          Seq("fromDate", "toDate").foreach { case (param) =>
+          Seq("fromDate", "toDate").foreach { param =>
             it (s"should return 400 when $param param is invalid") {
               // set up
               WiremockService.notifier.testInformer = NullInformer.info
               val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
 
               forAll(dates) { (date: String) =>
-                whenever (!date.isEmpty) {
+                whenever (date.nonEmpty) {
                   val requestUrl = param match {
                     case "fromDate" => s"$context/epaye/123%2FAB12345/employed/RA123456C?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
                     case _ => s"/sandbox/epaye/123%2FAB12345/employed/RA123456C?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
