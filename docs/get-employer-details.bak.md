@@ -11,16 +11,16 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}
 
 ### Request
 #### Headers
-| Name | Value |
-| --- | --- |
-|Accept|application/vnd.hmrc.1.0+json|
-|Authorization|Bearer [token here]|
+| Name          | Value                         |
+|---------------|-------------------------------|
+| Accept        | application/vnd.hmrc.1.0+json |
+| Authorization | Bearer [token here]           |
 
 
 #### Path Parameters
-| Name | Type | Value | Example |
-| --- | --- | --- | --- |
-|empref|String|A valid (URL encoded) employer reference for the PAYE scheme.|`123/AB12345`|
+| Name   | Type   | Value                                                         | Example       |
+|--------|--------|---------------------------------------------------------------|---------------|
+| empref | String | A valid (URL encoded) employer reference for the PAYE scheme. | `123/AB12345` |
 
 
 ### Response
@@ -53,13 +53,13 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/epaye/{empref}
     }
 ```
 
-| Name | Type | Description | Example |
-| ---  | ---  | ---         | ---     |
-|_links.self|URL|The link to this endpoint|`/epaye/123%2FAB12345`|
-|_links.declarations|URL|The link to the endpoint that returns information on levy declarations for the empref|`/epaye/123%2FAB12345/declarations`|
-|_links.fractions|URL|The link to the endpoint that returns information on fraction calculations for the empref|`[/epaye/123%2FAB12345/fractions]`|
-|_links.employment-check|URL|The link to the endpoint that returns information whether an employee was employed at a specific time by the empref|`/epaye/123%2FAB12345/employed]`|
-|employer.name.nameLine1|String|The name associated to this empref|`Foo Bar Ltd.`|
+| Name                    | Type   | Description                                                                                                         | Example                             |
+|-------------------------|--------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------|
+| _links.self             | URL    | The link to this endpoint                                                                                           | `/epaye/123%2FAB12345`              |
+| _links.declarations     | URL    | The link to the endpoint that returns information on levy declarations for the empref                               | `/epaye/123%2FAB12345/declarations` |
+| _links.fractions        | URL    | The link to the endpoint that returns information on fraction calculations for the empref                           | `[/epaye/123%2FAB12345/fractions]`  |
+| _links.employment-check | URL    | The link to the endpoint that returns information whether an employee was employed at a specific time by the empref | `/epaye/123%2FAB12345/employed]`    |
+| employer.name.nameLine1 | String | The name associated to this empref                                                                                  | `Foo Bar Ltd.`                      |
 
 
 #### Error Responses

@@ -1,8 +1,6 @@
 import sbt.internal.util.ConsoleAppender
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings._
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import uk.gov.hmrc.DefaultBuildSettings.*
 
 import scala.sys.process.ProcessLogger
 
@@ -45,7 +43,7 @@ lazy val plugins: Seq[Plugins] = Seq(
   play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin
 )
 
-lazy val playSettings: Seq[Setting[_]] = Seq(routesImport ++= Seq(
+lazy val playSettings: Seq[Setting[?]] = Seq(routesImport ++= Seq(
   "uk.gov.hmrc.apprenticeshiplevy.config.QueryBinders._",
   "java.time.LocalDate",
   "uk.gov.hmrc.apprenticeshiplevy.config.PathBinders._",
@@ -77,12 +75,11 @@ lazy val scoverageSettings = {
 }
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(plugins: _*)
+  .enablePlugins(plugins *)
   .settings(
     playSettings,
     scoverageSettings,
     scalaSettings,
-    publishingSettings,
     defaultSettings(),
     scalaVersion := "2.13.8",
     PlayKeys.playDefaultPort := 9470,
@@ -103,14 +100,14 @@ lazy val microservice = Project(appName, file("."))
     )
   )
   .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+  .settings(inConfig(IntegrationTest)(Defaults.itSettings) *)
   .settings(
     IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
     IntegrationTest / unmanagedResourceDirectories += baseDirectory(_ / "public").value,
     addTestReportOption(IntegrationTest, "int-test-reports"),
     IntegrationTest / parallelExecution := false)
   .configs(AcceptanceTest)
-  .settings(inConfig(AcceptanceTest)(Defaults.testSettings): _*)
+  .settings(inConfig(AcceptanceTest)(Defaults.testSettings) *)
   .settings(
     AcceptanceTest / unmanagedSourceDirectories := (AcceptanceTest / baseDirectory) (base => Seq(base / "ac")).value,
     AcceptanceTest / unmanagedResourceDirectories += baseDirectory(_ / "public").value,

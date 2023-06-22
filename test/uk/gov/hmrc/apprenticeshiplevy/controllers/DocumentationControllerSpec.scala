@@ -35,10 +35,10 @@ import scala.util.{Failure, Success}
 
 class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with GuiceOneAppPerSuite with Injecting with BeforeAndAfterEach {
 
-  val validDefinition = new File(getClass.getResource("/validDefinition.json").toURI())
-  val invalidDefinition = new File(getClass.getResource("/invalidDefinition.json").toURI())
+  val validDefinition = new File(getClass.getResource("/validDefinition.json").toURI)
+  val invalidDefinition = new File(getClass.getResource("/invalidDefinition.json").toURI)
   val stubComponents: ControllerComponents = stubControllerComponents()
-  val mockAppContext = MockAppContext
+  val mockAppContext: MockAppContext.type = MockAppContext
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -52,7 +52,7 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
     )
     .build()
 
-  val documentationController = inject[DocumentationController]
+  val documentationController: DocumentationController = inject[DocumentationController]
 
   "DocumentationController" should {
     "add whitelist information correctly" in {
@@ -60,10 +60,9 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
       val enrichedDefinition = documentationController.enrichDefinition(new java.io.FileInputStream(validDefinition))
 
       inside(enrichedDefinition) { case Success(json) =>
-        val firstVersion = (json \ "api" \ "versions")(0)
-        (firstVersion \ "access" \ "type").as[String] shouldBe "PRIVATE"
-        (firstVersion \ "access" \ "whitelistedApplicationIds").as[List[String]] should contain inOrderOnly
-          ("f0e2611e-2f45-4326-8cd2-6eefebec77b7","cafebabe-2f45-4326-8cd2-6eefebec77b7")
+        val firstVersion = json("api")("versions")(0)
+        firstVersion("access")("type").as[String] shouldBe "PRIVATE"
+        firstVersion("access")("whitelistedApplicationIds").as[List[String]] should contain.inOrderOnly("f0e2611e-2f45-4326-8cd2-6eefebec77b7","cafebabe-2f45-4326-8cd2-6eefebec77b7")
       }
     }
 

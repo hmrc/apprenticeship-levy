@@ -6,24 +6,26 @@ import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 import uk.gov.hmrc.apprenticeshiplevy.util.WiremockService
 import org.scalatest.funspec.AnyFunSpec
 
+import java.util.UUID
+
 trait WiremockConfig extends BeforeAndAfterEach with Informing {
   this: Suite =>
 
-  lazy val uuid = java.util.UUID.randomUUID()
+  lazy val uuid: UUID = java.util.UUID.randomUUID()
 
-  override def beforeEach {
+  override def beforeEach(): Unit = {
     WiremockService.notifier.testInformer = this.info
   }
 
-  override def afterEach {
+  override def afterEach(): Unit = {
     WiremockService.notifier.testInformer = this.info
   }
 }
 
 trait WiremockFunSpec extends AnyFunSpec with WiremockConfig with IntegrationTestConfig {
-    def standardDesHeaders(): Seq[(String,String)] = Seq(("ACCEPT"->"application/vnd.hmrc.1.0+json"),
-                                                         ("Environment"->"isit"),
-                                                         ("Authorization"->"Bearer 2423324"))
+    def standardDesHeaders(): Seq[(String,String)] = Seq("ACCEPT"->"application/vnd.hmrc.1.0+json",
+                                                         "Environment"->"isit",
+                                                         "Authorization"->"Bearer 2423324")
     def genEmpref: Gen[String] = (for {
       c <- Gen.alphaLowerChar
       cs <- Gen.listOf(Gen.alphaNumChar)
@@ -34,5 +36,5 @@ trait WiremockFunSpec extends AnyFunSpec with WiremockConfig with IntegrationTes
       c2 <- Gen.alphaUpperChar
       cs <- Gen.listOf(Gen.numChar)
       c3 <- Gen.oneOf('A', 'B', 'C', 'D')
-    } yield (c1+c2+cs.mkString+c3)).suchThat(_.forall(c => c.isLetter || c.isDigit))
+    } yield s"$c1$c2${cs.mkString}$c3").suchThat(_.forall(c => c.isLetter || c.isDigit))
 }

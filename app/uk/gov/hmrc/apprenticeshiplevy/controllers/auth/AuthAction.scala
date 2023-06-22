@@ -107,7 +107,7 @@ class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector, val p
 trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]
 
 private object EnrolmentHelper {
-  val enrolmentKey: String = "IR-PAYE"
+  private val enrolmentKey: String = "IR-PAYE"
   val enrolmentPredicate: Enrolment = Enrolment(enrolmentKey)
 
   def getEmpRef(enrolments: Set[Enrolment]): Option[EmpRef] = enrolments.find(_.key == enrolmentKey)
@@ -128,9 +128,7 @@ private object ErrorHandler extends Logging {
       MDC.get("X-Client-ID")
     } API error: ${
       e.getMessage
-    }, API returning $description ${
-      code
-    }"
+    }, API returning $description $code"
     logger.warn(message)
   }
 
@@ -153,9 +151,7 @@ private object ErrorHandler extends Logging {
           MDC.get("X-Client-ID")
         } API error: ${
           e.getMessage
-        }, API returning RequestTimeout with code ${
-          GATEWAY_TIMEOUT
-        }"
+        }, API returning RequestTimeout with code $GATEWAY_TIMEOUT"
         logger.error(message, e)
         RequestTimeout(Json.toJson[ErrorResponse](AuthError(REQUEST_TIMEOUT, "GATEWAY_TIMEOUT", "Auth not responding error")))
       case e: NotFoundException =>
@@ -178,10 +174,11 @@ private object ErrorHandler extends Logging {
           case TOO_MANY_REQUESTS => TooManyRequests(Json.toJson[ErrorResponse](AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"Auth too many requests")))
           case REQUEST_TIMEOUT => RequestTimeout(Json.toJson[ErrorResponse](AuthError(REQUEST_TIMEOUT, "TIMEOUT", s"Auth not responding error")))
           case _ =>
-            if (e.statusCode >= 400 && e.statusCode < 500)
+            if (e.statusCode >= 400 && e.statusCode < 500) {
               ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(e.reportAs, "OTHER", s"Auth 4xx error")))
-            else
+            } else {
               ServiceUnavailable(Json.toJson[ErrorResponse](AuthError(e.reportAs, "BACKEND_FAILURE", s"Auth 5xx error")))
+            }
         }
 
       case e: Throwable =>
@@ -189,9 +186,7 @@ private object ErrorHandler extends Logging {
           MDC.get("X-Client-ID")
         } API error: ${
           e.getMessage
-        }, API returning code ${
-          INTERNAL_SERVER_ERROR
-        }"
+        }, API returning code $INTERNAL_SERVER_ERROR"
         logger.error(message, e)
         InternalServerError(Json.toJson[ErrorResponse](AuthError(INTERNAL_SERVER_ERROR, "API", s"API or Auth internal server error")))
     }

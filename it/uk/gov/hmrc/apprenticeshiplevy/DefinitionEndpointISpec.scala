@@ -1,6 +1,5 @@
 package uk.gov.hmrc.apprenticeshiplevy
 
-import java.io.File
 import org.scalatest.matchers.should.Matchers._
 import org.scalatest._
 import org.scalatestplus.play._
@@ -10,16 +9,21 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
 import uk.gov.hmrc.apprenticeshiplevy.util.AppLevyItUnitSpec
 
-import scala.io.Source
+import scala.io.{BufferedSource, Source}
+import scala.util.Using
 
 @DoNotDiscover
 class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
   def asString(filename: String): String = {
-    Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
+    val fileBuffer: BufferedSource = Source.fromFile(s"$resourcePath/data/expected/$filename")
+
+    Using(fileBuffer) {
+      file => file.getLines().mkString("\n")
+    }.get
   }
 
   describe (s"API Definition Endpoint (Private Mode)") {
-    describe (s"should when calling ${localMicroserviceUrl}/api/definition") {
+    describe (s"should when calling $localMicroserviceUrl/api/definition") {
       describe (s"when definition file exists and private-mode is set to true") {
         it (s"return OK") {
           // set up
@@ -66,11 +70,15 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
 @DoNotDiscover
 class PublicDefinitionEndpointISpec extends AppLevyItUnitSpec with IntegrationTestConfig with ConfiguredServer {
   def asString(filename: String): String = {
-    Source.fromFile(new File(s"${resourcePath}/data/expected/$filename")).getLines.mkString("\n")
+    val fileBuffer: BufferedSource = Source.fromFile(s"$resourcePath/data/expected/$filename")
+
+    Using(fileBuffer) {
+      file => file.getLines().mkString("\n")
+    }.get
   }
 
   "API Definition Endpoint (Public)" can {
-    s"when calling ${localMicroserviceUrl}/api/definition" should {
+    s"when calling $localMicroserviceUrl/api/definition" should {
       "when private-mode is set to false" must {
         "return definition without whitelisted-applications" in {
           // set up

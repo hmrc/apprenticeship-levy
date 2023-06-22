@@ -11,10 +11,10 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/
 
 ### Request
 #### Headers
-| Name | Value |
-| --- | --- |
-|Accept|application/vnd.hmrc.1.0+json|
-|Authorization|Bearer [token here]|
+| Name          | Value                         |
+|---------------|-------------------------------|
+| Accept        | application/vnd.hmrc.1.0+json |
+| Authorization | Bearer [token here]           |
 
 ### Response
 
@@ -37,11 +37,11 @@ GET https://api.service.hmrc.gov.uk/apprenticeship-levy/
 }
 ```
 
-| Name | Type | Description | Example |
-| ---  | ---  | ---         | ---     |
-|_links.self|URL|The url to this endpoint|`/`|
-|_links.{empref}|URL|The url to an endpoint that provides more information about the empref|`/epaye/123%2FAB12345`|
-|emprefs[]|String[]|A list of emprefs for which links are provided|`["123/AB12345"]`|
+| Name            | Type     | Description                                                            | Example                |
+|-----------------|----------|------------------------------------------------------------------------|------------------------|
+| _links.self     | URL      | The url to this endpoint                                               | `/`                    |
+| _links.{empref} | URL      | The url to an endpoint that provides more information about the empref | `/epaye/123%2FAB12345` |
+| emprefs[]       | String[] | A list of emprefs for which links are provided                         | `["123/AB12345"]`      |
 
 
 #### Error Responses

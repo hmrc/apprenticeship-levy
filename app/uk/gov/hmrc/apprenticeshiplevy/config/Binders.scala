@@ -26,7 +26,7 @@ import scala.util.Try
 import scala.util.matching.Regex
 
 object QueryBinders {
-  val datePattern = "^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$".r
+  val datePattern: Regex = "^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$".r
 
   implicit def bindableLocalDate: QueryStringBindable[LocalDate] = new QueryStringBindable[LocalDate] {
     def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, LocalDate]] = {
@@ -34,7 +34,7 @@ object QueryBinders {
         date match {
           case datePattern(year, _*) if year.toInt >= 2000 => Right(LocalDate.parse(date))
           case _ =>
-            Left(s"DATE_INVALID: '${date}' date parameter is in the wrong format. Should be '${datePattern.toString()}' where date format is yyyy-MM-dd and year is 2000 or later.")
+            Left(s"DATE_INVALID: '$date' date parameter is in the wrong format. Should be '${datePattern.toString()}' where date format is yyyy-MM-dd and year is 2000 or later.")
         }
       } recover {
         case _: Exception => Left(s"DATE_INVALID: date parameter is in the wrong format. Should be '${datePattern.toString()}' where date format is yyyy-MM-dd.")
@@ -47,8 +47,8 @@ object QueryBinders {
 }
 
 object PathBinders {
-  val emprefValidator = isValid("^\\d{3}/[0-9A-Z]{1,10}$".r) _
-  val ninoValidator = isValidNino _
+  private val emprefValidator = isValid("^\\d{3}/[0-9A-Z]{1,10}$".r) _
+  private val ninoValidator = isValidNino _
 
   implicit def bindableEmploymentReference(implicit binder: PathBindable[String]): PathBindable[EmploymentReference] =
     bindable[String,EmploymentReference](emprefValidator,
@@ -70,7 +70,7 @@ object PathBinders {
     override def bind(key: String, value: String): Either[String, B] = {
       for {
         theA <- binder.bind(key, value)
-        bAsStr <- validator(URLDecoder.decode(theA.toString(), "UTF-8"), code)
+        bAsStr <- validator(URLDecoder.decode(theA.toString, "UTF-8"), code)
       } yield convertToB(bAsStr)
     }
 
@@ -81,12 +81,12 @@ object PathBinders {
 
   private[config] def isValid(regex: Regex)(value: String, code: String): Either[String, String] = value match {
     case regex(_*) => Right(value)
-    case _ => Left(s"${code}: '${value}' is in the wrong format. Should be ${regex.toString()} and url encoded.")
+    case _ => Left(s"$code: '$value' is in the wrong format. Should be ${regex.toString()} and url encoded.")
   }
 
   private[config] def isValidNino(value: String, code: String): Either[String, String] = if (Nino.isValid(value)) {
     Right(value)
   } else {
-    Left(s"${code}: '${value}' is in the wrong format. Should have a prefix (one of ${uk.gov.hmrc.domain.Nino.validPrefixes}) and suffix (one of ${uk.gov.hmrc.domain.Nino.validSuffixes}) and url encoded.")
+    Left(s"$code: '$value' is in the wrong format. Should have a prefix (one of ${uk.gov.hmrc.domain.Nino.validPrefixes}) and suffix (one of ${uk.gov.hmrc.domain.Nino.validSuffixes}) and url encoded.")
   }
 }
