@@ -725,7 +725,11 @@ paths:
                 408_DES_ERROR_GATEWAY_TIMEOUT:
                   description: Endpoint or internal system has become unresponsive.
                   value:
-                    code: DES_ERROR-GATEWAY_TIMEOUT
+                    code: DES_ERROR_GATEWAY_TIMEOUT
+                408_DES_ERROR_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: DES_ERROR_TIMEOUT
         '429':
           description: 'Too Many Requests'
           headers: {}
@@ -907,6 +911,10 @@ paths:
                   description: The request made is not valid.
                   value:
                     code: DES_ERROR_BAD_REQUEST
+                400_BAD_REQUEST:
+                  description: From date was after to date.
+                  value:
+                    code: BAD_REQUEST
         '401':
           description: 'Unauthorised'
           headers: {}
@@ -994,7 +1002,11 @@ paths:
                 408_DES_ERROR_GATEWAY_TIMEOUT:
                   description: Endpoint or internal system has become unresponsive.
                   value:
-                    code: DES_ERROR-GATEWAY_TIMEOUT
+                    code: DES_ERROR_GATEWAY_TIMEOUT
+                408_DES_ERROR_TIMEOUT:
+                  description: Endpoint or internal system has become unresponsive.
+                  value:
+                    code: DES_ERROR_TIMEOUT
         '429':
           description: 'Too Many Requests'
           headers: {}
@@ -1181,6 +1193,10 @@ paths:
                   description: The request made is not valid.
                   value:
                     code: DES_ERROR_BAD_REQUEST
+                400_BAD_REQUEST:
+                  description: From date was after to date.
+                  value:
+                    code: BAD_REQUEST
         '401':
           description: 'Unauthorised'
           headers: {}
@@ -1383,11 +1399,8 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: >
-                  "2016-04-05"
-              example: >
-                "2016-04-05"
+                allOf:
+                  - $ref: '#/components/schemas/ApprenticeshipLevyFractionCalculationsDateResponse'
         '400':
           description: 'Bad Request'
           headers: {}
@@ -1621,6 +1634,9 @@ components:
           type: string
           description: The country of the employer's address
           example: France
+    ApprenticeshipLevyFractionCalculationsDateResponse:
+      type: string
+      description: The date that the most recent English Fraction batch calculation was done.
     ApprenticeshipLevyEpayeDeclarationsresponse:
       title: ApprenticeshipLevyEpayeDeclarationsresponse
       type: object
@@ -1638,6 +1654,12 @@ components:
     ApprenticeshipLevyEpayeEmployedresponse:
       title: ApprenticeshipLevyEpayeEmployedresponse
       type: object
+      required:
+        - empref
+        - nino
+        - fromDate
+        - toDate
+        - employed
       properties:
         empref:
           type: string
@@ -1665,6 +1687,9 @@ components:
     ApprenticeshipLevyEpayeFractionsresponse:
       title: ApprenticeshipLevyEpayeFractionsresponse
       type: object
+      required:
+        - empref
+        - fractionCalculations
       properties:
         empref:
           type: string
@@ -1687,7 +1712,7 @@ components:
           description: The PAYE Reference for the employer. This will be the same as provided in the URL.
           example: 123/AB12345
         employer:
-          $ref: '#/components/schemas/Employer'
+          $ref: '#/components/schemas/EmployerWithoutFax'
         communication:
           $ref: '#/components/schemas/Communication'
       description: Get employer's details
@@ -1722,6 +1747,14 @@ components:
           $ref: '#/components/schemas/Telephone'
         email:
           $ref: '#/components/schemas/Email'
+    ContactWithoutFax:
+      title: Contact
+      type: object
+      properties:
+        telephone:
+          $ref: '#/components/schemas/TelephoneWithoutFax'
+        email:
+          $ref: '#/components/schemas/Email'
     Declarations:
       title: Declarations
       type: object
@@ -1733,21 +1766,21 @@ components:
     Declarations1:
       title: Declarations1
       type: object
+      required:
+        - id
+        - submissionTime
       properties:
         id:
           type: number
           description: 'A unique identifier for the declaration. This will remain consistent from one call to the API to the next so that the client can identify declarations they’ve already retrieved. It is the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed. Dividing this identifier by 10 (ignoring the remainder) gives the identifier assigned by the RTI system to the EPS return, so it is possible to cross-reference with HMRC if needed. Taking this identifier modulo 10 gives the type of entry: 0, no entry; 1, inactive; 2, levy declaration; 3, ceased.'
           example: 12345684
         dateCeased:
-          pattern: ^\d{4}-\d{2}-\d{2}$
           type: string
           description: If present, indicates the date that the payroll scheme was ceased.
         inactiveFrom:
-          pattern: ^\d{4}-\d{2}-06$
           type: string
           description: Indicates the the payroll scheme will be inactive starting from this date. Should always be the 6th of the month of the first inactive payroll period.
         inactiveTo:
-          pattern: ^\d{4}-\d{2}-05$
           type: string
           description: The date after which the payroll scheme will be active again. Should always be the 5th of the month of the last inactive payroll period.
         noPaymentForPeriod:
@@ -1764,7 +1797,7 @@ components:
           type: number
           description: The amount of apprenticeship levy that was declared in the payroll month.
           example: 600.2
-        allowance:
+        levyAllowanceForFullYear:
           type: number
           description: The annual amount of apprenticeship levy allowance that has been allocated to this payroll scheme. If absent then the value can be taken as 0. The maximum value in the 2017/18 will be 15,000.
           example: 15000
@@ -1786,6 +1819,16 @@ components:
           $ref: '#/components/schemas/Address'
         contact:
           $ref: '#/components/schemas/Contact'
+    EmployerWithoutFax:
+      title: Employer
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        address:
+          $ref: '#/components/schemas/Address'
+        contact:
+          $ref: '#/components/schemas/ContactWithoutFax'
     EmploymentCheck:
       title: EmploymentCheck
       type: object
@@ -1904,6 +1947,14 @@ components:
           description: The employer's main contact telephone number
           example: 0123 456789
         fax:
+          type: string
+          description: The employer's main contact telephone number
+          example: 0123 456789
+    TelephoneWithoutFax:
+      title: Telephone
+      type: object
+      properties:
+        telephoneNumber:
           type: string
           description: The employer's main contact telephone number
           example: 0123 456789
