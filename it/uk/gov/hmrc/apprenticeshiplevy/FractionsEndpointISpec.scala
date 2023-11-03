@@ -15,6 +15,8 @@ import java.time.LocalDate
 
 @DoNotDiscover
 class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with ScalaCheckPropertyChecks {
+
+  val lastYear = LocalDate.now().getYear - 1
   describe("Fractions Endpoint") {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { context =>
@@ -74,9 +76,9 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
           }
 
-          it(s"?toDate=2017-09-01 should return fractions") {
+          it(s"?toDate=$lastYear-09-01 should return fractions") {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=2017-09-01")
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=$lastYear-09-01")
               .withHeaders(standardDesHeaders(): _*)
 
             // test
