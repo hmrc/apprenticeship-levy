@@ -20,7 +20,7 @@ import com.codahale.metrics.MetricRegistry
 
 import java.net.URLDecoder
 import com.google.inject.Inject
-import com.kenshoo.play.metrics.MetricsImpl
+import com.codahale.metrics.MetricRegistry
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json._
@@ -360,11 +360,11 @@ trait DesConnector extends FractionsEndpoint
 class LiveDesConnector @Inject()(val httpClient: HttpClient,
                                  auditConnector: AuditConnector,
                                  val appContext: AppContext,
-                                 metrics: MetricsImpl) extends DesConnector{
+                                 metrics: MetricRegistry) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = Some(auditConnector)
   def baseUrl: String = appContext.desUrl
 
-  override def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(metrics.defaultRegistry)).getOrElse(None) else None
+  override def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(metrics)).getOrElse(None) else None
 
   override def desAuthorization: String = appContext.desToken
 
@@ -373,11 +373,11 @@ class LiveDesConnector @Inject()(val httpClient: HttpClient,
 
 class SandboxDesConnector @Inject()(val httpClient: HttpClient,
                                     val appContext: AppContext,
-                                    metrics: MetricsImpl) extends DesConnector{
+                                    metrics: MetricRegistry) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = None
   def baseUrl: String = appContext.stubDesUrl
 
-  override def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(metrics.defaultRegistry)).getOrElse(None) else None
+  override def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(metrics)).getOrElse(None) else None
 
   override def desAuthorization: String = appContext.desToken
 
