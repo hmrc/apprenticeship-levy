@@ -17,7 +17,6 @@ object AppDependencies {
   lazy val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"            %% "bootstrap-test-play-28"      % bootstrapVersion,
     "com.typesafe.play"      %% "play-test"                   % PlayVersion.current,
-    "uk.gov.hmrc"            %% "play-hal"                    % "3.2.0-play-28",
     "org.pegdown"             % "pegdown"                     % "1.6.0",
     "org.mockito"            %  "mockito-core"                % "4.6.1",
     "com.github.tomakehurst" %  "wiremock-jre8"               % "2.27.2"
