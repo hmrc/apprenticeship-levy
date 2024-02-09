@@ -46,7 +46,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"DES connection error","xStatusCode":"DES_ERROR_IO"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -64,7 +64,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe REQUEST_TIMEOUT
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":408,"message":"DES not responding error","xStatusCode":"DES_ERROR_GATEWAY_TIMEOUT"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -82,7 +82,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"DES connection error","xStatusCode":"DES_ERROR_IO"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -100,7 +100,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe NOT_FOUND
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":404,"message":"DES endpoint or EmpRef not found","xStatusCode":"DES_ERROR_NOT_FOUND"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -118,7 +118,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":502,"message":"DES 5xx error","xStatusCode":"DES_ERROR_BACKEND_FAILURE"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -136,7 +136,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":502,"message":"DES 5xx error","xStatusCode":"DES_ERROR_BACKEND_FAILURE"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -154,7 +154,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe 401
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"DES unauthorised error","xStatusCode":"DES_ERROR_UNAUTHORIZED"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -172,7 +172,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe 403
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"DES forbidden error","xStatusCode":"DES_ERROR_FORBIDDEN"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -190,7 +190,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe 429
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_TOO_MANY_REQUESTS","message":"DES too many requests"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":429,"message":"DES too many requests","xStatusCode":"DES_ERROR_TOO_MANY_REQUESTS"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -208,7 +208,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_TIMEOUT","message":"DES not responding error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":408,"message":"DES not responding error","xStatusCode":"DES_ERROR_TIMEOUT"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }
@@ -226,7 +226,7 @@ class FractionsCalculationDateEndpointISpec extends WiremockFunSpec with Configu
             // check
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_OTHER","message":"DES 4xx error"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"DES 4xx error","xStatusCode":"DES_ERROR_OTHER"}""")
 
             WiremockService.wireMockServer.resetToDefaultMappings()
           }

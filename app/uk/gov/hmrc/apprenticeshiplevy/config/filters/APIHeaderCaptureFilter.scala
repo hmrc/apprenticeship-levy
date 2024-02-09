@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.config.filters
 
-import akka.stream.Materializer
+import org.apache.pekko.stream.Materializer
 import com.google.inject.Inject
 import org.slf4j.MDC
 import play.api.mvc.{Filter, RequestHeader, Result}

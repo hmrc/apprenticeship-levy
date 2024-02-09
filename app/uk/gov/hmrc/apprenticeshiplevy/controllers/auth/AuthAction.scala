@@ -23,8 +23,7 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._
-import uk.gov.hmrc.api.controllers.ErrorResponse
-import uk.gov.hmrc.apprenticeshiplevy.controllers.AuthError
+import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.AuthError
 import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
@@ -32,6 +31,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
+import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import java.io.IOException

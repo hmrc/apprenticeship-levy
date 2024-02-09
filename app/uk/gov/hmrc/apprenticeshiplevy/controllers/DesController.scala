@@ -22,9 +22,10 @@ import org.slf4j.MDC
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{RequestHeader, Result}
-import uk.gov.hmrc.api.controllers.ErrorResponse
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.DESError
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
 
 trait DesController extends ApiController with Logging {
 

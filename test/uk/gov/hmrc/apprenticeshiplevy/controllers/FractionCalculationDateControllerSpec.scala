@@ -129,7 +129,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
       // check
       status(response) shouldBe SERVICE_UNAVAILABLE
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"statusCode":500,"message":"DES 5xx error","xStatusCode":"DES_ERROR_BACKEND_FAILURE"}""")
     }
   }
 }
