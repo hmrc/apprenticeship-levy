@@ -17,8 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.data.api
 
 import play.api.libs.json._
-import uk.gov.hmrc.apprenticeshiplevy.utils.DateFormats._
-
 import java.time.LocalDate
 
 case class EmploymentCheck(empref: String, nino: String, fromDate: LocalDate, toDate:LocalDate, employed: Boolean)
