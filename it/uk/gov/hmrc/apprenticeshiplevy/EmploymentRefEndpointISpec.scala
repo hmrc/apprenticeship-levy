@@ -66,7 +66,7 @@ class EmploymentRefEndpointISpec
 
             status(result) shouldBe BAD_REQUEST
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"Bad request error","xStatusCode":"DES_ERROR_BAD_REQUEST"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
           }
 
           it("when DES returns unauthorized should return 401") {
@@ -76,7 +76,7 @@ class EmploymentRefEndpointISpec
 
             status(result) shouldBe 401
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"DES unauthorised error","xStatusCode":"DES_ERROR_UNAUTHORIZED"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
           }
 
           it("when DES returns forbidden should return 403") {
@@ -86,7 +86,7 @@ class EmploymentRefEndpointISpec
 
             status(result) shouldBe 403
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"DES forbidden error","xStatusCode":"DES_ERROR_FORBIDDEN"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
           }
 
           it("when DES returns 404 should return 404") {
@@ -96,7 +96,7 @@ class EmploymentRefEndpointISpec
 
             status(result) shouldBe 404
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":404,"message":"DES endpoint or EmpRef not found","xStatusCode":"DES_ERROR_NOT_FOUND"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
           }
         }
 
@@ -108,7 +108,7 @@ class EmploymentRefEndpointISpec
 
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"DES connection error","xStatusCode":"DES_ERROR_IO"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           it("should return 503 when response is empty") {
@@ -118,7 +118,7 @@ class EmploymentRefEndpointISpec
 
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"DES connection error","xStatusCode":"DES_ERROR_IO"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           it("should return 408 when timed out") {
@@ -138,7 +138,7 @@ class EmploymentRefEndpointISpec
 
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":502,"message":"DES 5xx error","xStatusCode":"DES_ERROR_BACKEND_FAILURE"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
           it("should return 503 when DES returns 503") {
@@ -148,7 +148,7 @@ class EmploymentRefEndpointISpec
 
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":502,"message":"DES 5xx error","xStatusCode":"DES_ERROR_BACKEND_FAILURE"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
           it("should return the declarations and fractions link for each empref when employment details does not respond") {

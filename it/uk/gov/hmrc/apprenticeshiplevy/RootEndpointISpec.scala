@@ -81,7 +81,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe 401
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":401,"message":"No active session error","xStatusCode":"AUTH_ERROR_UNAUTHORIZED"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_UNAUTHORIZED","message":"No active session error"}""")
         }
 
         it (s"should return 403 when Auth returns 403") {
@@ -95,7 +95,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe 403
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"Auth forbidden error","xStatusCode":"AUTH_ERROR_FORBIDDEN"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_FORBIDDEN","message":"Auth forbidden error"}""")
         }
 
         it (s"HTTP 404") {
@@ -109,7 +109,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe 404
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":404,"message":"Auth endpoint not found","xStatusCode":"AUTH_ERROR_NOT_FOUND"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_NOT_FOUND","message":"Auth endpoint not found"}""")
         }
       }
 
@@ -125,7 +125,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe SERVICE_UNAVAILABLE
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"Auth connection error","xStatusCode":"AUTH_ERROR_IO"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_IO","message":"Auth connection error"}""")
         }
 
         it ("should return 503 when returning empty response and connection closed") {
@@ -139,7 +139,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe SERVICE_UNAVAILABLE
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"Auth connection error","xStatusCode":"AUTH_ERROR_IO"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_IO","message":"Auth connection error"}""")
         }
 
         it (s"should return 408 when timed out") {
@@ -153,7 +153,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe 408
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":408,"message":"Auth not responding error","xStatusCode":"AUTH_ERROR_GATEWAY_TIMEOUT"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_GATEWAY_TIMEOUT","message":"Auth not responding error"}""")
         }
 
         it (s"should return 503 when Auth returns 500") {
@@ -167,7 +167,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe SERVICE_UNAVAILABLE
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":502,"message":"Auth 5xx error","xStatusCode":"AUTH_ERROR_BACKEND_FAILURE"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_BACKEND_FAILURE","message":"Auth 5xx error"}""")
         }
 
         it (s"should return 503 when Auth returns 503") {
@@ -181,7 +181,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe SERVICE_UNAVAILABLE
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":502,"message":"Auth 5xx error","xStatusCode":"AUTH_ERROR_BACKEND_FAILURE"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_BACKEND_FAILURE","message":"Auth 5xx error"}""")
         }
 
         it (s"should return http status 429 when Auth HTTP 429") {
@@ -195,7 +195,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe 429
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":429,"message":"Auth too many requests","xStatusCode":"AUTH_ERROR_TOO_MANY_REQUESTS"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_TOO_MANY_REQUESTS","message":"Auth too many requests"}""")
         }
 
         it (s"should return http status 503 when Auth HTTP 409") {
@@ -209,7 +209,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe SERVICE_UNAVAILABLE
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"Auth 4xx error","xStatusCode":"AUTH_ERROR_OTHER"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
         }
 
         it (s"should return http status 408 when Auth HTTP 408") {
@@ -223,7 +223,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe 408
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":408,"message":"Auth not responding error","xStatusCode":"AUTH_ERROR_TIMEOUT"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_TIMEOUT","message":"Auth not responding error"}""")
         }
 
         it (s"should return http status 400 when Auth HTTP 400") {
@@ -237,7 +237,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           // check
           status(result) shouldBe BAD_REQUEST
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"Bad request error","xStatusCode":"AUTH_ERROR_BAD_REQUEST"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_BAD_REQUEST","message":"Bad request error"}""")
         }
       }
     }

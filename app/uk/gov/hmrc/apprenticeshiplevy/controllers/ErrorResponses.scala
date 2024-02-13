@@ -23,7 +23,7 @@ object ErrorResponses {
   def DESError(statusCode: Int, code: String, msg: String): ErrorResponse = ErrorResponse(statusCode, msg, Some(s"DES_ERROR_${code}"))
   def AuthError(statusCode: Int, code: String, msg: String): ErrorResponse = ErrorResponse(statusCode, msg, Some(s"AUTH_ERROR_${code}"))
 
-  object ErrorNotFound extends ErrorResponse(NOT_FOUND, "NOT_FOUND", Some("Resource was not found"))
-  object ErrorFromDateAfterToDate extends ErrorResponse(BAD_REQUEST, "BAD_REQUEST", Some("From date was after to date"))
-  object ErrorAcceptHeaderInvalid extends ErrorResponse(NOT_ACCEPTABLE, "ACCEPT_HEADER_INVALID", Some("The accept header is missing or invalid"))
+  object ErrorNotFound extends ErrorResponse(NOT_FOUND, "Resource was not found", Some("NOT_FOUND"))
+  object ErrorFromDateAfterToDate extends ErrorResponse(BAD_REQUEST, "From date was after to date", Some("BAD_REQUEST"))
+  object ErrorAcceptHeaderInvalid extends ErrorResponse(NOT_ACCEPTABLE, "The accept header is missing or invalid", Some("ACCEPT_HEADER_INVALID"))
 }

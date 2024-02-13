@@ -302,7 +302,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe BAD_REQUEST
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"Bad request error","xStatusCode":"DES_ERROR_BAD_REQUEST"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
           }
 
           it(s"should return http status 401 when DES returns 401") {
@@ -315,7 +315,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result)
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"DES unauthorised error","xStatusCode":"DES_ERROR_UNAUTHORIZED"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
           }
 
           it(s"should return http status 403 when DES returns 403") {
@@ -328,7 +328,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 403
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"DES forbidden error","xStatusCode":"DES_ERROR_FORBIDDEN"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
           }
 
           it(s"DES HTTP 404") {
@@ -353,7 +353,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             httpStatus shouldBe BAD_REQUEST
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":400,"message":"BAD_REQUEST","xStatusCode":"From date was after to date"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"BAD_REQUEST","message":"From date was after to date"}""")
           }
         }
 
@@ -369,7 +369,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
               // check
               status(result) shouldBe 404
               contentType(result) shouldBe Some("application/json")
-              contentAsJson(result) shouldBe Json.parse("""{"statusCode":404,"message":"NOT_FOUND","xStatusCode":"Resource was not found"}""")
+              contentAsJson(result) shouldBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
             }
 
             it(s"should return http status 500 when error json object returned on Http Status 200") {
@@ -382,7 +382,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
               // check
               status(result) shouldBe 500
               contentType(result) shouldBe Some("application/json")
-              contentAsJson(result) shouldBe Json.parse("""{"statusCode":420,"message":"DES backend error","xStatusCode":"DES_ERROR_BACKEND_FAILURE"}""")
+              contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES backend error"}""")
             }
 
             it(s"should return http status 404 when just empref field in Json object is returned") {
@@ -395,7 +395,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
               // check
               status(result) shouldBe 404
               contentType(result) shouldBe Some("application/json")
-              contentAsJson(result) shouldBe Json.parse("""{"statusCode":404,"message":"NOT_FOUND","xStatusCode":"Resource was not found"}""")
+              contentAsJson(result) shouldBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
             }
 
             it(s"should return eps if using old fieldname of 'declarations'") {
@@ -433,7 +433,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"DES connection error","xStatusCode":"DES_ERROR_IO"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           it(s"should return http status 503 when empty response") {
@@ -446,7 +446,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":503,"message":"DES connection error","xStatusCode":"DES_ERROR_IO"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           it(s"should return http status 408 when timed out") {
@@ -459,7 +459,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 408
             contentType(result) shouldBe Some("application/json")
-            contentAsString(result) should include("""{"statusCode":408,"message":"DES not responding error","xStatusCode":"DES_ERROR_GATEWAY_TIMEOUT"}""")
+            contentAsString(result) should include("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error""")
           }
 
           it(s"should return http status 503 when DES HTTP 500") {
@@ -472,7 +472,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":502,"message":"DES 5xx error","xStatusCode":"DES_ERROR_BACKEND_FAILURE"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
           it(s"should return http status 503 when DES HTTP 503") {
@@ -485,7 +485,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe SERVICE_UNAVAILABLE
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":502,"message":"DES 5xx error","xStatusCode":"DES_ERROR_BACKEND_FAILURE"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
           it(s"should return http status 404 when empty json returned") {
@@ -498,7 +498,7 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             // check
             status(result) shouldBe 404
             contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"statusCode":404,"message":"NOT_FOUND","xStatusCode":"Resource was not found"}""")
+            contentAsJson(result) shouldBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
           }
         }
       }

@@ -17,14 +17,20 @@
 package uk.gov.hmrc.apprenticeshiplevy.utils
 
 import play.api.libs.json.{JsNull, JsString, JsValue, Json}
+import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
 
 object ErrorResponseUtils {
 
-  def convertToJson(errorResponse: ErrorResponse): String = {
-    val code = Json.obj("code" -> errorResponse.xStatusCode.fold(JsNull: JsValue)(JsString))
+  def convertToJson(errorResponse: ErrorResponse): JsValue = {
+    val code = Json.obj("code" -> JsString(errorResponse.xStatusCode.getOrElse("No status code provided")))
     val message = Json.obj("message" -> JsString(errorResponse.message))
-    (code ++ message).toString()
+    code ++ message
   }
 
+  def errorResponseToResult(errorResponse: ErrorResponse): Result = {
+    val jsonResult = convertToJson(errorResponse)
+    val statusCode = errorResponse.statusCode
+    Results.Status(statusCode)(jsonResult)
+  }
 }

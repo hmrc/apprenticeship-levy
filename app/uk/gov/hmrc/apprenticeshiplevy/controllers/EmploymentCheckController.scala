@@ -23,7 +23,7 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNotVisible
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentCheck, EmploymentReference, Nino}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.{Employed, NotEmployed, Unknown}
-import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
+import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, ErrorResponseUtils}
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +42,7 @@ trait EmploymentCheckController extends DesController {
       implicit request =>
         // scalastyle:on
         if (fromDate.isAfter(toDate)) {
-          Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
+          Future.successful(ErrorResponseUtils.errorResponseToResult(ErrorResponses.ErrorFromDateAfterToDate))
         } else {
           desConnector.check(
             toDESFormat(ref.empref), ni.nino, ClosedDateRange(fromDate, toDate)
@@ -52,7 +52,7 @@ trait EmploymentCheckController extends DesController {
             case NotEmployed =>
               Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = false)))
             case Unknown =>
-              ErrorNotVisible.toResult
+              ErrorResponseUtils.errorResponseToResult(ErrorNotVisible)
           } recover desErrorHandler
         }
     }

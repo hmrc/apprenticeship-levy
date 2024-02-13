@@ -23,7 +23,7 @@ import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
 
 package object sandbox {
   val NOT_FOUND_HTTP_STATUS = 404
-  object ErrorNotVisible extends ErrorResponse(NOT_FOUND_HTTP_STATUS, "EPAYE_UNKNOWN", Some("The provided NINO or EMPREF was not recognised"))
+  object ErrorNotVisible extends ErrorResponse(NOT_FOUND_HTTP_STATUS, "The provided NINO or EMPREF was not recognised", Some("EPAYE_UNKNOWN"))
 
   implicit class ErrorResponseSyntax(er: ErrorResponse) {
     def toResult: Result = Status(er.statusCode)(Json.toJson(er))

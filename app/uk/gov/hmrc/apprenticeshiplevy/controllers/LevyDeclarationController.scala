@@ -26,7 +26,8 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, LevyDeclaration, LevyDeclarations}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
+import uk.gov.hmrc.apprenticeshiplevy.utils.ErrorResponseUtils.convertToJson
+import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange, ErrorResponseUtils}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
 import java.time.LocalDate
@@ -45,7 +46,7 @@ trait LevyDeclarationController extends Logging {
       implicit request =>
         // scalastyle:on
         if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get))
-          Future.successful(ErrorResponses.ErrorFromDateAfterToDate.result)
+          Future.successful(ErrorResponseUtils.errorResponseToResult(ErrorResponses.ErrorFromDateAfterToDate))
         else
           retrieveDeclarations(toDESFormat(ref.empref), toDateRange(fromDate, toDate))
             .map { ds =>
@@ -88,7 +89,7 @@ trait LevyDeclarationController extends Logging {
     }
     else {
       logger.warn(s"Client ${MDC.get("X-Client-ID")} DES returned empty list of declarations: API returning not found")
-      ErrorNotFound.result
+      ErrorResponseUtils.errorResponseToResult(ErrorNotFound)
     }
   }
 }

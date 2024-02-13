@@ -17,15 +17,17 @@
 package uk.gov.hmrc.apprenticeshiplevy.utils
 
 import play.api.libs.json.Json
+import play.api.mvc.Results.Status
 import play.api.mvc._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorAcceptHeaderInvalid
 import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex
 import scala.util.matching.Regex.Match
 
-trait HeaderValidator extends Results {
+trait HeaderValidator {
   outer =>
 
   val validateVersion:     String => Boolean = _ == "1.0"
@@ -48,7 +50,7 @@ trait HeaderValidator extends Results {
                         block:   (Request[A]) => Future[Result]
                       ) =
       if (rules(request.headers.get("Accept"))) block(request)
-      else Future.successful(Status(ErrorAcceptHeaderInvalid.statusCode)(Json.toJson[ErrorResponse](ErrorAcceptHeaderInvalid)))
+      else Future.successful(Status(ErrorAcceptHeaderInvalid.statusCode)(ErrorResponseUtils.convertToJson(ErrorAcceptHeaderInvalid)))
 
     override def parser: BodyParser[AnyContent] = outer.parser
 
