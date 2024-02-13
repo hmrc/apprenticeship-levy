@@ -85,7 +85,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe INTERNAL_SERVER_ERROR
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":500,"message":"DES and/or BACKEND server returned bad json.","xStatusCode":"DES_ERROR_JSON_FAILURE"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_JSON_FAILURE","message":"DES and/or BACKEND server returned bad json."}""")
     }
     "return a internal server error when upstream returns IllegalArgumentException" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -95,7 +95,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe INTERNAL_SERVER_ERROR
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":500,"message":"DES and/or BACKEND server returned bad json.","xStatusCode":"DES_ERROR_JSON_FAILURE"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_JSON_FAILURE","message":"DES and/or BACKEND server returned bad json."}""")
     }
     "return an internal server error when upstream returns BadRequestException" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -105,7 +105,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe 400
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":503,"message":"Bad request error","xStatusCode":"DES_ERROR_BAD_REQUEST"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
     }
     "return a service unavailable error when upstream returns IOException" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -115,7 +115,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe SERVICE_UNAVAILABLE
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":503,"message":"DES connection error","xStatusCode":"DES_ERROR_IO"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
     }
     "return a request timeout error when upstream returns GatewayTimeoutException" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -125,7 +125,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe REQUEST_TIMEOUT
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":408,"message":"DES not responding error","xStatusCode":"DES_ERROR_GATEWAY_TIMEOUT"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error"}""")
     }
     "return a not found error when upstream returns NotFoundException" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -135,7 +135,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe NOT_FOUND
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":404,"message":"DES endpoint or EmpRef not found","xStatusCode":"DES_ERROR_NOT_FOUND"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
     }
     "return an internal server error when upstream returns a 412" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -145,7 +145,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe INTERNAL_SERVER_ERROR
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":420,"message":"DES backend error","xStatusCode":"DES_ERROR_BACKEND_FAILURE"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES backend error"}""")
     }
     "return a forbidden error when upstream returns a 403" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -155,7 +155,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe FORBIDDEN
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":403,"message":"DES forbidden error","xStatusCode":"DES_ERROR_FORBIDDEN"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
     }
     "return an unauthorised error when upstream returns a 401" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -165,7 +165,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe UNAUTHORIZED
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":401,"message":"DES unauthorised error","xStatusCode":"DES_ERROR_UNAUTHORIZED"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
     }
     "return a too many requests error when upstream returns a 429" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -175,7 +175,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe TOO_MANY_REQUESTS
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":429,"message":"DES too many requests","xStatusCode":"DES_ERROR_TOO_MANY_REQUESTS"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_TOO_MANY_REQUESTS","message":"DES too many requests"}""")
     }
     "return a request timeout error when upstream returns a 408" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -185,7 +185,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe REQUEST_TIMEOUT
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":408,"message":"DES not responding error","xStatusCode":"DES_ERROR_TIMEOUT"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_TIMEOUT","message":"DES not responding error"}""")
     }
     "return an other DES Error when upstream returns an upstream 4xx error" in {
       when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
@@ -195,7 +195,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
         "Authorization"->"Bearer dsfda9080"))
 
       status(response) shouldBe SERVICE_UNAVAILABLE
-      contentAsJson(response) shouldBe Json.parse("""{"statusCode":400,"message":"DES 4xx error","xStatusCode":"DES_ERROR_OTHER"}""")
+      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_OTHER","message":"DES 4xx error"}""")
     }
   }
 }

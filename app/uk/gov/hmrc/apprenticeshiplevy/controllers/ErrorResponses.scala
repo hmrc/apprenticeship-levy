@@ -25,5 +25,5 @@ object ErrorResponses {
 
   object ErrorNotFound extends ErrorResponse(NOT_FOUND, "NOT_FOUND", Some("Resource was not found"))
   object ErrorFromDateAfterToDate extends ErrorResponse(BAD_REQUEST, "BAD_REQUEST", Some("From date was after to date"))
-  object ErrorAcceptHeaderInvalid extends ErrorResponse(406, "ACCEPT_HEADER_INVALID", Some("The accept header is missing or invalid"))
+  object ErrorAcceptHeaderInvalid extends ErrorResponse(NOT_ACCEPTABLE, "ACCEPT_HEADER_INVALID", Some("The accept header is missing or invalid"))
 }
