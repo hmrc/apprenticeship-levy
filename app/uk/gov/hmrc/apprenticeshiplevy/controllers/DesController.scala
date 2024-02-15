@@ -16,17 +16,16 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import java.io.IOException
-import java.net.URLDecoder
 import org.slf4j.MDC
 import play.api.Logging
-import play.api.libs.json.Json
 import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.DESError
 import uk.gov.hmrc.apprenticeshiplevy.utils.ErrorResponseUtils
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
+
+import java.io.IOException
+import java.net.URLDecoder
 
 trait DesController extends ApiController with Logging {
 

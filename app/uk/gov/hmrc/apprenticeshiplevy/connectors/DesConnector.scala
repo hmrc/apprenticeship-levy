@@ -17,10 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.connectors
 
 import com.codahale.metrics.MetricRegistry
-
-import java.net.URLDecoder
 import com.google.inject.Inject
-import com.codahale.metrics.MetricRegistry
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json._
@@ -37,6 +34,7 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import views.html.helper
 
+import java.net.URLDecoder
 import java.time.LocalDate
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}

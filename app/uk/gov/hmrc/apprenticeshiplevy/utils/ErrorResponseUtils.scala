@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.utils
 
-import play.api.libs.json.{JsNull, JsString, JsValue, Json}
+import play.api.libs.json.{JsString, JsValue, Json}
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
 

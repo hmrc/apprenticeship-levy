@@ -20,7 +20,6 @@ import com.google.inject.{ImplementedBy, Inject}
 import org.slf4j.MDC
 import play.api.Logging
 import play.api.http.Status._
-import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.AuthError
@@ -32,7 +31,6 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.{Request => _, _}
-import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import java.io.IOException

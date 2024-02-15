@@ -26,7 +26,6 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, LevyDeclaration, LevyDeclarations}
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import uk.gov.hmrc.apprenticeshiplevy.utils.ErrorResponseUtils.convertToJson
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange, ErrorResponseUtils}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
