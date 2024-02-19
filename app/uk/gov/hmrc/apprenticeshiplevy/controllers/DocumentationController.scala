@@ -16,16 +16,15 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import java.io.InputStream
 import com.google.inject.{Inject, Singleton}
-import play.api.Logging
-import play.api.Mode
+import play.api.{Logging, Mode}
 import play.api.http.{HeaderNames, MimeTypes}
-import play.api.libs.json.{Json, _}
+import play.api.libs.json._
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
+import java.io.InputStream
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.{Failure, Success, Try}

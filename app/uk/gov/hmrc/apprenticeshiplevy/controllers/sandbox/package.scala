@@ -19,13 +19,13 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.mvc.Results._
-import uk.gov.hmrc.api.controllers.ErrorResponse
+import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
 
 package object sandbox {
   val NOT_FOUND_HTTP_STATUS = 404
-  case object ErrorNotVisible extends ErrorResponse(NOT_FOUND_HTTP_STATUS, "EPAYE_UNKNOWN", "The provided NINO or EMPREF was not recognised")
+  object ErrorNotVisible extends ErrorResponse(NOT_FOUND_HTTP_STATUS, "The provided NINO or EMPREF was not recognised", Some("EPAYE_UNKNOWN"))
 
   implicit class ErrorResponseSyntax(er: ErrorResponse) {
-    def toResult: Result = Status(er.httpStatusCode)(Json.toJson(er))
+    def toResult: Result = Status(er.statusCode)(Json.toJson(er))
   }
 }

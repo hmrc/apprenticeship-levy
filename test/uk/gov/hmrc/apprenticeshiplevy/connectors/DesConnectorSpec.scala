@@ -275,8 +275,8 @@ class DesConnectorSpec
   "have Levy Declarations endpoint and" should {
     "support original endpoint url with an empty empref" in {
 
-      val empRef = ""
-      val empRefWithSlash = ""
+      val empRef = " "
+      val empRefWithSlash = " "
       val localDate = LocalDate.of(2016, 11, 3)
       val dateRange = OpenEarlyDateRange(localDate)
       val dateRangeParams = dateRange.toParams

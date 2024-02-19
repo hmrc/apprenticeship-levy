@@ -17,13 +17,10 @@
 package uk.gov.hmrc.apprenticeshiplevy.data.api
 
 import play.api.libs.json._
-import uk.gov.hmrc.http.controllers.RestFormats
-
 import java.time.LocalDate
 
 case class EmploymentCheck(empref: String, nino: String, fromDate: LocalDate, toDate:LocalDate, employed: Boolean)
 
 object EmploymentCheck {
-  implicit val dateFormats = RestFormats.localDateFormats
   implicit val formats = Json.format[EmploymentCheck]
 }

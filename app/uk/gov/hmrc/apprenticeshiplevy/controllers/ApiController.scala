@@ -20,9 +20,10 @@ import org.slf4j.MDC
 import play.api.hal.{HalLink, HalResource}
 import play.api.libs.json.Json
 import play.api.mvc._
-import uk.gov.hmrc.api.controllers.{ErrorResponse, HeaderValidator}
+import uk.gov.hmrc.apprenticeshiplevy.utils.HeaderValidator
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
+import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
 
 import scala.concurrent.ExecutionContext
 
@@ -31,7 +32,7 @@ trait ApiController extends BackendBaseController with HeaderValidator {
   implicit val ec: ExecutionContext = controllerComponents.executionContext
 
   implicit class ErrorResponseSyntax(er: ErrorResponse) {
-    def result: Result = Status(er.httpStatusCode)(Json.toJson(er))
+    def result: Result = Status(er.statusCode)(Json.toJson(er))
   }
 
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
