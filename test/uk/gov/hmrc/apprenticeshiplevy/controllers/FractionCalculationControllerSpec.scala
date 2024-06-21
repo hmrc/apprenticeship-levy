@@ -17,8 +17,8 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import com.codahale.metrics.MetricRegistry
-import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
@@ -30,10 +30,12 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivileg
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.Authorization
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
+import java.net.URL
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +43,8 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
 
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockAppContext: AppContext = mock[AppContext]
-  val mockHttp = mock[HttpClient]
+  val mockHttp = mock[HttpClientV2]
+  val mockRequestBuilder = mock[RequestBuilder]
 
   def controller : FractionsController = new FractionsController with DesController {
     def desConnector: DesConnector = new DesConnector() {
@@ -49,7 +52,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       override protected def auditConnector: Option[AuditConnector] = None
       override def registry: Option[MetricRegistry] = None
       def baseUrl: String = "http://a.guide.to.nowhere/"
-      def httpClient: HttpClient = mockHttp
+      def httpClient: HttpClientV2 = mockHttp
 
       override def desAuthorization: String = "localBearer"
 
@@ -81,8 +84,11 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
     "propogate environment but not authorization headers on to connector" in {
       // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(mockHttp.GET[Fractions](anyString(), any(), any())(any(), any(), any()))
-           .thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
+      val urlCaptor: ArgumentCaptor[URL] = ArgumentCaptor.forClass(classOf[URL])
+
+      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.execute[Fractions](any(), any())).thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
 
       // test
       await(controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()
@@ -90,7 +96,8 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
                                                                                     "Authorization"->"Bearer dsfda9080",
                                                                                     "Environment"->"clone")))
 
-      verify(mockHttp).GET[Fractions](anyString(), any(), any())(any(), headerCarrierCaptor.capture(), any())
+      verify(mockHttp).get(urlCaptor.capture())(headerCarrierCaptor.capture())
+      verify(mockRequestBuilder).execute[Fractions](any(), any())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -102,17 +109,20 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
     "not fail if environment header not supplied" in {
       // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
+      val urlCaptor: ArgumentCaptor[URL] = ArgumentCaptor.forClass(classOf[URL])
 
-      when(mockHttp.GET[Fractions](anyString(), any(), any())(any(), any(), any()))
-           .thenReturn(Future.successful(Fractions("123AB12345",
-                                                   List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
+      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.execute[Fractions](any(), any())).thenReturn(Future.successful(Fractions("123AB12345",
+        List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
 
       // test
       await(controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()
                                                                       .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                     "Authorization"->"Bearer dsfda9080")))
 
-      verify(mockHttp).GET[Fractions](anyString(), any(), any())(any(), headerCarrierCaptor.capture(), any())
+      verify(mockHttp).get(urlCaptor.capture())(headerCarrierCaptor.capture())
+      verify(mockRequestBuilder, times(2)).execute[Fractions](any(), any())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue

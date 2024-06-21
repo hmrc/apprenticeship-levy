@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import java.time.LocalDate
-
 import com.codahale.metrics.MetricRegistry
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, when}
@@ -34,6 +33,7 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivileg
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.{EmploymentCheckStatus, Unknown}
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
@@ -42,8 +42,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite with Injecting with BeforeAndAfterEach {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
-  val mockHttp: HttpClient = mock[HttpClient]
+  val mockHttp: HttpClientV2 = mock[HttpClientV2]
   val mockAppContext: AppContext = mock[AppContext]
+  val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]
 
   val testController: EmploymentCheckController = new EmploymentCheckController {
     override implicit val executionContext: ExecutionContext = controllerComponents.executionContext
@@ -53,7 +54,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
       override protected def auditConnector: Option[AuditConnector] = None
       override def registry: Option[MetricRegistry] = None
       def baseUrl: String = "http://a.guide.to.nowhere/"
-      def httpClient: HttpClient = mockHttp
+      def httpClient: HttpClientV2 = mockHttp
       override def desAuthorization: String = "localBearer"
 
       override def desEnvironment: String = "localEnv"
@@ -80,8 +81,9 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val toDate: LocalDate = LocalDate.parse("2021-07-22")
         val nino = Nino("AA12345A")
 
-        when(mockHttp.GET[Either[UpstreamErrorResponse, EmploymentCheckStatus]](anyString(), any(), any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
+        when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
 
         val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",
@@ -95,8 +97,9 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val toDate: LocalDate = LocalDate.parse("2021-07-22")
         val nino = Nino("AA12345A")
 
-        when(mockHttp.GET[Either[UpstreamErrorResponse, EmploymentCheckStatus]](anyString(), any(), any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(EmploymentCheckStatus(false))))
+        when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(false))))
 
         val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",
@@ -112,8 +115,9 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val toDate: LocalDate = LocalDate.parse("2021-07-22")
         val nino = Nino("AA12345A")
 
-        when(mockHttp.GET[Either[UpstreamErrorResponse, EmploymentCheckStatus]](anyString(), any(), any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(Unknown)))
+        when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](any(), any())).thenReturn(Future.successful(Right(Unknown)))
 
         val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",
@@ -129,8 +133,9 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val toDate: LocalDate = LocalDate.parse("2020-07-22")
         val nino = Nino("AA12345A")
 
-        when(mockHttp.GET[Either[UpstreamErrorResponse, EmploymentCheckStatus]](anyString(), any(), any())(any(), any(), any()))
-          .thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
+        when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
 
         val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",

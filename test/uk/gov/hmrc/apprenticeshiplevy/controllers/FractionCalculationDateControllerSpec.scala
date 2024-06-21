@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import com.codahale.metrics.MetricRegistry
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, anyString}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
@@ -30,9 +30,11 @@ import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
-import uk.gov.hmrc.http.{Authorization, HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
+import uk.gov.hmrc.http.{Authorization, HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
+import java.net.URL
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,7 +42,8 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockAppContext: AppContext = mock[AppContext]
-  val mockHttp: HttpClient = mock[HttpClient]
+  val mockHttp: HttpClientV2 = mock[HttpClientV2]
+  val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]
 
   def controller : FractionsCalculationDateController = new FractionsCalculationDateController with DesController {
     def desConnector: DesConnector = new DesConnector() {
@@ -48,7 +51,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       override protected def auditConnector: Option[AuditConnector] = None
       override def registry: Option[MetricRegistry] = None
       def baseUrl: String = "http://a.guide.to.nowhere/"
-      def httpClient: HttpClient = mockHttp
+      def httpClient: HttpClientV2 = mockHttp
       override def desAuthorization: String = "localBearer"
 
       override def desEnvironment: String = "localEnv"
@@ -80,14 +83,15 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       // set up
 
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(mockHttp.GET[Either[UpstreamErrorResponse, FractionCalculationDate]](anyString(), any(), any())(any(), any(), any()))
-           .thenReturn(Future.successful(Right(FractionCalculationDate(LocalDate.of(2016,11,3)))))
+      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, FractionCalculationDate]](any(), any())).thenReturn(Future.successful(Right(FractionCalculationDate(LocalDate.of(2016,11,3)))))
 
       val response = await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                                     "Authorization"->"Bearer dsfda9080",
                                                                                                     "Environment"->"clone")))
 
-      verify(mockHttp).GET[FractionCalculationDate](anyString(), any(), any())(any(), headerCarrierCaptor.capture(), any())
+      verify(mockHttp).get(any())(headerCarrierCaptor.capture())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -100,14 +104,16 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
     "not fail if environment header not supplied" in {
       // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
-           .thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
+      val urlCaptor: ArgumentCaptor[URL] = ArgumentCaptor.forClass(classOf[URL])
+
+      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
 
       // test
       await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                                     "Authorization"->"Bearer dsfda9080")))
-
-      verify(mockHttp).GET[FractionCalculationDate](anyString(), any(), any())(any(), headerCarrierCaptor.capture(), any())
+      verify(mockHttp).get(urlCaptor.capture())(headerCarrierCaptor.capture())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -118,10 +124,11 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
     "recover from exceptions" in {
       // set up
-      when(mockHttp.GET[FractionCalculationDate](anyString(), any(), any())(any(), any(), any()))
-        .thenReturn(Future.failed(UpstreamErrorResponse.apply(
-          """DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503.
-            | Response body: '{"reason" : "Backend systems not working"}'""".stripMargin,500)))
+      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
+      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply(
+        """DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503.
+          | Response body: '{"reason" : "Backend systems not working"}'""".stripMargin,500)))
 
       // test
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
