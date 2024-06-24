@@ -33,7 +33,6 @@ class DeclarationsEndpointISpec extends WiremockFunSpec with IntegrationTestConf
             contentType(result) shouldBe Some("application/json")
 
             val json = contentAsJson(result)
-            println(Console.MAGENTA + json + Console.RESET)
             (json \ "empref").as[String] shouldBe "123/AB12341"
             val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
             declarations.length shouldBe 9

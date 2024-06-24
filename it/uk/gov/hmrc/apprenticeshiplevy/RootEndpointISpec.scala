@@ -98,7 +98,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_FORBIDDEN","message":"Auth forbidden error"}""")
         }
 
-        it (s"HTTP 404") {
+        it (s"should return 503 when Auth returns 404") {
           // set up
           stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(404).withStatusMessage("Not found.")))
           val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
@@ -107,10 +107,9 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           val result = route(app, request).get
 
           // check
-          println(Console.YELLOW + contentAsJson(result) + Console.RESET)
-          status(result) shouldBe 404
+          status(result) shouldBe 503
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_NOT_FOUND","message":"Auth endpoint not found"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
         }
       }
 
@@ -227,7 +226,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_TIMEOUT","message":"Auth not responding error"}""")
         }
 
-        it (s"should return http status 400 when Auth HTTP 400") {
+        it (s"should return http status 503 when Auth HTTP 400") {
           // set up
           stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withStatus(400).withBody("""{"reason" : "Not responding"}""")))
           val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
@@ -236,9 +235,9 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe BAD_REQUEST
+          status(result) shouldBe SERVICE_UNAVAILABLE
           contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_BAD_REQUEST","message":"Bad request error"}""")
+          contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
         }
       }
     }

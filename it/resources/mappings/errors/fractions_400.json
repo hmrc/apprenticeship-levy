@@ -16,7 +16,7 @@
         "matches": "Bearer (.*)"
       },
       "Environment": {
-        "matches": "(isit|clone|live)"
+        "matches": "(isit|clone|live|ist0)"
       }
     }
   },
