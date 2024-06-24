@@ -107,6 +107,7 @@ class RootEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           val result = route(app, request).get
 
           // check
+          println(Console.YELLOW + contentAsJson(result) + Console.RESET)
           status(result) shouldBe 404
           contentType(result) shouldBe Some("application/json")
           contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_NOT_FOUND","message":"Auth endpoint not found"}""")
