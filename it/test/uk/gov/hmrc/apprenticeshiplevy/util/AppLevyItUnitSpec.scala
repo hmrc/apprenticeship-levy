@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.util
+package test.uk.gov.hmrc.apprenticeshiplevy.util
 
 import org.apache.pekko.stream.Materializer
 import org.apache.pekko.util.ByteString

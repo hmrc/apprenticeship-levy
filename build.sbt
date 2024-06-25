@@ -74,16 +74,17 @@ lazy val scoverageSettings = {
   )
 }
 
-lazy val microservice = Project(appName, file("."))
+ThisBuild / majorVersion := 3
+ThisBuild / scalaVersion := "2.13.14"
+
+val microservice = Project(appName, file("."))
   .enablePlugins(plugins *)
   .settings(
     playSettings,
     scoverageSettings,
     scalaSettings,
     defaultSettings(),
-    scalaVersion := "2.13.14",
     PlayKeys.playDefaultPort := 9470,
-    majorVersion := 3,
     ivyConfigurations += XsltConfig,
     libraryDependencies ++= AppDependencies.all,
     libraryDependencies ++= AppDependencies.generateApiTask,
@@ -99,13 +100,6 @@ lazy val microservice = Project(appName, file("."))
       "-Wconf:src=routes/.*:is,src=twirl/.*:is"
     )
   )
-  .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings) *)
-  .settings(
-    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
-    IntegrationTest / unmanagedResourceDirectories += baseDirectory(_ / "public").value,
-    addTestReportOption(IntegrationTest, "int-test-reports"),
-    IntegrationTest / parallelExecution := false)
   .configs(AcceptanceTest)
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings) *)
   .settings(
@@ -113,3 +107,9 @@ lazy val microservice = Project(appName, file("."))
     AcceptanceTest / unmanagedResourceDirectories += baseDirectory(_ / "public").value,
     addTestReportOption(AcceptanceTest, "ac-test-reports"))
   .settings(Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))
+
+val it: Project = project.in(file("it"))
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test")
+  .settings(itSettings())
+  .settings(libraryDependencies ++= AppDependencies.integrationTest)
