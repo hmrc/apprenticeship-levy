@@ -37,7 +37,6 @@ import views.html.helper
 import java.net.URLDecoder
 import java.time.LocalDate
 import java.util.UUID
-import scala.Console
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 

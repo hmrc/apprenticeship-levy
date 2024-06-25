@@ -1,5 +1,5 @@
 import play.sbt.PlayRunHook
-import sbt._
+import sbt.*
 import scala.sys.process.Process
 
 /*

@@ -16,9 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import java.time.LocalDate
 import com.codahale.metrics.MetricRegistry
-import org.mockito.ArgumentMatchers.{any, anyString}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
@@ -33,10 +32,11 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivileg
 import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.{EmploymentCheckStatus, Unknown}
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
-import uk.gov.hmrc.http.{HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite with Injecting with BeforeAndAfterEach {

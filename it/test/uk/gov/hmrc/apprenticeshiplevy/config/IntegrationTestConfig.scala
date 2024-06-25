@@ -34,8 +34,8 @@ trait IntegrationTestConfig {
   def verboseWiremockOutput: Boolean = sys.props.getOrElse("WIREMOCK_VERBOSE_OUTPUT", "false").toBoolean
   def stubPort: Int = sys.props.getOrElse("WIREMOCK_PORT", "8080").toInt
   def stubHost: String = sys.props.getOrElse("WIREMOCK_HOST", "localhost")
-  def stubConfigPath: String = sys.props.getOrElse("WIREMOCK_MAPPINGS", "./it/resources")
-  def resourcePath: String = sys.props.getOrElse("RESOURCE_PATH", "./it/resources")
+  def stubConfigPath: String = sys.props.getOrElse("WIREMOCK_MAPPINGS", "./it/test/resources")
+  def resourcePath: String = sys.props.getOrElse("RESOURCE_PATH", "./it/test/resources")
 
   // val wireMockUrl = s"http://$stubHost:$stubPort"
   // apprenticeship-levy

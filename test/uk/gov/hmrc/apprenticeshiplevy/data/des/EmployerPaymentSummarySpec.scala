@@ -44,7 +44,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        relatedTaxYear,
                                        Some(ClosedDateRange(startNoPayment, endNoPayment)))
 
-      val l1 = EmployerPaymentSummary.toDeclarations(eps)(0)
+      val l1 = EmployerPaymentSummary.toDeclarations(eps).head
       l1 shouldBe LevyDeclaration(1234560L, submissionTime,
         noPaymentForPeriod = Some(true),
         payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)),
@@ -59,7 +59,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        relatedTaxYear,
                                        apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, allowance, taxMonth.toString())))
 
-      val l2 = EmployerPaymentSummary.toDeclarations(eps2)(0)
+      val l2 = EmployerPaymentSummary.toDeclarations(eps2).head
       l2 shouldBe LevyDeclaration(1234562L, submissionTime,
         payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
         levyDueYTD = Some(levyDueYTD),
@@ -75,7 +75,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        relatedTaxYear,
                                        finalSubmission = Some(SchemeCeased(true, schemeCeasedDate, None)))
 
-      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(1234563L, submissionTime, Some(schemeCeasedDate), submissionId = id)
+      EmployerPaymentSummary.toDeclarations(eps).head shouldBe LevyDeclaration(1234563L, submissionTime, Some(schemeCeasedDate), submissionId = id)
     }
 
     "convert an inactive submission" in {
@@ -87,7 +87,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        relatedTaxYear,
                                        inactivePeriod = Some(ClosedDateRange(from = inactiveFrom, to = inactiveTo)))
 
-      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(1234561L, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo), submissionId = id)
+      EmployerPaymentSummary.toDeclarations(eps).head shouldBe LevyDeclaration(1234561L, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo), submissionId = id)
     }
 
     "convert a submission" in {
@@ -100,7 +100,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        relatedTaxYear,
                                        apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, allowance, taxMonth.toString())))
 
-      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(1234562L, submissionTime,
+      EmployerPaymentSummary.toDeclarations(eps).head shouldBe LevyDeclaration(1234562L, submissionTime,
         payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
         levyDueYTD = Some(levyDueYTD),
         levyAllowanceForFullYear = Some(allowance),
@@ -119,7 +119,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        relatedTaxYear,
                                        Some(ClosedDateRange(startNoPayment, endNoPayment)))
 
-      EmployerPaymentSummary.toDeclarations(eps)(0) shouldBe LevyDeclaration(1234560L, submissionTime,
+      EmployerPaymentSummary.toDeclarations(eps).head shouldBe LevyDeclaration(1234560L, submissionTime,
         noPaymentForPeriod = Some(true),
         payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)),
         submissionId = id)

@@ -84,7 +84,7 @@ object PathBinders {
     case _ => Left(s"$code: '$value' is in the wrong format. Should be ${regex.toString()} and url encoded.")
   }
 
-  private[config] def isValidNino(value: String, code: String): Either[String, String] = if (Nino.isValid(value)) {
+  def isValidNino(value: String, code: String): Either[String, String] = if (Nino.isValid(value)) {
     Right(value)
   } else {
     Left(s"$code: '$value' is in the wrong format. Should have a prefix (one of ${uk.gov.hmrc.domain.Nino.validPrefixes}) and suffix (one of ${uk.gov.hmrc.domain.Nino.validSuffixes}) and url encoded.")

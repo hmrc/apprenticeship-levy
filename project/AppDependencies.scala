@@ -1,6 +1,5 @@
-import play.sbt.PlayImport._
-import sbt.Keys.dependencyOverrides
-import sbt._
+import play.sbt.PlayImport.*
+import sbt.*
 
 object AppDependencies {
 
@@ -29,10 +28,10 @@ object AppDependencies {
     "org.scala-lang.modules" %% "scala-xml"                    % "2.2.0",
     "com.github.andyglow"    %% "scala-xml-diff"               % "3.0.1",
     "org.scalatestplus"      %% "scalacheck-1-14"              % "3.2.2.0"
-  ).map(_ % "test,it")
+  ).map(_ % "test")
 
   lazy val acceptanceTest: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"   %% s"bootstrap-test-$playVersion" % playVersion,
+    "uk.gov.hmrc"   %% s"bootstrap-test-$playVersion" % bootstrapVersion,
     "org.pegdown"    % "pegdown"                      % "1.6.0",
     "org.scalaj"    %% "scalaj-http"                  % "2.4.2"
   ).map(_ % "test, ac")
