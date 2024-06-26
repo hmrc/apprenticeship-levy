@@ -30,7 +30,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
 import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.http.{Request => _, _}
+import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, HeaderCarrier, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import java.io.IOException

@@ -1,0 +1,21 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/apprenticeship-levy/employers/503AB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live|ist0)"
+          }
+        }
+    },
+    "response": {
+        "status": 503,
+        "jsonBody": {
+          "reason": "Not found"
+        }
+    }
+}

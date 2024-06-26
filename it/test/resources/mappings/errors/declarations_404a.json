@@ -1,0 +1,21 @@
+{
+    "priority": 3,
+    "request": {
+        "method": "GET",
+        "urlPattern": "/rti/employers/(.+)/employer-payment-summary\\??fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live|ist0)"
+          }
+        }
+    },
+    "response": {
+        "status": 404,
+        "jsonBody": {
+          "reason": "Not found"
+        }
+    }
+}

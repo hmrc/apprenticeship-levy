@@ -1,0 +1,79 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "urlPattern": "/rti/employers/123AB12343/employer-payment-summary\\?fromDate=2010-02-21&toDate=2016-02-21",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live|ist0)"
+          }
+        }
+    },
+    "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json; charset=utf-8" },
+        "jsonBody": {
+  "empref": "123AB12343",
+  "eps": [
+    {
+      "submissionId": 56774248741,
+      "hmrcSubmissionTime": "2016-01-20T14:25:32",
+      "rtiSubmissionTime": "2016-01-20T14:31:02",
+      "taxYear": "15-16",
+      "noPaymentPeriod": {
+        "from": "2016-08-13",
+        "to": "2016-11-22"
+      },
+      "employmentAllowanceInd": true,
+      "apprenticeshipLevy": {
+        "amountDue": 24.27,
+        "taxMonth": "07",
+        "amountAllowance": 15000
+      },
+      "finalSubmission": {
+        "forYear": true
+      },
+      "questionsAndDeclarations": {
+        "freeOfTaxPaymentsMadeToEmployee": true,
+        "expensesVouchersOrBenefitsFromOthers": true,
+        "personEmployedOutsideUKWorkedFor30DaysOrMore": true,
+        "payToSomeoneElse": true,
+        "p11DFormsDue": true,
+        "serviceCompany": true
+      }
+    },
+    {
+      "submissionId": 56774248742,
+      "hmrcSubmissionTime": "2016-02-20T14:25:32",
+      "rtiSubmissionTime": "2016-02-20T14:31:02",
+      "taxYear": "15-16",
+      "noPaymentPeriod": {
+        "from": "2016-08-13",
+        "to": "2016-11-22"
+      },
+      "employmentAllowanceInd": true,
+      "apprenticeshipLevy": {
+        "amountDue": 24.27,
+        "taxMonth": "08",
+        "amountAllowance": 15000
+      },
+      "finalSubmission": {
+        "schemeCeased": true,
+        "schemeCeasedDate": "2016-06-06"
+      },
+      "questionsAndDeclarations": {
+        "freeOfTaxPaymentsMadeToEmployee": true,
+        "expensesVouchersOrBenefitsFromOthers": true,
+        "personEmployedOutsideUKWorkedFor30DaysOrMore": true,
+        "payToSomeoneElse": true,
+        "p11DFormsDue": true,
+        "serviceCompany": true
+      }
+    }
+  ]
+}
+    }
+}

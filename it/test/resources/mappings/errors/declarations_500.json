@@ -1,0 +1,21 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "urlPattern": "/rti/employers/500AB12345/employer-payment-summary\\??fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live|ist0)"
+          }
+        }
+    },
+    "response": {
+        "status": 500,
+        "jsonBody": {
+          "reason": "DES internal error"
+        }
+    }
+}

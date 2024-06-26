@@ -1,0 +1,19 @@
+{
+    "request": {
+        "method": "GET",
+        "url": "/apprenticeship-levy/fraction-calculation-date",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live|ist0)"
+          }
+        }
+    },
+    "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json; charset=utf-8" },
+        "jsonBody": { "date": "2016-03-15" }
+    }
+}

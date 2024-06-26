@@ -88,7 +88,7 @@ Debugging requires two steps as follows:
 #### Testing
 
 ##### Coverage Report
-To run with coverage `sbt clean coverage test it:test` and an HTML report will be available in the target/scala-2.11/scoverage-report/index.html
+To run with coverage `sbt clean coverage test it/test` and an HTML report will be available in the target/scala-2.11/scoverage-report/index.html
 directory.
 
 ##### Acceptance Testing (Separate from internal A/C testing)
@@ -97,7 +97,7 @@ Run using `sbt -Denvironment=qa -Dbearer.token.qa=<your token here> ac:test`
 
 ##### Integration Testing
 
-Run using `sbt it:test`
+Run using `sbt it/test`
 
 ##### Unit Testing
 

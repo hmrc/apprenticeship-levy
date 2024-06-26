@@ -50,7 +50,7 @@ class DesConnectorSpec
   val baseUrl = "/sandbox/data"
   val mockAuditor: Auditor = mock[Auditor]
   val mockHeaderCarrier: HeaderCarrier = HeaderCarrier(
-    extraHeaders = Seq(
+    otherHeaders = Seq(
       "X-Client-ID" -> "ClientId",
       "Authorization" -> "Bearer ABC",
       "Environment" -> "Test"
@@ -67,6 +67,7 @@ class DesConnectorSpec
       "microservice.services.stub-des.port" -> server.port(),
       "microservice.services.stub-auth.host" -> "localhost",
       "microservice.services.stub-auth.port" -> server.port(),
+      "microservice.services.des.env" -> "Test",
       "metrics.enabled" -> false
     )
     .overrides(
@@ -442,7 +443,7 @@ class DesConnectorSpec
 
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
-        val expectedResponse = DesignatoryDetails(Some(empRef), Some(DesignatoryDetailsData(None,None,None)),None)
+        val expectedResponse = DesignatoryDetails(Some(empRef), Some(DesignatoryDetailsData(None, None, None)), None)
         val expectedStubResponse = HodDesignatoryDetailsLinks(Some(DesignatoryDetailsLinks(Some("/paye/employer/123/AB12345/designatory-details"), None)))
         val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
         val json = Json.toJson[HodDesignatoryDetailsLinks](expectedStubResponse)
@@ -466,13 +467,17 @@ class DesConnectorSpec
 
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
-        val expectedResponse = DesignatoryDetails(Some(empRef), None, Some(DesignatoryDetailsData(None,None,None)))
+        val expectedResponse = DesignatoryDetails(Some(empRef), None, Some(DesignatoryDetailsData(None, None, None)))
         val expectedStubResponse = HodDesignatoryDetailsLinks(Some(DesignatoryDetailsLinks(None, Some("/paye/employer/123/AB12345/designatory-details"))))
         val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
         val json = Json.toJson[HodDesignatoryDetailsLinks](expectedStubResponse)
         val stubResponse = ok(json.toString)
+        val getDetailsUrl = "/sandbox/datatest"
+        val detailsStubResponse = Json.toJson[DesignatoryDetailsData](DesignatoryDetailsData(None, None, None))
+        val detailsStubResponseJson = ok(detailsStubResponse.toString())
 
         stubGetServer(stubResponse, employerDetailsUrl)
+        stubGetServer(detailsStubResponseJson, getDetailsUrl)
 
         val response = await(desConnector.designatoryDetails(empRef)(mockHeaderCarrier, global))
 
@@ -745,21 +750,21 @@ class DesConnectorSpec
 
       val json = Json.parse(
         """{
-           "empref": "123/AB12345",
-           "eps": [
-              {
-                "submissionId": 12345678,
-                "hmrcSubmissionTime": "2016-07-14T16:05:44Z",
-                "rtiSubmissionTime": "2016-07-14T16:05:23.123Z",
-                "taxYear": "16-17",
-                "apprenticeshipLevy": {
-                  "amountDue": 600.00,
-                  "taxMonth": "11",
-                  "amountAllowance": 15000
+               "empref": "123/AB12345",
+               "eps": [
+                  {
+                    "submissionId": 12345678,
+                    "hmrcSubmissionTime": "2016-07-14T16:05:44Z",
+                    "rtiSubmissionTime": "2016-07-14T16:05:23.123Z",
+                    "taxYear": "16-17",
+                    "apprenticeshipLevy": {
+                      "amountDue": 600.00,
+                      "taxMonth": "11",
+                      "amountAllowance": 15000
+                    }
                 }
-            }
-          ]
-        }"""
+              ]
+            }"""
       )
 
       val stubResponse = ok(json.toString)
@@ -802,84 +807,84 @@ class DesConnectorSpec
 
       val json =
         """{
-           "empref": "123/AB12345",
-           "eps": [
-           {
-             "submissionId": 12345678,
-             "hmrcSubmissionTime": "2016-07-14T16:05:23",
-             "rtiSubmissionTime": "2016-07-14T16:05:23",
-             "taxYear": "16-17",
-             "apprenticeshipLevy": {
-                "amountDue": 600.00,
-                "taxMonth": "11",
-                "amountAllowance": 15000
-             }
-            },
-            {
-              "submissionId": 12345679,
-              "hmrcSubmissionTime": "2015-04-07T16:05:23",
-              "rtiSubmissionTime": "2015-04-07T16:05:23",
-              "taxYear": "15-16",
-              "noPaymentPeriod": {
-                "from": "2016-12-13",
-                "to": "2017-03-22"
-              }
-            },
-            {
-              "submissionId": 12345680,
-              "hmrcSubmissionTime": "2016-05-07T16:05:23",
-              "rtiSubmissionTime": "2016-05-07T16:05:23",
-              "taxYear": "16-17",
-              "apprenticeshipLevy": {
-                "amountDue": 500.00,
-                "taxMonth": "1",
-                "amountAllowance": 15000
-              }
-            },
-            {
-              "submissionId": 12345681,
-              "hmrcSubmissionTime": "2016-06-07T16:05:23",
-              "rtiSubmissionTime": "2016-06-07T16:05:23",
-              "taxYear": "16-17",
-              "apprenticeshipLevy": {
-                "amountDue": 1000.00,
-                "taxMonth": "2",
-                "amountAllowance": 15000
-              }
-            },
-            {
-              "submissionId": 12345682,
-              "hmrcSubmissionTime": "2016-06-15T16:20:23",
-              "rtiSubmissionTime": "2016-06-15T16:20:23",
-              "taxYear": "16-17",
-              "apprenticeshipLevy": {
-                "amountDue": 200.00,
-                "taxMonth": "2",
-                "amountAllowance": 15000
-              }
-            },
-            {
-              "submissionId": 12345683,
-              "hmrcSubmissionTime": "2016-07-15T16:05:23",
-              "rtiSubmissionTime": "2016-07-15T16:05:23",
-              "taxYear": "16-17",
-              "inactivePeriod": {
-                "from": "2016-06-06",
-                "to": "2016-09-05"
-              }
-            },
-            {
-              "submissionId": 12345684,
-              "hmrcSubmissionTime": "2016-10-15T16:05:23",
-              "rtiSubmissionTime": "2016-10-15T16:05:23",
-              "taxYear": "16-17",
-              "finalSubmission": {
-                "schemeCeased": true,
-                "schemeCeasedDate": "2016-09-05"
-              }
-            }
-            ]
-            }"""
+               "empref": "123/AB12345",
+               "eps": [
+               {
+                 "submissionId": 12345678,
+                 "hmrcSubmissionTime": "2016-07-14T16:05:23",
+                 "rtiSubmissionTime": "2016-07-14T16:05:23",
+                 "taxYear": "16-17",
+                 "apprenticeshipLevy": {
+                    "amountDue": 600.00,
+                    "taxMonth": "11",
+                    "amountAllowance": 15000
+                 }
+                },
+                {
+                  "submissionId": 12345679,
+                  "hmrcSubmissionTime": "2015-04-07T16:05:23",
+                  "rtiSubmissionTime": "2015-04-07T16:05:23",
+                  "taxYear": "15-16",
+                  "noPaymentPeriod": {
+                    "from": "2016-12-13",
+                    "to": "2017-03-22"
+                  }
+                },
+                {
+                  "submissionId": 12345680,
+                  "hmrcSubmissionTime": "2016-05-07T16:05:23",
+                  "rtiSubmissionTime": "2016-05-07T16:05:23",
+                  "taxYear": "16-17",
+                  "apprenticeshipLevy": {
+                    "amountDue": 500.00,
+                    "taxMonth": "1",
+                    "amountAllowance": 15000
+                  }
+                },
+                {
+                  "submissionId": 12345681,
+                  "hmrcSubmissionTime": "2016-06-07T16:05:23",
+                  "rtiSubmissionTime": "2016-06-07T16:05:23",
+                  "taxYear": "16-17",
+                  "apprenticeshipLevy": {
+                    "amountDue": 1000.00,
+                    "taxMonth": "2",
+                    "amountAllowance": 15000
+                  }
+                },
+                {
+                  "submissionId": 12345682,
+                  "hmrcSubmissionTime": "2016-06-15T16:20:23",
+                  "rtiSubmissionTime": "2016-06-15T16:20:23",
+                  "taxYear": "16-17",
+                  "apprenticeshipLevy": {
+                    "amountDue": 200.00,
+                    "taxMonth": "2",
+                    "amountAllowance": 15000
+                  }
+                },
+                {
+                  "submissionId": 12345683,
+                  "hmrcSubmissionTime": "2016-07-15T16:05:23",
+                  "rtiSubmissionTime": "2016-07-15T16:05:23",
+                  "taxYear": "16-17",
+                  "inactivePeriod": {
+                    "from": "2016-06-06",
+                    "to": "2016-09-05"
+                  }
+                },
+                {
+                  "submissionId": 12345684,
+                  "hmrcSubmissionTime": "2016-10-15T16:05:23",
+                  "rtiSubmissionTime": "2016-10-15T16:05:23",
+                  "taxYear": "16-17",
+                  "finalSubmission": {
+                    "schemeCeased": true,
+                    "schemeCeasedDate": "2016-09-05"
+                  }
+                }
+                ]
+                }"""
 
       val stubResponse = ok(json)
 

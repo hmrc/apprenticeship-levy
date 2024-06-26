@@ -1,0 +1,26 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/apprenticeship-levy/employers/123AB12345/employed/AA123456A?fromDate=2016-03-03&toDate=2016-06-30",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live|ist0)"
+          }
+        }
+    },
+    "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json; charset=utf-8" },
+        "jsonBody": {
+            "empref": "123AB12345",
+            "nino": "AB123456A",
+            "fromDate": "2016-03-06",
+            "toDate": "2016-04-05",
+            "employed": true
+        }
+    }
+}

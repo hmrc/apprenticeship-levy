@@ -22,5 +22,5 @@ import java.time.LocalDate
 case class EmploymentCheck(empref: String, nino: String, fromDate: LocalDate, toDate:LocalDate, employed: Boolean)
 
 object EmploymentCheck {
-  implicit val formats = Json.format[EmploymentCheck]
+  implicit val formats: OFormat[EmploymentCheck] = Json.format[EmploymentCheck]
 }

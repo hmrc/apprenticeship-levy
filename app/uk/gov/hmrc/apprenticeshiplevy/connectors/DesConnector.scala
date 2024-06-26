@@ -24,13 +24,13 @@ import play.api.libs.json._
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
-import uk.gov.hmrc.apprenticeshiplevy.data.des.DesignatoryDetails._
 import uk.gov.hmrc.apprenticeshiplevy.data.des.EmploymentCheckStatus._
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.metrics._
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import views.html.helper
 
@@ -65,11 +65,8 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
 
     timer(RequestEvent(DES_EMPREF_DETAILS_REQUEST, Some(empref))) {
       audit(ALAEvent("readEmprefDetails", empref)) {
-        des.httpClient.GET[Either[UpstreamErrorResponse, HodDesignatoryDetailsLinks]](
-          url         = url,
-          queryParams = Seq(),
-          headers     = createDesHeaders
-        ) flatMap {
+        createDesHeaders(des.httpClient.get(url"$url"))
+          .execute[Either[UpstreamErrorResponse, HodDesignatoryDetailsLinks]] flatMap {
           case Right(response) =>
             response.links.map {
               links =>
@@ -107,12 +104,10 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
     }
   }
 
-  protected def getDetails(path: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] =
-    des.httpClient.GET[Either[UpstreamErrorResponse, DesignatoryDetailsData]](
-      url         = s"${des.baseUrl}$path",
-      queryParams = Seq(),
-      headers     = createDesHeaders
-    ) map {
+  protected def getDetails(path: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] = {
+    val url = s"${des.baseUrl}$path"
+    createDesHeaders(des.httpClient.get(url"$url"))
+      .execute[Either[UpstreamErrorResponse, DesignatoryDetailsData]] map {
       case Right(data) =>
         Some(data)
       case Left(e: UpstreamErrorResponse) =>
@@ -126,6 +121,7 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
         // $COVERAGE-ON$
           None
         }
+  }
 }
 
 trait EmploymentCheckEndpoint extends Timer {
@@ -142,11 +138,8 @@ trait EmploymentCheckEndpoint extends Timer {
 
     timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
       audit(ALAEvent("employmentCheck", empref, nino, dateParams)) {
-        des.httpClient.GET[Either[UpstreamErrorResponse, EmploymentCheckStatus]](
-          url         = url,
-          queryParams = Seq(),
-          headers     = createDesHeaders
-        ) map {
+        createDesHeaders(des.httpClient.get(url"$url"))
+          .execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]] map {
           case Right(response) =>
             response
           case Left(e: UpstreamErrorResponse) =>
@@ -174,11 +167,8 @@ trait FractionsEndpoint extends Timer {
 
     timer(RequestEvent(DES_FRACTIONS_REQUEST, Some(empref))) {
       audit(ALAEvent("readFractions", empref, "", dateParams)) {
-        des.httpClient.GET[Either[UpstreamErrorResponse, Fractions]](
-          url         = url,
-          queryParams = Seq(),
-          headers     = createDesHeaders
-        ) map {
+        createDesHeaders(des.httpClient.get(url"$url"))
+          .execute[Either[UpstreamErrorResponse, Fractions]] map {
           case Right(fraction) =>
             fraction.copy(empref = convertEmpref(fraction.empref))
           case Left(e: UpstreamErrorResponse) =>
@@ -202,11 +192,8 @@ trait FractionsEndpoint extends Timer {
 
     timer(RequestEvent(DES_FRACTIONS_DATE_REQUEST, None)) {
       audit(ALAEvent("readFractionCalculationDate")) {
-        des.httpClient.GET[Either[UpstreamErrorResponse, FractionCalculationDate]](
-          url         = url,
-          queryParams = Seq(),
-          headers     = createDesHeaders
-        ) map {
+        createDesHeaders(des.httpClient.get(url"$url"))
+          .execute[Either[UpstreamErrorResponse, FractionCalculationDate]] map {
           case Right(response) =>
             response.date
           case Left(e: UpstreamErrorResponse) =>
@@ -233,11 +220,8 @@ trait LevyDeclarationsEndpoint extends Timer {
 
     timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
       audit(ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
-        des.httpClient.GET[Either[UpstreamErrorResponse, HttpResponse]](
-          url         = url,
-          queryParams = Seq(),
-          headers     = createDesHeaders
-        ) map {
+        createDesHeaders(des.httpClient.get(url"$url"))
+          .execute[Either[UpstreamErrorResponse, HttpResponse]] map {
           case Right(response) =>
             marshall(empref, response.body).getOrElse {
               logger.error(s"""|DES url $url
@@ -329,7 +313,7 @@ trait DesConnector extends FractionsEndpoint
   with LevyDeclarationsEndpoint
   with Auditor
   with GraphiteMetrics {
-  def httpClient: HttpClient
+  def httpClient: HttpClientV2
   def baseUrl: String
   def desAuthorization: String
   def desEnvironment: String
@@ -342,20 +326,20 @@ trait DesConnector extends FractionsEndpoint
       case _ => empref
     }
 
-  def createDesHeaders(implicit hc: HeaderCarrier): Seq[(String, String)] = {
-    Seq(
-      "X-Client-ID" -> getHeaderValueByKey("X-Client-ID"),
-      "Authorization" -> s"Bearer $desAuthorization",
-      "Environment" -> desEnvironment,
-      "CorrelationId" -> UUID.randomUUID().toString
-    )
+  def createDesHeaders(builder: RequestBuilder)(implicit hc: HeaderCarrier): RequestBuilder = {
+    builder
+      .setHeader("X-Client-ID" -> getHeaderValueByKey("X-Client-ID"))
+      .setHeader("Authorization" -> s"Bearer $desAuthorization")
+      .setHeader("Environment" -> desEnvironment)
+      .setHeader("CorrelationId" -> UUID.randomUUID().toString)
   }
 
-  private def getHeaderValueByKey(key: String)(implicit headerCarrier: HeaderCarrier): String =
+  private def getHeaderValueByKey(key: String)(implicit headerCarrier: HeaderCarrier): String = {
     headerCarrier.headers(Seq(key)).toMap.getOrElse(key, "")
+  }
 }
 
-class LiveDesConnector @Inject()(val httpClient: HttpClient,
+class LiveDesConnector @Inject()(val httpClient: HttpClientV2,
                                  auditConnector: AuditConnector,
                                  val appContext: AppContext,
                                  metrics: MetricRegistry) extends DesConnector{
@@ -369,7 +353,7 @@ class LiveDesConnector @Inject()(val httpClient: HttpClient,
   override def desEnvironment: String = appContext.desEnvironment
 }
 
-class SandboxDesConnector @Inject()(val httpClient: HttpClient,
+class SandboxDesConnector @Inject()(val httpClient: HttpClientV2,
                                     val appContext: AppContext,
                                     metrics: MetricRegistry) extends DesConnector{
   protected def auditConnector: Option[AuditConnector] = None

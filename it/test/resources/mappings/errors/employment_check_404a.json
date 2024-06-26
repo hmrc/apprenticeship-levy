@@ -1,0 +1,21 @@
+{
+    "priority": 2,
+    "request": {
+        "method": "GET",
+        "urlPattern": "/apprenticeship-levy/employers/([a-zA-Z0-9%]+)/employed/([a-zA-Z0-9]+)",
+        "headers": {
+          "Authorization": {
+              "matches": "Bearer (.*)"
+          },
+          "Environment": {
+              "matches": "(isit|clone|live|ist0)"
+          }
+        }
+    },
+    "response": {
+        "status": 404,
+        "jsonBody": {
+          "reason": "Not found"
+        }
+    }
+}
