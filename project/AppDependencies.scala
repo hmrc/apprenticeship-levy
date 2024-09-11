@@ -3,20 +3,20 @@ import sbt.*
 
 object AppDependencies {
 
-  val bootstrapVersion = "9.0.0"
+  val bootstrapVersion = "9.4.0"
   val playVersion = "play-30"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
     "uk.gov.hmrc" %% s"bootstrap-backend-$playVersion" % bootstrapVersion,
     "uk.gov.hmrc" %%  s"play-hal-$playVersion"         % "4.0.0",
-    "uk.gov.hmrc" %% s"domain-$playVersion"            % "9.0.0"
+    "uk.gov.hmrc" %% s"domain-$playVersion"            % "10.0.0"
 
   )
 
   lazy val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"            %% s"bootstrap-test-$playVersion"      % bootstrapVersion,
-    "org.playframework"      %% "play-test"                         % "3.0.4",
+    "org.playframework"      %% "play-test"                         % "3.0.5",
     "org.pegdown"             % "pegdown"                           % "1.6.0",
     "org.mockito"             % "mockito-core"                      % "5.11.0"
   ).map(_ % "test")

@@ -38,17 +38,17 @@ class DocumentationController @Inject()
 
   private lazy val environment = appContext.environment
 
-  lazy val whitelistedApplicationIds = appContext.whitelistedApplicationIds
+  lazy val allowlistedApplicationIds = appContext.allowlistedApplicationIds
 
-  lazy val whitelist = Json.obj(
+  lazy val allowlist = Json.obj(
     "access" -> Json.obj(
       "type" -> "PRIVATE",
-      "whitelistedApplicationIds" -> JsArray(whitelistedApplicationIds.map(JsString))
+      "allowlistedApplicationIds" -> JsArray(allowlistedApplicationIds.map(JsString))
     ))
 
-  lazy val whitelistJsonTransformer = (__ \ Symbol("api") \ Symbol("versions")).json.update(
+  lazy val allowlistJsonTransformer = (__ \ Symbol("api") \ Symbol("versions")).json.update(
     __.read[JsArray].map { versions =>
-      JsArray(versions.value.updated(0, versions(0).as[JsObject] ++ whitelist))
+      JsArray(versions.value.updated(0, versions(0).as[JsObject] ++ allowlist))
     })
 
   def retrieve(rootPath: String, file: String): Option[InputStream] = {
@@ -102,7 +102,7 @@ class DocumentationController @Inject()
   }
 
   def enrichDefinition(inputStream: InputStream): Try[JsValue] = {
-    Json.parse(Source.fromInputStream(inputStream).mkString).transform(whitelistJsonTransformer) match {
+    Json.parse(Source.fromInputStream(inputStream).mkString).transform(allowlistJsonTransformer) match {
       case JsSuccess(json, _) => Success(json)
       case JsError(_) => Failure(new RuntimeException("Unable to transform definition.json"))
     }

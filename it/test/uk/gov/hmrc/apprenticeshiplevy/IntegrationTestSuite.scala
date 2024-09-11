@@ -94,7 +94,7 @@ class NoWiremockIntegrationTestsSuite extends Suites(new PublicDefinitionEndpoin
   override def stubConfigPath = "./it/no-mappings"
   override def additionalConfiguration: Map[String, Any] = (super.additionalConfiguration - "microservice.private-mode") ++ Map(
     "microservice.private-mode" -> "false",
-    "microservice.whitelisted-applications" -> "none")
+    "microservice.allowlisted-applications" -> "none")
 
   override implicit lazy final val app: Application = new GuiceApplicationBuilder()
                                                           .configure(additionalConfiguration)

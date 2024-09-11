@@ -21,5 +21,5 @@ import play.api.libs.json._
 case class Fractions(empref: String, fractionCalculations: List[FractionCalculation])
 
 object Fractions {
-  implicit val formats = Json.format[Fractions]
+  implicit val formats: OFormat[Fractions] = Json.format[Fractions]
 }

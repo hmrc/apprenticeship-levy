@@ -26,6 +26,7 @@ import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalDateTime, MonthDay, Period}
+import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
 case class EmployerPaymentSummary(submissionId: Long,
@@ -41,8 +42,8 @@ case class EmployerPaymentSummary(submissionId: Long,
 
 object EmployerPaymentSummary extends Logging {
   val APRIL = 4
-  val TAX_YEAR_START_DAY = 6
-  val BeginningOfTaxYear = MonthDay.of(APRIL, TAX_YEAR_START_DAY)
+  private val TAX_YEAR_START_DAY = 6
+  private val BeginningOfTaxYear = MonthDay.of(APRIL, TAX_YEAR_START_DAY)
 
   private[des] def calculateTaxMonth(to: LocalDate) = {
     val monthDay = MonthDay.of(to.getMonthValue, to.getDayOfMonth)
@@ -88,7 +89,7 @@ object EmployerPaymentSummary extends Logging {
                       submissionId = id)
   }
 
-  val conversions = Seq(toNoPayment,toInactive,toLevyDeclaration,toCeased)
+  private val conversions = Seq(toNoPayment,toInactive,toLevyDeclaration,toCeased)
 
   def toDeclarations(eps: EmployerPaymentSummary): Seq[LevyDeclaration] = convert[EmployerPaymentSummary,LevyDeclaration](conversions)(eps)
 
@@ -101,9 +102,9 @@ object EmployerPaymentSummary extends Logging {
     }
 
 
-  implicit val localDateTimeFormat = new Format[LocalDateTime] {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-    val DateTime = "(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}){1}(.*)".r
+  implicit val localDateTimeFormat: Format[LocalDateTime] = new Format[LocalDateTime] {
+    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    val DateTime: Regex = "(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}){1}(.*)".r
 
     override def reads(json: JsValue): JsResult[LocalDateTime] = implicitly[Reads[JsString]].reads(json).map { js =>
       js.value match {
@@ -152,23 +153,23 @@ abstract class EPSResponse {}
 case class EmployerPaymentsSummary(empref: String, eps: List[EmployerPaymentSummary]) extends EPSResponse
 
 object EmployerPaymentsSummary {
-  implicit val format = Json.format[EmployerPaymentsSummary]
+  implicit val format: OFormat[EmployerPaymentsSummary] = Json.format[EmployerPaymentsSummary]
 }
 
 case class EmployerPaymentsSummaryVersion0(empref: String, declarations: List[EmployerPaymentSummary]) extends EPSResponse
 
 object EmployerPaymentsSummaryVersion0 {
-  implicit val format = Json.format[EmployerPaymentsSummaryVersion0]
+  implicit val format: OFormat[EmployerPaymentsSummaryVersion0] = Json.format[EmployerPaymentsSummaryVersion0]
 }
 
 case class EmptyEmployerPayments(empref: String) extends EPSResponse
 
 object EmptyEmployerPayments {
-  implicit val format = Json.format[EmptyEmployerPayments]
+  implicit val format: OFormat[EmptyEmployerPayments] = Json.format[EmptyEmployerPayments]
 }
 
 case class EmployerPaymentsError(reason: String) extends EPSResponse
 
 object EmployerPaymentsError {
-  implicit val format = Json.format[EmployerPaymentsError]
+  implicit val format: OFormat[EmployerPaymentsError] = Json.format[EmployerPaymentsError]
 }

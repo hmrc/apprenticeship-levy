@@ -64,7 +64,7 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
           contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
         }
 
-        it (s"return definition with whitelisted applications") {
+        it (s"return definition with allowlisted applications") {
           // set up
           val request = FakeRequest(GET, "/api/definition")
 
@@ -76,7 +76,7 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
           val json = contentAsJson(result)
           val version1 = (json \ "api" \ "versions")(0)
           (version1 \ "access" \ "type").as[String] shouldBe "PRIVATE"
-          (version1 \ "access" \ "whitelistedApplicationIds")(0).as[String] shouldBe "myappid1"
+          (version1 \ "access" \ "allowlistedApplicationIds")(0).as[String] shouldBe "myappid1"
         }
       }
     }
@@ -96,7 +96,7 @@ class PublicDefinitionEndpointISpec extends AppLevyItUnitSpec with IntegrationTe
   "API Definition Endpoint (Public)" can {
     s"when calling $localMicroserviceUrl/api/definition" should {
       "when private-mode is set to false" must {
-        "return definition without whitelisted-applications" in {
+        "return definition without allowlisted-applications" in {
           // set up
           val request = FakeRequest(GET, "/api/definition")
 

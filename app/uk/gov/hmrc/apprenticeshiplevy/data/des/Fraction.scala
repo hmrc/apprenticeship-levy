@@ -21,5 +21,5 @@ import play.api.libs.json._
 case class Fraction(region: String, value: BigDecimal)
 
 object Fraction {
-  implicit val formats = Json.format[Fraction]
+  implicit val formats: OFormat[Fraction] = Json.format[Fraction]
 }

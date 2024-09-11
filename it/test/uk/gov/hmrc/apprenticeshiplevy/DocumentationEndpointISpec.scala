@@ -85,7 +85,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer w
     }
 
     describe (s"should when calling $localMicroserviceUrl/api/definition") {
-      it (s"should have a correct white list configured") {
+      it (s"should have a correct allow list configured") {
         // set up
         val request = FakeRequest(GET, s"/api/definition")
 
