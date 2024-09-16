@@ -15,7 +15,7 @@
  */
 
 package uk.gov.hmrc.apprenticeshiplevy.utils
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
@@ -32,9 +32,9 @@ case class OpenEarlyDateRange(to: LocalDate) extends DateRange {
 }
 
 object ClosedDateRange {
-  implicit val dateRangeFormat = Json.format[ClosedDateRange]
+  implicit val dateRangeFormat: OFormat[ClosedDateRange] = Json.format[ClosedDateRange]
 }
 
 object OpenEarlyDateRange {
-  implicit val date = Json.format[OpenEarlyDateRange]
+  implicit val date: OFormat[OpenEarlyDateRange] = Json.format[OpenEarlyDateRange]
 }

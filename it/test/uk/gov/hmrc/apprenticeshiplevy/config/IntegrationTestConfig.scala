@@ -50,9 +50,10 @@ trait IntegrationTestConfig {
                                "LiveEmprefController",
                                "LiveFractionsController",
                                "LiveFractionsCalculationDateController",
-                               "LiveEmploymentCheckController").map(a=>(s"controllers.uk.gov.hmrc.apprenticeshiplevy.controllers.live.$a.needsAuditing","false"))
+                               "LiveEmploymentCheckController")
+    .map(a=>(s"controllers.uk.gov.hmrc.apprenticeshiplevy.controllers.live.$a.needsAuditing","false"))
 
-  def additionalConfiguration: Map[String, Any] = Map(
+  def additionalConfiguration: Map[String, Any] = Map[String, Any](
         "play.ws.timeout.request" -> "500 milliseconds",
         "play.ws.timeout.connection" -> "500 milliseconds",
         "http.port" -> testPort,

@@ -24,7 +24,7 @@ import java.time.{LocalDate, LocalDateTime}
 case class PayrollPeriod(year: String, month: Int)
 
 object PayrollPeriod {
-  implicit val formats = Json.format[PayrollPeriod]
+  implicit val formats: OFormat[PayrollPeriod] = Json.format[PayrollPeriod]
 }
 
 case class LevyDeclaration(id: Long,
@@ -40,8 +40,8 @@ case class LevyDeclaration(id: Long,
 
 
 object LevyDeclaration {
-  implicit val ldtFormats = new Format[LocalDateTime] {
-    val fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+  implicit val ldtFormats: Format[LocalDateTime] = new Format[LocalDateTime] {
+    val fmt: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
 
     override def reads(json: JsValue): JsResult[LocalDateTime] = implicitly[Reads[JsString]].reads(json).map { js =>
       LocalDateTime.parse(js.value, fmt)
@@ -50,11 +50,11 @@ object LevyDeclaration {
     override def writes(o: LocalDateTime): JsValue = JsString(o.format(fmt))
   }
 
-  implicit val formats = Json.format[LevyDeclaration]
+  implicit val formats: OFormat[LevyDeclaration] = Json.format[LevyDeclaration]
 }
 
 case class LevyDeclarations(empref: String, declarations: Seq[LevyDeclaration])
 
 object LevyDeclarations {
-  implicit val formats = Json.format[LevyDeclarations]
+  implicit val formats: OFormat[LevyDeclarations] = Json.format[LevyDeclarations]
 }

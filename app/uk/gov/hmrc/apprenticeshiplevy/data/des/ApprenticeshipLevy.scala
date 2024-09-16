@@ -21,5 +21,5 @@ import play.api.libs.json._
 case class ApprenticeshipLevy(amountDue: BigDecimal, amountAllowance: BigDecimal, taxMonth: String)
 
 object ApprenticeshipLevy {
-  implicit val format = Json.format[ApprenticeshipLevy]
+  implicit val format: OFormat[ApprenticeshipLevy] = Json.format[ApprenticeshipLevy]
 }
