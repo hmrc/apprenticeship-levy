@@ -26,5 +26,5 @@ case class QuestionsAndDeclaration(freeOfTaxPaymentsMadeToEmployee: Boolean,
                                    serviceCompany: Boolean)
 
 object QuestionsAndDeclaration {
-  implicit val format = Json.format[QuestionsAndDeclaration]
+  implicit val format: OFormat[QuestionsAndDeclaration] = Json.format[QuestionsAndDeclaration]
 }

@@ -55,14 +55,14 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
   val documentationController: DocumentationController = inject[DocumentationController]
 
   "DocumentationController" should {
-    "add whitelist information correctly" in {
-      when(mockAppContext.mocked.whitelistedApplicationIds).thenReturn(Seq("f0e2611e-2f45-4326-8cd2-6eefebec77b7", "cafebabe-2f45-4326-8cd2-6eefebec77b7"))
+    "add allowlist information correctly" in {
+      when(mockAppContext.mocked.allowlistedApplicationIds).thenReturn(Seq("f0e2611e-2f45-4326-8cd2-6eefebec77b7", "cafebabe-2f45-4326-8cd2-6eefebec77b7"))
       val enrichedDefinition = documentationController.enrichDefinition(new java.io.FileInputStream(validDefinition))
 
       inside(enrichedDefinition) { case Success(json) =>
         val firstVersion = json("api")("versions")(0)
         firstVersion("access")("type").as[String] shouldBe "PRIVATE"
-        firstVersion("access")("whitelistedApplicationIds").as[List[String]] should contain.inOrderOnly("f0e2611e-2f45-4326-8cd2-6eefebec77b7","cafebabe-2f45-4326-8cd2-6eefebec77b7")
+        firstVersion("access")("allowlistedApplicationIds").as[List[String]] should contain.inOrderOnly("f0e2611e-2f45-4326-8cd2-6eefebec77b7","cafebabe-2f45-4326-8cd2-6eefebec77b7")
       }
     }
 
