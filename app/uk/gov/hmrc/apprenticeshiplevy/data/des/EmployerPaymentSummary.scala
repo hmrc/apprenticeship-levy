@@ -42,8 +42,8 @@ case class EmployerPaymentSummary(submissionId: Long,
 
 object EmployerPaymentSummary extends Logging {
   val APRIL = 4
-  val TAX_YEAR_START_DAY = 6
-  val BeginningOfTaxYear = MonthDay.of(APRIL, TAX_YEAR_START_DAY)
+  private val TAX_YEAR_START_DAY = 6
+  private val BeginningOfTaxYear = MonthDay.of(APRIL, TAX_YEAR_START_DAY)
 
   private[des] def calculateTaxMonth(to: LocalDate) = {
     val monthDay = MonthDay.of(to.getMonthValue, to.getDayOfMonth)
@@ -89,7 +89,7 @@ object EmployerPaymentSummary extends Logging {
                       submissionId = id)
   }
 
-  val conversions = Seq(toNoPayment,toInactive,toLevyDeclaration,toCeased)
+  private val conversions = Seq(toNoPayment,toInactive,toLevyDeclaration,toCeased)
 
   def toDeclarations(eps: EmployerPaymentSummary): Seq[LevyDeclaration] = convert[EmployerPaymentSummary,LevyDeclaration](conversions)(eps)
 

@@ -73,11 +73,11 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
       false
     }
 
-  def whitelistedApplicationIds: Seq[String] = maybeString("microservice.whitelisted-applications")
+  def allowlistedApplicationIds: Seq[String] = maybeString("microservice.allowlisted-applications")
     .map { applicationIds => applicationIds.split(",").toSeq }.getOrElse(Seq.empty)
 
   // $COVERAGE-OFF$
-  logger.info(s"""\n${"*" * 80}\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
+  logger.info(s"""\n${"*" * 80}\nAllow list:\n${allowlistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
   // $COVERAGE-ON$
 
   def desEnvironment: String = maybeString("microservice.services.des.env").getOrElse("")
@@ -125,7 +125,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
   def epsOrigPathEnabled(): Boolean = maybeBoolean("microservice.epsOrigPathEnabled").getOrElse(true)
 
   // $COVERAGE-OFF$
-  logger.info(s"""\nWhite list:\n${whitelistedApplicationIds.mkString(", ")}\n""")
+  logger.info(s"""\nAllow list:\n${allowlistedApplicationIds.mkString(", ")}\n""")
   // $COVERAGE-ON$
 
   // scalastyle:off
