@@ -108,7 +108,7 @@ val microservice = Project(appName, file("."))
     addTestReportOption(AcceptanceTest, "ac-test-reports"))
   .settings(Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))
 
-val it: Project = project.in(file("it"))
+val it: Project = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
   .settings(itSettings())

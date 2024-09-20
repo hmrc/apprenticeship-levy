@@ -8,8 +8,6 @@ addSbtPlugin("uk.gov.hmrc" % "sbt-distributables" % "2.5.0")
 
 addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.5")
 
-addSbtPlugin("com.orrsella" % "sbt-sublime" % "1.1.2")
-
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.12")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.2.0")
 
 addDependencyTreePlugin

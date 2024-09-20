@@ -1,10 +1,9 @@
 package uk.gov.hmrc.apprenticeshiplevy.endpoints
 
 import java.io.File
-
-import org.scalatest.Matchers._
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.libs.json.Json
 import scalaj.http.Http
 
