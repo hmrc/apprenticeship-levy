@@ -94,7 +94,8 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer w
 
         // check
         status(result) shouldBe 200
-        contentAsString(result) should include ("""["myappid1","myappid2"]""")
+        contentAsString(result) should include (""""myappid1"""")
+        contentAsString(result) should include (""""myappid2"""")
       }
     }
 

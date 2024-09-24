@@ -97,7 +97,14 @@
             "scope": "read:apprenticeship-levy",
             "queryParameters": []
           }
-        ]
+        ],
+        "access": {
+          "type": "PRIVATE",
+          "allowlistedApplicationIds": [
+            "myappid1",
+            "myappid2"
+          ]
+        }
       }
     ]
   }

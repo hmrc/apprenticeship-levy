@@ -84,12 +84,12 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
         status(result) shouldBe OK
       }
 
-      "the definition is able to be found with private mode enabled" in {
-        when(mockAppContext.mocked.privateModeEnabled).thenReturn(true)
-        val result = await(documentationController.definition()(FakeRequest()))
-
-        status(result) shouldBe OK
-      }
+//      "the definition is able to be found with private mode enabled" in {
+//        when(mockAppContext.mocked.privateModeEnabled).thenReturn(true)
+//        val result = await(documentationController.definition()(FakeRequest()))
+//
+//        status(result) shouldBe OK
+//      }
     }
 
     "return an error" when {

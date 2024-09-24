@@ -112,3 +112,6 @@ val it: Project = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
   .settings(itSettings())
+
+addCommandAlias("runAllTests", ";test;it/test;")
+addCommandAlias("runAllChecks", ";clean;coverageOn;runAllTests;coverageOff;coverageAggregate;")

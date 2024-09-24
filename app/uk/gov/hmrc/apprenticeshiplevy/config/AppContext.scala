@@ -55,15 +55,6 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
     ""
   }
 
-  def privateModeEnabled: Boolean = maybeString("microservice.private-mode")
-    .flatMap(flag => Try(flag.toBoolean).toOption)
-    .getOrElse {
-      // $COVERAGE-OFF$
-      logger.warn("A configuration value has not been provided for microservice.private-mode, defaulting to true")
-      // $COVERAGE-ON$
-      true
-    }
-
   def externalTestModeEnabled: Boolean = maybeString("microservice.external-test-mode")
     .flatMap(flag => Try(flag.toBoolean).toOption)
     .getOrElse {

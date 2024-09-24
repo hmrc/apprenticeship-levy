@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import com.google.inject.{Inject, Singleton}
 import play.api.{Logging, Mode}
-import play.api.http.{HeaderNames, MimeTypes}
+import play.api.http.MimeTypes
 import play.api.libs.json._
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
@@ -82,22 +82,13 @@ class DocumentationController @Inject()
 
   def definition(filename: String = "definition.json"): Action[AnyContent]  = Action.async {
     retrieve("public/api", filename) match {
-      case Some(fileToServe) => {
-        if (appContext.privateModeEnabled) {
-          enrichDefinition(fileToServe) match {
-            case Success(json) => Future.successful(Ok(json).withHeaders(HeaderNames.CONTENT_TYPE->MimeTypes.JSON))
-            case Failure(_) => Future.successful(InternalServerError)
-          }
-        } else {
+      case Some(fileToServe) =>
           Future.successful(Ok(Source.fromInputStream(fileToServe).mkString).as(MimeTypes.JSON))
-        }
-      }
-      case _ => {
+      case _ =>
         // $COVERAGE-OFF$
         logger.error(s"Documentation controller failed to serve a file: public/api/definition.json as not found")
         // $COVERAGE-ON$
         Future.successful(NotFound)
-      }
     }
   }
 
