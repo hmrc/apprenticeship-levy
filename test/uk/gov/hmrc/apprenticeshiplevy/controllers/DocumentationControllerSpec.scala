@@ -62,7 +62,7 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
       inside(enrichedDefinition) { case Success(json) =>
         val firstVersion = json("api")("versions")(0)
         firstVersion("access")("type").as[String] shouldBe "PRIVATE"
-        firstVersion("access")("allowlistedApplicationIds").as[List[String]] should contain.inOrderOnly("f0e2611e-2f45-4326-8cd2-6eefebec77b7","cafebabe-2f45-4326-8cd2-6eefebec77b7")
+        firstVersion("access")("whitelistedApplicationIds").as[List[String]] should contain.inOrderOnly("f0e2611e-2f45-4326-8cd2-6eefebec77b7","cafebabe-2f45-4326-8cd2-6eefebec77b7")
       }
     }
 
