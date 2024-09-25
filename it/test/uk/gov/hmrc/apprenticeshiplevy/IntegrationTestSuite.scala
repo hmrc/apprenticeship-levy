@@ -30,7 +30,7 @@ import test.uk.gov.hmrc.apprenticeshiplevy.util.{AppLevyItUnitSpec, WiremockServ
 import java.util.UUID
 import scala.util.Try
 
-class IntegrationTestsSuite extends Suites(new test.uk.gov.hmrc.apprenticeshiplevy.config.ConfigurationISpec,
+class IntegrationTestSuite extends Suites(new test.uk.gov.hmrc.apprenticeshiplevy.config.ConfigurationISpec,
                                            new DeclarationsEndpointISpec,
                                            new DefinitionEndpointISpec,
                                            new DocumentationEndpointISpec,
