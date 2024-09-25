@@ -100,7 +100,7 @@
         ],
         "access": {
           "type": "PRIVATE",
-          "allowlistedApplicationIds": [
+          "whitelistedApplicationIds": [
             "myappid1",
             "myappid2"
           ]

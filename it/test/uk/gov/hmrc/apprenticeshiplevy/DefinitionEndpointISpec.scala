@@ -64,7 +64,7 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
           contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
         }
 
-        it (s"return definition with allowlisted applications") {
+        it (s"return definition with allowlisted applications (still called whitelist in api)") {
           // set up
           val request = FakeRequest(GET, "/api/definition")
 
@@ -76,7 +76,7 @@ class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
           val json = contentAsJson(result)
           val version1 = (json \ "api" \ "versions")(0)
           (version1 \ "access" \ "type").as[String] shouldBe "PRIVATE"
-          (version1 \ "access" \ "allowlistedApplicationIds")(0).as[String] shouldBe "myappid1"
+          (version1 \ "access" \ "whitelistedApplicationIds")(0).as[String] shouldBe "myappid1"
         }
       }
     }

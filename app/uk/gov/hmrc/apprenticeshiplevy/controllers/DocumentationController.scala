@@ -43,7 +43,7 @@ class DocumentationController @Inject()
   lazy val allowlist = Json.obj(
     "access" -> Json.obj(
       "type" -> "PRIVATE",
-      "allowlistedApplicationIds" -> JsArray(allowlistedApplicationIds.map(JsString))
+      "whitelistedApplicationIds" -> JsArray(allowlistedApplicationIds.map(JsString))
     ))
 
   lazy val allowlistJsonTransformer = (__ \ Symbol("api") \ Symbol("versions")).json.update(
