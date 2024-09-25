@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import com.google.inject.{Inject, Singleton}
 import play.api.{Logging, Mode}
-import play.api.http.MimeTypes
+import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json._
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
@@ -38,7 +38,7 @@ class DocumentationController @Inject()
 
   private lazy val environment = appContext.environment
 
-  lazy val allowlistedApplicationIds = appContext.allowlistedApplicationIds
+  lazy val allowlistedApplicationIds: Seq[String] = appContext.allowlistedApplicationIds
 
   lazy val allowlist = Json.obj(
     "access" -> Json.obj(
@@ -46,7 +46,7 @@ class DocumentationController @Inject()
       "whitelistedApplicationIds" -> JsArray(allowlistedApplicationIds.map(JsString))
     ))
 
-  lazy val allowlistJsonTransformer = (__ \ Symbol("api") \ Symbol("versions")).json.update(
+  private lazy val allowlistJsonTransformer = (__ \ Symbol("api") \ Symbol("versions")).json.update(
     __.read[JsArray].map { versions =>
       JsArray(versions.value.updated(0, versions(0).as[JsObject] ++ allowlist))
     })
@@ -83,7 +83,14 @@ class DocumentationController @Inject()
   def definition(filename: String = "definition.json"): Action[AnyContent]  = Action.async {
     retrieve("public/api", filename) match {
       case Some(fileToServe) =>
+        if (appContext.privateModeEnabled) {
+          enrichDefinition(fileToServe) match {
+            case Success(json) => Future.successful(Ok(json).withHeaders(HeaderNames.CONTENT_TYPE->MimeTypes.JSON))
+            case Failure(_) => Future.successful(InternalServerError)
+          }
+        } else {
           Future.successful(Ok(Source.fromInputStream(fileToServe).mkString).as(MimeTypes.JSON))
+        }
       case _ =>
         // $COVERAGE-OFF$
         logger.error(s"Documentation controller failed to serve a file: public/api/definition.json as not found")

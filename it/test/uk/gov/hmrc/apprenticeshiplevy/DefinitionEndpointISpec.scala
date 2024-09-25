@@ -92,4 +92,22 @@ class PublicDefinitionEndpointISpec extends AppLevyItUnitSpec with IntegrationTe
       file => file.getLines().mkString("\n")
     }.get
   }
+
+  "API Definition Endpoint (Public)" can {
+    s"when calling $localMicroserviceUrl/api/definition" should {
+      "when private-mode is set to false" must {
+        "return definition without allowlisted-applications" in {
+          // set up
+          val request = FakeRequest(GET, "/api/definition")
+
+          // test
+          val result = route(app, request).get
+
+          // check
+          contentType(result) shouldBe Some("application/json")
+          contentAsJson(result) shouldBe Json.parse(asString("publicdefinition.json"))
+        }
+      }
+    }
+  }
 }
