@@ -1,11 +1,4 @@
 {
-  "scopes": [
-    {
-      "key": "read:apprenticeship-levy",
-      "name": "Access Apprenticeship Levy data associated with your payroll schemes.",
-      "description": "Access apprenticeship levy data"
-    }
-  ],
   "api": {
     "name": "Apprenticeship Levy",
     "description": "Levy declarations for employers",
