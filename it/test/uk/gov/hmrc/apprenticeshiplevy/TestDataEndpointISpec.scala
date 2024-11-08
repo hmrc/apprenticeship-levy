@@ -14,22 +14,39 @@
  * limitations under the License.
  */
 
-package test.uk.gov.hmrc.apprenticeshiplevy
+package uk.gov.hmrc.apprenticeshiplevy
 
 import org.scalatest.matchers.should.Matchers._
-import org.scalatest._
-import org.scalatestplus.play._
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
+import uk.gov.hmrc.apprenticeshiplevy.util.StubbingData._
+import util.WireMockHelper
 
-@DoNotDiscover
-class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
-  describe("Sandbox Test Data Endpoint") {
-    describe ("authorise/read") {
-      it ("should return Ok") {
+class TestDataEndpointISpec
+  extends AnyWordSpec
+    with GuiceOneAppPerSuite
+    with WireMockHelper
+    with ScalaCheckPropertyChecks {
+
+  override def fakeApplication(): Application = {
+    val conf = wireMockConfiguration(server.port())
+    GuiceApplicationBuilder()
+      .configure(conf)
+      .build()
+  }
+
+  "Sandbox Test Data Endpoint" when {
+    "authorise/read" should {
+      "return Ok" in {
         // set up
         val request = FakeRequest(GET, "/sandbox/data/authorise/read")
-                      .withHeaders(standardDesHeaders(): _*)
+          .withHeaders(standardDesHeaders(): _*)
 
         // test
         val result = route(app, request).get
@@ -39,11 +56,11 @@ class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
       }
     }
 
-    describe ("/sandbox/data/...") {
-      it ("should return Ok where json file exists") {
+    "/sandbox/data/..." should {
+      "return Ok where json file exists" in {
         // set up
         val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
-                      .withHeaders(standardDesHeaders(): _*)
+          .withHeaders(standardDesHeaders(): _*)
 
         // test
         val result = route(app, request).get
@@ -53,10 +70,10 @@ class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
         contentAsString(result) should include ("/paye/employer/840/MODES17/designatory-details/employer")
       }
 
-      it ("should return NotFound where json file does not exists") {
+      "return NotFound where json file does not exists" in {
         // set up
         val request = FakeRequest(GET, "/sandbox/data/zxy")
-                      .withHeaders(standardDesHeaders(): _*)
+          .withHeaders(standardDesHeaders(): _*)
 
         // test
         val result = route(app, request).get
@@ -65,10 +82,10 @@ class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
         status(result) shouldBe NOT_FOUND
       }
 
-      it ("should return Ok where json file does not have json body") {
+      "return Ok where json file does not have json body" in {
         // set up
         val request = FakeRequest(GET, "/sandbox/data/empty")
-                      .withHeaders(standardDesHeaders(): _*)
+          .withHeaders(standardDesHeaders(): _*)
 
         // test
         val result = route(app, request).get
@@ -77,12 +94,12 @@ class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
         status(result) shouldBe OK
       }
 
-      describe("should return support OVERRIDE_EMPREF") {
-        it ("and return json file where it exists") {
+      "return support OVERRIDE_EMPREF" should {
+        "return json file where it exists" in {
           // set up
           val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF"->"840/MODES17"
           val request = FakeRequest(GET, "/sandbox/data/paye/employer/000/ABC/designatory-details")
-                        .withHeaders(headers: _*)
+            .withHeaders(headers: _*)
 
           // test
           val result = route(app, request).get
@@ -92,11 +109,11 @@ class TestDataEndpointISpec extends WiremockFunSpec with ConfiguredServer {
           contentAsString(result) should include ("/paye/employer/840/MODES17/designatory-details/employer")
         }
 
-        it ("and return NotFound where json file does not exist") {
+        "return NotFound where json file does not exist" in {
           // set up
           val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF"->"ZZZ%2FJKLJLJL"
           val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
-                        .withHeaders(headers: _*)
+            .withHeaders(headers: _*)
 
           // test
           val result = route(app, request).get

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,47 @@
  * limitations under the License.
  */
 
-package test.uk.gov.hmrc.apprenticeshiplevy
+package uk.gov.hmrc.apprenticeshiplevy
 
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.http.Fault
 import org.scalacheck.Gen
-import org.scalatest.DoNotDiscover
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
-import org.scalatestplus.play._
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.Application
+import play.api.http.Status.{BAD_REQUEST, OK, REQUEST_TIMEOUT, SERVICE_UNAVAILABLE}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import test.uk.gov.hmrc.apprenticeshiplevy.util._
+import play.api.test.Helpers.{GET, contentAsJson, contentAsString, contentType, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
+import uk.gov.hmrc.apprenticeshiplevy.util.StubbingData._
+import uk.gov.hmrc.apprenticeshiplevy.util.WireMockHelper
 import views.html.helper
 
-@DoNotDiscover
-class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer with ScalaCheckPropertyChecks {
-  describe("Employment Check Endpoint") {
-    val contexts = Seq("/sandbox", "")
-    contexts.foreach { context =>
-      describe (s"should when calling $localMicroserviceUrl$context/epaye/<empref>/employed/<nino>") {
-        describe ("with valid parameters") {
-          it (s"?fromDate=2015-03-03&toDate=2015-06-30 should return 'employed'") {
+class EmploymentCheckEndpointISpec
+  extends AnyWordSpec
+    with GuiceOneAppPerSuite
+    with WireMockHelper
+    with ScalaCheckPropertyChecks {
+
+  stubGetServerWithId(aResponse().withStatus(OK), validReadURL1, auuid1)
+  stubGetServerWithId(aResponse().withStatus(OK), validReadURL2, auuid2)
+  stubGetServerWithId(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK), faultURL1, auuid3)
+  stubGetServerWithId(aResponse().withStatus(OK), invalidReadURL1, auuid4)
+  stubGetServerWithId(aResponse().withStatus(OK), validRead, auuid5)
+
+  override def fakeApplication(): Application =
+    GuiceApplicationBuilder()
+      .configure(wireMockConfiguration(server.port()))
+      .build()
+
+  "Employment Check Endpoint" when {
+    Seq("/sandbox", "").foreach { context =>
+      s"calling $context/epaye/<empref>/employed/<nino>" when {
+        "with valid parameters" should {
+          "?fromDate=2015-03-03&toDate=2015-06-30: return 'employed'" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/AA123456A?fromDate=2016-03-03&toDate=2016-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -47,7 +67,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             json shouldBe Json.parse("""{"empref":"123/AB12345","nino":"AA123456A","fromDate":"2016-03-03","toDate":"2016-06-30","employed":true}""")
           }
 
-          it (s"?fromDate=2016-03-03&toDate=2016-06-30 should return 'not recognised'") {
+          "?fromDate=2016-03-03&toDate=2016-06-30: return 'not recognised'" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/BB123456A?fromDate=2016-03-03&toDate=2016-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -61,7 +81,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             json shouldBe Json.parse("""{"code":"EPAYE_UNKNOWN","message":"The provided NINO or EMPREF was not recognised"}""")
           }
 
-          it (s"?fromDate=2015-03-03&toDate=2015-06-30 should return 'not employed'") {
+          "?fromDate=2015-03-03&toDate=2015-06-30: return 'not employed'" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/EE123456A?fromDate=2016-03-03&toDate=2016-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -75,14 +95,13 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
           }
         }
 
-        describe ("with invalid paramters") {
-          it (s"should return 400 when empref is badly formatted") {
+        "with invalid paramters" should {
+          "return 400 when empref is badly formatted" in {
             // set up
-            WiremockService.notifier.testInformer = NullInformer.info
             val emprefs = for { empref <- genEmpref } yield empref
 
             forAll(emprefs) { (empref: String) =>
-              whenever (empref.nonEmpty) {
+              whenever(empref.nonEmpty) {
                 val request = FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
                 // test
@@ -92,14 +111,13 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
                 // check
                 httpStatus shouldBe BAD_REQUEST
                 contentType(result) shouldBe Some("application/json")
-                contentAsString(result) should include ("""is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."""")
+                contentAsString(result) should include("""is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."""")
               }
             }
           }
 
-          it (s"should return 400 when nino is badly formatted") {
+          "should return 400 when nino is badly formatted" in {
             // set up
-            WiremockService.notifier.testInformer = NullInformer.info
 
             // This list of inputs is based on the information obtained from: https://en.wikipedia.org/wiki/National_Insurance_number#Format
             val invalidNationalInsuranceNumbers = List(
@@ -158,17 +176,15 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
               contentType(result) shouldBe Some("application/json")
               contentAsString(result) should include("""is in the wrong format. Should have a prefix (one of """)
             }
-
           }
 
           Seq("fromDate", "toDate").foreach { param =>
-            it (s"should return 400 when $param param is invalid") {
+            s"return 400 when $param param is invalid" in {
               // set up
-              WiremockService.notifier.testInformer = NullInformer.info
-              val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
+              val dates = for {str <- Gen.listOf(Gen.alphaNumChar)} yield str.mkString
 
               forAll(dates) { (date: String) =>
-                whenever (date.nonEmpty) {
+                whenever(date.nonEmpty) {
                   val requestUrl = param match {
                     case "fromDate" => s"$context/epaye/123%2FAB12345/employed/RA123456C?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
                     case _ => s"/sandbox/epaye/123%2FAB12345/employed/RA123456C?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
@@ -182,13 +198,13 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
                   // check
                   httpStatus shouldBe BAD_REQUEST
                   contentType(result) shouldBe Some("application/json")
-                  contentAsString(result) should include ("""date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later.""")
+                  contentAsString(result) should include("""date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later.""")
                 }
               }
             }
           }
 
-          it (s"should return 400 when to date is before from date") {
+          "return 400 when to date is before from date" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345/employed/RA123456C?fromDate=2015-06-03&toDate=2015-03-30").withHeaders(standardDesHeaders(): _*)
 
@@ -202,7 +218,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             contentAsJson(result) shouldBe Json.parse("""{"code":"BAD_REQUEST","message":"From date was after to date"}""")
           }
 
-          it (s"should return 400 when DES returns 400") {
+          "return 400 when DES returns 400" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -216,7 +232,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
           }
 
-          it (s"should return http status 401 when DES returns 401") {
+          "return http status 401 when DES returns 40" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -230,7 +246,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
           }
 
-          it (s"should return http status 403 when DES returns 403") {
+          "return http status 403 when DES returns 403" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -244,8 +260,8 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
           }
         }
 
-        describe ("when backend systems failing") {
-          it ("should return 503 when connection closed") {
+        "backend systems failing" should {
+          "return 503 when connection closed" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -258,7 +274,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
-          it (s"should return http status 503 when empty response") {
+          "return http status 503 when empty response" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -271,7 +287,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
-          it (s"should return http status 408 when timed out") {
+          "return http status 408 when timed out" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -279,12 +295,12 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 408
+            status(result) shouldBe REQUEST_TIMEOUT
             contentType(result) shouldBe Some("application/json")
             contentAsString(result) should include ("DES not responding error")
           }
 
-          it (s"should return http status 503 when DES HTTP 500") {
+          "return http status 503 when DES HTTP 500" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -297,7 +313,7 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
-          it (s"should return http status 503 when DES HTTP 503") {
+          "return http status 503 when DES HTTP 503" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
 
@@ -313,4 +329,5 @@ class EmploymentCheckEndpointISpec extends WiremockFunSpec with ConfiguredServer
       }
     }
   }
+
 }
