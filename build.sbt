@@ -40,7 +40,7 @@ val generateAPIDocsTask = generateAPIDocs := {
 lazy val AcceptanceTest = config("ac") extend Test
 
 lazy val plugins: Seq[Plugins] = Seq(
-  play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin
+  play.sbt.PlayScala, SbtGitVersioning, SbtDistributablesPlugin
 )
 
 lazy val playSettings: Seq[Setting[?]] = Seq(routesImport ++= Seq(
