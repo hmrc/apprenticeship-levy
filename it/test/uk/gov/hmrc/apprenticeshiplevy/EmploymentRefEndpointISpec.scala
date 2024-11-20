@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,56 +14,68 @@
  * limitations under the License.
  */
 
-package test.uk.gov.hmrc.apprenticeshiplevy
+package uk.gov.hmrc.apprenticeshiplevy
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, stubFor, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
-import org.scalatest._
-import org.scalatestplus.play._
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.Application
+import play.api.http.Status.{BAD_REQUEST, FORBIDDEN, NOT_FOUND, OK, REQUEST_TIMEOUT, SERVICE_UNAVAILABLE, UNAUTHORIZED}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{GET, contentAsJson, contentAsString, contentType, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
+import uk.gov.hmrc.apprenticeshiplevy.util.StubbingData._
+import uk.gov.hmrc.apprenticeshiplevy.util.WireMockHelper
 
-//noinspection ScalaStyle
-@DoNotDiscover
 class EmploymentRefEndpointISpec
-  extends WiremockFunSpec
-    with ConfiguredServer {
-  describe("Empref Endpoint") {
-    val contexts = Seq(
-      "/sandbox",
-      ""
-    )
-    contexts.foreach { context =>
-      describe(s"should when calling $localMicroserviceUrl$context/epaye/<empref>") {
-        describe("with valid parameters") {
-          it("should return the declarations and fractions link for each empref") {
-            val response =
-              """{
-                |  "allEnrolments": [{
-                |    "key": "IR-PAYE",
-                |    "identifiers": [
-                |      { "key": "TaxOfficeNumber", "value": "123" },
-                |      { "key": "TaxOfficeReference", "value": "AB12345" }
-                |    ],
-                |    "state": "Activated"
-                |  }],
-                |  "authProviderId": {
-                |    "paClientId": "123"
-                |  },
-                |  "optionalCredentials": {
-                |    "providerId": "123",
-                |    "providerType": "paClientId"
-                |  }
-                |}""".stripMargin
+  extends AnyWordSpec
+    with GuiceOneAppPerSuite
+    with WireMockHelper
+    with ScalaCheckPropertyChecks {
 
-            stubFor(post(urlEqualTo("/auth/authorise")).withId(uuid).willReturn(aResponse().withBody(response)))
+  def stubAuth: StubMapping = {
+    val response =
+      """{
+        |  "allEnrolments": [{
+        |    "key": "IR-PAYE",
+        |    "identifiers": [
+        |      { "key": "TaxOfficeNumber", "value": "123" },
+        |      { "key": "TaxOfficeReference", "value": "AB12345" }
+        |    ],
+        |    "state": "Activated"
+        |  }],
+        |  "authProviderId": {
+        |    "paClientId": "123"
+        |  },
+        |  "optionalCredentials": {
+        |    "providerId": "123",
+        |    "providerType": "paClientId"
+        |  }
+        |}""".stripMargin
 
+    stubPostServerWithId(aResponse().withStatus(OK).withBody(response), "/auth/authorise", auuid6)
+  }
+
+  override def fakeApplication(): Application =
+    GuiceApplicationBuilder()
+      .configure(wireMockConfiguration(server.port()))
+      .build()
+
+  "Empref Endpoint" when {
+    Seq("/sandbox", "").foreach { context =>
+      s"calling $context/epaye/<empref>" when {
+        "with valid parameters" should {
+          "return the declarations and fractions link for each empref" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES17").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
 
-            status(result) shouldBe 200
+            status(result) shouldBe OK
             contentType(result) shouldBe Some("application/hal+json")
             val json = contentAsJson(result)
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES17"
@@ -74,8 +86,9 @@ class EmploymentRefEndpointISpec
           }
         }
 
-        describe("with invalid parameters") {
-          it("when DES returns 400 should return 400") {
+        "with invalid parameters" should {
+          "when DES returns 400, return 400" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
@@ -85,39 +98,43 @@ class EmploymentRefEndpointISpec
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
           }
 
-          it("when DES returns unauthorized should return 401") {
+          "when DES returns unauthorized, return 401" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
 
-            status(result) shouldBe 401
+            status(result) shouldBe UNAUTHORIZED
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
           }
 
-          it("when DES returns forbidden should return 403") {
+          "when DES returns forbidden, return 403" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
 
-            status(result) shouldBe 403
+            status(result) shouldBe FORBIDDEN
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
           }
 
-          it("when DES returns 404 should return 404") {
+          "when DES returns 404, return 404" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
 
-            status(result) shouldBe 404
+            status(result) shouldBe NOT_FOUND
             contentType(result) shouldBe Some("application/json")
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
           }
         }
 
-        describe("when backend systems failing") {
-          it("should return 503 when connection closed") {
+        "backend systems failing" should {
+          "return 503 when connection closed" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
@@ -127,7 +144,8 @@ class EmploymentRefEndpointISpec
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
-          it("should return 503 when response is empty") {
+          "return 503 when response is empty" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
@@ -137,17 +155,19 @@ class EmploymentRefEndpointISpec
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
-          it("should return 408 when timed out") {
+          "return 408 when timed out" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
 
-            status(result) shouldBe 408
+            status(result) shouldBe REQUEST_TIMEOUT
             contentType(result) shouldBe Some("application/json")
             contentAsString(result) should include("DES not responding error")
           }
 
-          it("should return 503 when DES returns 500") {
+          "return 503 when DES returns 500" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
@@ -157,7 +177,8 @@ class EmploymentRefEndpointISpec
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
-          it("should return 503 when DES returns 503") {
+          "return 503 when DES returns 503" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
@@ -167,14 +188,15 @@ class EmploymentRefEndpointISpec
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
-          it("should return the declarations and fractions link for each empref when employment details does not respond") {
+          "return the declarations and fractions link for each empref when employment details does not respond" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES18").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
 
             val json = contentAsJson(result)
 
-            status(result) shouldBe 200
+            status(result) shouldBe OK
             contentType(result) shouldBe Some("application/hal+json")
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES18"
             (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES18/fractions"
@@ -182,14 +204,15 @@ class EmploymentRefEndpointISpec
             (json \ "employer").asOpt[String] shouldBe None
           }
 
-          it("should return the declarations and fractions link for each empref when communication details does not respond") {
+          "return the declarations and fractions link for each empref when communication details does not respond" in {
+            stubAuth
             val request = FakeRequest(GET, s"$context/epaye/840%2FMODES19").withHeaders(standardDesHeaders(): _*)
 
             val result = route(app, request).get
 
             val json = contentAsJson(result)
 
-            status(result) shouldBe 200
+            status(result) shouldBe OK
             contentType(result) shouldBe Some("application/hal+json")
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES19"
             (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES19/fractions"

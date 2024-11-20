@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,42 +14,48 @@
  * limitations under the License.
  */
 
-package test.uk.gov.hmrc.apprenticeshiplevy
+package uk.gov.hmrc.apprenticeshiplevy
+
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.http.Fault
+import org.scalacheck.Gen
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers._
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.Application
+import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.FakeRequest
+import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
+import uk.gov.hmrc.apprenticeshiplevy.util.StubbingData._
+import uk.gov.hmrc.apprenticeshiplevy.util.WireMockHelper
 
 import java.io.File
-import javax.xml.parsers.{SAXParser, SAXParserFactory}
-import org.scalacheck.Gen
-import org.scalatest.DoNotDiscover
-import org.scalatest.matchers.should.Matchers._
-import org.scalatestplus.play._
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import test.uk.gov.hmrc.apprenticeshiplevy.util._
-
 import scala.io.{BufferedSource, Source}
 import scala.util.Using
-import scala.xml.XML._
 
-@DoNotDiscover
-class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer with ScalaCheckPropertyChecks {
-  def asString(filename: String): String = {
-    val fileBuffer: BufferedSource = Source.fromFile(s"$resourcePath/data/expected/$filename")
+class DocumentationEndpointISpec
+  extends AnyWordSpec
+    with GuiceOneAppPerSuite
+    with WireMockHelper
+    with ScalaCheckPropertyChecks {
 
-    Using(fileBuffer) {
-      file => file.getLines().mkString("\n")
-    }.get
-  }
+  stubGetServerWithId(aResponse().withStatus(OK), validReadURL1, auuid1)
+  stubGetServerWithId(aResponse().withStatus(OK), validReadURL2, auuid2)
+  stubGetServerWithId(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK), faultURL1, auuid3)
+  stubGetServerWithId(aResponse().withStatus(OK), invalidReadURL1, auuid4)
+  stubGetServerWithId(aResponse().withStatus(OK), validRead, auuid5)
 
-  def asXml(content: String): scala.xml.Elem = {
-    withSAXParser(secureSAXParser).loadString(content)
-  }
+  override def fakeApplication(): Application =
+    GuiceApplicationBuilder()
+      .configure(wireMockConfiguration(server.port()))
+      .build()
 
-  describe (s"API Documentation Endpoint") {
-    describe (s"should provide YAML documentation") {
-      val versions = Seq("1.0")
-      versions.foreach { version =>
-        it (s"$localMicroserviceUrl/api/conf/$version/application.yaml is defined") {
+  "API Documentation Endpoint" should {
+    "provide YAML documentation" when {
+      Seq("1.0").foreach { version =>
+        s"/api/conf/$version/application.yaml is defined" in {
           // set up
           val request = FakeRequest(GET, s"/api/conf/$version/application.yaml")
 
@@ -57,7 +63,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer w
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe 200
+          status(result) shouldBe OK
           contentAsString(result).startsWith("openapi: 3.0.3") shouldBe true
         }
 
@@ -69,7 +75,7 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer w
         }.get
 
         includes.zipWithIndex.foreach { case (include, _) =>
-          it (s"and serve file for $include") {
+          s"and serve file for $include" in {
             // set up
             val file = include.substring(9)
             val request = FakeRequest(GET, s"/api/conf/$version/$file")
@@ -78,14 +84,14 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer w
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 200
+            status(result) shouldBe OK
           }
         }
       }
     }
 
-    describe (s"should when calling $localMicroserviceUrl/api/definition") {
-      it (s"should have a correct allow list configured") {
+    "should when calling /api/definition" should {
+      "have a correct allow list configured" in {
         // set up
         val request = FakeRequest(GET, s"/api/definition")
 
@@ -93,52 +99,35 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer w
         val result = route(app, request).get
 
         // check
-        status(result) shouldBe 200
+        status(result) shouldBe OK
         contentAsString(result) should include ("""["myappid1","myappid2"]""")
       }
     }
 
-    describe (s"should when calling $localMicroserviceUrl/api/documentation/<version>/<endpoint>") {
-      /* DEPRECATED
-      describe (s"with valid parameters") {
-        val definitionFile = new File("./public/api/definition.json")
-        val definitionContents = Source.fromFile(definitionFile).getLines.mkString
-        val definitionJson = Json.parse(definitionContents)
-        val versions = (definitionJson \\ "version") map (_.as[String])
-        versions.foreach { case (version) =>
-          describe (s"when version is $version and endpoint is ") {
-            val endpointNames = (definitionJson \\ "endpoints").map(_ \\ "endpointName").map(_.map(_.as[String].toLowerCase))
-            versions.zip(endpointNames).flatMap { case (version, endpoint) =>
-              endpoint.map(endpointName => (version, endpointName))
-            }.filter(_._1 == version).foreach { case (v, endpointName) =>
-              it (s"'$endpointName' should return expected documentation") {
-                // set up
-                val request = FakeRequest(GET, s"/api/documentation/$version/$endpointName")
-                val expectedXml = asXml(asString(s"${endpointName}.xml"))
+    "with invalid parameters" should {
+      "return 404 when documentation version doesn't exist" in {
+        // set up
+        val urls = for {version <- Gen.choose(Int.MinValue, Int.MaxValue)} yield s"/api/documentation/$version/empref"
 
-                // test
-                val documentationResult = route(app, request).get
-                val httpStatus = status(documentationResult)
-                val xml = asXml(contentAsString(documentationResult))
-                val contenttype = contentType(documentationResult)
+        forAll(urls) { (url: String) =>
+          val request = FakeRequest(GET, url)
 
-                // check
-                httpStatus shouldBe OK
-                contenttype shouldBe Some("application/xml")
-                xml should beXml (expectedXml, true)
-              }
-            }
-          }
+          // test
+          val documentationResult = route(app, request).get
+          val httpStatus = status(documentationResult)
+
+          // check
+          httpStatus shouldBe NOT_FOUND
         }
-      }*/
+      }
 
-      describe (s"with invalid parameters") {
-        it (s"should return 404 when documentation version doesn't exist") {
-          // set up
-          WiremockService.notifier.testInformer = NullInformer.info
-          val urls = for { version <- Gen.choose(Int.MinValue, Int.MaxValue) } yield s"/api/documentation/$version/empref"
+      "return 404 when documentation endpoint doesn't exist" in {
+        // set
+        val endpoints = for { endpoint <- Gen.alphaStr } yield endpoint
 
-          forAll(urls) { (url: String) =>
+        forAll(endpoints) { (endpoint: String) =>
+          whenever (endpoint.nonEmpty && endpoint != "/") {
+            val url = s"/api/documentation/1.0/$endpoint"
             val request = FakeRequest(GET, url)
 
             // test
@@ -146,39 +135,10 @@ class DocumentationEndpointISpec extends WiremockFunSpec with ConfiguredServer w
             val httpStatus = status(documentationResult)
 
             // check
-            httpStatus shouldBe 404
-          }
-        }
-
-
-        it (s"should return 404 when documentation endpoint doesn't exist") {
-          // set up
-          WiremockService.notifier.testInformer = NullInformer.info
-          val endpoints = for { endpoint <- Gen.alphaStr } yield endpoint
-
-          forAll(endpoints) { (endpoint: String) =>
-            whenever (endpoint.nonEmpty && endpoint != "/") {
-              val url = s"/api/documentation/1.0/$endpoint"
-              val request = FakeRequest(GET, url)
-
-              // test
-              val documentationResult = route(app, request).get
-              val httpStatus = status(documentationResult)
-
-              // check
-              httpStatus shouldBe 404
-            }
+            httpStatus shouldBe NOT_FOUND
           }
         }
       }
     }
-  }
-
-  def secureSAXParser: SAXParser = {
-    val saxParserFactory = SAXParserFactory.newInstance()
-    saxParserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false)
-    saxParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
-    saxParserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
-    saxParserFactory.newSAXParser()
   }
 }

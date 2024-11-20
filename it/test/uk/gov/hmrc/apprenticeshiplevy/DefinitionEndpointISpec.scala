@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,99 +14,79 @@
  * limitations under the License.
  */
 
-package test.uk.gov.hmrc.apprenticeshiplevy
+package uk.gov.hmrc.apprenticeshiplevy
 
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.http.Fault
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers._
-import org.scalatest._
-import org.scalatestplus.play._
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.Application
+import play.api.http.Status.OK
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import test.uk.gov.hmrc.apprenticeshiplevy.config.IntegrationTestConfig
-import test.uk.gov.hmrc.apprenticeshiplevy.util.AppLevyItUnitSpec
+import play.api.test.Helpers.{GET, contentAsJson, contentType, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
+import uk.gov.hmrc.apprenticeshiplevy.util.StubbingData._
+import uk.gov.hmrc.apprenticeshiplevy.util.WireMockHelper
 
-import scala.io.{BufferedSource, Source}
-import scala.util.Using
+class DefinitionEndpointISpec
+  extends AnyWordSpec
+    with GuiceOneAppPerSuite
+    with WireMockHelper
+    with ScalaCheckPropertyChecks {
 
-@DoNotDiscover
-class DefinitionEndpointISpec extends WiremockFunSpec with ConfiguredServer  {
-  def asString(filename: String): String = {
-    val fileBuffer: BufferedSource = Source.fromFile(s"$resourcePath/data/expected/$filename")
+  stubGetServerWithId(aResponse().withStatus(OK), validReadURL1, auuid1)
+  stubGetServerWithId(aResponse().withStatus(OK), validReadURL2, auuid2)
+  stubGetServerWithId(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK), faultURL1, auuid3)
+  stubGetServerWithId(aResponse().withStatus(OK), invalidReadURL1, auuid4)
+  stubGetServerWithId(aResponse().withStatus(OK), validRead, auuid5)
 
-    Using(fileBuffer) {
-      file => file.getLines().mkString("\n")
-    }.get
-  }
+  override def fakeApplication(): Application =
+    GuiceApplicationBuilder()
+      .configure(wireMockConfiguration(server.port()) ++ Map[String, Any]("microservice.private-mode" -> "true"))
+      .build()
 
-  describe (s"API Definition Endpoint (Private Mode)") {
-    describe (s"should when calling $localMicroserviceUrl/api/definition") {
-      describe (s"when definition file exists and private-mode is set to true") {
-        it (s"return OK") {
-          // set up
-          val request = FakeRequest(GET, "/api/definition")
+  "API Definition Endpoint (Private Mode)" when {
+    "calling /api/definition" +
+    "\nand definition file exists and private-mode is set to true" should {
+      "return OK" in {
+        // set up
+        val request = FakeRequest(GET, "/api/definition")
 
-          // test
-          val result = route(app, request).get
+        // test
+        val result = route(app, request).get
 
-          // check
-          status(result) shouldBe OK
-        }
-
-        it (s"return expected JSON API definition") {
-          // set up
-          val request = FakeRequest(GET, "/api/definition")
-
-          // test
-          val result = route(app, request).get
-
-          // check
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
-        }
-
-        it (s"return definition with allowlisted applications (still called whitelist in api)") {
-          // set up
-          val request = FakeRequest(GET, "/api/definition")
-
-          // test
-          val result = route(app, request).get
-
-          // check
-          contentType(result) shouldBe Some("application/json")
-          val json = contentAsJson(result)
-          val version1 = (json \ "api" \ "versions")(0)
-          (version1 \ "access" \ "type").as[String] shouldBe "PRIVATE"
-          (version1 \ "access" \ "whitelistedApplicationIds")(0).as[String] shouldBe "myappid1"
-        }
+        // check
+        status(result) shouldBe OK
       }
-    }
-  }
-}
 
-@DoNotDiscover
-class PublicDefinitionEndpointISpec extends AppLevyItUnitSpec with IntegrationTestConfig with ConfiguredServer {
-  def asString(filename: String): String = {
-    val fileBuffer: BufferedSource = Source.fromFile(s"$resourcePath/data/expected/$filename")
+      "return expected JSON API definition" in {
+        // set up
+        val request = FakeRequest(GET, "/api/definition")
 
-    Using(fileBuffer) {
-      file => file.getLines().mkString("\n")
-    }.get
-  }
+        // test
+        val result = route(app, request).get
 
-  "API Definition Endpoint (Public)" can {
-    s"when calling $localMicroserviceUrl/api/definition" should {
-      "when private-mode is set to false" must {
-        "return definition without allowlisted-applications" in {
-          // set up
-          val request = FakeRequest(GET, "/api/definition")
+        // check
+        contentType(result) shouldBe Some("application/json")
+        contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
+      }
 
-          // test
-          val result = route(app, request).get
+      "return definition with allowlisted applications (still called whitelist in api)" in {
+        // set up
+        val request = FakeRequest(GET, "/api/definition")
 
-          // check
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse(asString("publicdefinition.json"))
-        }
+        // test
+        val result = route(app, request).get
+
+        // check
+        contentType(result) shouldBe Some("application/json")
+        val json = contentAsJson(result)
+        val version1 = (json \ "api" \ "versions")(0)
+        (version1 \ "access" \ "type").as[String] shouldBe "PRIVATE"
+        (version1 \ "access" \ "whitelistedApplicationIds")(0).as[String] shouldBe "myappid1"
       }
     }
   }

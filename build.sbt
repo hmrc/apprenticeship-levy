@@ -40,7 +40,7 @@ val generateAPIDocsTask = generateAPIDocs := {
 lazy val AcceptanceTest = config("ac") extend Test
 
 lazy val plugins: Seq[Plugins] = Seq(
-  play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin
+  play.sbt.PlayScala, SbtGitVersioning, SbtDistributablesPlugin
 )
 
 lazy val playSettings: Seq[Setting[?]] = Seq(routesImport ++= Seq(
@@ -78,7 +78,7 @@ ThisBuild / majorVersion := 3
 ThisBuild / scalaVersion := "2.13.14"
 
 val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     playSettings,

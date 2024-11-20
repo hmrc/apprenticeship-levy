@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,52 @@
  * limitations under the License.
  */
 
-package test.uk.gov.hmrc.apprenticeshiplevy
+package uk.gov.hmrc.apprenticeshiplevy
 
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.http.Fault
 import org.scalacheck.Gen
-import org.scalatest.DoNotDiscover
 import org.scalatest.matchers.should.Matchers._
-import org.scalatestplus.play._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.http.Status.{BAD_REQUEST, OK, SERVICE_UNAVAILABLE}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{GET, contentAsJson, contentAsString, contentType, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
 import uk.gov.hmrc.apprenticeshiplevy.data.des.{Fraction, FractionCalculation}
+import uk.gov.hmrc.apprenticeshiplevy.util.StubbingData._
+import util.WireMockHelper
 import views.html.helper
 
 import java.time.LocalDate
 
-@DoNotDiscover
-class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with ScalaCheckPropertyChecks {
+class FractionsEndpointISpec
+  extends AnyWordSpec
+    with GuiceOneAppPerSuite
+    with WireMockHelper
+    with ScalaCheckPropertyChecks {
 
-  val lastYear = LocalDate.now().getYear - 1
-  describe("Fractions Endpoint") {
-    val contexts = Seq("/sandbox", "")
-    contexts.foreach { context =>
-      describe(s"should when calling $localMicroserviceUrl$context/epaye/<empref>/fractions") {
-        describe(s"with no parameters") {
-          it(s"should return fractions") {
+  stubGetServerWithId(aResponse().withStatus(OK), validReadURL1, auuid1)
+  stubGetServerWithId(aResponse().withStatus(OK), validReadURL2, auuid2)
+  stubGetServerWithId(aResponse().withFault(Fault.MALFORMED_RESPONSE_CHUNK), faultURL1, auuid3)
+  stubGetServerWithId(aResponse().withStatus(OK), invalidReadURL1, auuid4)
+  stubGetServerWithId(aResponse().withStatus(OK), validRead, auuid5)
+
+  override def fakeApplication(): Application =
+    GuiceApplicationBuilder()
+      .configure(wireMockConfiguration(server.port()))
+      .build()
+
+  private val lastYear = LocalDate.now().getYear - 1
+
+  "Fractions Endpoint" when {
+    Seq("/sandbox", "").foreach { context =>
+      s"calling $context/epaye/<empref>/fractions" when {
+        "with no parameters"  should {
+          "return fractions" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions").withHeaders(standardDesHeaders(): _*)
 
@@ -57,7 +78,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
           }
 
-          it(s"should return fractions with correct empref values") {
+          "return fractions with correct empref values" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/864%2FTZ00000/fractions").withHeaders(standardDesHeaders(): _*)
 
@@ -71,8 +92,8 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
           }
         }
 
-        describe(s"with valid parameters") {
-          it(s"?fromDate=2017-09-01 should return fractions") {
+        "with valid parameters" should {
+          "?fromDate=2017-09-01: return fractions" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2015-09-01")
               .withHeaders(standardDesHeaders(): _*)
@@ -92,7 +113,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
           }
 
-          it(s"?toDate=$lastYear-09-01 should return fractions") {
+          s"?toDate=$lastYear-09-01: return fractions" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=$lastYear-09-01")
               .withHeaders(standardDesHeaders(): _*)
@@ -112,7 +133,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
           }
 
-          it(s"?fromDate=2017-08-01&toDate=2017-09-01 should return fractions") {
+          "?fromDate=2017-08-01&toDate=2017-09-01: return fractions" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-08-01&toDate=2017-09-01")
               .withHeaders(standardDesHeaders(): _*)
@@ -133,9 +154,9 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
           }
         }
 
-        describe("with invalid paramters") {
+        "with invalid paramters" should {
           Seq("fromDate", "toDate").foreach { param =>
-            it(s"should return 400 when $param param is invalid") {
+            s"return 400 when $param param is invalid" in {
               // set up
               val dates = for {str <- Gen.listOf(Gen.alphaNumChar)} yield str.mkString
 
@@ -160,7 +181,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             }
           }
 
-          it(s"should return http status 400 when DES HTTP 400") {
+          "return http status 400 when DES HTTP 400" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345/fractions")
               .withHeaders(standardDesHeaders(): _*)
@@ -174,7 +195,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
           }
 
-          it(s"should return http status 401 when DES HTTP 401") {
+          "return http status 401 when DES HTTP 401" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345/fractions")
               .withHeaders(standardDesHeaders(): _*)
@@ -188,7 +209,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
           }
 
-          it(s"should return http status 403 when DES HTTP 403") {
+          "return http status 403 when DES HTTP 403" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345/fractions")
               .withHeaders(standardDesHeaders(): _*)
@@ -202,7 +223,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
           }
 
-          it(s"should return http status 404 when DES HTTP 404") {
+          "return http status 404 when DES HTTP 404" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345/fractions")
               .withHeaders(standardDesHeaders(): _*)
@@ -216,7 +237,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
           }
 
-          it(s"should return 400 when to date is before from date") {
+          "return 400 when to date is before from date" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2015-06-03&toDate=2015-03-30").withHeaders(standardDesHeaders(): _*)
 
@@ -231,8 +252,8 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
           }
         }
 
-        describe("when backend systems failing") {
-          it("should return http status 503 when connection closed") {
+        "backend systems failing" should {
+          "return http status 503 when connection closed" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345/fractions")
               .withHeaders(standardDesHeaders(): _*)
@@ -246,7 +267,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
-          it(s"should return http status 408 when timed out") {
+          "return http status 408 when timed out" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/fractions")
               .withHeaders(standardDesHeaders(): _*)
@@ -260,7 +281,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             contentAsString(result) should include("DES not responding error")
           }
 
-          it(s"should return http status 503 when empty response") {
+          "return http status 503 when empty response" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345/fractions")
               .withHeaders(standardDesHeaders(): _*)
@@ -274,7 +295,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
-          it(s"should return http status 503 when DES HTTP 500") {
+          "return http status 503 when DES HTTP 500" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345/fractions")
               .withHeaders(standardDesHeaders(): _*)
@@ -288,7 +309,7 @@ class FractionsEndpointISpec extends WiremockFunSpec with ConfiguredServer with 
             contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
-          it(s"should return http status 503 when DES HTTP 503") {
+          "return http status 503 when DES HTTP 503" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345/fractions")
               .withHeaders(standardDesHeaders(): _*)
