@@ -23,13 +23,14 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
 import uk.gov.hmrc.apprenticeshiplevy.util.StubbingData.{auuid6, stubbedConfigPath}
+import uk.gov.hmrc.http.test.PortFinder
 
 import java.util.UUID
 
 trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach {
   this: Suite =>
 
-  protected val server: WireMockServer = new WireMockServer(wireMockConfig.usingFilesUnderDirectory(stubbedConfigPath).dynamicPort())
+  protected val server: WireMockServer = new WireMockServer(wireMockConfig.usingFilesUnderDirectory(stubbedConfigPath).port(PortFinder.findFreePort(portRange = 6001 to 7000)))
 
   override def beforeAll(): Unit = {
     server.start()
