@@ -1,3 +1,4 @@
+
 import sbt.internal.util.ConsoleAppender
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.*
@@ -75,7 +76,7 @@ lazy val scoverageSettings = {
 }
 
 ThisBuild / majorVersion := 3
-ThisBuild / scalaVersion := "2.13.14"
+ThisBuild / scalaVersion := "2.13.15"
 
 val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)

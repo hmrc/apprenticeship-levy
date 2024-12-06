@@ -1,3 +1,4 @@
+
 import play.sbt.PlayImport.*
 import sbt.*
 
@@ -9,18 +10,13 @@ object AppDependencies {
   val compile: Seq[ModuleID] = Seq(
     ws,
     "uk.gov.hmrc" %% s"bootstrap-backend-$playVersion" % bootstrapVersion,
-    "uk.gov.hmrc" %%  s"play-hal-$playVersion"         % "4.0.0",
+    "uk.gov.hmrc" %%  s"play-hal-$playVersion"         % "4.0.0", // play-hal version 4.1.0 and above will only work with Scala 3 services from now on
     "uk.gov.hmrc" %% s"domain-$playVersion"            % "10.0.0"
-
   )
 
   lazy val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"            %% s"bootstrap-test-$playVersion"      % bootstrapVersion,
-    "org.pegdown"             % "pegdown"                           % "1.6.0",
-    "org.scala-lang.modules" %% "scala-xml"                         % "2.3.0",
-    "com.github.andyglow"    %% "scala-xml-diff"                    % "3.0.1",
-    "org.scalatestplus"      %% "scalacheck-1-17"                   % "3.2.18.0",
-    "org.scalaj"             %% "scalaj-http"                       % "2.4.2"
+    "org.scalatestplus"      %% "scalacheck-1-18"                   % "3.2.19.0",
   ).map(_ % Test)
 
   val generateApiTask: Seq[ModuleID] = {
