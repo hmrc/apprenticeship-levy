@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -299,7 +299,8 @@ trait LevyDeclarationsEndpoint extends Timer {
     }
   }
 
-  protected[connectors] def isEpsOrigPathEnabled: Boolean = appContext.epsOrigPathEnabled()
+  protected
+  [connectors] def isEpsOrigPathEnabled: Boolean = appContext.epsOrigPathEnabled()
 
   protected[connectors] def desURL(empref: String): String = if (isEpsOrigPathEnabled)
                                                           s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"

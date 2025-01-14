@@ -76,7 +76,7 @@ lazy val scoverageSettings = {
 }
 
 ThisBuild / majorVersion := 3
-ThisBuild / scalaVersion := "2.13.15"
+ThisBuild / scalaVersion := "3.6.2"
 
 val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
@@ -97,9 +97,9 @@ val microservice = Project(appName, file("."))
     scalacOptions ++= Seq(
       "-deprecation",
       "-feature",
-      "-Xmaxerrs", "1000", // Maximum errors to print
-      "-Xmaxwarns", "1000", // Maximum warnings to print
-      "-Wconf:src=routes/.*:is,src=twirl/.*:is"
+      "-Wconf:src=routes/.*:s,src=twirl/.*:s",
+      "-Wconf:msg=Flag.*repeatedly:s",
+      "-Wconf:msg=.*-Wunused.*:s"
     )
   )
   .configs(AcceptanceTest)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,7 +144,7 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
     }
   }
 
-  protected def readJson(dir: String, path: String)(implicit request: Request[_]): Option[Future[Result]] = {
+  protected def readJson(dir: String, path: String)(implicit request: Request[?]): Option[Future[Result]] = {
     val filename = s"${dir}/${path}.json"
     // $COVERAGE-OFF$
     logger.debug(s"Looking for file ${filename}")
@@ -187,7 +187,7 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
     }.get
   }
 
-  protected def filterByDate(path: String, json: JsValue)(implicit request: Request[_]): Future[Result] = {
+  protected def filterByDate(path: String, json: JsValue)(implicit request: Request[?]): Future[Result] = {
     val result = new Status((json \ "status").as[Int])
 
     (json \ "jsonBody").toOption match {

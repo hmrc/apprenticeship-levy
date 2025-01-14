@@ -4,13 +4,13 @@ import sbt.*
 
 object AppDependencies {
 
-  val bootstrapVersion = "9.5.0"
+  val bootstrapVersion = "9.6.0"
   val playVersion = "play-30"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
     "uk.gov.hmrc" %% s"bootstrap-backend-$playVersion" % bootstrapVersion,
-    "uk.gov.hmrc" %%  s"play-hal-$playVersion"         % "4.0.0", // play-hal version 4.1.0 and above will only work with Scala 3 services from now on
+    "uk.gov.hmrc" %%  s"play-hal-$playVersion"         % "4.1.0",
     "uk.gov.hmrc" %% s"domain-$playVersion"            % "10.0.0"
   )
 
