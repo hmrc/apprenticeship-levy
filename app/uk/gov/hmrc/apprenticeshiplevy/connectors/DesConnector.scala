@@ -104,7 +104,7 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
     }
   }
 
-  protected def getDetails(path: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] = {
+  private def getDetails(path: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] = {
     val url = s"${des.baseUrl}$path"
     createDesHeaders(des.httpClient.get(url"$url"))
       .execute[Either[UpstreamErrorResponse, DesignatoryDetailsData]] map {
@@ -212,8 +212,6 @@ trait FractionsEndpoint extends Timer {
 trait LevyDeclarationsEndpoint extends Timer {
   des: DesConnector =>
 
-  def appContext: AppContext
-
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams
     val url = s"${desURL(empref)}?$dateParams"
@@ -260,7 +258,7 @@ trait LevyDeclarationsEndpoint extends Timer {
             eps.copy(empref = convertEmpref(eps.empref))
       )
 
-  protected[connectors] def toEmployerPaymentsSummary(className: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
+  private def toEmployerPaymentsSummary(className: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
     def toEPSResponse[A <: EPSResponse](jsResult: JsResult[A]): Option[EPSResponse] =
       jsResult match {
         case JsSuccess(response, _) =>
@@ -299,10 +297,9 @@ trait LevyDeclarationsEndpoint extends Timer {
     }
   }
 
-  protected
-  [connectors] def isEpsOrigPathEnabled: Boolean = appContext.epsOrigPathEnabled()
+  private def isEpsOrigPathEnabled: Boolean = appContext.epsOrigPathEnabled()
 
-  protected[connectors] def desURL(empref: String): String = if (isEpsOrigPathEnabled)
+  private def desURL(empref: String): String = if (isEpsOrigPathEnabled)
                                                           s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"
                                                         else
                                                           s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/declarations"
@@ -319,7 +316,7 @@ trait DesConnector extends FractionsEndpoint
   def desAuthorization: String
   def desEnvironment: String
 
-  val EMPREF = "([0-9]{3})([\\/]*)([a-zA-Z0-9]+)".r
+  private val EMPREF = "([0-9]{3})([\\/]*)([a-zA-Z0-9]+)".r
 
   def convertEmpref(empref: String): String =
     empref match {
@@ -341,10 +338,10 @@ trait DesConnector extends FractionsEndpoint
 }
 
 class LiveDesConnector @Inject()(val httpClient: HttpClientV2,
-                                 auditConnector: AuditConnector,
+                                 getAuditConnector: AuditConnector,
                                  val appContext: AppContext,
                                  metrics: MetricRegistry) extends DesConnector{
-  protected def auditConnector: Option[AuditConnector] = Some(auditConnector)
+  protected def auditConnector: Option[AuditConnector] = Some(getAuditConnector)
   def baseUrl: String = appContext.desUrl
 
   override def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(metrics)).getOrElse(None) else None

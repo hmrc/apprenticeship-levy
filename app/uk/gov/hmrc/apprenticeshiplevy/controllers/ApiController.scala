@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import org.slf4j.MDC
-import play.api.hal.{HalLink, HalResource}
+import play.api.hal.{HalLink, HalResource, halResourceWrites}
 import play.api.libs.json.Json
 import play.api.mvc._
 import uk.gov.hmrc.apprenticeshiplevy.utils.HeaderValidator

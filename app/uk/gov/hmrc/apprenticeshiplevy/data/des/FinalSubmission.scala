@@ -33,13 +33,13 @@ object FinalSubmission {
     (JsPath \ "schemeCeased").readNullable[Boolean] and
     (JsPath \ "schemeCeasedDate").readNullable[LocalDate] and
     (JsPath \ "forYear").readNullable[Boolean]
-  )(FinalSubmission.apply _)
+  )(FinalSubmission.apply)
 
   implicit val combinedFinalSubmissionWrites: Writes[FinalSubmission] = (
     (JsPath \ "schemeCeased").write[Option[Boolean]] and
     (JsPath \ "schemeCeasedDate").write[Option[LocalDate]] and
     (JsPath \ "forYear").write[Option[Boolean]]
-  )(FinalSubmission.unapply _)
+  )(FinalSubmission.unapply)
 
   def unapply(fs: FinalSubmission): (Option[Boolean], Option[LocalDate], Option[Boolean]) = fs match {
     case LastSubmission(fy) => (None, None, Some(fy))

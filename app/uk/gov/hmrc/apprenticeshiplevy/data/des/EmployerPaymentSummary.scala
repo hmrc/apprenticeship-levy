@@ -132,7 +132,7 @@ object EmployerPaymentSummary extends Logging {
     (JsPath \ "apprenticeshipLevy").write[Option[ApprenticeshipLevy]] and
     (JsPath \ "finalSubmission").write[Option[FinalSubmission]] and
     (JsPath \ "questionsAndDeclarations").write[Option[QuestionsAndDeclaration]]
-  )(o => Some(Tuple.fromProductTyped(o)))
+  )(o => Tuple.fromProductTyped(o))
 
 
   implicit val epsReads: Reads[EmployerPaymentSummary] = (
@@ -146,7 +146,7 @@ object EmployerPaymentSummary extends Logging {
     (JsPath \ "apprenticeshipLevy").readNullable[ApprenticeshipLevy] and
     (JsPath \ "finalSubmission").readNullable[FinalSubmission] and
     (JsPath \ "questionsAndDeclarations").readNullable[QuestionsAndDeclaration]
-  )(EmployerPaymentSummary.apply _)
+  )(EmployerPaymentSummary.apply)
 }
 
 abstract class EPSResponse {}

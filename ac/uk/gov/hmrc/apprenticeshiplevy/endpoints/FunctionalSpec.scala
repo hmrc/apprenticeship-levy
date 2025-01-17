@@ -28,7 +28,7 @@ trait FunctionalSpec extends AnyFunSpec {
   val dir: String = Config.resourceDir
   val contexts: Seq[(String, String)] = Config.contexts
 
-  def standardHeaders(implicit environment: String): Seq[(String,String)] = Seq("Accept" -> "application/vnd.hmrc.1.0+json",
+  def standardHeaders(): Seq[(String,String)] = Seq("Accept" -> "application/vnd.hmrc.1.0+json",
                                                                               "Authorization" -> s"""Bearer ${System.getProperty("bearer.token." +
                                                                               System.getProperty("environment", "local").toLowerCase)}""")
 

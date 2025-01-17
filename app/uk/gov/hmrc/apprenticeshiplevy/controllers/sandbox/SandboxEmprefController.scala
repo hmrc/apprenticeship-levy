@@ -17,7 +17,6 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
 
 import com.google.inject.Inject
-import play.api.Environment
 import play.api.hal.HalLink
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
@@ -35,11 +34,11 @@ class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
                                         val parser: BodyParsers.Default,
                                         val appContext: AppContext,
                                         val controllerComponents: ControllerComponents,
-                                        environment: Environment) extends EmprefController with SandboxLinkHelper {
+                                        ) extends EmprefController with SandboxLinkHelper {
 
   override val authAction: EmploymentReference => SandboxPrivilegedAuthAction = _ => auth
 
-  override val env = appContext.mode.toString
+  override val env: String = appContext.mode.toString
 
   override def emprefUrl(empref: EmploymentReference): String = routes.SandboxEmprefController.empref(empref).url
 
