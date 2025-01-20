@@ -48,28 +48,15 @@ trait GraphiteMetrics extends Logging {
   val DES_FRACTIONS_DATE_REQUEST = "des-fractions"
   val DES_LEVIES_REQUEST = "des-levies"
 
-  private val timer = (name: String) => registry.map(_.timer(name))
   private val meter = (name: String) => registry.map(_.meter(name))
-
-  private val log = (name: String, delta: Long, timeUnit: TimeUnit) => {
-    timer(name) match {
-      case Some(tmr) => {
-        // $COVERAGE-OFF$
-        logger.trace(s"[Metrics][${name}] ${delta} ${timeUnit}")
-        // $COVERAGE-ON$
-        tmr.update(delta, timeUnit)
-      }
-      case _ => logger.trace(s"[Metrics][${name}] Not enabled")
-    }
-  }
 
   private val mark = (name: String) => {
     meter(name) match {
       case Some(mtr) => {
         // $COVERAGE-OFF$
-        logger.trace(s"[Metrics][${name}] ${mtr.getCount()}")
+        logger.trace(s"[Metrics][${name}] ${mtr.getCount}")
         // $COVERAGE-ON$
-        mtr.mark
+        mtr.mark()
       }
       case _ =>
         // $COVERAGE-OFF$

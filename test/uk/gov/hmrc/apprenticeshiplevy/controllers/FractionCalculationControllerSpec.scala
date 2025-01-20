@@ -30,8 +30,7 @@ import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivileg
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
 import uk.gov.hmrc.apprenticeshiplevy.data.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.Authorization
+import uk.gov.hmrc.http.{Authorization, HeaderCarrier}
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
@@ -88,7 +87,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
 
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[Fractions](any(), any())).thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
+      when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
 
       // test
       await(controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()
@@ -97,7 +96,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
                                                                                     "Environment"->"clone")))
 
       verify(mockHttp).get(urlCaptor.capture())(headerCarrierCaptor.capture())
-      verify(mockRequestBuilder).execute[Fractions](any(), any())
+      verify(mockRequestBuilder).execute[Fractions](using any(), any())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -113,7 +112,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
 
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[Fractions](any(), any())).thenReturn(Future.successful(Fractions("123AB12345",
+      when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(Future.successful(Fractions("123AB12345",
         List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
 
       // test
@@ -122,7 +121,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
                                                                                     "Authorization"->"Bearer dsfda9080")))
 
       verify(mockHttp).get(urlCaptor.capture())(headerCarrierCaptor.capture())
-      verify(mockRequestBuilder, times(2)).execute[Fractions](any(), any())
+      verify(mockRequestBuilder, times(2)).execute[Fractions](using any(), any())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue

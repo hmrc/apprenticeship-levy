@@ -17,25 +17,24 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import com.codahale.metrics.MetricRegistry
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Injecting}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import uk.gov.hmrc.apprenticeshiplevy.data.api._
+import uk.gov.hmrc.apprenticeshiplevy.data.des.Fractions
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.UpstreamErrorResponse
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import java.time.LocalDate
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
-import uk.gov.hmrc.apprenticeshiplevy.data.des.Fractions
-import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
-
 import scala.concurrent.{ExecutionContext, Future}
 
 class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite with Injecting {
@@ -77,7 +76,7 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
 
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, Fractions]](any(), any())).thenReturn(Future.successful(Right(Fractions("empref", List()))))
+      when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, Fractions]](using any(), any())).thenReturn(Future.successful(Right(Fractions("empref", List()))))
 
       val response = liveFractionsController.fractions(EmploymentReference("empref"), Some(fromDate), Some(toDate))(FakeRequest().withHeaders(
         "ACCEPT"->"application/vnd.hmrc.1.0+json",

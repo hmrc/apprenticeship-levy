@@ -83,7 +83,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
 
         when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
 
         val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",
@@ -99,7 +99,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
 
         when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(false))))
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(false))))
 
         val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",
@@ -117,7 +117,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
 
         when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](any(), any())).thenReturn(Future.successful(Right(Unknown)))
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(Unknown)))
 
         val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",
@@ -135,7 +135,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
 
         when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
 
         val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",

@@ -81,7 +81,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return a internal server error when upstream returns JsValidationException" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(new JsValidationException("GET", "/test", Int.getClass,"validation")))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new JsValidationException("GET", "/test", Int.getClass,"validation")))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -92,7 +92,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return a internal server error when upstream returns IllegalArgumentException" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(new IllegalArgumentException))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new IllegalArgumentException))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -103,7 +103,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return an internal server error when upstream returns BadRequestException" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(new BadRequestException("badRequest")))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new BadRequestException("badRequest")))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -114,7 +114,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return a service unavailable error when upstream returns IOException" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(new IOException("io exception")))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new IOException("io exception")))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -125,7 +125,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return a request timeout error when upstream returns GatewayTimeoutException" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(new GatewayTimeoutException("gateway timeout exception")))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new GatewayTimeoutException("gateway timeout exception")))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -136,7 +136,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return a not found error when upstream returns NotFoundException" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(new NotFoundException("gateway timeout exception")))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new NotFoundException("gateway timeout exception")))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -147,7 +147,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return an internal server error when upstream returns a 412" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 412. Response body: '{\"reason\" : \"Backend systems not working\"}'",412)))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 412. Response body: '{\"reason\" : \"Backend systems not working\"}'",412)))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -158,7 +158,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return a forbidden error when upstream returns a 403" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 403. Response body: '{\"reason\" : \"Backend systems not working\"}'",403)))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 403. Response body: '{\"reason\" : \"Backend systems not working\"}'",403)))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -169,7 +169,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return an unauthorised error when upstream returns a 401" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 401. Response body: '{\"reason\" : \"Backend systems not working\"}'",401)))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 401. Response body: '{\"reason\" : \"Backend systems not working\"}'",401)))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -180,7 +180,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return a too many requests error when upstream returns a 429" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 429. Response body: '{\"reason\" : \"Backend systems not working\"}'",429)))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 429. Response body: '{\"reason\" : \"Backend systems not working\"}'",429)))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -191,7 +191,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return a request timeout error when upstream returns a 408" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 408. Response body: '{\"reason\" : \"Backend systems not working\"}'",408)))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 408. Response body: '{\"reason\" : \"Backend systems not working\"}'",408)))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
@@ -202,7 +202,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     "return an other DES Error when upstream returns an upstream 4xx error" in {
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 400. Response body: '{\"reason\" : \"Backend systems not working\"}'",400)))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 400. Response body: '{\"reason\" : \"Backend systems not working\"}'",400)))
 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))

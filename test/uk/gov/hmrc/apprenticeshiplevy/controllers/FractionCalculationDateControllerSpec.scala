@@ -85,7 +85,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, FractionCalculationDate]](any(), any())).thenReturn(Future.successful(Right(FractionCalculationDate(LocalDate.of(2016,11,3)))))
+      when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, FractionCalculationDate]](using any(), any())).thenReturn(Future.successful(Right(FractionCalculationDate(LocalDate.of(2016,11,3)))))
 
       val response = await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                                     "Authorization"->"Bearer dsfda9080",
@@ -108,7 +108,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
 
       // test
       await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
@@ -126,7 +126,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       // set up
       when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply(
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply(
         """DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503.
           | Response body: '{"reason" : "Backend systems not working"}'""".stripMargin,500)))
 

@@ -51,7 +51,7 @@ class ExternalTestEnvironmentSpec extends AppLevyUnitSpec with GuiceOneAppPerSui
 
       // check
       TestRouter.routes === mocknonexternalTestRoutes.routes
-      result.get === uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxFractionsController.fractions _
+      result.get === uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxFractionsController.fractions
     }
   }
 }
