@@ -46,7 +46,7 @@ class TestDataEndpointISpec
       "return Ok" in {
         // set up
         val request = FakeRequest(GET, "/sandbox/data/authorise/read")
-          .withHeaders(standardDesHeaders(): _*)
+          .withHeaders(standardDesHeaders()*)
 
         // test
         val result = route(app, request).get
@@ -60,7 +60,7 @@ class TestDataEndpointISpec
       "return Ok where json file exists" in {
         // set up
         val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
-          .withHeaders(standardDesHeaders(): _*)
+          .withHeaders(standardDesHeaders()*)
 
         // test
         val result = route(app, request).get
@@ -73,7 +73,7 @@ class TestDataEndpointISpec
       "return NotFound where json file does not exists" in {
         // set up
         val request = FakeRequest(GET, "/sandbox/data/zxy")
-          .withHeaders(standardDesHeaders(): _*)
+          .withHeaders(standardDesHeaders()*)
 
         // test
         val result = route(app, request).get
@@ -85,7 +85,7 @@ class TestDataEndpointISpec
       "return Ok where json file does not have json body" in {
         // set up
         val request = FakeRequest(GET, "/sandbox/data/empty")
-          .withHeaders(standardDesHeaders(): _*)
+          .withHeaders(standardDesHeaders()*)
 
         // test
         val result = route(app, request).get
@@ -99,7 +99,7 @@ class TestDataEndpointISpec
           // set up
           val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF"->"840/MODES17"
           val request = FakeRequest(GET, "/sandbox/data/paye/employer/000/ABC/designatory-details")
-            .withHeaders(headers: _*)
+            .withHeaders(headers*)
 
           // test
           val result = route(app, request).get
@@ -113,7 +113,7 @@ class TestDataEndpointISpec
           // set up
           val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF"->"ZZZ%2FJKLJLJL"
           val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
-            .withHeaders(headers: _*)
+            .withHeaders(headers*)
 
           // test
           val result = route(app, request).get

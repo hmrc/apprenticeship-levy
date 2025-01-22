@@ -61,7 +61,7 @@ class FractionsEndpointISpec
         "with no parameters"  should {
           "return fractions" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -80,7 +80,7 @@ class FractionsEndpointISpec
 
           "return fractions with correct empref values" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/864%2FTZ00000/fractions").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/864%2FTZ00000/fractions").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -96,7 +96,7 @@ class FractionsEndpointISpec
           "?fromDate=2017-09-01: return fractions" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2015-09-01")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -116,7 +116,7 @@ class FractionsEndpointISpec
           s"?toDate=$lastYear-09-01: return fractions" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=$lastYear-09-01")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -136,7 +136,7 @@ class FractionsEndpointISpec
           "?fromDate=2017-08-01&toDate=2017-09-01: return fractions" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-08-01&toDate=2017-09-01")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -166,7 +166,7 @@ class FractionsEndpointISpec
                     case "fromDate" => s"$context/epaye/123%2FAB12345/fractions?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
                     case _ => s"/sandbox/epaye/123%2FAB12345/fractions?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
                   }
-                  val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders(): _*)
+                  val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders()*)
 
                   // test
                   val result = route(app, request).get
@@ -184,7 +184,7 @@ class FractionsEndpointISpec
           "return http status 400 when DES HTTP 400" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -198,7 +198,7 @@ class FractionsEndpointISpec
           "return http status 401 when DES HTTP 401" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -212,7 +212,7 @@ class FractionsEndpointISpec
           "return http status 403 when DES HTTP 403" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -226,7 +226,7 @@ class FractionsEndpointISpec
           "return http status 404 when DES HTTP 404" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -239,7 +239,7 @@ class FractionsEndpointISpec
 
           "return 400 when to date is before from date" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2015-06-03&toDate=2015-03-30").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2015-06-03&toDate=2015-03-30").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -256,7 +256,7 @@ class FractionsEndpointISpec
           "return http status 503 when connection closed" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -270,7 +270,7 @@ class FractionsEndpointISpec
           "return http status 408 when timed out" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -284,7 +284,7 @@ class FractionsEndpointISpec
           "return http status 503 when empty response" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -298,7 +298,7 @@ class FractionsEndpointISpec
           "return http status 503 when DES HTTP 500" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -312,7 +312,7 @@ class FractionsEndpointISpec
           "return http status 503 when DES HTTP 503" in {
             // set up
             val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
             // test
             val result = route(app, request).get
 

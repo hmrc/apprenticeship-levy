@@ -47,7 +47,7 @@ class RootEndpointISpec
   "Root Endpoint" when {
     "accessed via sandbox url" should {
       "return valid json" in {
-        val request = FakeRequest(GET, "/sandbox/").withHeaders(standardDesHeaders(): _*)
+        val request = FakeRequest(GET, "/sandbox/").withHeaders(standardDesHeaders()*)
 
         // test
         val result = route(app, request).get
@@ -72,10 +72,10 @@ class RootEndpointISpec
                              |    "state": "Activated"
                              |  }
                              |  ]}""".stripMargin
-           stubPostServerWithId(aResponse()
+            stubPostServerWithId(aResponse()
               .withBody(response),
               "/auth/authorise")
-            val request = FakeRequest(GET, s"/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -97,7 +97,7 @@ class RootEndpointISpec
               .withStatusMessage("Not authorised.")
               .withHeader("WWW-Authenticate", "MDTP detail=\"SessionRecordNotFound\""),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -114,7 +114,7 @@ class RootEndpointISpec
               .withStatus(FORBIDDEN)
               .withStatusMessage("Forbidden."),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -131,7 +131,7 @@ class RootEndpointISpec
               .withStatus(NOT_FOUND)
               .withStatusMessage("Not found."),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -149,7 +149,7 @@ class RootEndpointISpec
             stubPostServerWithId(aResponse()
               .withFault(Fault.MALFORMED_RESPONSE_CHUNK),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -165,7 +165,7 @@ class RootEndpointISpec
             stubPostServerWithId(aResponse()
               .withFault(Fault.EMPTY_RESPONSE),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -182,7 +182,7 @@ class RootEndpointISpec
               .withStatus(OK)
               .withFixedDelay(1000*60),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -199,7 +199,7 @@ class RootEndpointISpec
               .withStatus(SERVICE_UNAVAILABLE)
               .withStatusMessage("Backend systems failing"),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -216,7 +216,7 @@ class RootEndpointISpec
               .withStatus(TOO_MANY_REQUESTS)
               .withBody("""{"reason" : "Drowning in requests"}"""),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -233,7 +233,7 @@ class RootEndpointISpec
               .withStatus(LENGTH_REQUIRED)
               .withBody("""{"reason" : "Some Auth 411 error"}"""),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -250,7 +250,7 @@ class RootEndpointISpec
               .withStatus(REQUEST_TIMEOUT)
               .withBody("""{"reason" : "Not responding"}"""),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -267,7 +267,7 @@ class RootEndpointISpec
               .withStatus(BAD_REQUEST)
               .withBody("""{"reason" : "Not responding"}"""),
               "/auth/authorise")
-            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get

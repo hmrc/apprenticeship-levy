@@ -61,7 +61,9 @@ class DeclarationsEndpointISpec
       s"calling $context/epaye/<empref>/declarations with valid paramters" should {
         "return levy declarations" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -78,7 +80,9 @@ class DeclarationsEndpointISpec
 
         "return levy declarations where only fromDate specified" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/123%2FAB12342/declarations?fromDate=2016-10-12").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/123%2FAB12342/declarations?fromDate=2016-10-12")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -94,7 +98,9 @@ class DeclarationsEndpointISpec
 
         "return levy declarations where only toDate specified" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/123%2FAB12343/declarations?toDate=2016-02-21").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/123%2FAB12343/declarations?toDate=2016-02-21")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -110,7 +116,9 @@ class DeclarationsEndpointISpec
 
         "return levy declarations where fromDate and toDate are specified" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/123%2FAB12344/declarations?fromDate=2016-05-19&toDate=2016-05-21").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/123%2FAB12344/declarations?fromDate=2016-05-19&toDate=2016-05-21")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -127,7 +135,9 @@ class DeclarationsEndpointISpec
 
         "handle no payment period" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -152,7 +162,9 @@ class DeclarationsEndpointISpec
 
         "handle inactive period" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -177,7 +189,9 @@ class DeclarationsEndpointISpec
 
         "handle ceased trading" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -201,7 +215,9 @@ class DeclarationsEndpointISpec
 
         "handle levies" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -256,7 +272,9 @@ class DeclarationsEndpointISpec
 
         "handle bad timestamps returned from DES in levies" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/123%2FAB88888/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/123%2FAB88888/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -292,7 +310,7 @@ class DeclarationsEndpointISpec
                   case "fromDate" => s"$context/epaye/123%2FAB12345/declarations?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
                   case _ => s"/sandbox/epaye/123%2FAB12345/declarations?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
                 }
-                val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders(): _*)
+                val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders()*)
 
                 // test
                 val result = route(app, request).get
@@ -313,7 +331,9 @@ class DeclarationsEndpointISpec
 
           forAll(emprefs) { (empref: String) =>
             whenever(empref.nonEmpty) {
-              val request = FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/declarations").withHeaders(standardDesHeaders(): _*)
+              val request =
+                FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/declarations")
+                  .withHeaders(standardDesHeaders()*)
 
               // test
               val result = route(app, request).get
@@ -329,7 +349,9 @@ class DeclarationsEndpointISpec
 
         "return 400 when DES returns 400" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/400%2FAB12345/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -342,7 +364,9 @@ class DeclarationsEndpointISpec
 
         "return http status 401 when DES returns 401" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/401%2FAB12345/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -355,7 +379,9 @@ class DeclarationsEndpointISpec
 
         "return http status 403 when DES returns 403" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/403%2FAB12345/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -368,7 +394,9 @@ class DeclarationsEndpointISpec
 
         "return 404 when DES returns 404" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/404%2FAB12345/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -381,7 +409,7 @@ class DeclarationsEndpointISpec
           // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations?fromDate=2015-06-03&toDate=2015-03-30")
-              .withHeaders(standardDesHeaders(): _*)
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -399,7 +427,9 @@ class DeclarationsEndpointISpec
 
         "return http status 404 when empty json returned" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/999%2FAB999999/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/999%2FAB999999/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -412,7 +442,9 @@ class DeclarationsEndpointISpec
 
         "return http status 500 when error json object returned on Http Status 200" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/999%2FAB999998/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/999%2FAB999998/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -425,7 +457,9 @@ class DeclarationsEndpointISpec
 
         "return http status 404 when just empref field in Json object is returned" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/999%2FAB999997/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/999%2FAB999997/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -438,7 +472,9 @@ class DeclarationsEndpointISpec
 
         "return eps if using old fieldname of 'declarations'" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/999%2FAB999996/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/999%2FAB999996/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -465,7 +501,9 @@ class DeclarationsEndpointISpec
 
         "return 503 when connection closed" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/999%2FAB12345/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -478,7 +516,9 @@ class DeclarationsEndpointISpec
 
         "return http status 503 when empty response" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/888%2FAB12345/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -491,7 +531,7 @@ class DeclarationsEndpointISpec
 
         "should return http status 408 when timed out" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/declarations").withHeaders(standardDesHeaders(): _*)
+          val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/declarations").withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -504,7 +544,9 @@ class DeclarationsEndpointISpec
 
         "return http status 503 when DES HTTP 500" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/500%2FAB12345/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -517,7 +559,9 @@ class DeclarationsEndpointISpec
 
         "return http status 503 when DES HTTP 503" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/503%2FAB12345/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get
@@ -530,7 +574,9 @@ class DeclarationsEndpointISpec
 
         "return http status 404 when empty json returned" in {
           // set up
-          val request = FakeRequest(GET, s"$context/epaye/123%2FAB99999/declarations").withHeaders(standardDesHeaders(): _*)
+          val request =
+            FakeRequest(GET, s"$context/epaye/123%2FAB99999/declarations")
+              .withHeaders(standardDesHeaders()*)
 
           // test
           val result = route(app, request).get

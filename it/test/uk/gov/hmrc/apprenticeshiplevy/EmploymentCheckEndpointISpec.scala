@@ -56,7 +56,9 @@ class EmploymentCheckEndpointISpec
         "with valid parameters" should {
           "?fromDate=2015-03-03&toDate=2015-06-30: return 'employed'" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/AA123456A?fromDate=2016-03-03&toDate=2016-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/AA123456A?fromDate=2016-03-03&toDate=2016-06-30")
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -69,7 +71,9 @@ class EmploymentCheckEndpointISpec
 
           "?fromDate=2016-03-03&toDate=2016-06-30: return 'not recognised'" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/BB123456A?fromDate=2016-03-03&toDate=2016-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/BB123456A?fromDate=2016-03-03&toDate=2016-06-30")
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -83,7 +87,9 @@ class EmploymentCheckEndpointISpec
 
           "?fromDate=2015-03-03&toDate=2015-06-30: return 'not employed'" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/EE123456A?fromDate=2016-03-03&toDate=2016-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/EE123456A?fromDate=2016-03-03&toDate=2016-06-30")
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -95,14 +101,16 @@ class EmploymentCheckEndpointISpec
           }
         }
 
-        "with invalid paramters" should {
+        "with invalid parameters" should {
           "return 400 when empref is badly formatted" in {
             // set up
             val emprefs = for { empref <- genEmpref } yield empref
 
             forAll(emprefs) { (empref: String) =>
               whenever(empref.nonEmpty) {
-                val request = FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
+                val request =
+                  FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
+                    .withHeaders(standardDesHeaders()*)
 
                 // test
                 val result = route(app, request).get
@@ -165,7 +173,10 @@ class EmploymentCheckEndpointISpec
             )
 
             for (invalidNationalInsuranceNumber <- invalidNationalInsuranceNumbers) {
-              val request = FakeRequest(GET, s"$context/epaye/444%2FAB12345/employed/${helper.urlEncode(invalidNationalInsuranceNumber)}?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
+              val request =
+                FakeRequest(GET, s"$context/epaye/444%2FAB12345/employed/${helper.urlEncode(invalidNationalInsuranceNumber)}" +
+                  s"?fromDate=2015-03-03&toDate=2015-06-30")
+                  .withHeaders(standardDesHeaders()*)
 
               // test
               val result = route(app, request).get
@@ -189,7 +200,7 @@ class EmploymentCheckEndpointISpec
                     case "fromDate" => s"$context/epaye/123%2FAB12345/employed/RA123456C?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
                     case _ => s"/sandbox/epaye/123%2FAB12345/employed/RA123456C?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
                   }
-                  val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders(): _*)
+                  val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders()*)
 
                   // test
                   val result = route(app, request).get
@@ -198,7 +209,10 @@ class EmploymentCheckEndpointISpec
                   // check
                   httpStatus shouldBe BAD_REQUEST
                   contentType(result) shouldBe Some("application/json")
-                  contentAsString(result) should include("""date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later.""")
+                  contentAsString(result) should include(
+                    """date parameter is in the wrong format. Should be
+                      |'^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$'
+                      |where date format is yyyy-MM-dd and year is 2000 or later.""".stripMargin)
                 }
               }
             }
@@ -206,7 +220,9 @@ class EmploymentCheckEndpointISpec
 
           "return 400 when to date is before from date" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345/employed/RA123456C?fromDate=2015-06-03&toDate=2015-03-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/400%2FAB12345/employed/RA123456C?fromDate=2015-06-03&toDate=2015-03-30")
+              .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -220,7 +236,9 @@ class EmploymentCheckEndpointISpec
 
           "return 400 when DES returns 400" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/400%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -234,7 +252,9 @@ class EmploymentCheckEndpointISpec
 
           "return http status 401 when DES returns 40" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/401%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -248,7 +268,9 @@ class EmploymentCheckEndpointISpec
 
           "return http status 403 when DES returns 403" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/403%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -263,7 +285,9 @@ class EmploymentCheckEndpointISpec
         "backend systems failing" should {
           "return 503 when connection closed" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/999%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -276,7 +300,9 @@ class EmploymentCheckEndpointISpec
 
           "return http status 503 when empty response" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/888%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -289,7 +315,9 @@ class EmploymentCheckEndpointISpec
 
           "return http status 408 when timed out" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/777%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -302,7 +330,9 @@ class EmploymentCheckEndpointISpec
 
           "return http status 503 when DES HTTP 500" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/500%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -315,7 +345,9 @@ class EmploymentCheckEndpointISpec
 
           "return http status 503 when DES HTTP 503" in {
             // set up
-            val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30").withHeaders(standardDesHeaders(): _*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/503%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
