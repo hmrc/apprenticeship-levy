@@ -78,6 +78,13 @@ lazy val scoverageSettings = {
 
 ThisBuild / majorVersion := 3
 ThisBuild / scalaVersion := "3.6.2"
+ThisBuild / scalacOptions ++= Seq(
+  "-deprecation",
+  "-feature",
+  "-Wconf:src=routes/.*:s,src=twirl/.*:s",
+  "-Wconf:msg=Flag.*repeatedly:s",
+  "-Wconf:msg=.*-Wunused.*:s"
+)
 
 val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
@@ -95,13 +102,6 @@ val microservice = Project(appName, file("."))
     retrieveManaged := true,
     generateAPIDocsTask,
     resolvers += Resolver.jcenterRepo,
-    scalacOptions ++= Seq(
-      "-deprecation",
-      "-feature",
-      "-Wconf:src=routes/.*:s,src=twirl/.*:s",
-      "-Wconf:msg=Flag.*repeatedly:s",
-      "-Wconf:msg=.*-Wunused.*:s"
-    )
   )
   .configs(AcceptanceTest)
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings) *)
