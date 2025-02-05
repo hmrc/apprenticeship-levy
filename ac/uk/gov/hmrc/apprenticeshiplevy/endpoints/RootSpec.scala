@@ -21,11 +21,11 @@ class RootSpec extends FunctionalSpec with Eventually with IntegrationPatience {
         val expectedJson = Json.parse(expected)
 
         // test
-        info(standardHeaders.mkString(" "))
+        info(standardHeaders().mkString(" "))
 
         val result = eventually {
           Http(s"$url$context/")
-            .headers(standardHeaders)
+            .headers(standardHeaders())
             .asString
         }
 

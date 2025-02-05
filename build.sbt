@@ -65,7 +65,8 @@ lazy val scoverageSettings = {
     "uk.gov.hmrc.apprenticeshiplevy.controllers.live.*",
     "uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.*",
     "testOnlyDoNotUseInAppConf.*",
-    "uk.gov.hmrc.BuildInfo"
+    "uk.gov.hmrc.apprenticeshiplevy.utils.*",
+    "uk.gov.hmrc.apprenticeshiplevy.data.api"
   )
   Seq(
     ScoverageKeys.coverageExcludedPackages := ScoverageExclusionPatterns.mkString("", ";", ""),

@@ -29,7 +29,7 @@ class EmprefSpec extends FunctionalSpec with Eventually with IntegrationPatience
           // test
           val result = eventually {
             Http(s"$url$context/epaye/$empref")
-              .headers(standardHeaders)
+              .headers(standardHeaders())
               .asString
           }
 

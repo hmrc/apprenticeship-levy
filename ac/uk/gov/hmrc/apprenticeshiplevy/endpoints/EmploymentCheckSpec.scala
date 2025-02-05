@@ -33,7 +33,7 @@ class EmploymentCheckSpec extends FunctionalSpec with Eventually with Integratio
           // test
           val result = eventually {
             Http(s"$url$context/epaye/$empref/employed/$nino$params")
-              .headers(standardHeaders)
+              .headers(standardHeaders())
               .asString
           }
 
