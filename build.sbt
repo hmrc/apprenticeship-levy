@@ -84,9 +84,9 @@ val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     playSettings,
-    scoverageSettings,
+//    scoverageSettings,
     scalaSettings,
-    defaultSettings(),
+//    defaultSettings(),
     PlayKeys.playDefaultPort := 9470,
     ivyConfigurations += XsltConfig,
     libraryDependencies ++= AppDependencies.all,
@@ -110,6 +110,7 @@ val microservice = Project(appName, file("."))
     AcceptanceTest / unmanagedResourceDirectories += baseDirectory(_ / "public").value,
     addTestReportOption(AcceptanceTest, "ac-test-reports"))
   .settings(Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))
+  .settings(CodeCoverageSettings.settings *)
 
 val it: Project = project
   .enablePlugins(PlayScala)
