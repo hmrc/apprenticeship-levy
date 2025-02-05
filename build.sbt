@@ -91,9 +91,7 @@ val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     playSettings,
-//    scoverageSettings,
     scalaSettings,
-//    defaultSettings(),
     PlayKeys.playDefaultPort := 9470,
     ivyConfigurations += XsltConfig,
     libraryDependencies ++= AppDependencies.all,
