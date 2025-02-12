@@ -38,12 +38,9 @@ class DocumentationController @Inject()
 
   private lazy val environment = appContext.environment
 
-  lazy val allowlistedApplicationIds: Seq[String] = appContext.allowlistedApplicationIds
-
   private lazy val allowlist: JsObject = Json.obj(
     "access" -> Json.obj(
-      "type" -> "PRIVATE",
-      "whitelistedApplicationIds" -> JsArray(allowlistedApplicationIds.map(play.api.libs.json.JsString.apply))
+      "type" -> "PRIVATE"
     ))
 
   private lazy val allowlistJsonTransformer = (__ \ Symbol("api") \ Symbol("versions")).json.update(

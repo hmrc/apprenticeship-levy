@@ -90,20 +90,6 @@ class DocumentationEndpointISpec
       }
     }
 
-    "should when calling /api/definition" should {
-      "have a correct allow list configured" in {
-        // set up
-        val request = FakeRequest(GET, s"/api/definition")
-
-        // test
-        val result = route(app, request).get
-
-        // check
-        status(result) shouldBe OK
-        contentAsString(result) should include ("""["myappid1","myappid2"]""")
-      }
-    }
-
     "with invalid parameters" should {
       "return 404 when documentation version doesn't exist" in {
         // set up

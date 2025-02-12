@@ -73,21 +73,6 @@ class DefinitionEndpointISpec
         contentType(result) shouldBe Some("application/json")
         contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
       }
-
-      "return definition with allowlisted applications (still called whitelist in api)" in {
-        // set up
-        val request = FakeRequest(GET, "/api/definition")
-
-        // test
-        val result = route(app, request).get
-
-        // check
-        contentType(result) shouldBe Some("application/json")
-        val json = contentAsJson(result)
-        val version1 = (json \ "api" \ "versions")(0)
-        (version1 \ "access" \ "type").as[String] shouldBe "PRIVATE"
-        (version1 \ "access" \ "whitelistedApplicationIds")(0).as[String] shouldBe "myappid1"
-      }
     }
   }
 }

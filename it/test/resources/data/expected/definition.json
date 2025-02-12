@@ -9,11 +9,7 @@
         "status": "STABLE",
         "endpointsEnabled": true,
         "access": {
-          "type": "PRIVATE",
-          "whitelistedApplicationIds": [
-            "myappid1",
-            "myappid2"
-          ]
+          "type": "PRIVATE"
         }
       }
     ]
