@@ -91,7 +91,7 @@ class DocumentationEndpointISpec
     }
 
     "should when calling /api/definition" should {
-      "have a correct allow list configured" in {
+      "have correct definitions configured" in {
         // set up
         val request = FakeRequest(GET, s"/api/definition")
 
@@ -100,7 +100,6 @@ class DocumentationEndpointISpec
 
         // check
         status(result) shouldBe OK
-        contentAsString(result) should include ("""["myappid1","myappid2"]""")
       }
     }
 

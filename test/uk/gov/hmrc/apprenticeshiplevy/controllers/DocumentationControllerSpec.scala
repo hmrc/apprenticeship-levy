@@ -16,22 +16,21 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
-import java.io.File
-
+import org.mockito.Mockito.when
 import org.scalatest.{BeforeAndAfterEach, Inside}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Application, Environment, Mode}
+import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.ControllerComponents
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, Injecting}
+import play.api.{Application, Environment, Mode}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import org.mockito.Mockito.when
-import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, MockAppContext}
 
-import scala.util.{Failure, Success}
+import java.io.File
+import scala.util.Failure
 
 class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with GuiceOneAppPerSuite with Injecting with BeforeAndAfterEach {
 
@@ -55,17 +54,6 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
   val documentationController: DocumentationController = inject[DocumentationController]
 
   "DocumentationController" should {
-    "add allowlist information correctly" in {
-      when(mockAppContext.mocked.allowlistedApplicationIds).thenReturn(Seq("f0e2611e-2f45-4326-8cd2-6eefebec77b7", "cafebabe-2f45-4326-8cd2-6eefebec77b7"))
-      val enrichedDefinition = documentationController.enrichDefinition(new java.io.FileInputStream(validDefinition))
-
-      inside(enrichedDefinition) { case Success(json) =>
-        val firstVersion = json("api")("versions")(0)
-        firstVersion("access")("type").as[String] shouldBe "PRIVATE"
-        firstVersion("access")("whitelistedApplicationIds").as[List[String]] should contain.inOrderOnly("f0e2611e-2f45-4326-8cd2-6eefebec77b7","cafebabe-2f45-4326-8cd2-6eefebec77b7")
-      }
-    }
-
     "return a Failure if unable to transform definition.json" in {
       documentationController.enrichDefinition(new java.io.FileInputStream(invalidDefinition)) should matchPattern { case Failure(_) => }
     }
@@ -107,5 +95,3 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
     }
   }
 }
-
-
