@@ -22,7 +22,7 @@ class FractionsSpec extends FunctionalSpec with Eventually with IntegrationPatie
         // test
         val result = eventually {
           Http(s"$url$context/fraction-calculation-date")
-            .headers(standardHeaders)
+            .headers(standardHeaders())
             .asString
         }
 
@@ -50,7 +50,7 @@ class FractionsSpec extends FunctionalSpec with Eventually with IntegrationPatie
           // test
           val result = eventually {
             Http(s"$url$context/epaye/$empref/fractions$params")
-              .headers(standardHeaders)
+              .headers(standardHeaders())
               .asString
           }
 

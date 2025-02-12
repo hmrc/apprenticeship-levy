@@ -1,6 +1,5 @@
 
 import sbt.internal.util.ConsoleAppender
-import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.*
 
 import scala.sys.process.ProcessLogger
@@ -52,40 +51,23 @@ lazy val playSettings: Seq[Setting[?]] = Seq(routesImport ++= Seq(
   "uk.gov.hmrc.apprenticeshiplevy.data.api.Nino")
 )
 
-lazy val scoverageSettings = {
-  val ScoverageExclusionPatterns = List(
-    "<empty>",
-    "Reverse.*",
-    ".*.Routes.*",
-    "views.*",
-    "prod.*",
-    ".*assets.*",
-    "uk.gov.hmrc.apprenticeshiplevy.metrics.*",
-    "uk.gov.hmrc.apprenticeshiplevy.config.*",
-    "uk.gov.hmrc.apprenticeshiplevy.controllers.live.*",
-    "uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.*",
-    "testOnlyDoNotUseInAppConf.*",
-    "uk.gov.hmrc.BuildInfo"
-  )
-  Seq(
-    ScoverageKeys.coverageExcludedPackages := ScoverageExclusionPatterns.mkString("", ";", ""),
-    ScoverageKeys.coverageMinimumStmtTotal := 90,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true
-  )
-}
-
 ThisBuild / majorVersion := 3
-ThisBuild / scalaVersion := "2.13.15"
+ThisBuild / scalaVersion := "3.6.2"
+ThisBuild / scalacOptions ++= Seq(
+  "-deprecation",
+  "-feature",
+  "-Wconf:src=routes/.*:s,src=twirl/.*:s",
+  "-Wconf:msg=Flag.*repeatedly:s",
+  "-Wconf:msg=.*-Wunused.*:s"
+)
 
 val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     playSettings,
-    scoverageSettings,
     scalaSettings,
-    defaultSettings(),
+    CodeCoverageSettings.settings,
     PlayKeys.playDefaultPort := 9470,
     ivyConfigurations += XsltConfig,
     libraryDependencies ++= AppDependencies.all,
@@ -94,13 +76,6 @@ val microservice = Project(appName, file("."))
     retrieveManaged := true,
     generateAPIDocsTask,
     resolvers += Resolver.jcenterRepo,
-    scalacOptions ++= Seq(
-      "-deprecation",
-      "-feature",
-      "-Xmaxerrs", "1000", // Maximum errors to print
-      "-Xmaxwarns", "1000", // Maximum warnings to print
-      "-Wconf:src=routes/.*:is,src=twirl/.*:is"
-    )
   )
   .configs(AcceptanceTest)
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings) *)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ class FractionsCalculationDateEndpointISpec
         "no backend systems failing" should {
           "return date" in {
             // set up
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -68,7 +68,7 @@ class FractionsCalculationDateEndpointISpec
             stubGetServerWithId(aResponse()
               .withFault(Fault.MALFORMED_RESPONSE_CHUNK),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -85,7 +85,7 @@ class FractionsCalculationDateEndpointISpec
               .withStatus(OK)
               .withFixedDelay(1000 * 60),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -101,7 +101,7 @@ class FractionsCalculationDateEndpointISpec
             stubGetServerWithId(aResponse()
               .withFault(Fault.EMPTY_RESPONSE),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -118,7 +118,7 @@ class FractionsCalculationDateEndpointISpec
               .withStatus(NOT_FOUND)
               .withBody("""{"reason" : "Not found"}"""),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -135,7 +135,7 @@ class FractionsCalculationDateEndpointISpec
               .withStatus(INTERNAL_SERVER_ERROR)
               .withBody("""{"reason" : "DES not working"}"""),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -152,7 +152,7 @@ class FractionsCalculationDateEndpointISpec
               .withStatus(SERVICE_UNAVAILABLE)
               .withBody("""{"reason" : "Backend systems not working"}"""),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -169,7 +169,7 @@ class FractionsCalculationDateEndpointISpec
               .withStatus(UNAUTHORIZED)
               .withBody("""{"reason" : "Not authorized"}"""),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -186,7 +186,7 @@ class FractionsCalculationDateEndpointISpec
               .withStatus(FORBIDDEN)
               .withBody("""{"reason" : "Forbidden"}"""),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -203,7 +203,7 @@ class FractionsCalculationDateEndpointISpec
               .withStatus(TOO_MANY_REQUESTS)
               .withBody("""{"reason" : "Drowning in requests"}"""),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -220,7 +220,7 @@ class FractionsCalculationDateEndpointISpec
               .withStatus(REQUEST_TIMEOUT)
               .withBody("""{"reason" : "Not responding"}"""),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -237,7 +237,7 @@ class FractionsCalculationDateEndpointISpec
               .withStatus(CONFLICT)
               .withBody("""{"reason" : "Some 4xxx error"}"""),
               "/apprenticeship-levy/fraction-calculation-date")
-            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get

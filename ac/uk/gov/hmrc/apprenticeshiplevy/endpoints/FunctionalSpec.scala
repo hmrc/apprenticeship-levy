@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ trait FunctionalSpec extends AnyFunSpec {
   val dir: String = Config.resourceDir
   val contexts: Seq[(String, String)] = Config.contexts
 
-  def standardHeaders(implicit environment: String): Seq[(String,String)] = Seq("Accept" -> "application/vnd.hmrc.1.0+json",
+  def standardHeaders(): Seq[(String,String)] = Seq("Accept" -> "application/vnd.hmrc.1.0+json",
                                                                               "Authorization" -> s"""Bearer ${System.getProperty("bearer.token." +
                                                                               System.getProperty("environment", "local").toLowerCase)}""")
 

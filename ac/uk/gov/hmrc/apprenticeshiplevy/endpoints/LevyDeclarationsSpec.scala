@@ -32,7 +32,7 @@ class LevyDeclarationsSpec extends FunctionalSpec with Eventually with Integrati
           // test
           val result = eventually {
             Http(s"$url$context/epaye/$empref/declarations$params")
-              .headers(standardHeaders)
+              .headers(standardHeaders())
               .asString
           }
 

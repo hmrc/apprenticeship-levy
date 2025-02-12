@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import scala.util.Try
 
 object DateFormats {
 
-  val dateTimePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-  val datePattern = DateTimeFormatter.ISO_LOCAL_DATE
+  private val dateTimePattern: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+  val datePattern: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 
   implicit def localDateTimeReads: Reads[LocalDateTime] = new Reads[LocalDateTime] {
     override def reads(json: JsValue): JsResult[LocalDateTime] =

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, HeaderCar
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import java.io.IOException
+import scala.annotation.nowarn
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionImpl @Inject()(val authConnector: AuthConnector, val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
@@ -60,6 +61,7 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
 
     override def executionContext: ExecutionContext = ec
 
+    @nowarn("cat=deprecation")
     override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
       authorised(

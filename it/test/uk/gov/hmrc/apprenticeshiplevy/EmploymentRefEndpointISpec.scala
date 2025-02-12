@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ class EmploymentRefEndpointISpec
         "with valid parameters" should {
           "return the declarations and fractions link for each empref" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/840%2FMODES17").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/840%2FMODES17").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -89,7 +89,7 @@ class EmploymentRefEndpointISpec
         "with invalid parameters" should {
           "when DES returns 400, return 400" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -100,7 +100,7 @@ class EmploymentRefEndpointISpec
 
           "when DES returns unauthorized, return 401" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -111,7 +111,7 @@ class EmploymentRefEndpointISpec
 
           "when DES returns forbidden, return 403" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -122,7 +122,7 @@ class EmploymentRefEndpointISpec
 
           "when DES returns 404, return 404" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -135,7 +135,7 @@ class EmploymentRefEndpointISpec
         "backend systems failing" should {
           "return 503 when connection closed" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -146,7 +146,7 @@ class EmploymentRefEndpointISpec
 
           "return 503 when response is empty" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -157,7 +157,7 @@ class EmploymentRefEndpointISpec
 
           "return 408 when timed out" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -168,7 +168,7 @@ class EmploymentRefEndpointISpec
 
           "return 503 when DES returns 500" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -179,7 +179,7 @@ class EmploymentRefEndpointISpec
 
           "return 503 when DES returns 503" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -190,7 +190,7 @@ class EmploymentRefEndpointISpec
 
           "return the declarations and fractions link for each empref when employment details does not respond" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/840%2FMODES18").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/840%2FMODES18").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 
@@ -206,7 +206,7 @@ class EmploymentRefEndpointISpec
 
           "return the declarations and fractions link for each empref when communication details does not respond" in {
             stubAuth
-            val request = FakeRequest(GET, s"$context/epaye/840%2FMODES19").withHeaders(standardDesHeaders(): _*)
+            val request = FakeRequest(GET, s"$context/epaye/840%2FMODES19").withHeaders(standardDesHeaders()*)
 
             val result = route(app, request).get
 

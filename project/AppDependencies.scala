@@ -4,19 +4,20 @@ import sbt.*
 
 object AppDependencies {
 
-  val bootstrapVersion = "9.5.0"
+  val bootstrapVersion = "9.6.0"
   val playVersion = "play-30"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
     "uk.gov.hmrc" %% s"bootstrap-backend-$playVersion" % bootstrapVersion,
-    "uk.gov.hmrc" %%  s"play-hal-$playVersion"         % "4.0.0", // play-hal version 4.1.0 and above will only work with Scala 3 services from now on
+    "uk.gov.hmrc" %%  s"play-hal-$playVersion"         % "4.1.0",
     "uk.gov.hmrc" %% s"domain-$playVersion"            % "10.0.0"
   )
 
   lazy val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"            %% s"bootstrap-test-$playVersion"      % bootstrapVersion,
     "org.scalatestplus"      %% "scalacheck-1-18"                   % "3.2.19.0",
+    "org.scalaj"             %% "scalaj-http"                       % "2.4.2" cross CrossVersion.for3Use2_13
   ).map(_ % Test)
 
   val generateApiTask: Seq[ModuleID] = {

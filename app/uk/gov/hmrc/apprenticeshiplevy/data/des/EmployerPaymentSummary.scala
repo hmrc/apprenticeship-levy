@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,7 +132,8 @@ object EmployerPaymentSummary extends Logging {
     (JsPath \ "apprenticeshipLevy").write[Option[ApprenticeshipLevy]] and
     (JsPath \ "finalSubmission").write[Option[FinalSubmission]] and
     (JsPath \ "questionsAndDeclarations").write[Option[QuestionsAndDeclaration]]
-  )(unlift(EmployerPaymentSummary.unapply))
+  )(o => Tuple.fromProductTyped(o))
+
 
   implicit val epsReads: Reads[EmployerPaymentSummary] = (
     (JsPath \ "submissionId").read[Long] and
@@ -145,7 +146,7 @@ object EmployerPaymentSummary extends Logging {
     (JsPath \ "apprenticeshipLevy").readNullable[ApprenticeshipLevy] and
     (JsPath \ "finalSubmission").readNullable[FinalSubmission] and
     (JsPath \ "questionsAndDeclarations").readNullable[QuestionsAndDeclaration]
-  )(EmployerPaymentSummary.apply _)
+  )(EmployerPaymentSummary.apply)
 }
 
 abstract class EPSResponse {}

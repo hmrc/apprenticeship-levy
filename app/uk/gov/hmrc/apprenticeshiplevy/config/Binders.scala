@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ object QueryBinders {
 
   implicit def bindableLocalDate: QueryStringBindable[LocalDate] = new QueryStringBindable[LocalDate] {
     def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, LocalDate]] = {
-      params.get(key).flatMap(_.headOption).map { date: String => (Try {
+      params.get(key).flatMap(_.headOption).map { (date: String) => (Try {
         date match {
           case datePattern(year, _*) if year.toInt >= 2000 => Right(LocalDate.parse(date))
           case _ =>
@@ -47,8 +47,9 @@ object QueryBinders {
 }
 
 object PathBinders {
-  private val emprefValidator = isValid("^\\d{3}/[0-9A-Z]{1,10}$".r) _
-  private val ninoValidator = isValidNino _
+  private val emprefValidator = isValid("^\\d{3}/[0-9A-Z]{1,10}$".r)
+  private val ninoValidator = isValidNino
+
 
   implicit def bindableEmploymentReference(implicit binder: PathBindable[String]): PathBindable[EmploymentReference] =
     bindable[String,EmploymentReference](emprefValidator,

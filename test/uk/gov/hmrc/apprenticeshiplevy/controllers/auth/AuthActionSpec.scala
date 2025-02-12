@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,10 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
 
-import java.io.IOException
-
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.mvc.BodyParsers.Default
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.api.test.FakeRequest
@@ -34,6 +31,7 @@ import uk.gov.hmrc.auth.core.retrieve.{GGCredId, LegacyCredentials, PAClientId, 
 import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, MethodNotAllowedException, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
 
+import java.io.IOException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
