@@ -7,7 +7,6 @@
     }
   },
   "credentialStrength":"weak",
-  "confidenceLevel":50,
   "userDetailsLink":"/user-details/1234567890",
   "enrolments":"/auth/oid/1234567890/enrolments",
   "ids":"/auth/oid/1234567890/ids",

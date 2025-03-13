@@ -45,11 +45,11 @@ object StubbingData {
   lazy val auuid5: UUID = randomUUID()
   lazy val auuid6: UUID = randomUUID()
 
-  val validReadURL1 = "/authorise/read/epaye/AB12345?confidenceLevel=50&privilegedAccess=read:apprenticeship-levy"
-  val validReadURL2 = "/authorise/read/epaye/123%2FAB12345?confidenceLevel=50&privilegedAccess=read:apprenticeship-levy"
-  val faultURL1 = "/authorise/read/epaye/malformed?confidenceLevel=50&privilegedAccess=read:apprenticeship-levy"
-  val invalidReadURL1 = "/authorise/read/epaye/(400|401|403|404|500|503|empty|malformed|timeout)%2FAB12345\\?confidenceLevel=50&privilegedAccess=read:apprenticeship-levy"
-  val validRead = "/authorise/read/epaye/(.*)\\?confidenceLevel=50&privilegedAccess=read:apprenticeship-levy"
+  val validReadURL1 = "/authorise/read/epaye/AB12345?privilegedAccess=read:apprenticeship-levy"
+  val validReadURL2 = "/authorise/read/epaye/123%2FAB12345?privilegedAccess=read:apprenticeship-levy"
+  val faultURL1 = "/authorise/read/epaye/malformed?privilegedAccess=read:apprenticeship-levy"
+  val invalidReadURL1 = "/authorise/read/epaye/(400|401|403|404|500|503|empty|malformed|timeout)%2FAB12345\\?privilegedAccess=read:apprenticeship-levy"
+  val validRead = "/authorise/read/epaye/(.*)\\?privilegedAccess=read:apprenticeship-levy"
 
   def wireMockConfiguration(serverPort: Int): Map[String, Any] = Map(
     "play.ws.timeout.request" -> "500 milliseconds",
