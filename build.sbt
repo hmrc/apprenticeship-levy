@@ -54,11 +54,13 @@ lazy val playSettings: Seq[Setting[?]] = Seq(routesImport ++= Seq(
 ThisBuild / majorVersion := 3
 ThisBuild / scalaVersion := "3.6.2"
 ThisBuild / scalacOptions ++= Seq(
-  "-deprecation",
-  "-feature",
   "-Wconf:src=routes/.*:s,src=twirl/.*:s",
   "-Wconf:msg=Flag.*repeatedly:s",
-  "-Wconf:msg=.*-Wunused.*:s"
+  "-Wconf:msg=.*redundantly.*:s",
+  "-Wconf:msg=.*-Wunused.*:s",
+  "-Xfatal-warnings",
+  "-deprecation",
+  "-feature"
 )
 
 val microservice = Project(appName, file("."))
