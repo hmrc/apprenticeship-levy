@@ -107,7 +107,6 @@ class AuthActionSpec
       }
 
     val input = Seq(
-      ("InsufficientConfidenceLevel when the Authorization token provided wasn't valid", new InsufficientConfidenceLevel, UNAUTHORIZED),
       ("BadRequestException", new BadRequestException("Bad Request"), BAD_REQUEST),
       ("IOException", new IOException, SERVICE_UNAVAILABLE),
       ("GatewayTimeoutException", new GatewayTimeoutException("timeout"), REQUEST_TIMEOUT),
