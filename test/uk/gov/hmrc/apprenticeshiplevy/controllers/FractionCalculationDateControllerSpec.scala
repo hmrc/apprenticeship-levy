@@ -83,7 +83,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       // set up
 
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, FractionCalculationDate]](using any(), any())).thenReturn(Future.successful(Right(FractionCalculationDate(LocalDate.of(2016,11,3)))))
 
@@ -91,7 +91,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
                                                                                                     "Authorization"->"Bearer dsfda9080",
                                                                                                     "Environment"->"clone")))
 
-      verify(mockHttp).get(any())(headerCarrierCaptor.capture())
+      verify(mockHttp).get(any())(using headerCarrierCaptor.capture())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -106,14 +106,14 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       val urlCaptor: ArgumentCaptor[URL] = ArgumentCaptor.forClass(classOf[URL])
 
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
 
       // test
       await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                                     "Authorization"->"Bearer dsfda9080")))
-      verify(mockHttp).get(urlCaptor.capture())(headerCarrierCaptor.capture())
+      verify(mockHttp).get(urlCaptor.capture())(using headerCarrierCaptor.capture())
 
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
@@ -124,7 +124,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
     "recover from exceptions" in {
       // set up
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply(
         """DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503.

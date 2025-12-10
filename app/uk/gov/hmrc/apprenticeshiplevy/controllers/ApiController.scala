@@ -23,7 +23,7 @@ import play.api.mvc._
 import uk.gov.hmrc.apprenticeshiplevy.utils.HeaderValidator
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
-import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
+import uk.gov.hmrc.play.bootstrap.http.ErrorResponse
 
 import scala.concurrent.ExecutionContext
 
@@ -36,7 +36,7 @@ trait ApiController extends BackendBaseController with HeaderValidator {
   }
 
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
-    val hc = super.hc(rh)
+    val hc = super.hc(using rh)
     MDC.put("X-Client-ID", rh.headers.toSimpleMap.getOrElse("X-Client-ID", "Unknown caller"))
     val headersMap = rh.headers.toSimpleMap
     val clientId = headersMap.getOrElse("X-Client-ID", "Unknown caller")

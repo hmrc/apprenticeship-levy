@@ -85,7 +85,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       val urlCaptor: ArgumentCaptor[URL] = ArgumentCaptor.forClass(classOf[URL])
 
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
 
@@ -95,7 +95,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
                                                                                     "Authorization"->"Bearer dsfda9080",
                                                                                     "Environment"->"clone")))
 
-      verify(mockHttp).get(urlCaptor.capture())(headerCarrierCaptor.capture())
+      verify(mockHttp).get(urlCaptor.capture())(using headerCarrierCaptor.capture())
       verify(mockRequestBuilder).execute[Fractions](using any(), any())
 
       // check
@@ -110,7 +110,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       val urlCaptor: ArgumentCaptor[URL] = ArgumentCaptor.forClass(classOf[URL])
 
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(Future.successful(Fractions("123AB12345",
         List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
@@ -120,7 +120,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
                                                                       .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
                                                                                     "Authorization"->"Bearer dsfda9080")))
 
-      verify(mockHttp).get(urlCaptor.capture())(headerCarrierCaptor.capture())
+      verify(mockHttp).get(urlCaptor.capture())(using headerCarrierCaptor.capture())
       verify(mockRequestBuilder, times(2)).execute[Fractions](using any(), any())
 
       // check

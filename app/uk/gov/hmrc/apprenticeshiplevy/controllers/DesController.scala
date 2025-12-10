@@ -22,17 +22,18 @@ import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.DESError
 import uk.gov.hmrc.apprenticeshiplevy.utils.ErrorResponseUtils
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 
 import java.io.IOException
 import java.net.URLDecoder
+import scala.util.matching.Regex
 
 trait DesController extends ApiController with Logging {
 
   val appContext: AppContext
 
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
-    val hc = super.hc(rh).withExtraHeaders(("Environment", rh.headers.toSimpleMap.getOrElse("Environment", defaultDESEnvironment)))
+    val hc = super.hc(using rh).withExtraHeaders(("Environment", rh.headers.toSimpleMap.getOrElse("Environment", defaultDESEnvironment)))
     hc.copy(authorization=Some(Authorization(s"Bearer ${defaultDESToken}")))
   }
   // $COVERAGE-OFF$
@@ -46,7 +47,7 @@ trait DesController extends ApiController with Logging {
     case _ => empref
   }
 
-  protected lazy val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
+  protected lazy val emprefParts: Regex = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
 
   protected val desErrorHandler: PartialFunction[Throwable, Result] = {
     case e: JsValidationException =>
@@ -56,30 +57,30 @@ trait DesController extends ApiController with Logging {
       InternalServerError(ErrorResponseUtils.convertToJson(DESError(INTERNAL_SERVER_ERROR, "JSON_FAILURE", "DES and/or BACKEND server returned bad json.")))
     case e: IllegalArgumentException =>
       // $COVERAGE-OFF$
-      logger.error(s"Client ${MDC.get("X-Client-ID")} DES returned bad json: ${e.getMessage()}, API returning  code $INTERNAL_SERVER_ERROR")
+      logger.error(s"Client ${MDC.get("X-Client-ID")} DES returned bad json: ${e.getMessage}, API returning  code $INTERNAL_SERVER_ERROR")
       // $COVERAGE-ON$
       InternalServerError(ErrorResponseUtils.convertToJson(DESError(INTERNAL_SERVER_ERROR, "JSON_FAILURE", "DES and/or BACKEND server returned bad json.")))
     case e: BadRequestException =>
-      logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning BadRequest with code $SERVICE_UNAVAILABLE")
+      logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage}, API returning BadRequest with code $SERVICE_UNAVAILABLE")
       BadRequest(ErrorResponseUtils.convertToJson(DESError(SERVICE_UNAVAILABLE, "BAD_REQUEST", "Bad request error")))
     case e: IOException =>
       // $COVERAGE-OFF$
-      logger.error(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning ServiceUnavailable with code $SERVICE_UNAVAILABLE", e)
+      logger.error(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage}, API returning ServiceUnavailable with code $SERVICE_UNAVAILABLE", e)
       // $COVERAGE-ON$
       ServiceUnavailable(ErrorResponseUtils.convertToJson(DESError(SERVICE_UNAVAILABLE, "IO", "DES connection error")))
     case e: GatewayTimeoutException =>
       // $COVERAGE-OFF$
-      logger.error(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning RequestTimeout with code $REQUEST_TIMEOUT", e)
+      logger.error(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage}, API returning RequestTimeout with code $REQUEST_TIMEOUT", e)
       // $COVERAGE-ON$
       RequestTimeout(ErrorResponseUtils.convertToJson(DESError(REQUEST_TIMEOUT, "GATEWAY_TIMEOUT", s"DES not responding error")))
     case e: NotFoundException =>
       // $COVERAGE-OFF$
-      logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()}, API returning NotFound with code $NOT_FOUND")
+      logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage}, API returning NotFound with code $NOT_FOUND")
       // $COVERAGE-ON$
       NotFound(ErrorResponseUtils.convertToJson(DESError(NOT_FOUND, "NOT_FOUND", s"DES endpoint or EmpRef not found")))
     case e: UpstreamErrorResponse =>
       // $COVERAGE-OFF$
-      logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage()} with ${e.statusCode}, API returning code ${e.reportAs}", e)
+      logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${e.getMessage} with ${e.statusCode}, API returning code ${e.reportAs}", e)
       // $COVERAGE-ON$
       e.statusCode match {
         case PRECONDITION_FAILED =>
@@ -100,7 +101,7 @@ trait DesController extends ApiController with Logging {
       }
     case e =>
       // $COVERAGE-OFF$
-      logger.error(s"Client ${MDC.get("X-Client-ID")} API error: ${e.getMessage()}, API returning code $INTERNAL_SERVER_ERROR", e)
+      logger.error(s"Client ${MDC.get("X-Client-ID")} API error: ${e.getMessage}, API returning code $INTERNAL_SERVER_ERROR", e)
       // $COVERAGE-ON$
       InternalServerError(ErrorResponseUtils.convertToJson(DESError(INTERNAL_SERVER_ERROR, "API", s"API or DES internal server error")))
   }

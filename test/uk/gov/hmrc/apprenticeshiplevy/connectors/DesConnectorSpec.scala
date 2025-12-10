@@ -86,10 +86,10 @@ class DesConnectorSpec
     "send audit events" in {
       val stubAuditConnector = mock[AuditConnector]
       val eventCaptor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
-      when(stubAuditConnector.sendEvent(eventCaptor.capture())(any(), any())).thenReturn(Future.successful(AuditResult.Success))
+      when(stubAuditConnector.sendEvent(eventCaptor.capture())(using any(), any())).thenReturn(Future.successful(AuditResult.Success))
       val event = ALAEvent("readEmprefDetails", "123AB12345")
 
-      stubAuditConnector.sendEvent(event.toDataEvent(200)(mockHeaderCarrier))
+      stubAuditConnector.sendEvent(event.toDataEvent(200)(using mockHeaderCarrier))
 
       val auditEvent = eventCaptor.getValue
       auditEvent.auditType shouldBe "ServiceReceivedRequest"
@@ -108,7 +108,7 @@ class DesConnectorSpec
 
         stubGetServer(stubResponse, fractionsCalculationDateUrl)
 
-        val response = await(desConnector.fractionCalculationDate(mockHeaderCarrier, global))
+        val response = await(desConnector.fractionCalculationDate(using mockHeaderCarrier, global))
 
         response shouldBe expectedResponse
 
@@ -128,7 +128,7 @@ class DesConnectorSpec
         stubGetServer(stubResponse, fractionsCalculationDateUrl)
 
         assertThrows[NotFoundException] {
-          await(desConnector.fractionCalculationDate(mockHeaderCarrier, global))
+          await(desConnector.fractionCalculationDate(using mockHeaderCarrier, global))
         }
 
         server.verify(
@@ -147,7 +147,7 @@ class DesConnectorSpec
         stubGetServer(stubResponse, fractionsCalculationDateUrl)
 
         assertThrows[BadRequestException] {
-          await(desConnector.fractionCalculationDate(mockHeaderCarrier, global))
+          await(desConnector.fractionCalculationDate(using mockHeaderCarrier, global))
         }
 
         server.verify(
@@ -166,7 +166,7 @@ class DesConnectorSpec
         stubGetServer(stubResponse, fractionsCalculationDateUrl)
 
         assertThrows[UpstreamErrorResponse] {
-          await(desConnector.fractionCalculationDate(mockHeaderCarrier, global))
+          await(desConnector.fractionCalculationDate(using mockHeaderCarrier, global))
         }
 
         server.verify(
@@ -192,7 +192,7 @@ class DesConnectorSpec
 
         stubGetServer(stubResponse, employersUrl)
 
-        val response = await(desConnector.fractions(empRef, dateRange)(mockHeaderCarrier, global))
+        val response = await(desConnector.fractions(empRef, dateRange)(using mockHeaderCarrier, global))
 
         response shouldBe expectedResponse
 
@@ -216,7 +216,7 @@ class DesConnectorSpec
         stubGetServer(stubResponse, employersUrl)
 
         assertThrows[NotFoundException] {
-          await(desConnector.fractions(empRef, dateRange)(mockHeaderCarrier, global))
+          await(desConnector.fractions(empRef, dateRange)(using mockHeaderCarrier, global))
         }
 
         server.verify(
@@ -238,7 +238,7 @@ class DesConnectorSpec
         stubGetServer(stubResponse, employersUrl)
 
         assertThrows[BadRequestException] {
-          await(desConnector.fractions(empRef, dateRange)(mockHeaderCarrier, global))
+          await(desConnector.fractions(empRef, dateRange)(using mockHeaderCarrier, global))
         }
 
         server.verify(
@@ -260,7 +260,7 @@ class DesConnectorSpec
         stubGetServer(stubResponse, employersUrl)
 
         assertThrows[UpstreamErrorResponse] {
-          await(desConnector.fractions(empRef, dateRange)(mockHeaderCarrier, global))
+          await(desConnector.fractions(empRef, dateRange)(using mockHeaderCarrier, global))
         }
 
         server.verify(
@@ -288,7 +288,7 @@ class DesConnectorSpec
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
-      val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier, global))
+      val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
       response shouldBe expectedResponse
 
@@ -313,7 +313,7 @@ class DesConnectorSpec
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
-      val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier, global))
+      val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
       response shouldBe expectedResponse
 
@@ -337,7 +337,7 @@ class DesConnectorSpec
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
       assertThrows[IllegalArgumentException] {
-        await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier, global))
+        await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
       }
 
       server.verify(
@@ -360,7 +360,7 @@ class DesConnectorSpec
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
       assertThrows[BadRequestException] {
-        await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier, global))
+        await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
       }
 
       server.verify(
@@ -382,7 +382,7 @@ class DesConnectorSpec
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
       assertThrows[NotFoundException] {
-        await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier, global))
+        await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
       }
 
       server.verify(
@@ -404,7 +404,7 @@ class DesConnectorSpec
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
       assertThrows[UpstreamErrorResponse] {
-        await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier, global))
+        await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
       }
 
       server.verify(
@@ -427,7 +427,7 @@ class DesConnectorSpec
 
         stubGetServer(stubResponse, employerDetailsUrl)
 
-        val response = await(desConnector.designatoryDetails(empRef)(mockHeaderCarrier, global))
+        val response = await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
 
         response shouldBe expectedResponse
 
@@ -451,7 +451,7 @@ class DesConnectorSpec
 
         stubGetServer(stubResponse, employerDetailsUrl)
 
-        val response = await(desConnector.designatoryDetails(empRef)(mockHeaderCarrier, global))
+        val response = await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
 
         response shouldBe expectedResponse
 
@@ -479,7 +479,7 @@ class DesConnectorSpec
         stubGetServer(stubResponse, employerDetailsUrl)
         stubGetServer(detailsStubResponseJson, getDetailsUrl)
 
-        val response = await(desConnector.designatoryDetails(empRef)(mockHeaderCarrier, global))
+        val response = await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
 
         response shouldBe expectedResponse
 
@@ -503,7 +503,7 @@ class DesConnectorSpec
 
         stubGetServer(stubResponse, employerDetailsUrl)
 
-        val response = await(desConnector.designatoryDetails(empRef)(mockHeaderCarrier, global))
+        val response = await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
 
         response shouldBe expectedResponse
 
@@ -524,7 +524,7 @@ class DesConnectorSpec
         stubGetServer(stubResponse, employerDetailsUrl)
 
         assertThrows[BadRequestException] {
-          await(desConnector.designatoryDetails(empRef)(mockHeaderCarrier, global))
+          await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
         }
 
         server.verify(
@@ -545,7 +545,7 @@ class DesConnectorSpec
         stubGetServer(stubResponse, employerDetailsUrl)
 
         assertThrows[NotFoundException] {
-          await(desConnector.designatoryDetails(empRef)(mockHeaderCarrier, global))
+          await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
         }
 
         server.verify(
@@ -566,7 +566,7 @@ class DesConnectorSpec
         stubGetServer(stubResponse, employerDetailsUrl)
 
         assertThrows[BadRequestException] {
-          await(desConnector.designatoryDetails(empRef)(mockHeaderCarrier, global))
+          await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
         }
 
         server.verify(
@@ -588,7 +588,7 @@ class DesConnectorSpec
       stubGetServer(stubResponse, employerDetailsUrl)
 
       assertThrows[UpstreamErrorResponse] {
-        await(desConnector.designatoryDetails(empRef)(mockHeaderCarrier, global))
+        await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
       }
 
       server.verify(
@@ -614,7 +614,7 @@ class DesConnectorSpec
       stubGetServer(stubResponse, employerDetailsUrl)
 
       assertThrows[BadRequestException] {
-        await(desConnector.check(empRef, "AA122345A", dateRange)(mockHeaderCarrier, global))
+        await(desConnector.check(empRef, "AA122345A", dateRange)(using mockHeaderCarrier, global))
       }
 
       server.verify(
@@ -637,7 +637,7 @@ class DesConnectorSpec
 
       stubGetServer(stubResponse, employerDetailsUrl)
 
-      val response = await(desConnector.check(empRef, "AA122345A", dateRange)(mockHeaderCarrier, global))
+      val response = await(desConnector.check(empRef, "AA122345A", dateRange)(using mockHeaderCarrier, global))
 
       response shouldBe Unknown
 
@@ -662,7 +662,7 @@ class DesConnectorSpec
       stubGetServer(stubResponse, employerDetailsUrl)
 
       assertThrows[UpstreamErrorResponse] {
-        await(desConnector.check(empRef, "AA122345A", dateRange)(mockHeaderCarrier, global))
+        await(desConnector.check(empRef, "AA122345A", dateRange)(using mockHeaderCarrier, global))
       }
 
       server.verify(
@@ -687,7 +687,7 @@ class DesConnectorSpec
 
     stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
-    val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier, global))
+    val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
     response shouldBe expectedResponse
 
@@ -700,7 +700,6 @@ class DesConnectorSpec
   }
 
   "with valid and invalid json" must {
-    import play.api.libs.json._
 
     "convert invalid empty json to valid response" in {
 
@@ -715,7 +714,7 @@ class DesConnectorSpec
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
-      val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier, global))
+      val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
       response shouldBe expectedResponse
 
@@ -771,7 +770,7 @@ class DesConnectorSpec
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
-      val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier, global))
+      val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
       response shouldBe expectedResponse
 
@@ -890,7 +889,7 @@ class DesConnectorSpec
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
-      val response = await(desConnector.eps(empRef, dateRange)(mockHeaderCarrier, global))
+      val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
       response shouldBe expectedResponse
 
