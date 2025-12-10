@@ -4,14 +4,14 @@ import sbt.*
 
 object AppDependencies {
 
-  val bootstrapVersion = "9.11.0"
+  val bootstrapVersion = "10.4.0"
   val playVersion = "play-30"
 
   val compile: Seq[ModuleID] = Seq(
     ws,
     "uk.gov.hmrc" %% s"bootstrap-backend-$playVersion" % bootstrapVersion,
     "uk.gov.hmrc" %% s"play-hal-$playVersion"          % "4.1.0",
-    "uk.gov.hmrc" %% s"domain-$playVersion"            % "10.0.0"
+    "uk.gov.hmrc" %% s"domain-$playVersion"            % "13.0.0"
   )
 
   lazy val test: Seq[ModuleID] = Seq(

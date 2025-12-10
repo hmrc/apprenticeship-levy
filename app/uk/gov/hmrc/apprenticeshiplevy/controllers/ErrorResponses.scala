@@ -17,7 +17,7 @@
 package uk.gov.hmrc.apprenticeshiplevy.controllers
 
 import play.mvc.Http.Status._
-import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
+import uk.gov.hmrc.play.bootstrap.http.ErrorResponse
 
 object ErrorResponses {
   def DESError(statusCode: Int, code: String, msg: String): ErrorResponse = ErrorResponse(statusCode, msg, Some(s"DES_ERROR_${code}"))
