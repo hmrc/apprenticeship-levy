@@ -17,7 +17,8 @@ object AppDependencies {
   lazy val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"       %% s"bootstrap-test-$playVersion" % bootstrapVersion,
     "org.scalatestplus" %% "scalacheck-1-18"              % "3.2.19.0",
-    "org.scalaj"        %% "scalaj-http"                  % "2.4.2" cross CrossVersion.for3Use2_13
+    "org.scalaj"        %% "scalaj-http"                  % "2.4.2" cross CrossVersion.for3Use2_13,
+    "uk.gov.hmrc"       %% s"domain-test-$playVersion"          % "13.0.0"
   ).map(_ % Test)
 
   val generateApiTask: Seq[ModuleID] = {

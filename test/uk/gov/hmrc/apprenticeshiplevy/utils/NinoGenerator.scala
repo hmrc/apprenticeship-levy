@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.utils
 
-import uk.gov.hmrc.domain.{Generator, Nino}
+import uk.gov.hmrc.domain.{NinoGenerator, Nino}
 
 import scala.util.Random
 
 trait NinoGenerator {
-  private val ninoGenerator = new Generator(new Random())
+  private val ninoGenerator = NinoGenerator(new Random)
   def generateNino(): Nino = ninoGenerator.nextNino
   def generateNinoWithPrefix(prefix: String): Nino = {
     require(prefix.length == 2)
