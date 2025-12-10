@@ -76,8 +76,7 @@ val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies.generateApiTask,
     Test / parallelExecution := false,
     retrieveManaged := true,
-    generateAPIDocsTask,
-    resolvers += Resolver.jcenterRepo,
+    generateAPIDocsTask
   )
   .configs(AcceptanceTest)
   .settings(inConfig(AcceptanceTest)(Defaults.testSettings) *)
