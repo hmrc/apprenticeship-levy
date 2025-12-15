@@ -42,7 +42,7 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockHttp: HttpClientV2 = mock[HttpClientV2]
   val mockAuditConnector: AuditConnector = mock[AuditConnector]
-  val mockRequestBuilder = mock[RequestBuilder]
+  val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]
   val mockAppContext: AppContext = mock[AppContext]
 
   def liveFractionsController: FractionsController = new FractionsController with DesController {
@@ -74,7 +74,7 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
       val fromDate: LocalDate = LocalDate.parse("2020-07-22")
       val toDate: LocalDate = LocalDate.parse("2021-07-22")
 
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, Fractions]](using any(), any())).thenReturn(Future.successful(Right(Fractions("empref", List()))))
 

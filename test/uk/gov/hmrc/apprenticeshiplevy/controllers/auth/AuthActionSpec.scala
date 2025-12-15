@@ -86,7 +86,7 @@ class AuthActionSpec
 
   "A user with no active session" should {
     "return UNAUTHORIZED" in {
-      when(mockAuthConnector.authorise(any(), any())(any(), any()))
+      when(mockAuthConnector.authorise(any(), any())(using any(), any()))
         .thenReturn(Future.failed(new SessionRecordNotFound))
       val authAction = new AuthActionImpl(mockAuthConnector, new Default(stubComponents.parsers))
       val controller = new Harness(authAction)
@@ -98,7 +98,7 @@ class AuthActionSpec
   "An unauthorized user" should {
     def authError(testTitle: String, error: Exception, statusCode: Int): Unit =
       s"return $testTitle" in {
-        when(mockAuthConnector.authorise(any(), any())(any(), any()))
+        when(mockAuthConnector.authorise(any(), any())(using any(), any()))
           .thenReturn(Future.failed(error))
         val authAction = new AuthActionImpl(mockAuthConnector, new Default(stubComponents.parsers))
         val controller = new Harness(authAction)
@@ -134,7 +134,7 @@ class AuthActionSpec
       val retrievalResult: Future[Enrolments] =
         Future.successful(enrolments)
 
-      when(mockAuthConnector.authorise[Enrolments](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Enrolments](any(), any())(using any(), any()))
         .thenReturn(retrievalResult)
 
       val authAction = new AuthActionImpl(mockAuthConnector, defaultParser)
@@ -157,7 +157,7 @@ class AuthActionSpec
       val retrievalResult: Future[Enrolments] =
         Future.successful(enrolments)
 
-      when(mockAuthConnector.authorise[Enrolments](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Enrolments](any(), any())(using any(), any()))
         .thenReturn(retrievalResult)
 
       val authAction = new AuthActionImpl(mockAuthConnector, defaultParser)
@@ -175,7 +175,7 @@ class AuthActionSpec
       val retrievalResult: Future[Enrolments] =
         Future.successful(enrolments)
 
-      when(mockAuthConnector.authorise[Enrolments](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Enrolments](any(), any())(using any(), any()))
         .thenReturn(retrievalResult)
 
       val authAction = new AuthActionImpl(mockAuthConnector, defaultParser)
@@ -190,7 +190,7 @@ class AuthActionSpec
   "A user that is logged in using PrivilegedApplication" must {
     "be allowed access" in {
 
-      when(mockAuthConnector.authorise[Unit](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Unit](any(), any())(using any(), any()))
         .thenReturn(Future.successful(()))
 
       val authAction = new PrivilegedAuthActionImpl(mockAuthConnector, defaultParser)
@@ -209,7 +209,7 @@ class AuthActionSpec
     }
 
     "authenticate a privileged application" in {
-      when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+      when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(using any(), any()))
         .thenReturn(Future.successful(paRetrieval))
 
       val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference(""))
@@ -222,7 +222,7 @@ class AuthActionSpec
 
     "authenticate an IR-PAYE enrolled user" when {
       "the request emp ref matches their emp ref" in {
-        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(using any(), any()))
           .thenReturn(Future.successful(ggRetrieval))
 
         val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
@@ -236,7 +236,7 @@ class AuthActionSpec
 
     "return unauthorized for an IR-PAYE enrolled user" when {
       "the request emp ref does not match their emp ref" in {
-        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(using any(), any()))
           .thenReturn(Future.successful(ggRetrieval))
 
         val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123%2FABCDE"))
@@ -247,7 +247,7 @@ class AuthActionSpec
       }
 
       "their is no emp ref returned" in {
-        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(any(), any()))
+        when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(using any(), any()))
           .thenReturn(Future.successful(emptyGGRetrieval))
 
         val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))

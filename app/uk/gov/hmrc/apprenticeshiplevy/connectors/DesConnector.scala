@@ -19,17 +19,17 @@ package uk.gov.hmrc.apprenticeshiplevy.connectors
 import com.codahale.metrics.MetricRegistry
 import com.google.inject.Inject
 import play.api.Logging
-import play.api.http.Status._
-import play.api.libs.json._
+import play.api.http.Status.*
+import play.api.libs.json.*
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
-import uk.gov.hmrc.apprenticeshiplevy.data.des.EmploymentCheckStatus._
-import uk.gov.hmrc.apprenticeshiplevy.data.des._
-import uk.gov.hmrc.apprenticeshiplevy.metrics._
+import uk.gov.hmrc.apprenticeshiplevy.data.des.*
+import uk.gov.hmrc.apprenticeshiplevy.data.des.EmploymentCheckStatus.*
+import uk.gov.hmrc.apprenticeshiplevy.metrics.*
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import views.html.helper

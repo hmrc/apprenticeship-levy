@@ -81,7 +81,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val toDate: LocalDate = LocalDate.parse("2021-07-22")
         val nino = Nino("AA12345A")
 
-        when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+        when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
 
@@ -97,7 +97,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val toDate: LocalDate = LocalDate.parse("2021-07-22")
         val nino = Nino("AA12345A")
 
-        when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+        when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(false))))
 
@@ -115,7 +115,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val toDate: LocalDate = LocalDate.parse("2021-07-22")
         val nino = Nino("AA12345A")
 
-        when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+        when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(Unknown)))
 
@@ -133,7 +133,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val toDate: LocalDate = LocalDate.parse("2020-07-22")
         val nino = Nino("AA12345A")
 
-        when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+        when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
 

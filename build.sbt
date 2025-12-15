@@ -52,13 +52,13 @@ lazy val playSettings: Seq[Setting[?]] = Seq(routesImport ++= Seq(
 )
 
 ThisBuild / majorVersion := 3
-ThisBuild / scalaVersion := "3.6.2"
+ThisBuild / scalaVersion := "3.7.3"
 ThisBuild / scalacOptions ++= Seq(
   "-Wconf:src=routes/.*:s,src=twirl/.*:s",
   "-Wconf:msg=Flag.*repeatedly:s",
   "-Wconf:msg=.*redundantly.*:s",
   "-Wconf:msg=.*-Wunused.*:s",
-  "-Xfatal-warnings",
+  "-Werror",
   "-deprecation",
   "-feature"
 )

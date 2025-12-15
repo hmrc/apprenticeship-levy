@@ -58,7 +58,7 @@ class DocumentationController @Inject()
     }
   }
 
-  def at(rootPath: String, file: String): Action[AnyContent] = Action { request =>
+  private def at(rootPath: String, file: String): Action[AnyContent] = Action { _ =>
     retrieve(rootPath, file) match {
       case Some(fileToServe) => {
         //TODO test the updated fileMimeTypes

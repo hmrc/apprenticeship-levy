@@ -41,7 +41,7 @@ class CustomErrorHandler @Inject()(
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] =
     Future.successful {
-      implicit val headerCarrier: HeaderCarrier = hc(request)
+      implicit val headerCarrier: HeaderCarrier = hc(using request)
       statusCode match {
         case NOT_FOUND =>
           auditConnector.sendEvent(

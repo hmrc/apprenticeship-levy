@@ -79,7 +79,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
 
   "DesController" should {
     "return a internal server error when upstream returns JsValidationException" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new JsValidationException("GET", "/test", Int.getClass,"validation")))
 
@@ -90,7 +90,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_JSON_FAILURE","message":"DES and/or BACKEND server returned bad json."}""")
     }
     "return a internal server error when upstream returns IllegalArgumentException" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new IllegalArgumentException))
 
@@ -101,7 +101,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_JSON_FAILURE","message":"DES and/or BACKEND server returned bad json."}""")
     }
     "return an internal server error when upstream returns BadRequestException" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new BadRequestException("badRequest")))
 
@@ -112,7 +112,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
     }
     "return a service unavailable error when upstream returns IOException" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new IOException("io exception")))
 
@@ -123,7 +123,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
     }
     "return a request timeout error when upstream returns GatewayTimeoutException" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new GatewayTimeoutException("gateway timeout exception")))
 
@@ -134,7 +134,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error"}""")
     }
     "return a not found error when upstream returns NotFoundException" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(new NotFoundException("gateway timeout exception")))
 
@@ -145,7 +145,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
     }
     "return an internal server error when upstream returns a 412" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 412. Response body: '{\"reason\" : \"Backend systems not working\"}'",412)))
 
@@ -156,7 +156,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES backend error"}""")
     }
     "return a forbidden error when upstream returns a 403" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 403. Response body: '{\"reason\" : \"Backend systems not working\"}'",403)))
 
@@ -167,7 +167,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
     }
     "return an unauthorised error when upstream returns a 401" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 401. Response body: '{\"reason\" : \"Backend systems not working\"}'",401)))
 
@@ -178,7 +178,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
     }
     "return a too many requests error when upstream returns a 429" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 429. Response body: '{\"reason\" : \"Backend systems not working\"}'",429)))
 
@@ -189,7 +189,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_TOO_MANY_REQUESTS","message":"DES too many requests"}""")
     }
     "return a request timeout error when upstream returns a 408" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 408. Response body: '{\"reason\" : \"Backend systems not working\"}'",408)))
 
@@ -200,7 +200,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_TIMEOUT","message":"DES not responding error"}""")
     }
     "return an other DES Error when upstream returns an upstream 4xx error" in {
-      when(mockHttp.get(any())(any())).thenReturn(mockRequestBuilder)
+      when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply("DES 4xx error: uk.gov.hmrc.play.http.Upstream4xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 400. Response body: '{\"reason\" : \"Backend systems not working\"}'",400)))
 
