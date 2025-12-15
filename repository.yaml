@@ -1,10 +1,13 @@
 digital-service: Apprenticeship Levy API
 leakDetectionExemptions:
   - ruleId: 'ip_addresses'
-    filePath: '/README.md'
+    filePaths:
+      - '/README.md'
     text: '0.0.0.0'
+
   - ruleId: 'ip_addresses'
-    filePath: '/project/AppDependencies.scala'
+    filePaths:
+      -'/project/AppDependencies.scala'
     text: '9.1.0.8'
 repoVisibility: public_0C3F0CE3E6E6448FAD341E7BFA50FCD333E06A20CFF05FCACE61154DDBBADF71
 test-repositories:

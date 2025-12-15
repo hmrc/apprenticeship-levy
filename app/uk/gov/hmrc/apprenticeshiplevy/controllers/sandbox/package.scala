@@ -19,7 +19,7 @@ package uk.gov.hmrc.apprenticeshiplevy.controllers
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.mvc.Results._
-import uk.gov.hmrc.play.bootstrap.backend.http.ErrorResponse
+import uk.gov.hmrc.play.bootstrap.http.ErrorResponse
 
 package object sandbox {
   val NOT_FOUND_HTTP_STATUS = 404
