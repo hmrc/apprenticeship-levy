@@ -61,7 +61,6 @@ class DocumentationController @Inject()
   private def at(rootPath: String, file: String): Action[AnyContent] = Action { _ =>
     retrieve(rootPath, file) match {
       case Some(fileToServe) => {
-        //TODO test the updated fileMimeTypes
         val mimeType = if (file.contains("raml")) "application/raml+yaml" else cc.fileMimeTypes.forFileName(file).getOrElse("text/plain")
         Ok(Source.fromInputStream(fileToServe).mkString).as(mimeType)
       }
