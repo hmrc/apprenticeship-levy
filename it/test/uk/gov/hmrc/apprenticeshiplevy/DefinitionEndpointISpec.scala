@@ -85,7 +85,7 @@ class DefinitionEndpointISpec
         contentType(result) shouldBe Some("application/json")
         val json = contentAsJson(result)
         val version1 = (json \ "api" \ "versions")(0)
-        (version1 \ "access" \ "type").as[String] shouldBe "PRIVATE"
+        (version1 \ "access" ).as[String] shouldBe "INTERNAL"
       }
     }
   }
