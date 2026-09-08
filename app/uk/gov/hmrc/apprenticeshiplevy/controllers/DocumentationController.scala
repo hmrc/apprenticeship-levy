@@ -39,9 +39,8 @@ class DocumentationController @Inject()
   private lazy val environment = appContext.environment
 
   private lazy val allowlist: JsObject = Json.obj(
-    "access" -> Json.obj(
-      "type" -> "PRIVATE"
-    ))
+    "access" -> "INTERNAL"
+    )
 
   private lazy val allowlistJsonTransformer = (__ \ Symbol("api") \ Symbol("versions")).json.update(
     __.read[JsArray].map { versions =>
