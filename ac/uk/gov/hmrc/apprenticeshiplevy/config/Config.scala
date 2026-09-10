@@ -7,6 +7,7 @@ object Config {
     environmentProperty match {
       case "local" => "http://localhost:9470"
       case "staging" => "https://api.staging.tax.service.gov.uk/apprenticeship-levy"
+      case "qa" => "https://api.qa.tax.service.gov.uk/apprenticeship-levy"
       case env => throw new IllegalArgumentException(s"Provide $env endpoint by replacing this exception with the url to the environment")
     }
   }
