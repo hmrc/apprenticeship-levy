@@ -6,6 +6,7 @@ object Config {
     val environmentProperty = System.getProperty("environment", "local").toLowerCase
     environmentProperty match {
       case "local" => "http://localhost:9470"
+      case "staging" => "https://api.staging.tax.service.gov.uk/apprenticeship-levy"
       case env => throw new IllegalArgumentException(s"Provide $env endpoint by replacing this exception with the url to the environment")
     }
   }
@@ -29,52 +30,52 @@ object Config {
       case "local" => {
         endpointsProp match {
           case "both" =>
-            Seq(("/sandbox","sandbox"),("","live"))
+            Seq(("/sandbox", "sandbox"), ("", "live"))
           case "live" =>
-            Seq(("","live"))
+            Seq(("", "live"))
           case "sandbox" =>
-            Seq(("/sandbox","sandbox"))
-          }
+            Seq(("/sandbox", "sandbox"))
+        }
       }
       case "dev" => {
         endpointsProp match {
           case "both" =>
-            Seq(("","sandbox"),("","live"))
+            Seq(("", "sandbox"), ("", "live"))
           case "sandbox" =>
-            Seq(("","sandbox"))
+            Seq(("", "sandbox"))
           case "live" =>
-            Seq(("","live"))
-          }
+            Seq(("", "live"))
+        }
       }
       case "qa" => {
         endpointsProp match {
           case "both" =>
-            Seq(("","sandbox"),("","live"))
+            Seq(("", "sandbox"), ("", "live"))
           case "sandbox" =>
-            Seq(("","sandbox"))
+            Seq(("", "sandbox"))
           case "live" =>
-            Seq(("","live"))
-          }
+            Seq(("", "live"))
+        }
       }
       case "staging" => {
         endpointsProp match {
           case "both" =>
-            Seq(("","sandbox"))
+            Seq(("", "sandbox"))
           case "sandbox" =>
-            Seq(("","sandbox"))
+            Seq(("", "sandbox"))
           case "live" =>
             Seq()
-          }
+        }
       }
       case "live" => {
         endpointsProp match {
           case "both" =>
-            Seq(("","sandbox"))
+            Seq(("", "sandbox"))
           case "sandbox" =>
-            Seq(("","sandbox"))
+            Seq(("", "sandbox"))
           case "live" =>
             Seq()
-          }
+        }
       }
       case _ => throw new IllegalArgumentException(s"Environment '$environmentProperty' not known")
     }

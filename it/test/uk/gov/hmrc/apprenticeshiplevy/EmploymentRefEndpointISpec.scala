@@ -76,7 +76,7 @@ class EmploymentRefEndpointISpec
             val result = route(app, request).get
 
             status(result) shouldBe OK
-            contentType(result) shouldBe Some("application/hal+json")
+            contentType(result) shouldBe Some("application/json")
             val json = contentAsJson(result)
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES17"
             (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES17/fractions"
@@ -197,7 +197,7 @@ class EmploymentRefEndpointISpec
             val json = contentAsJson(result)
 
             status(result) shouldBe OK
-            contentType(result) shouldBe Some("application/hal+json")
+            contentType(result) shouldBe Some("application/json")
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES18"
             (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES18/fractions"
             (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/840%2FMODES18/declarations"
@@ -213,7 +213,7 @@ class EmploymentRefEndpointISpec
             val json = contentAsJson(result)
 
             status(result) shouldBe OK
-            contentType(result) shouldBe Some("application/hal+json")
+            contentType(result) shouldBe Some("application/json")
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/epaye/840%2FMODES19"
             (json \ "_links" \ "fractions" \ "href").as[String] shouldBe "/epaye/840%2FMODES19/fractions"
             (json \ "_links" \ "declarations" \ "href").as[String] shouldBe "/epaye/840%2FMODES19/declarations"

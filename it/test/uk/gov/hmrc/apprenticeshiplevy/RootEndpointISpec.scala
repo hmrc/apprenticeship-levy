@@ -54,7 +54,7 @@ class RootEndpointISpec
 
         // check
         status(result) shouldBe OK
-        contentType(result) shouldBe Some("application/hal+json")
+        contentType(result) shouldBe Some("application/json")
 
         val json = contentAsJson(result)
         (json \ "_links" \ "self" \ "href").as[String] shouldBe "/"
@@ -82,7 +82,7 @@ class RootEndpointISpec
 
             // check
             status(result) shouldBe OK
-            contentType(result) shouldBe Some("application/hal+json")
+            contentType(result) shouldBe Some("application/json")
             val json = contentAsJson(result)
             (json \ "_links" \ "self" \ "href").as[String] shouldBe "/"
             (json \ "_links" \ "123/AB12345" \ "href").as[String] shouldBe "/epaye/123%2FAB12345"
