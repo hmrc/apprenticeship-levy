@@ -18,15 +18,10 @@ Most submissions will include a year-to-date (**YTD**) figure for the total levy
 
 ## Using this Service
 
-### Production
-For production usage register and log in on [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation). Create an application and notify HMRC of new application ID.
-
 ### Local Development
 For local development either download the preview release or clone this repository and run using the instructions below as a guide.
 
-You can use [curl](https://curl.haxx.se/) to send http requests directly to the service. There are six REST endpoints support GET requests on on http://127.0.0.1:9470/sandbox and http://127.0.0.1:9470/ which will return a JSON response object. Each endpoint will be documented in fully shortly here but full documentation is available on the [HMRC Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation).
-
-In brief however the endpoints are:
+The endpoints are:
 
 * [/](./docs/get-all-employers.bak.md) which returns a list of valid 'empref' values used in the remaining 5 endpoints
 * [/epaye/{empref}](./docs/get-employer-details.bak.md) which returns a list of endpoints for the empref and employer contact details
@@ -34,13 +29,6 @@ In brief however the endpoints are:
 * [/epaye/{empref}/fractions](./docs/get-employer-fraction-calculations.bak.md) which returns a list of employee location distributions
 * [/epaye/{empref}/employed/<nino>](./docs/get-employment-status.bak.md) which returns true if employee is employed with the employer and false otherwise
 * [/fraction-calculation-date](./docs/get-latest-fraction-calculation-date.bak.md) which returns the date the last time HMRC systems were updated with new fraction values
-
-#### Examples
-* `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470`
-* `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/epaye/840%2FMODES17`
-* `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/epaye/123%2FAB12345/declarations`
-* `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/epaye/123%2FAB12345/fractions`
-* `curl -vvv -H "Accept: application/vnd.hmrc.1.0+json" http://localhost:9470/fraction-calculation-date`
 
 ## Running
 
@@ -55,35 +43,15 @@ The preview release is configured to fetch sandbox data from itself on port 9470
 ### Building & Running in Development
 #### Pre-requisites
 
-You will require [SBT 0.13.11](http://www.scala-sbt.org/download.html) to be installed on your machine. At present there are no other dependencies required by this service.
+You will require [SBT 1.10.2](http://www.scala-sbt.org/download.html) to be installed on your machine. At present there are no other dependencies required by this service.
 
 #### Build
 
-On a command line simply use `sbt clean dist` to create a distribution or `sbt clean compile` to compile
+On a command line simply use `sbt clean compile` to compile
 
 #### Run
 
 On a command line use `sbt run`
-
-A different port can be specified as follows `sbt "run 9010"` update [application.conf](https://github.com/hmrc/apprenticeship-levy/blob/master/conf/application.conf#L238) ports for various services defined where appropriate.
-
-### Running Demo Files
-
-* Host the two demo html files e.g. `python -m SimpleHTTPServer 9000`
-* Run web browser temporarily without cross site scripting security e.g. `chrome --disable-web-security --user-data-dir`
-* Update `demo.html` file with client id and secret
-* Open page in browser and follow on screen steps
-
-##### Debugging
-
-Debugging requires two steps as follows:
-
-1. On a command line pass in the -jvm-debug <port> to sbt like so: `sbt -jvm-debug 5005 run`
-2. In an editor that supports remote debugging start the remote debug on port 5005 with listening to socket.
-    - For IntelliJ this is accomplished by selecting "Edit Configurations..." in the toolbar
-    - Click '+' button to add new 'Remote' configuration
-    - Ensure 'socket', and 'attach' are selected
-    - Set host to either localhost or to 0.0.0.0 and port to 5005
 
 #### Testing
 
@@ -93,7 +61,11 @@ directory.
 
 ##### Acceptance Testing (Separate from internal A/C testing)
 
-Run using `sbt -Denvironment=qa -Dbearer.token.qa=<your token here> ac:test`
+Run in staging using `sbt '; set javaOptions ++= Seq("-Denvironment=staging", "-Dbearer.token.staging=<bearer token>"); ac:test'`
+
+Run in qa using `sbt '; set javaOptions ++= Seq("-Denvironment=qa", "-Dbearer.token.qa=<bearer token>"); ac:test'`
+
+Run in local using `sbt '; set javaOptions ++= Seq("-Denvironment=local", "-Dbearer.token.local=<bearer token>"); ac:test'`
 
 ##### Integration Testing
 
@@ -103,10 +75,4 @@ Run using `sbt it/test`
 
 Run using `sbt test`
 
-#### Turning on Full Stack Traces
 
-Turn on full stacktrace in sbt console using `set testOptions in "apprenticeship-levy" += Tests.Argument("-oF")`
-
-#### Other
-
-Scalastyle is enabled for this project. To run use `sbt scalastyle` on the command line.

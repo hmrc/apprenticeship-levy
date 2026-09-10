@@ -1,11 +1,12 @@
 package uk.gov.hmrc.apprenticeshiplevy.endpoints
 
-import java.io.File
-import org.scalatest._
+import org.scalatest.*
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.*
 import play.api.libs.json.Json
 import scalaj.http.Http
+
+import java.io.File
 
 @DoNotDiscover
 class EmprefSpec extends FunctionalSpec with Eventually with IntegrationPatience {
@@ -21,7 +22,7 @@ class EmprefSpec extends FunctionalSpec with Eventually with IntegrationPatience
         val name = file.getName().splitAt(file.getName().indexOf("."))._1
         val emprefParts = name.splitAt(3)
         val empref = s"${emprefParts._1}%2F${emprefParts._2}"
-        it (s"should when calling ${url}$context/epaye/$empref return employer details (${environment})") {
+        it(s"should when calling ${url}$context/epaye/$empref return employer details (${environment})") {
           // set up
           val expected = fileToStr(file)
           val expectedJson = Json.parse(expected)
@@ -35,7 +36,7 @@ class EmprefSpec extends FunctionalSpec with Eventually with IntegrationPatience
 
           // check
           result.code shouldBe 200
-          result.contentType shouldBe Some("application/hal+json")
+          result.contentType shouldBe Some("application/json")
           Json.parse(result.body) shouldBe expectedJson
         }
       }

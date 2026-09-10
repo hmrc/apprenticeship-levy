@@ -274,7 +274,7 @@ documentation:
  - title: Errors
    content: !include https://developer.service.hmrc.gov.uk/api-documentation/assets/common/docs/errors.md
 
-mediaType: [ application/json, application/hal+json ]
+mediaType: [ application/json, application/json ]
 
 uses:
   sec: https://developer.service.hmrc.gov.uk/api-documentation/assets/common/modules/securitySchemes.raml

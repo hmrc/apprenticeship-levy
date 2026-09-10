@@ -47,7 +47,7 @@ trait ApiController extends BackendBaseController with HeaderValidator {
 
   def selfLink(url: String): HalLink = HalLink("self", url)
 
-  def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).as("application/hal+json")
+  def ok(hal: HalResource): Result = Ok(Json.toJson(hal)).as("application/json")
 
   protected val withValidAcceptHeader: ActionBuilder[Request, AnyContent] = validateAccept(acceptHeaderValidationRules)
 }

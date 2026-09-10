@@ -31,7 +31,7 @@ class RootSpec extends FunctionalSpec with Eventually with IntegrationPatience {
 
         // check
         result.code shouldBe 200
-        result.contentType shouldBe Some("application/hal+json")
+        result.contentType shouldBe Some("application/json")
         Json.parse(result.body) shouldBe expectedJson
       }
     }
