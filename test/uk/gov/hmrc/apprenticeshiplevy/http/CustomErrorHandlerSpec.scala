@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.http
 
-import java.time.Instant
 import play.api.Configuration
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -27,6 +27,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{DataEvent, TruncationLog}
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 
+import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class CustomErrorHandlerSpec extends AppLevyUnitSpec {
@@ -57,29 +58,30 @@ class CustomErrorHandlerSpec extends AppLevyUnitSpec {
     httpAuditEvent = mockHttpAuditEvent,
     configuration = configuration
   )
-  def versionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"
   val requestHeader: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(versionHeader)
+
+  def versionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"
 
   "onClientError" should {
     "return the appropriate status code" when {
       "a NOT_FOUND error is flagged" in {
 
-        val result = handler.onClientError(requestHeader, 404, "Not Found")
+        val result = handler.onClientError(requestHeader, NOT_FOUND, "Not Found")
 
-        status(result) shouldBe 404
+        status(result) shouldBe NOT_FOUND
         contentAsJson(result) shouldBe Json.parse("""{"statusCode":404,"message":"URI not found","requested":"/"}""")
       }
       "a BAD_REQUEST error is flagged" in {
 
-        val result = handler.onClientError(requestHeader, 400, "Bad Request")
+        val result = handler.onClientError(requestHeader, BAD_REQUEST, "Bad Request")
 
-        status(result) shouldBe 400
+        status(result) shouldBe BAD_REQUEST
         contentAsJson(result) shouldBe Json.parse("""{"statusCode":400,"message":"Bad Request"}""")
       }
       "another error is flagged" in {
-        val result = handler.onClientError(requestHeader, 500, "Other Error")
+        val result = handler.onClientError(requestHeader, INTERNAL_SERVER_ERROR, "Other Error")
 
-        status(result) shouldBe 500
+        status(result) shouldBe INTERNAL_SERVER_ERROR
         contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"Other Error"}""")
       }
     }

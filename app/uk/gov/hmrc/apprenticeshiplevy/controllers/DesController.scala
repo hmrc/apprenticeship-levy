@@ -94,7 +94,7 @@ trait DesController extends ApiController with Logging {
         case REQUEST_TIMEOUT =>
           RequestTimeout(ErrorResponseUtils.convertToJson(DESError(REQUEST_TIMEOUT, "TIMEOUT", s"DES not responding error")))
         case _ =>
-          if (e.statusCode >= 400 && e.statusCode < 500)
+          if (e.statusCode >= BAD_REQUEST && e.statusCode < INTERNAL_SERVER_ERROR)
             ServiceUnavailable(ErrorResponseUtils.convertToJson(DESError(e.reportAs, "OTHER", s"DES 4xx error")))
           else
             ServiceUnavailable(ErrorResponseUtils.convertToJson(DESError(e.reportAs, "BACKEND_FAILURE", s"DES 5xx error")))

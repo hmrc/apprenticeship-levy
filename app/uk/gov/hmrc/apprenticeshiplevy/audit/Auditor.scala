@@ -16,16 +16,28 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.audit
 
-import java.io.IOException
 import play.api.Logging
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_TIMEOUT}
 import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, HeaderCarrier, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
+import java.io.IOException
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 trait Auditor extends Logging {
+
+  protected val exceptionToMessage: PartialFunction[Throwable, Int] = {
+    case _: BadRequestException => BAD_REQUEST
+    case _: IOException => NGINX_ERROR_STATUS
+    case _: GatewayTimeoutException => REQUEST_TIMEOUT
+    case _: NotFoundException => NOT_FOUND
+    case e: UpstreamErrorResponse => e.statusCode
+    case _ => INTERNAL_SERVER_ERROR
+  }
+  private val NGINX_ERROR_STATUS: Int = 444
+
   def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = {
     block andThen {
       case Success(_) => auditConnector.map(_.sendEvent(event.toDataEvent(200)))
@@ -38,14 +50,6 @@ trait Auditor extends Logging {
   }
 
   protected def auditConnector: Option[AuditConnector]
-  protected val exceptionToMessage: PartialFunction[Throwable, Int] = {
-    case _: BadRequestException => 400
-    case _: IOException => 444
-    case _: GatewayTimeoutException => 408
-    case _: NotFoundException => 404
-    case e: UpstreamErrorResponse => e.statusCode
-    case _ => 500
-  }
 }
 
 

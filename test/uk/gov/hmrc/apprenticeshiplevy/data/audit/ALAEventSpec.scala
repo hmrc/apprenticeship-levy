@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.apprenticeshiplevy.data.audit
 
+import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 
@@ -27,7 +28,7 @@ class ALAEventSpec extends AppLevyUnitSpec {
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = Seq("Content-Type" -> "application/json"))
 
         val event = ALAEvent("event1")
-        event.toDataEvent(200).detail shouldBe Map("upstream_http_status" -> "200")
+        event.toDataEvent(OK).detail shouldBe Map("upstream_http_status" -> "200")
 
       }
       "a http status and exception is supplied" in {
@@ -35,7 +36,7 @@ class ALAEventSpec extends AppLevyUnitSpec {
         val exception = new BadRequestException("bad request")
 
         val event = ALAEvent("event1")
-        event.toDataEvent(404, exception).detail shouldBe Map("upstream_http_status" -> "404", "exception" -> "uk.gov.hmrc.http.BadRequestException: bad request")
+        event.toDataEvent(NOT_FOUND, exception).detail shouldBe Map("upstream_http_status" -> "404", "exception" -> "uk.gov.hmrc.http.BadRequestException: bad request")
       }
     }
   }
