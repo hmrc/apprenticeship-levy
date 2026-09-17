@@ -159,7 +159,7 @@ private object ErrorHandler extends Logging {
         logWarningAboutException(e, NOT_FOUND, "NotFound with code")
         NotFound(ErrorResponseUtils.convertToJson(AuthError(NOT_FOUND, "NOT_FOUND", "Auth endpoint not found")))
       case e: UpstreamErrorResponse =>
-        val apiMessage = if (e.statusCode >= 400 && e.statusCode < 500) "API returning code" else "API returning ServiceUnavailable with code"
+        val apiMessage = if (e.statusCode >= BAD_REQUEST && e.statusCode < INTERNAL_SERVER_ERROR) "API returning code" else "API returning ServiceUnavailable with code"
         val message = s"Client ${
           MDC.get("X-Client-ID")
         } API error: ${
@@ -175,7 +175,7 @@ private object ErrorHandler extends Logging {
           case TOO_MANY_REQUESTS => TooManyRequests(ErrorResponseUtils.convertToJson(AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"Auth too many requests")))
           case REQUEST_TIMEOUT => RequestTimeout(ErrorResponseUtils.convertToJson(AuthError(REQUEST_TIMEOUT, "TIMEOUT", s"Auth not responding error")))
           case _ =>
-            if (e.statusCode >= 400 && e.statusCode < 500) {
+            if (e.statusCode >= BAD_REQUEST && e.statusCode < INTERNAL_SERVER_ERROR) {
               ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "OTHER", s"Auth 4xx error")))
             } else {
               ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "BACKEND_FAILURE", s"Auth 5xx error")))

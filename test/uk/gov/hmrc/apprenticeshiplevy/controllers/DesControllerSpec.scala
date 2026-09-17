@@ -23,7 +23,7 @@ import org.mockito.Mockito.when
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import play.api.http.Status.{FORBIDDEN, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_TIMEOUT, SERVICE_UNAVAILABLE, TOO_MANY_REQUESTS, UNAUTHORIZED}
+import play.api.http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_TIMEOUT, SERVICE_UNAVAILABLE, TOO_MANY_REQUESTS, UNAUTHORIZED}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents, Result}
 import play.api.test.FakeRequest
@@ -108,7 +108,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe 400
+      status(response) shouldBe BAD_REQUEST
       contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
     }
     "return a service unavailable error when upstream returns IOException" in {
