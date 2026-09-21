@@ -1,7 +1,8 @@
 openapi: 3.0.3
 info:
   title: Apprenticeship Levy
-  description: "The Skills Funding Agency (**SFA**) is a sub-department of the Department for Business, Innovation and Skills (**BIS**) responsible for, amongst other things, providing funding to employers for approved apprenticeship training schemes. From April 2017 a new Apprenticeship Levy will be applied to organisations with large payrolls (broadly speaking, payrolls in excess of £3 million). HMRC will be collecting the levy, but the SFA has responsibility for ensuring that the employers who paid the levy have access to those funds to spend on apprentices. The purpose of this api is to allow the Digital Apprenticeship Service (**DAS**), being built by the SFA, to access information about the levy that an organisation has paid. This document describes the API that is being built on the Multi-Channel Digital Tax Platform (**MDTP**) to serve DAS.\n\nAn employer makes levy declarations as part of an Employer Payment Summary (**EPS**) submission to the PAYE RTI system.  From April 2017 the schema for the EPS will be extended to include fields relating to the levy. These submissions are made in respect of a payroll scheme identified by an Employer Reference (**empref**) and will form the primary source of data for this API. See the [HMRC page about EPS](https://www.gov.uk/guidance/what-payroll-information-to-report-to-hmrc#eps-what-to-report) for details about what data appears on an EPS submission. For even more detail, including the specific XML schema and business rules that are applied to EPS submission, see the [RTI information pages for software developers](https://www.gov.uk/government/collections/real-time-information-online-internet-submissions-support-for-software-developers). The technical specifications sections for each tax year contain links to a `.zip` file that includes the XML Schema file and Schematron rules for the tax year. As of the date of writing this document the 2017/18 rules have not been defined so no specific information is available yet about the fields relating to the apprenticeship levy.\n\nMost submissions will include a year-to-date (**YTD**) figure for the total levy declared in the current tax year. However, there may be times that no levy or values for other fields are relevant, in which case the employer might file an EPS with an indication of a Period of Inactivity or No Payment for Period. The levy api needs to be able to reflect these situations out to DAS.\nWhen an API changes in a way that is backwards-incompatible, we increase the version number of the API. \nSee our [reference guide](/api-documentation/docs/reference-guide#versioning) for more on\nversioning.\nWe use standard HTTP status codes to show whether an API request succeeded or not. They are usually in the range:\n* 200 to 299 if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action\n* 400 to 499 if it failed because of a client error by your application\n* 500 to 599 if it failed because of an error on our server\n\nErrors specific to each API are shown in the Endpoints section, under Response. \nSee our [reference guide](/api-documentation/docs/reference-guide#errors) for more on errors."
+  description: |
+    [Apprenticeship Levy](https://www.gov.uk/guidance/pay-apprenticeship-levy) is applied to organisations with large payrolls (broadly speaking, payrolls in excess of £3 million). The purpose of this API is to allow the Digital Apprenticeship Service (DAS) to access information about the levy that an organisation has paid.
   contact: {}
   version: '1.0'
 servers:
@@ -14,11 +15,11 @@ paths:
       tags:
         - apprenticeship-levy
       summary: Get all employers
-      description: >
-        Returns a list of valid links indexed by empref in HAL format
+      description: |
+        Returns a list of valid links, indexed by employer reference, in HAL format.
 
 
-        Departmental Access with a Time-based One-Time Password (**TOTP**) in cases where the application needs to track amendments for schemes where the OAuth access token has expired is *NOT* applicable to this endpoint.
+        Departmental Access with a Time-based One-time Password (TOTP) in cases where the application needs to track amendments for schemes where the OAuth access token has expired is *NOT* applicable to this endpoint.
       operationId: Getallemployers
       parameters:
         - name: Authorization
@@ -219,11 +220,11 @@ paths:
       tags:
         - apprenticeship-levy
       summary: Get employer details
-      description: >
-        Returns more details about an empref including details about the employer and a list of available endpoints that apply to the empref.
+      description: |
+        Returns more details about an employer referemce, including details about the employer and a list of available endpoints that apply to the employer reference.
 
 
-        Departmental Access with a Time-based One-Time Password (**TOTP**) in cases where the application needs to track amendments for schemes where the OAuth access token has expired is *NOT* applicable to this endpoint.
+        Departmental access with a Time-based One-time Password (TOTP) in cases where the application needs to track amendments for schemes where the OAuth access token has expired is *not* applicable to this endpoint.
       operationId: Getemployerdetails
       parameters:
         - name: empref
@@ -816,7 +817,12 @@ paths:
       tags:
         - apprenticeship-levy
       summary: Get employer fraction calculations
-      description: "Returns a list of fraction calculations for a given employer reference.\n\nHMRC will calculate the English Fraction values for all PAYE schemes on a regular, but infrequent, basis, most likely quarterly. The estimate for the number of schemes that are connected to DAS accounts in the first year is placed at 33,000, rising to 60,000 after three years, so refreshing the English Fraction values will be costly, and not something we’d want to do on a daily basis given how infrequently the values are updated.\n\nThis API endpoint will let DAS ask the HMRC system for the date that the most recent English Fraction batch calculation was done. DAS can call this endpoint on a frequent basis, perhaps daily, store the date and only refresh the scheme values when it changes.\n      \n"
+      description: |
+        Returns a list of fraction calculations for a given employer reference.
+
+        HMRC will calculate the English Fraction values for all PAYE schemes on a regular, but infrequent, basis, most likely quarterly.
+
+        This endpoint will let DAS ask the HMRC system for the date that the most recent English Fraction batch calculation was done. DAS can call this endpoint on a frequent basis, perhaps daily, store the date and only refresh the scheme values when it changes.
       operationId: Getemployerfractioncalculations
       parameters:
         - name: empref
@@ -1371,14 +1377,14 @@ paths:
       tags:
         - apprenticeship-levy
       summary: Get latest fraction calculation date
-      description: >
+      description: |
         Returns the date of the most recent fraction calculation batch run.
 
 
-        HMRC will calculate the English Fraction values for all PAYE schemes on a regular, but infrequent, basis, most likely quarterly. The estimate for the number of schemes that are connected to DAS accounts in the first year is placed at 33,000, rising to 60,000 after three years, so refreshing the English Fraction values will be costly, and not something we’d want to do on a daily basis given how infrequently the values are updated.
+        HMRC will calculate the English Fraction values for all PAYE schemes on a regular, but infrequent, basis, most likely quarterly.
 
 
-        This API endpoint will let consumers of this API (namely DAS) to ask the HMRC system for the date that the most recent English Fraction batch calculation was completed. DAS can call this endpoint on a frequent basis, perhaps daily, store the date and only refresh the scheme values when it changes.
+        This endpoint will let DAS ask the HMRC system for the date that the most recent English Fraction batch calculation was completed. DAS can call this endpoint on a frequent basis, perhaps daily, store the date and only refresh the scheme values when it changes.
 
 
         The response will take the form of a date, in the standard `YYYY-MM-DD` format used by MTDP APIs. The HMRC system will ensure that the fraction values for all schemes have been recalculated before updating the calculation date.
