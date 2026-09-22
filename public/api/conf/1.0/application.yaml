@@ -22,19 +22,7 @@ paths:
         Departmental Access with a Time-based One-time Password (TOTP) in cases where the application needs to track amendments for schemes where the OAuth access token has expired is *NOT* applicable to this endpoint.
       operationId: Getallemployers
       parameters:
-        - name: Authorization
-          in: header
-          description: |
-            An [OAuth 2.0 Bearer Token](/api-documentation/docs/authorisation/user-restricted-endpoints) with the read:apprenticeship-levy scope.
-
-            For example: Bearer bb7fed3fe10dd235a2ccda3d50fb
-          required: true
-          style: simple
-          schema:
-            type: string
-            enum: [
-              "Bearer bb7fed3fe10dd235a2ccda3d50fb"
-            ]
+        - $ref: '#/components/parameters/authorizationReadScopeHeader'
       responses:
         '200':
           description: 'OK'
@@ -235,14 +223,7 @@ paths:
           schema:
             type: string
             example: 123/AB12345
-        - name: Authorization
-          in: header
-          description: ''
-          required: true
-          style: simple
-          schema:
-            type: string
-            example: Bearer [token here]
+        - $ref: '#/components/parameters/authorizationReadScopeHeader'
       responses:
         '200':
           description: 'OK'
@@ -507,14 +488,7 @@ paths:
             type: string
             format: date
             example: 2015-08-09
-        - name: Authorization
-          in: header
-          description: ''
-          required: true
-          style: simple
-          schema:
-            type: string
-            example: Bearer [token here]
+        - $ref: '#/components/parameters/authorizationReadScopeHeader'
       responses:
         '200':
           description: 'OK'
@@ -851,14 +825,7 @@ paths:
             type: string
             format: date
             example: 2015-08-09
-        - name: Authorization
-          in: header
-          description: ''
-          required: true
-          style: simple
-          schema:
-            type: string
-            example: Bearer [token here]
+        - $ref: '#/components/parameters/authorizationReadScopeHeader'
       responses:
         '200':
           description: 'OK'
@@ -1139,14 +1106,7 @@ paths:
             type: string
             format: date
             example: 2016-01-31
-        - name: Authorization
-          in: header
-          description: ''
-          required: true
-          style: simple
-          schema:
-            type: string
-            example: Bearer [token here]
+        - $ref: '#/components/parameters/authorizationReadScopeHeader'
       responses:
         '200':
           description: 'OK'
@@ -1390,14 +1350,7 @@ paths:
         The response will take the form of a date, in the standard `YYYY-MM-DD` format used by MTDP APIs. The HMRC system will ensure that the fraction values for all schemes have been recalculated before updating the calculation date.
       operationId: Getlatestfractioncalculationdate
       parameters:
-        - name: Authorization
-          in: header
-          description: ''
-          required: true
-          style: simple
-          schema:
-            type: string
-            example: Bearer [token here]
+        - $ref: '#/components/parameters/authorizationReadScopeHeader'
       responses:
         '200':
           description: 'OK'
@@ -1588,6 +1541,16 @@ paths:
         - User-Restricted:
             - read:apprenticeship-levy
 components:
+  parameters:
+    authorizationReadScopeHeader:
+      name: "Authorization"
+      in: header
+      description: |
+        An OAuth 2.0 Bearer Token with the *read:apprenticeship-levy* scope.
+      schema:
+        type: string
+        example: Bearer bb7fed3fe10dd235a2ccda3d50fb
+      required: true
   securitySchemes:
     User-Restricted:
       type:  oauth2
