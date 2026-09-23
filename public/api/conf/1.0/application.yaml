@@ -1360,6 +1360,7 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/ApprenticeshipLevyFractionCalculationsDateResponse'
+              example: 2026-09-22
         '400':
           description: 'Bad Request'
           headers: {}
