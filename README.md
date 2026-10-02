@@ -59,13 +59,9 @@ On a command line use `sbt run`
 To run with coverage `sbt clean coverage test it/test` and an HTML report will be available in the target/scala-2.11/scoverage-report/index.html
 directory.
 
-##### Acceptance Testing (Separate from internal A/C testing)
+##### Acceptance Testing
 
-Run in staging using `sbt '; set javaOptions ++= Seq("-Denvironment=staging", "-Dbearer.token.staging=<bearer token>"); ac:test'`
-
-Run in qa using `sbt '; set javaOptions ++= Seq("-Denvironment=qa", "-Dbearer.token.qa=<bearer token>"); ac:test'`
-
-Run in local using `sbt '; set javaOptions ++= Seq("-Denvironment=local", "-Dbearer.token.local=<bearer token>"); ac:test'`
+Acceptance tests are maintained separately in the `apprenticeship-levy-acceptance-tests` repository.
 
 ##### Integration Testing
 
