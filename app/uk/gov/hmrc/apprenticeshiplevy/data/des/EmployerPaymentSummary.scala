@@ -94,7 +94,7 @@ object EmployerPaymentSummary extends Logging {
   def toDeclarations(eps: EmployerPaymentSummary): Seq[LevyDeclaration] = convert[EmployerPaymentSummary,LevyDeclaration](conversions)(eps)
 
   def convert[T,U](partialFunctions: Seq[PartialFunction[T,U]])(t: T): Seq[U] =
-    partialFunctions.foldLeft(Seq.empty[U]) { (seq, pf) =>
+    partialFunctions.foldLeft(Nil) { (seq, pf) =>
       Try(pf(t)) match {
         case Success(converted) => seq :+ converted
         case Failure(_) => seq
@@ -151,13 +151,13 @@ object EmployerPaymentSummary extends Logging {
 
 abstract class EPSResponse {}
 
-case class EmployerPaymentsSummary(empref: String, eps: List[EmployerPaymentSummary]) extends EPSResponse
+case class EmployerPaymentsSummary(empref: String, eps: Seq[EmployerPaymentSummary]) extends EPSResponse
 
 object EmployerPaymentsSummary {
   implicit val format: OFormat[EmployerPaymentsSummary] = Json.format[EmployerPaymentsSummary]
 }
 
-case class EmployerPaymentsSummaryVersion0(empref: String, declarations: List[EmployerPaymentSummary]) extends EPSResponse
+case class EmployerPaymentsSummaryVersion0(empref: String, declarations: Seq[EmployerPaymentSummary]) extends EPSResponse
 
 object EmployerPaymentsSummaryVersion0 {
   implicit val format: OFormat[EmployerPaymentsSummaryVersion0] = Json.format[EmployerPaymentsSummaryVersion0]

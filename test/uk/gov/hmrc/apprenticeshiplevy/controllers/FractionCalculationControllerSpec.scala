@@ -87,7 +87,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
 
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(Future.successful(Fractions("123AB12345", List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
+      when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(Future.successful(Fractions("123AB12345", Seq(FractionCalculation(LocalDate.of(2016,4,22), Seq(Fraction("England", BigDecimal(0.83))))))))
 
       // test
       await(controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()
@@ -102,7 +102,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       val actualHeaderCarrier = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders shouldBe List(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      actualHeaderCarrier.extraHeaders shouldBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
     }
 
     "not fail if environment header not supplied" in {
@@ -113,7 +113,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(Future.successful(Fractions("123AB12345",
-        List(FractionCalculation(LocalDate.of(2016,4,22), List(Fraction("England", BigDecimal(0.83))))))))
+        Seq(FractionCalculation(LocalDate.of(2016,4,22), Seq(Fraction("England", BigDecimal(0.83))))))))
 
       // test
       await(controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()
@@ -127,7 +127,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       val actualHeaderCarrier = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders shouldBe List(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      actualHeaderCarrier.extraHeaders shouldBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
     }
   }
 }

@@ -71,7 +71,7 @@ trait LevyDeclarationController extends Logging {
          */
         case t: NotFoundException =>
           logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${t.getMessage}, API returning empty sequence")
-          Seq.empty
+          Nil
       }
   }
 

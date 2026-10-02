@@ -36,7 +36,7 @@ class CustomErrorHandlerSpec extends AppLevyUnitSpec {
   val mockHttpAuditEvent: HttpAuditEvent = mock[HttpAuditEvent]
   val configuration: Configuration = Configuration(
     "appName"                                         -> "myApp",
-    "bootstrap.errorHandler.warnOnly.statusCodes"     -> List.empty,
+    "bootstrap.errorHandler.warnOnly.statusCodes"     -> Nil,
     "bootstrap.errorHandler.suppress4xxErrorMessages" -> false,
     "bootstrap.errorHandler.suppress5xxErrorMessages" -> false
   )

@@ -71,8 +71,8 @@ class FractionsEndpointISpec
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
-            val f1 = List(Fraction("England", BigDecimal(0.83)))
-            val f2 = List(Fraction("England", BigDecimal(0.78)))
+            val f1 = Seq(Fraction("England", BigDecimal(0.83)))
+            val f2 = Seq(Fraction("England", BigDecimal(0.78)))
             val date_1 = LocalDate.of(2016, 12, 23)
             val date_2 = LocalDate.of(2015, 8, 18)
             fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
@@ -106,8 +106,8 @@ class FractionsEndpointISpec
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
-            val f1 = List(Fraction("England", BigDecimal(0.83)))
-            val f2 = List(Fraction("England", BigDecimal(0.78)))
+            val f1 = Seq(Fraction("England", BigDecimal(0.83)))
+            val f2 = Seq(Fraction("England", BigDecimal(0.78)))
             val date_1 = LocalDate.of(2016, 12, 23)
             val date_2 = LocalDate.of(2016, 8, 18)
             fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
@@ -126,8 +126,8 @@ class FractionsEndpointISpec
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
-            val f1 = List(Fraction("England", BigDecimal(0.83)))
-            val f2 = List(Fraction("England", BigDecimal(0.78)))
+            val f1 = Seq(Fraction("England", BigDecimal(0.83)))
+            val f2 = Seq(Fraction("England", BigDecimal(0.78)))
             val date_1 = LocalDate.of(2016, 12, 23)
             val date_2 = LocalDate.of(2016, 8, 18)
             fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))
@@ -146,8 +146,8 @@ class FractionsEndpointISpec
             val json = contentAsJson(result)
             (json \ "empref").as[String] shouldBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
-            val f1 = List(Fraction("England", BigDecimal(0.83)))
-            val f2 = List(Fraction("England", BigDecimal(0.78)))
+            val f1 = Seq(Fraction("England", BigDecimal(0.83)))
+            val f2 = Seq(Fraction("England", BigDecimal(0.78)))
             val date_1 = LocalDate.of(2016, 12, 23)
             val date_2 = LocalDate.of(2016, 8, 18)
             fractions should contain.atLeastOneOf(FractionCalculation(date_1, f1), FractionCalculation(date_2, f2))

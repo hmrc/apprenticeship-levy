@@ -171,7 +171,7 @@ class AuthActionSpec
 
   "A user that is logged in with an empty PAYE enrolment" must {
     "be allowed access" in {
-      val enrolments = Enrolments(Set(Enrolment("IR-PAYE", Seq.empty, "")))
+      val enrolments = Enrolments(Set(Enrolment("IR-PAYE", Nil, "")))
       val retrievalResult: Future[Enrolments] =
         Future.successful(enrolments)
 
