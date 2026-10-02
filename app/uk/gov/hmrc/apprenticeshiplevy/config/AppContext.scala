@@ -74,7 +74,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
     }
 
   def allowlistedApplicationIds: Seq[String] = maybeString("microservice.allowlisted-applications")
-    .map { applicationIds => applicationIds.split(",").toSeq }.getOrElse(Seq.empty)
+    .map { applicationIds => applicationIds.split(",").toSeq }.getOrElse(Nil)
 
   // $COVERAGE-OFF$
   logger.info(s"""\n${"*" * 80}\nAllow list:\n${allowlistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")

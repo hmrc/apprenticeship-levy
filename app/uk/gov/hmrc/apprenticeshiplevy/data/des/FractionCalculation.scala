@@ -20,7 +20,7 @@ import play.api.libs.json._
 
 import java.time.LocalDate
 
-case class FractionCalculation(calculatedAt: LocalDate, fractions: List[Fraction])
+case class FractionCalculation(calculatedAt: LocalDate, fractions: Seq[Fraction])
 
 object FractionCalculation {
   implicit val formats: OFormat[FractionCalculation] = Json.format[FractionCalculation]

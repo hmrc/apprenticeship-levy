@@ -285,7 +285,7 @@ trait LevyDeclarationsEndpoint extends Timer {
         logger.error(s"DES reported error reason '$reason' on HTTP 200 response.")
         throw UpstreamErrorResponse.apply(s"DES returned error code object on HTTP 200 response (treating as error). DES error reason: '$reason'.", PRECONDITION_FAILED)
       case Some(EmptyEmployerPayments(empref)) =>
-        Some(EmployerPaymentsSummary(empref, List.empty[EmployerPaymentSummary]))
+        Some(EmployerPaymentsSummary(empref, Nil))
       case Some(EmployerPaymentsSummary(empref, eps)) =>
         Some(EmployerPaymentsSummary(empref, eps))
       case Some(_) =>
@@ -293,7 +293,7 @@ trait LevyDeclarationsEndpoint extends Timer {
         None
       case None =>
         val isEmpty = "^\\s*(\\{\\s*})\\s*$".r
-        isEmpty findFirstIn jsonStr map (_ => EmployerPaymentsSummary("", List.empty[EmployerPaymentSummary]))
+        isEmpty findFirstIn jsonStr map (_ => EmployerPaymentsSummary("", Nil))
     }
   }
 

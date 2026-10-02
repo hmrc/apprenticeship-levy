@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.data.des
 
 import play.api.libs.json._
 
-case class Fractions(empref: String, fractionCalculations: List[FractionCalculation])
+case class Fractions(empref: String, fractionCalculations: Seq[FractionCalculation])
 
 object Fractions {
   implicit val formats: OFormat[Fractions] = Json.format[Fractions]

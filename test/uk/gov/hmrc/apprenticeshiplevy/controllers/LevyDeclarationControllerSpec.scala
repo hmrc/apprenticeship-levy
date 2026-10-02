@@ -90,7 +90,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
           .thenReturn(Future.successful(EmployerPaymentsSummary(
             "empref",
-            List(EmployerPaymentSummary(
+            Seq(EmployerPaymentSummary(
               submissionId = 123456,
               hmrcSubmissionTime = LocalDateTime.now(),
               rtiSubmissionTime = LocalDateTime.now(),
@@ -111,7 +111,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
           .thenReturn(Future.successful(EmployerPaymentsSummary(
             "empref",
-            List(EmployerPaymentSummary(
+            Seq(EmployerPaymentSummary(
               submissionId = 123456,
               hmrcSubmissionTime = LocalDateTime.now(),
               rtiSubmissionTime = LocalDateTime.now(),
@@ -132,7 +132,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
           .thenReturn(Future.successful(EmployerPaymentsSummary(
             "empref",
-            List(EmployerPaymentSummary(
+            Seq(EmployerPaymentSummary(
               submissionId = 123456,
               hmrcSubmissionTime = LocalDateTime.now(),
               rtiSubmissionTime = LocalDateTime.now(),
@@ -153,7 +153,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
           .thenReturn(Future.successful(EmployerPaymentsSummary(
             "empref",
-            List(EmployerPaymentSummary(
+            Seq(EmployerPaymentSummary(
               submissionId = 123456,
               hmrcSubmissionTime = LocalDateTime.now(),
               rtiSubmissionTime = LocalDateTime.now(),
@@ -175,7 +175,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
           .thenReturn(Future.successful(EmployerPaymentsSummary(
             "empref",
-            List(EmployerPaymentSummary(
+            Seq(EmployerPaymentSummary(
               submissionId = 123456,
               hmrcSubmissionTime = LocalDateTime.now(),
               rtiSubmissionTime = LocalDateTime.now(),

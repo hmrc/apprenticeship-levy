@@ -186,7 +186,7 @@ class DesConnectorSpec
         val dateRangeParams = dateRange.toParams
         val empRef = "123/AB12345"
         val employersUrl = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/fractions?$dateRangeParams"
-        val expectedResponse = Fractions("123/AB12345", List(FractionCalculation(localDate, List(Fraction("England", BigDecimal(0.83))))))
+        val expectedResponse = Fractions("123/AB12345", Seq(FractionCalculation(localDate, Seq(Fraction("England", BigDecimal(0.83))))))
         val json = Json.toJson[Fractions](expectedResponse)
         val stubResponse = ok(json.toString)
 
@@ -281,7 +281,7 @@ class DesConnectorSpec
       val localDate = LocalDate.of(2016, 11, 3)
       val dateRange = OpenEarlyDateRange(localDate)
       val dateRangeParams = dateRange.toParams
-      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, List[EmployerPaymentSummary]())
+      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
       val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
       val json = Json.toJson[EmployerPaymentsSummary](expectedResponse)
       val stubResponse = ok(json.toString)
@@ -306,7 +306,7 @@ class DesConnectorSpec
       val localDate = LocalDate.of(2016, 11, 3)
       val dateRange = OpenEarlyDateRange(localDate)
       val dateRangeParams = dateRange.toParams
-      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, List[EmployerPaymentSummary]())
+      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
       val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
       val json = Json.toJson[EmployerPaymentsSummary](expectedResponse)
       val stubResponse = ok(json.toString)
@@ -681,7 +681,7 @@ class DesConnectorSpec
     val localDate = LocalDate.of(2016, 4, 22)
     val dateRange = OpenEarlyDateRange(localDate)
     val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?toDate=${localDate.toString}"
-    val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, List[EmployerPaymentSummary]())
+    val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
     val json = Json.toJson[EmployerPaymentsSummary](expectedResponse)
     val stubResponse = ok(json.toString)
 
@@ -708,7 +708,7 @@ class DesConnectorSpec
       val localDate = LocalDate.of(2016, 4, 22)
       val dateRange = OpenEarlyDateRange(localDate)
       val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?toDate=${localDate.toString}"
-      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, List[EmployerPaymentSummary]())
+      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
       val json = Json.parse("""{"empref":"123AB12345"}""")
       val stubResponse = ok(json.toString)
 
@@ -738,7 +738,7 @@ class DesConnectorSpec
 
       val expectedResponse = EmployerPaymentsSummary(
         empRefWithSlash,
-        List(
+        Seq(
           EmployerPaymentSummary(
             12345678L,
             LocalDateTime.parse("2016-07-14T16:05:44.000"),
@@ -793,7 +793,7 @@ class DesConnectorSpec
 
       val expectedResponse =
         EmployerPaymentsSummary("123/AB12345",
-          List(
+          Seq(
             EmployerPaymentSummary(12345678L, LocalDateTime.parse("2016-07-14T16:05:23.000"), LocalDateTime.parse("2016-07-14T16:05:23.000"), "16-17", apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(600.00), BigDecimal(15000), "11"))),
             EmployerPaymentSummary(12345679L, LocalDateTime.parse("2015-04-07T16:05:23.000"), LocalDateTime.parse("2015-04-07T16:05:23.000"), "15-16", Some(ClosedDateRange(LocalDate.parse("2016-12-13"), LocalDate.parse("2017-03-22")))),
             EmployerPaymentSummary(12345680L, LocalDateTime.parse("2016-05-07T16:05:23.000"), LocalDateTime.parse("2016-05-07T16:05:23.000"), "16-17", apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(500.00), BigDecimal(15000), "1"))),

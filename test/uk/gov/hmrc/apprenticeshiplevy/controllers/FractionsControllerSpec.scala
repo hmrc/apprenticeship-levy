@@ -76,7 +76,7 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
 
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, Fractions]](using any(), any())).thenReturn(Future.successful(Right(Fractions("empref", List()))))
+      when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, Fractions]](using any(), any())).thenReturn(Future.successful(Right(Fractions("empref", Seq()))))
 
       val response = liveFractionsController.fractions(EmploymentReference("empref"), Some(fromDate), Some(toDate))(FakeRequest().withHeaders(
         "ACCEPT"->"application/vnd.hmrc.1.0+json",

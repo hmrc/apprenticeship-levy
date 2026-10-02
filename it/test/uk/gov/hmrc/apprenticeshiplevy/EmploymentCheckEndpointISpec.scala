@@ -128,7 +128,7 @@ class EmploymentCheckEndpointISpec
             // set up
 
             // This list of inputs is based on the information obtained from: https://en.wikipedia.org/wiki/National_Insurance_number#Format
-            val invalidNationalInsuranceNumbers = List(
+            val invalidNationalInsuranceNumbers = Seq(
               "12345", // Only 5 characters, all numbers
               "FXYZ", // Only 4 characters, all capital letters
               "bot", // Only 3 characters, all small letters
