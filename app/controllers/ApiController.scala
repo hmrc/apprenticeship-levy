@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package controllers
 
 import org.slf4j.MDC
 import play.api.hal.{HalLink, HalResource, halResourceWrites}
 import play.api.libs.json.Json
 import play.api.mvc._
-import uk.gov.hmrc.apprenticeshiplevy.utils.HeaderValidator
+import utils.HeaderValidator
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
 import uk.gov.hmrc.play.bootstrap.http.ErrorResponse

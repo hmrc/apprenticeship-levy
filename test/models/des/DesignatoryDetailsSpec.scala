@@ -30,12 +30,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.models.des
+package models.des
 
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
-import uk.gov.hmrc.apprenticeshiplevy.models.des.DesignatoryDetailsData._
+import utils.AppLevyUnitSpec
+import models.des.DesignatoryDetailsData._
 
 
 class DesignatoryDetailsSpec extends AppLevyUnitSpec {

@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.connectors
+package connectors
 
 import com.codahale.metrics.MetricRegistry
 import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status.*
 import play.api.libs.json.*
-import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.models.audit.ALAEvent
-import uk.gov.hmrc.apprenticeshiplevy.models.des.*
-import uk.gov.hmrc.apprenticeshiplevy.models.des.EmploymentCheckStatus.*
-import uk.gov.hmrc.apprenticeshiplevy.metrics.*
-import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
+import audit.Auditor
+import config.AppContext
+import models.audit.ALAEvent
+import models.des.*
+import models.des.EmploymentCheckStatus.*
+import metrics.*
+import utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}

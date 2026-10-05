@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.http
+package http
 
 import play.api.Configuration
 import play.api.http.Status._

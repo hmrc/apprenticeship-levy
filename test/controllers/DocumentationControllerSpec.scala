@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package controllers
 
 import org.mockito.Mockito.when
 import org.scalatest.{BeforeAndAfterEach, Inside}
@@ -26,8 +26,8 @@ import play.api.mvc.ControllerComponents
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, Injecting}
 import play.api.{Application, Environment, Mode}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, MockAppContext}
+import config.AppContext
+import utils.{AppLevyUnitSpec, MockAppContext}
 
 import java.io.File
 import scala.util.Failure

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.models.des
+package models.des
 
-import uk.gov.hmrc.apprenticeshiplevy.models.api._
-import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, ClosedDateRange}
+import models.api._
+import utils.{AppLevyUnitSpec, ClosedDateRange}
 
 import java.time.{LocalDate, LocalDateTime}
 

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.config
+package config
 
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+import utils.AppLevyUnitSpec
 
 class ExternalTestEnvironmentSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite {
   "When in External Test Mode API" must {
@@ -51,7 +51,7 @@ class ExternalTestEnvironmentSpec extends AppLevyUnitSpec with GuiceOneAppPerSui
 
       // check
       TestRouter.routes === mocknonexternalTestRoutes.routes
-      result.get === uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.routes.SandboxFractionsController.fractions
+      result.get === controllers.sandbox.routes.SandboxFractionsController.fractions
     }
   }
 }

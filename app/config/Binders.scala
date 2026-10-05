@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.config
+package config
 
 import java.net.{URLDecoder, URLEncoder}
 import play.api.mvc.{PathBindable, QueryStringBindable}
-import uk.gov.hmrc.apprenticeshiplevy.models.api._
+import models.api._
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

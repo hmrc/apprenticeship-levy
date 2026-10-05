@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.models.api
+package models.api
 
 case class Nino(nino: String)
 

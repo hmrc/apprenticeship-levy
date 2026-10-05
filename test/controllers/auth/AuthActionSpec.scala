@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
+package controllers.auth
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -24,8 +24,8 @@ import play.api.mvc.BodyParsers.Default
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.apprenticeshiplevy.models.api.EmploymentReference
-import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, RetrievalOps}
+import models.api.EmploymentReference
+import utils.{AppLevyUnitSpec, RetrievalOps}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{GGCredId, LegacyCredentials, PAClientId, ~}
 import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, MethodNotAllowedException, NotFoundException, UpstreamErrorResponse}

@@ -1,4 +1,4 @@
-package uk.gov.hmrc.apprenticeshiplevy.config
+package config
 
 object Config {
 

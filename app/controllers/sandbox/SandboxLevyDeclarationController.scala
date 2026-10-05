@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
+package controllers.sandbox
 
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxDesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.SandboxPrivilegedAuthAction
-import uk.gov.hmrc.apprenticeshiplevy.controllers.{DesController, LevyDeclarationController}
+import config.AppContext
+import connectors.SandboxDesConnector
+import controllers.auth.SandboxPrivilegedAuthAction
+import controllers.{DesController, LevyDeclarationController}
 import scala.concurrent.ExecutionContext
 
 class SandboxLevyDeclarationController @Inject()(val desConnector: SandboxDesConnector,

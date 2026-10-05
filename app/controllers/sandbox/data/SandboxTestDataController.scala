@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data
+package controllers.sandbox.data
 
 import com.google.inject.{Inject, Singleton}
 import org.slf4j.MDC
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.{Logger, Mode}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.utils.DateFormats.localDateReads
-import uk.gov.hmrc.apprenticeshiplevy.utils.{DataTransformer, Interval}
+import config.AppContext
+import utils.DateFormats.localDateReads
+import utils.{DataTransformer, Interval}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import uk.gov.hmrc.play.bootstrap.controller.Utf8MimeTypes
 

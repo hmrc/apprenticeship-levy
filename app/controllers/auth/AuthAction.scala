@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
+package controllers.auth
 
 import com.google.inject.{ImplementedBy, Inject}
 import org.slf4j.MDC
@@ -22,9 +22,9 @@ import play.api.Logging
 import play.api.http.Status._
 import play.api.mvc.Results._
 import play.api.mvc._
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.AuthError
-import uk.gov.hmrc.apprenticeshiplevy.models.api.EmploymentReference
-import uk.gov.hmrc.apprenticeshiplevy.utils.ErrorResponseUtils
+import controllers.ErrorResponses.AuthError
+import models.api.EmploymentReference
+import utils.ErrorResponseUtils
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals

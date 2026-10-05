@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.live
+package controllers.live
 
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.EmploymentCheckController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.PrivilegedAuthActionImpl
+import config.AppContext
+import connectors.LiveDesConnector
+import controllers.EmploymentCheckController
+import controllers.auth.PrivilegedAuthActionImpl
 import scala.concurrent.ExecutionContext
 
 class LiveEmploymentCheckController  @Inject()(val desConnector: LiveDesConnector,

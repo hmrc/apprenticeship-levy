@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.util
+package util
 
 import org.scalacheck.Gen
 

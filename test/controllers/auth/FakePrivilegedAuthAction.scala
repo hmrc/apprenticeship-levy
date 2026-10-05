@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.auth
+package controllers.auth
 
 import play.api.mvc.{Request, Result}
 

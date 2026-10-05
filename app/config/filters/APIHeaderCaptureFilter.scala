@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.config.filters
+package config.filters
 
 import org.apache.pekko.stream.Materializer
 import com.google.inject.Inject

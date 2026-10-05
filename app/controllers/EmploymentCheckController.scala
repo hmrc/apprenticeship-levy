@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
-import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.ErrorNotVisible
-import uk.gov.hmrc.apprenticeshiplevy.models.api.{EmploymentCheck, EmploymentReference, Nino}
-import uk.gov.hmrc.apprenticeshiplevy.models.des.{Employed, NotEmployed, Unknown}
-import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, ErrorResponseUtils}
+import connectors.DesConnector
+import controllers.auth.AuthAction
+import controllers.sandbox.ErrorNotVisible
+import models.api.{EmploymentCheck, EmploymentReference, Nino}
+import models.des.{Employed, NotEmployed, Unknown}
+import utils.{ClosedDateRange, ErrorResponseUtils}
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}

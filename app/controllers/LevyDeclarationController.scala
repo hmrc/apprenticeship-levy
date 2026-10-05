@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package controllers
 
 import org.slf4j.MDC
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Result}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.ErrorNotFound
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
-import uk.gov.hmrc.apprenticeshiplevy.models.api.{EmploymentReference, LevyDeclaration, LevyDeclarations}
-import uk.gov.hmrc.apprenticeshiplevy.models.des._
-import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange, ErrorResponseUtils}
+import config.AppContext
+import connectors.DesConnector
+import controllers.ErrorResponses.ErrorNotFound
+import controllers.auth.AuthAction
+import models.api.{EmploymentReference, LevyDeclaration, LevyDeclarations}
+import models.des._
+import utils.{ClosedDateRange, DateRange, ErrorResponseUtils}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
 import java.time.LocalDate

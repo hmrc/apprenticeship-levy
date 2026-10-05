@@ -1,4 +1,4 @@
-package uk.gov.hmrc.apprenticeshiplevy.endpoints
+package endpoints
 
 import java.io.File
 import org.scalatest.matchers.should.Matchers._

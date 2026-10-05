@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.utils
+package utils
 
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import config.AppContext
 import org.mockito.Mockito.when
 import play.api.Mode
 

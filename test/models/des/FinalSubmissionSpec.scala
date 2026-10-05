@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.models.des
+package models.des
 
 import java.time.LocalDate
 
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+import utils.AppLevyUnitSpec
 
 class FinalSubmissionSpec extends AppLevyUnitSpec {
 

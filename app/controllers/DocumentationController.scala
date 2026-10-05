@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package controllers
 
 import com.google.inject.{Inject, Singleton}
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json._
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.api.{Logging, Mode}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import config.AppContext
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import java.io.InputStream

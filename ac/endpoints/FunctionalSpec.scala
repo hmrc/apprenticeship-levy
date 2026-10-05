@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.endpoints
+package endpoints
 
 import java.io.File
 import org.scalatest.funspec.AnyFunSpec
-import uk.gov.hmrc.apprenticeshiplevy.config.Config
+import config.Config
 
 import scala.io.Source
 import scala.util.Using

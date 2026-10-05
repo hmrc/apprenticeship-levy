@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.models.des
+package models.des
 
 import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import uk.gov.hmrc.apprenticeshiplevy.models.api._
-import uk.gov.hmrc.apprenticeshiplevy.models.des.FinalSubmission._
-import uk.gov.hmrc.apprenticeshiplevy.utils.ClosedDateRange
+import models.api._
+import models.des.FinalSubmission._
+import utils.ClosedDateRange
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalDateTime, MonthDay, Period}

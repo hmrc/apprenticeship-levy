@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox
+package controllers.sandbox
 
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Json
@@ -22,9 +22,9 @@ import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsJson, contentAsString, defaultAwaitTimeout, stubControllerComponents}
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.data.SandboxTestDataController
-import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, DataTransformer}
+import config.AppContext
+import controllers.sandbox.data.SandboxTestDataController
+import utils.{AppLevyUnitSpec, DataTransformer}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class SandboxTestDataControllerSpec extends AppLevyUnitSpec {

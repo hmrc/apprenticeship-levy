@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.metrics
+package metrics
 
 import uk.gov.hmrc.http.NotFoundException
 

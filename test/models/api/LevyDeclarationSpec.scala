@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.models.api
+package models.api
 
-import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+import utils.AppLevyUnitSpec
 import java.time.LocalDateTime
 
 class LevyDeclarationSpec extends AppLevyUnitSpec {

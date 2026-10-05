@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package controllers
 
 import play.mvc.Http.Status._
 import uk.gov.hmrc.play.bootstrap.http.ErrorResponse

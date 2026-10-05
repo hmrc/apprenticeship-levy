@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.util
+package util
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
@@ -22,7 +22,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.{get, post, urlEqualTo}
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Suite}
-import uk.gov.hmrc.apprenticeshiplevy.util.StubbingData.{auuid6, stubbedConfigPath}
+import util.StubbingData.{auuid6, stubbedConfigPath}
 import uk.gov.hmrc.http.test.PortFinder
 
 import java.util.UUID

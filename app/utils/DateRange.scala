@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.utils
+package utils
 import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate

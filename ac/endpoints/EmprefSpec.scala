@@ -1,4 +1,4 @@
-package uk.gov.hmrc.apprenticeshiplevy.endpoints
+package endpoints
 
 import org.scalatest.*
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}

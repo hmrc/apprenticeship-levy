@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package controllers
 
 import play.api.hal.{Hal, HalLink, HalResource}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthAction
-import uk.gov.hmrc.apprenticeshiplevy.models.api.EmploymentReference
-import uk.gov.hmrc.apprenticeshiplevy.utils.DecodePath._
+import connectors.DesConnector
+import controllers.auth.AuthAction
+import models.api.EmploymentReference
+import utils.DecodePath._
 
 trait EmprefController extends DesController {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package controllers
 
 import com.codahale.metrics.MetricRegistry
 import org.mockito.ArgumentMatchers.any
@@ -26,12 +26,12 @@ import play.api.http.Status.{BAD_REQUEST, NOT_FOUND, OK}
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, Injecting}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
-import uk.gov.hmrc.apprenticeshiplevy.models.api.{EmploymentReference, Nino}
-import uk.gov.hmrc.apprenticeshiplevy.models.des.{EmploymentCheckStatus, Unknown}
-import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+import config.AppContext
+import connectors.DesConnector
+import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
+import models.api.{EmploymentReference, Nino}
+import models.des.{EmploymentCheckStatus, Unknown}
+import utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector

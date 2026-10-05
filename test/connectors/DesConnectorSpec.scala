@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.connectors
+package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import org.mockito.ArgumentMatchers.any
@@ -27,10 +27,10 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
-import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
-import uk.gov.hmrc.apprenticeshiplevy.models.audit.ALAEvent
-import uk.gov.hmrc.apprenticeshiplevy.models.des._
-import uk.gov.hmrc.apprenticeshiplevy.utils._
+import audit.Auditor
+import models.audit.ALAEvent
+import models.des._
+import utils._
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.EventKeys._
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}

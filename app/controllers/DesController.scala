@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package controllers
 
 import org.slf4j.MDC
 import play.api.Logging
 import play.api.mvc.{RequestHeader, Result}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.DESError
-import uk.gov.hmrc.apprenticeshiplevy.utils.ErrorResponseUtils
+import config.AppContext
+import controllers.ErrorResponses.DESError
+import utils.ErrorResponseUtils
 import uk.gov.hmrc.http.*
 
 import java.io.IOException

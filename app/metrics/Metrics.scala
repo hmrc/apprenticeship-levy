@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.metrics
+package metrics
 
 import com.codahale.metrics._
 import play.api.Logging
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
+import config.AppContext
 
 import java.util.concurrent.TimeUnit
 

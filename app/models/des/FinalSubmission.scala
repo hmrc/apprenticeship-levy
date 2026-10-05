@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.models.des
+package models.des
 
 
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.{JsPath, Reads, Writes}
-import uk.gov.hmrc.apprenticeshiplevy.utils.DateFormats.localDateFormat
+import utils.DateFormats.localDateFormat
 
 import java.time.LocalDate
 

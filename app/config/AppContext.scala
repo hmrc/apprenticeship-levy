@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.config
+package config
 
 import com.google.inject.Inject
 import play.api.{Configuration, Environment, Logging, Mode}

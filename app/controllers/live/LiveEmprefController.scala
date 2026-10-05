@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers.live
+package controllers.live
 
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AllProviderAuthActionImpl, AuthAction}
-import uk.gov.hmrc.apprenticeshiplevy.models.api.{EmploymentReference, Nino}
+import config.AppContext
+import connectors.LiveDesConnector
+import controllers.EmprefController
+import controllers.auth.{AllProviderAuthActionImpl, AuthAction}
+import models.api.{EmploymentReference, Nino}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext

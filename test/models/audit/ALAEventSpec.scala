@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.models.audit
+package models.audit
 
 import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
+import utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 
 class ALAEventSpec extends AppLevyUnitSpec {

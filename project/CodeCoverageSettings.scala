@@ -10,10 +10,10 @@ object CodeCoverageSettings {
     "views.*",
     "prod.*",
     ".*assets.*",
-    "uk.gov.hmrc.apprenticeshiplevy.metrics.*",
-    "uk.gov.hmrc.apprenticeshiplevy.config.*",
-    "uk.gov.hmrc.apprenticeshiplevy.controllers.live.*",
-    "uk.gov.hmrc.apprenticeshiplevy.controllers.sandbox.*",
+    "metrics.*",
+    "config.*",
+    "controllers.live.*",
+    "controllers.sandbox.*",
     "testOnlyDoNotUseInAppConf.*",
     ".*\\$anon.*"
   )
@@ -21,8 +21,8 @@ object CodeCoverageSettings {
   // case classes with no added functionality so no requirement to test
   // other than default Reads, Writes or Format
   private val implicitOFormatObjects: Seq[String] = Seq(
-    "uk.gov.hmrc.apprenticeshiplevy.utils.*",
-    "uk.gov.hmrc.apprenticeshiplevy.data.api.*",
+    "utils.*",
+    "models.api.*",
     ".*ApprenticeshipLevy.*",
     ".*DesignatoryDetails.*",
     ".*EmployerPaymentsError.*",

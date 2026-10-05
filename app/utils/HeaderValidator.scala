@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.utils
+package utils
 
 import play.api.mvc.Results.Status
 import play.api.mvc._
-import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses._
+import controllers.ErrorResponses._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex

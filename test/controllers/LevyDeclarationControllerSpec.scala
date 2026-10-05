@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.apprenticeshiplevy.controllers
+package controllers
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -27,16 +27,16 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Injecting}
-import uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController
-import uk.gov.hmrc.apprenticeshiplevy.models.api.EmploymentReference
+import controllers.live.LiveLevyDeclarationController
+import models.api.EmploymentReference
 import play.api.inject.bind
 import play.api.mvc.ControllerComponents
-import uk.gov.hmrc.apprenticeshiplevy.connectors.LiveDesConnector
-import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{FakePrivilegedAuthAction, PrivilegedAuthActionImpl}
+import connectors.LiveDesConnector
+import controllers.auth.{FakePrivilegedAuthAction, PrivilegedAuthActionImpl}
 import play.api.test.Helpers.stubControllerComponents
-import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.models.des.{ApprenticeshipLevy, EmployerPaymentSummary, EmployerPaymentsSummary}
-import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, MockAppContext}
+import config.AppContext
+import models.des.{ApprenticeshipLevy, EmployerPaymentSummary, EmployerPaymentsSummary}
+import utils.{AppLevyUnitSpec, MockAppContext}
 import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
