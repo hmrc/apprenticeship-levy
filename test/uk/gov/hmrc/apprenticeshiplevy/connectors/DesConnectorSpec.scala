@@ -28,8 +28,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
-import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
-import uk.gov.hmrc.apprenticeshiplevy.data.des._
+import uk.gov.hmrc.apprenticeshiplevy.models.audit.ALAEvent
+import uk.gov.hmrc.apprenticeshiplevy.models.des._
 import uk.gov.hmrc.apprenticeshiplevy.utils._
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.EventKeys._

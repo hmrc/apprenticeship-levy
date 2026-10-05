@@ -23,7 +23,7 @@ import play.api.http.Status._
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.apprenticeshiplevy.controllers.ErrorResponses.AuthError
-import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import uk.gov.hmrc.apprenticeshiplevy.models.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.ErrorResponseUtils
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._

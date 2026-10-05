@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.config
 
 import java.net.{URLDecoder, URLEncoder}
 import play.api.mvc.{PathBindable, QueryStringBindable}
-import uk.gov.hmrc.apprenticeshiplevy.data.api._
+import uk.gov.hmrc.apprenticeshiplevy.models.api._
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

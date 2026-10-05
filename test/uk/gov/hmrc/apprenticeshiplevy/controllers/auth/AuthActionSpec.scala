@@ -24,7 +24,7 @@ import play.api.mvc.BodyParsers.Default
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import uk.gov.hmrc.apprenticeshiplevy.models.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.{AppLevyUnitSpec, RetrievalOps}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{GGCredId, LegacyCredentials, PAClientId, ~}

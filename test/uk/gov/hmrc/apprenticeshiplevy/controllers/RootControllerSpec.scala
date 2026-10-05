@@ -27,7 +27,7 @@ import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout, stubControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakeAuthAction}
-import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import uk.gov.hmrc.apprenticeshiplevy.models.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.MockAppContext.status
 
 import scala.concurrent.ExecutionContext

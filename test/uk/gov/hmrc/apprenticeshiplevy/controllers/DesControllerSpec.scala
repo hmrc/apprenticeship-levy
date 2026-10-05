@@ -31,7 +31,7 @@ import play.api.test.Helpers.{contentAsJson, defaultAwaitTimeout, status, stubCo
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
-import uk.gov.hmrc.apprenticeshiplevy.data.des.FractionCalculationDate
+import uk.gov.hmrc.apprenticeshiplevy.models.des.FractionCalculationDate
 import uk.gov.hmrc.apprenticeshiplevy.utils.MockAppContext.mock
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, JsValidationException, NotFoundException, UpstreamErrorResponse}

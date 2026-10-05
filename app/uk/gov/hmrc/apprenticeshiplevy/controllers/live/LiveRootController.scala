@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import uk.gov.hmrc.apprenticeshiplevy.controllers.RootController
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.AuthActionImpl
-import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import uk.gov.hmrc.apprenticeshiplevy.models.api.EmploymentReference
 import scala.concurrent.ExecutionContext
 
 class LiveRootController @Inject()(val authAction: AuthActionImpl,

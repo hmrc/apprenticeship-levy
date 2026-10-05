@@ -18,7 +18,7 @@ package uk.gov.hmrc.apprenticeshiplevy.audit
 
 import play.api.Logging
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_TIMEOUT}
-import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
+import uk.gov.hmrc.apprenticeshiplevy.models.audit.ALAEvent
 import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, HeaderCarrier, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 

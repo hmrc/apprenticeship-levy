@@ -29,7 +29,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsJson, contentAsString, contentType, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{LevyDeclaration, PayrollPeriod}
+import uk.gov.hmrc.apprenticeshiplevy.models.api.{LevyDeclaration, PayrollPeriod}
 import uk.gov.hmrc.apprenticeshiplevy.util.StubbingData._
 import util.WireMockHelper
 import views.html.helper

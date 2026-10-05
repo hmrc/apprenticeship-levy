@@ -23,9 +23,9 @@ import play.api.http.Status.*
 import play.api.libs.json.*
 import uk.gov.hmrc.apprenticeshiplevy.audit.Auditor
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
-import uk.gov.hmrc.apprenticeshiplevy.data.audit.ALAEvent
-import uk.gov.hmrc.apprenticeshiplevy.data.des.*
-import uk.gov.hmrc.apprenticeshiplevy.data.des.EmploymentCheckStatus.*
+import uk.gov.hmrc.apprenticeshiplevy.models.audit.ALAEvent
+import uk.gov.hmrc.apprenticeshiplevy.models.des.*
+import uk.gov.hmrc.apprenticeshiplevy.models.des.EmploymentCheckStatus.*
 import uk.gov.hmrc.apprenticeshiplevy.metrics.*
 import uk.gov.hmrc.apprenticeshiplevy.utils.{ClosedDateRange, DateRange}
 import uk.gov.hmrc.http.*

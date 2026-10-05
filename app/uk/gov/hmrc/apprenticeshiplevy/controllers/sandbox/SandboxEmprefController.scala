@@ -23,7 +23,7 @@ import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.SandboxDesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.EmprefController
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.SandboxPrivilegedAuthAction
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
+import uk.gov.hmrc.apprenticeshiplevy.models.api.{EmploymentReference, Nino}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext

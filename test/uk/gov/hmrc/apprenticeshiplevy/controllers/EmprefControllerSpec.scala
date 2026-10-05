@@ -24,7 +24,7 @@ import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
-import uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference
+import uk.gov.hmrc.apprenticeshiplevy.models.api.EmploymentReference
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 
 import scala.concurrent.ExecutionContext

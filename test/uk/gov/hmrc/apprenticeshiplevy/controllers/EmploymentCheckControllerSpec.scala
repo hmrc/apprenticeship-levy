@@ -29,8 +29,8 @@ import play.api.test.{FakeRequest, Injecting}
 import uk.gov.hmrc.apprenticeshiplevy.config.AppContext
 import uk.gov.hmrc.apprenticeshiplevy.connectors.DesConnector
 import uk.gov.hmrc.apprenticeshiplevy.controllers.auth.{AuthAction, FakePrivilegedAuthAction}
-import uk.gov.hmrc.apprenticeshiplevy.data.api.{EmploymentReference, Nino}
-import uk.gov.hmrc.apprenticeshiplevy.data.des.{EmploymentCheckStatus, Unknown}
+import uk.gov.hmrc.apprenticeshiplevy.models.api.{EmploymentReference, Nino}
+import uk.gov.hmrc.apprenticeshiplevy.models.des.{EmploymentCheckStatus, Unknown}
 import uk.gov.hmrc.apprenticeshiplevy.utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
