@@ -37,8 +37,6 @@ val generateAPIDocsTask = generateAPIDocs := {
   DocGeneration.generateAPIDocs(userDir, cp) ! logger
 }
 
-lazy val AcceptanceTest = config("ac") extend Test
-
 lazy val plugins: Seq[Plugins] = Seq(
   play.sbt.PlayScala, SbtGitVersioning, SbtDistributablesPlugin
 )
@@ -80,12 +78,6 @@ val microservice = Project(appName, file("."))
     retrieveManaged := true,
     generateAPIDocsTask
   )
-  .configs(AcceptanceTest)
-  .settings(inConfig(AcceptanceTest)(Defaults.testSettings) *)
-  .settings(
-    AcceptanceTest / unmanagedSourceDirectories := (AcceptanceTest / baseDirectory) (base => Seq(base / "ac")).value,
-    AcceptanceTest / unmanagedResourceDirectories += baseDirectory(_ / "public").value,
-    addTestReportOption(AcceptanceTest, "ac-test-reports"))
   .settings(Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))
 
 val it: Project = project
