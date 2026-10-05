@@ -44,11 +44,11 @@ lazy val plugins: Seq[Plugins] = Seq(
 )
 
 lazy val playSettings: Seq[Setting[?]] = Seq(routesImport ++= Seq(
-  "uk.gov.hmrc.apprenticeshiplevy.config.QueryBinders._",
+  "config.QueryBinders._",
   "java.time.LocalDate",
-  "uk.gov.hmrc.apprenticeshiplevy.config.PathBinders._",
-  "uk.gov.hmrc.apprenticeshiplevy.data.api.EmploymentReference",
-  "uk.gov.hmrc.apprenticeshiplevy.data.api.Nino")
+  "config.PathBinders._",
+  "models.api.EmploymentReference",
+  "models.api.Nino")
 )
 
 ThisBuild / majorVersion := 3

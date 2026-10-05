@@ -1,8 +1,8 @@
 # microservice specific routes
 
-GET        /                                            uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveRootController.root
-GET        /epaye/:empref                               uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveEmprefController.empref(empref: EmploymentReference)
-GET        /epaye/:empref/declarations                  uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveLevyDeclarationController.declarations(empref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate])
-GET        /epaye/:empref/fractions                     uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsController.fractions(empref: EmploymentReference,fromDate: Option[LocalDate], toDate: Option[LocalDate])
-GET        /fraction-calculation-date                   uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveFractionsCalculationDateController.fractionCalculationDate
-GET        /epaye/:empref/employed/:nino                uk.gov.hmrc.apprenticeshiplevy.controllers.live.LiveEmploymentCheckController.check(empref: EmploymentReference, nino: Nino, fromDate: LocalDate, toDate: LocalDate)
+GET        /                                            controllers.live.LiveRootController.root
+GET        /epaye/:empref                               controllers.live.LiveEmprefController.empref(empref: EmploymentReference)
+GET        /epaye/:empref/declarations                  controllers.live.LiveLevyDeclarationController.declarations(empref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate])
+GET        /epaye/:empref/fractions                     controllers.live.LiveFractionsController.fractions(empref: EmploymentReference,fromDate: Option[LocalDate], toDate: Option[LocalDate])
+GET        /fraction-calculation-date                   controllers.live.LiveFractionsCalculationDateController.fractionCalculationDate
+GET        /epaye/:empref/employed/:nino                controllers.live.LiveEmploymentCheckController.check(empref: EmploymentReference, nino: Nino, fromDate: LocalDate, toDate: LocalDate)
