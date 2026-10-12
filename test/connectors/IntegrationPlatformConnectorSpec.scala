@@ -59,6 +59,7 @@ class IntegrationPlatformConnectorSpec
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(
       "featureFlags.hip.api-5965" -> false,
+      "featureFlags.hip.api-5967" -> false,
       "microservice.services.auth.host" -> "localhost",
       "microservice.services.auth.port" -> server.port(),
       "microservice.services.des.host" -> "localhost",
@@ -85,11 +86,13 @@ class IntegrationPlatformConnectorSpec
   private def withHipConnector[A](f: LiveIntegrationPlatformConnector => A): A = {
     val hipApp = new GuiceApplicationBuilder()
       .configure(
-        "microservice.services.des.host" -> "localhost",
-        "microservice.services.des.port" -> server.port(),
+        "microservice.services.hip.host" -> "localhost",
+        "microservice.services.hip.port" -> server.port(),
+        "microservice.services.hip.path" -> "/sandbox/data",
         "microservice.services.hip.clientId" -> "client",
         "microservice.services.hip.clientSecret" -> "secret",
         "featureFlags.hip.api-5965" -> true,
+        "featureFlags.hip.api-5967" -> true,
         "metrics.enabled" -> false
       )
       .overrides(bind[Auditor].toInstance(mockAuditor))
@@ -328,7 +331,8 @@ class IntegrationPlatformConnectorSpec
     "send HIP headers when api-5965 is enabled" in {
 
       val empRef = "123AB12345"
-      val dateRange = OpenEarlyDateRange(LocalDate.of(2016, 11, 3))
+      val localDate = LocalDate.of(2016, 11, 3)
+      val dateRange = OpenEarlyDateRange(localDate)
       val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?${dateRange.toParams}"
       val expectedResponse = EmployerPaymentsSummary("123/AB12345", Seq[EmployerPaymentSummary]())
 
@@ -642,7 +646,7 @@ class IntegrationPlatformConnectorSpec
   }
 
   "have Employment Check endpoint and" should {
-    "send HIP headers when api-5965 is enabled" in {
+    "send HIP headers when api-5967 is enabled" in {
 
       val empRef = "123AB12345"
       val nino = "AA122345A"
