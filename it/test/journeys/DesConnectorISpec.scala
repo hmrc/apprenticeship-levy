@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package connectors
+package journeys
 
-import com.github.tomakehurst.wiremock.client.WireMock._
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, reset => mockReset}
-import org.mockito._
+import audit.Auditor
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import connectors.LiveDesConnector
+import models.des.*
+import org.mockito.Mockito.{reset as mockReset}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
@@ -27,21 +28,14 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
-import audit.Auditor
-import models.audit.ALAEvent
-import models.des._
-import utils._
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException, UpstreamErrorResponse}
-import uk.gov.hmrc.play.audit.EventKeys._
-import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
-import uk.gov.hmrc.play.audit.model.DataEvent
+import util.WireMockHelper
+import utils.*
 import views.html.helper
-
 import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
-class DesConnectorSpec
+class DesConnectorISpec
   extends AppLevyUnitSpec
     with GuiceOneAppPerSuite
     with ScalaFutures
@@ -83,20 +77,6 @@ class DesConnectorSpec
   lazy val desConnector: LiveDesConnector = app.injector.instanceOf[LiveDesConnector]
 
   "DES Connector" should {
-    "send audit events" in {
-      val stubAuditConnector = mock[AuditConnector]
-      val eventCaptor: ArgumentCaptor[DataEvent] = ArgumentCaptor.forClass(classOf[DataEvent])
-      when(stubAuditConnector.sendEvent(eventCaptor.capture())(using any(), any())).thenReturn(Future.successful(AuditResult.Success))
-      val event = ALAEvent("readEmprefDetails", "123AB12345")
-
-      stubAuditConnector.sendEvent(event.toDataEvent(200)(using mockHeaderCarrier))
-
-      val auditEvent = eventCaptor.getValue
-      auditEvent.auditType shouldBe "ServiceReceivedRequest"
-      auditEvent.tags(TransactionName) shouldBe "readEmprefDetails"
-      auditEvent.detail("empref") shouldBe "123AB12345"
-    }
-
     "for Fraction Date endpoint" must {
       "when EDH not failing return local date instance of date" in {
 
