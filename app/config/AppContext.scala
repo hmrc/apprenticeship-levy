@@ -106,6 +106,14 @@ class AppContext @Inject() (
 
   def desUrl: String = getURL("des")
 
+  def hipUrl: String = getURL("hip")
+
+  def api5965: Boolean = maybeBoolean("featureFlags.hip.api-5965").getOrElse(false)
+  def api5967: Boolean = maybeBoolean("featureFlags.hip.api-5967").getOrElse(false)
+
+  def clientId: String     = maybeString("microservice.services.hip.clientId").getOrElse("")
+  def clientSecret: String = maybeString("microservice.services.hip.clientSecret").getOrElse("")
+
   def stubURL(name: String) = Try {
     val stubUrl = maybeBaseURL(s"stub-$name").getOrElse("")
     val path    = maybeString(s"microservice.services.stub-$name.path").getOrElse("")
@@ -114,6 +122,7 @@ class AppContext @Inject() (
   }.getOrElse(maybeBaseURL(s"stub-$name").getOrElse(""))
 
   def stubDesUrl: String = stubURL("des")
+  def stubHipUrl: String = stubURL("hip")
 
   def stubAuthUrl: String = stubURL("auth")
 
@@ -123,8 +132,6 @@ class AppContext @Inject() (
   // $COVERAGE-ON$
 
   def ninoPattern(): String = maybeString("microservice.ninoRegex").getOrElse("")
-
-  def epsOrigPathEnabled(): Boolean = maybeBoolean("microservice.epsOrigPathEnabled").getOrElse(true)
 
   // $COVERAGE-OFF$
   logger.info(s"""\nAllow list:\n${allowlistedApplicationIds.mkString(", ")}\n""")

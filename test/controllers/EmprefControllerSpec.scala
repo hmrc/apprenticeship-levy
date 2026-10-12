@@ -22,7 +22,7 @@ import java.net.URLEncoder
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
 import config.AppContext
-import connectors.DesConnector
+import connectors.IntegrationPlatformConnector
 import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import models.api.EmploymentReference
 import utils.AppLevyUnitSpec
@@ -44,7 +44,7 @@ class EmprefControllerSpec extends AppLevyUnitSpec with OptionValues {
 
     override def parser: BodyParser[AnyContent] = controllerComponents.parsers.default
 
-    override def desConnector: DesConnector = ???
+    override def integrationPlatformConnector: IntegrationPlatformConnector = ???
 
     override def emprefUrl(ref: EmploymentReference): String = s"""/epaye/${URLEncoder.encode(ref.empref, "UTF-8")}"""
 

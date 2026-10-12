@@ -1,0 +1,21 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "urlPattern": "/rti/employers/401AB12345/employer-payment-summary\\??fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
+        "headers": {
+          "Authorization": {
+              "matches": "Basic (.*)"
+          },
+          "X-Transmitting-System": {
+              "equalTo": "HIP"
+          }
+        }
+    },
+    "response": {
+        "status": 401,
+        "jsonBody": {
+          "reason": "Not Authorized"
+        }
+    }
+}

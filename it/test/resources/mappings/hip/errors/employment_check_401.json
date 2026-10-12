@@ -1,0 +1,21 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "GET",
+        "url": "/apprenticeship-levy/employers/401AB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30",
+        "headers": {
+          "Authorization": {
+              "matches": "Basic (.*)"
+          },
+          "X-Transmitting-System": {
+              "equalTo": "HIP"
+          }
+        }
+    },
+    "response": {
+        "status": 401,
+        "jsonBody": {
+          "reason": "Not authorized"
+        }
+    }
+}
