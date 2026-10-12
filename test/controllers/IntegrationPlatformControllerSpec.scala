@@ -29,7 +29,7 @@ import play.api.mvc.{AnyContent, BodyParser, ControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsJson, defaultAwaitTimeout, status, stubControllerComponents}
 import config.AppContext
-import connectors.DesConnector
+import connectors.IntegrationPlatformConnector
 import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import models.des.FractionCalculationDate
 import utils.MockAppContext.mock
@@ -39,14 +39,14 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues {
+class IntegrationPlatformControllerSpec extends AnyWordSpecLike with Matchers with OptionValues {
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockAppContext: AppContext = mock[AppContext]
   val mockHttp = mock[HttpClientV2]
   val mockRequestBuilder = mock[RequestBuilder]
 
-  val controller: FractionsCalculationDateController = new FractionsCalculationDateController with DesController {
-    def desConnector: DesConnector = new DesConnector {
+  val controller: FractionsCalculationDateController = new FractionsCalculationDateController with IntegrationPlatformController {
+    def integrationPlatformConnector: IntegrationPlatformConnector = new IntegrationPlatformConnector {
       override val appContext: AppContext = mockAppContext
 
       override protected def auditConnector: Option[AuditConnector] = None
@@ -54,6 +54,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       override def registry: Option[MetricRegistry] = None
 
       def baseUrl: String = "http://a.guide.to.nowhere/"
+      def hipBaseUrl: String = "http://a.guide.to.nowhere/"
 
       def httpClient: HttpClientV2 = mockHttp
 

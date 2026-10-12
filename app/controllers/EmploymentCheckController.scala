@@ -18,7 +18,7 @@ package controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
-import connectors.DesConnector
+import connectors.IntegrationPlatformConnector
 import controllers.auth.AuthAction
 import controllers.sandbox.ErrorNotVisible
 import models.api.{EmploymentCheck, EmploymentReference, Nino}
@@ -28,11 +28,11 @@ import utils.{ClosedDateRange, ErrorResponseUtils}
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-trait EmploymentCheckController extends DesController {
+trait EmploymentCheckController extends IntegrationPlatformController {
 
   implicit val executionContext: ExecutionContext
 
-  def desConnector: DesConnector
+  def integrationPlatformConnector: IntegrationPlatformConnector
 
   val authAction: AuthAction
 
@@ -44,7 +44,7 @@ trait EmploymentCheckController extends DesController {
         if (fromDate.isAfter(toDate)) {
           Future.successful(ErrorResponseUtils.errorResponseToResult(ErrorResponses.ErrorFromDateAfterToDate))
         } else {
-          desConnector.check(
+          integrationPlatformConnector.check(
             toDESFormat(ref.empref), ni.nino, ClosedDateRange(fromDate, toDate)
           ) map {
             case Employed =>

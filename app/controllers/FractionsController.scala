@@ -18,7 +18,7 @@ package controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
-import connectors.DesConnector
+import connectors.IntegrationPlatformConnector
 import controllers.auth.AuthAction
 import models.api.EmploymentReference
 import utils.{ClosedDateRange, ErrorResponseUtils}
@@ -28,9 +28,9 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 trait FractionsController {
-  self: DesController =>
+  self: IntegrationPlatformController =>
 
-  def desConnector: DesConnector
+  def integrationPlatformConnector: IntegrationPlatformConnector
 
   val authAction: AuthAction
 
@@ -47,7 +47,7 @@ trait FractionsController {
         if (validatedFromDate.isAfter(validatedToDate)) {
           Future.successful(ErrorResponseUtils.errorResponseToResult(ErrorResponses.ErrorFromDateAfterToDate))
         } else {
-          desConnector.fractions(toDESFormat(ref.empref), ClosedDateRange(validatedFromDate, validatedToDate)) map { fs =>
+          integrationPlatformConnector.fractions(toDESFormat(ref.empref), ClosedDateRange(validatedFromDate, validatedToDate)) map { fs =>
             Ok(Json.toJson(fs))
           } recover desErrorHandler
         }
@@ -73,9 +73,9 @@ trait FractionsController {
  * the calculation date endpoint doesn't
  */
 trait FractionsCalculationDateController {
-  self: DesController =>
+  self: IntegrationPlatformController =>
 
-  def desConnector: DesConnector
+  def integrationPlatformConnector: IntegrationPlatformConnector
 
   val authAction: AuthAction
 
@@ -84,7 +84,7 @@ trait FractionsCalculationDateController {
     (withValidAcceptHeader andThen authAction).async {
       implicit request =>
         // scalastyle:on
-        desConnector.fractionCalculationDate map { date =>
+        integrationPlatformConnector.fractionCalculationDate map { date =>
           Ok(Json.toJson(date))
         } recover desErrorHandler
     }

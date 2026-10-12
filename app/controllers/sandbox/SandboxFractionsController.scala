@@ -19,15 +19,15 @@ package controllers.sandbox
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import config.AppContext
-import connectors.SandboxDesConnector
+import connectors.SandboxIntegrationPlatformConnector
 import controllers.auth.SandboxPrivilegedAuthAction
-import controllers.{DesController, FractionsCalculationDateController, FractionsController}
+import controllers.{IntegrationPlatformController, FractionsCalculationDateController, FractionsController}
 import scala.concurrent.ExecutionContext
 
-class SandboxFractionsController @Inject()(val desConnector: SandboxDesConnector,
+class SandboxFractionsController @Inject()(val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
                                            val authAction: SandboxPrivilegedAuthAction,
                                            val executionContext: ExecutionContext,
                                            val parser: BodyParsers.Default,
                                            val appContext: AppContext,
                                            val controllerComponents: ControllerComponents
-                                           ) extends DesController with FractionsController with FractionsCalculationDateController
+                                           ) extends IntegrationPlatformController with FractionsController with FractionsCalculationDateController

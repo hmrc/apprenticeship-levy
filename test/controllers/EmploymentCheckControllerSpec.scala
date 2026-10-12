@@ -27,7 +27,7 @@ import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, Injecting}
 import config.AppContext
-import connectors.DesConnector
+import connectors.IntegrationPlatformConnector
 import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import models.api.{EmploymentReference, Nino}
 import models.des.{EmploymentCheckStatus, Unknown}
@@ -49,11 +49,12 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
   val testController: EmploymentCheckController = new EmploymentCheckController {
     override implicit val executionContext: ExecutionContext = controllerComponents.executionContext
 
-    def desConnector: DesConnector = new DesConnector() {
+    def integrationPlatformConnector: IntegrationPlatformConnector = new IntegrationPlatformConnector() {
       override val appContext: AppContext = mockAppContext
       override protected def auditConnector: Option[AuditConnector] = None
       override def registry: Option[MetricRegistry] = None
       def baseUrl: String = "http://a.guide.to.nowhere/"
+      def hipBaseUrl: String = "http://a.guide.to.nowhere/"
       def httpClient: HttpClientV2 = mockHttp
       override def desAuthorization: String = "localBearer"
 

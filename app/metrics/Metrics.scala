@@ -43,10 +43,12 @@ trait GraphiteMetrics extends Logging {
   def registry: Option[MetricRegistry]
 
   val DES_EMP_CHECK_REQUEST = "des-emp-check"
+  val HIP_EMP_CHECK_REQUEST = "hip-emp-check"
   val DES_EMPREF_DETAILS_REQUEST = "des-emp-details"
   val DES_FRACTIONS_REQUEST = "des-fractions"
   val DES_FRACTIONS_DATE_REQUEST = "des-fractions"
   val DES_LEVIES_REQUEST = "des-levies"
+  val HIP_LEVIES_REQUEST = "hip-levies"
 
   private val meter = (name: String) => registry.map(_.meter(name))
 

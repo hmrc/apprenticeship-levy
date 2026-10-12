@@ -45,12 +45,13 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
   val mockHttp = mock[HttpClientV2]
   val mockRequestBuilder = mock[RequestBuilder]
 
-  def controller : FractionsController = new FractionsController with DesController {
-    def desConnector: DesConnector = new DesConnector() {
+  def controller : FractionsController = new FractionsController with IntegrationPlatformController {
+    def integrationPlatformConnector: IntegrationPlatformConnector = new IntegrationPlatformConnector() {
       override val appContext: AppContext = mockAppContext
       override protected def auditConnector: Option[AuditConnector] = None
       override def registry: Option[MetricRegistry] = None
       def baseUrl: String = "http://a.guide.to.nowhere/"
+      def hipBaseUrl: String = "http://a.guide.to.nowhere/"
       def httpClient: HttpClientV2 = mockHttp
 
       override def desAuthorization: String = "localBearer"

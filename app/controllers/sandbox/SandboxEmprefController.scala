@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import play.api.hal.HalLink
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import config.AppContext
-import connectors.SandboxDesConnector
+import connectors.SandboxIntegrationPlatformConnector
 import controllers.EmprefController
 import controllers.auth.SandboxPrivilegedAuthAction
 import models.api.{EmploymentReference, Nino}
@@ -28,7 +28,7 @@ import models.api.{EmploymentReference, Nino}
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
-class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
+class SandboxEmprefController @Inject()(val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
                                         val auth: SandboxPrivilegedAuthAction,
                                         val executionContext: ExecutionContext,
                                         val parser: BodyParsers.Default,
