@@ -19,12 +19,12 @@ package controllers.live
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import config.AppContext
-import connectors.LiveDesConnector
+import connectors.LiveIntegrationPlatformConnector
 import controllers.EmploymentCheckController
 import controllers.auth.PrivilegedAuthActionImpl
 import scala.concurrent.ExecutionContext
 
-class LiveEmploymentCheckController  @Inject()(val desConnector: LiveDesConnector,
+class LiveEmploymentCheckController  @Inject()(val integrationPlatformConnector: LiveIntegrationPlatformConnector,
                                                val authAction: PrivilegedAuthActionImpl,
                                                val executionContext: ExecutionContext,
                                                val parser: BodyParsers.Default,

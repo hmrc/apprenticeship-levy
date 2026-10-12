@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppContext
-import connectors.DesConnector
+import connectors.IntegrationPlatformConnector
 import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import models.api.*
 import models.des.Fractions
@@ -44,11 +44,12 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
   val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]
   val mockAppContext: AppContext = mock[AppContext]
 
-  def liveFractionsController: FractionsController = new FractionsController with DesController {
+  def liveFractionsController: FractionsController = new FractionsController with IntegrationPlatformController {
 
-    override def desConnector: DesConnector = new DesConnector() {
+    override def integrationPlatformConnector: IntegrationPlatformConnector = new IntegrationPlatformConnector() {
       def httpClient: HttpClientV2 = mockHttp
       def baseUrl: String = "http://a.guide.to.nowhere/"
+      def hipBaseUrl: String = "http://a.guide.to.nowhere/"
       override def desAuthorization: String = "localBearer"
       override def desEnvironment: String = "localEnv"
       override protected def auditConnector: Option[AuditConnector] = None

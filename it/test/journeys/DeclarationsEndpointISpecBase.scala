@@ -36,7 +36,7 @@ import views.html.helper
 
 import java.time.{LocalDate, LocalDateTime}
 
-class DeclarationsEndpointISpec
+abstract class DeclarationsEndpointISpecBase
   extends AnyWordSpec
     with GuiceOneAppPerSuite
     with WireMockHelper
@@ -50,9 +50,11 @@ class DeclarationsEndpointISpec
   stubGetServerWithId(aResponse().withStatus(OK), invalidReadURL1, auuid4)
   stubGetServerWithId(aResponse().withStatus(OK), validRead, auuid5)
 
+  def wireMockConfig(port: Int): Map[String, Any]
+
   override def fakeApplication(): Application =
     GuiceApplicationBuilder()
-      .configure(wireMockConfiguration(server.port()))
+      .configure(wireMockConfig(server.port()))
       .build()
 
   "Declarations Endpoint" when {

@@ -21,11 +21,11 @@ import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Result}
 import config.AppContext
-import connectors.DesConnector
+import connectors.IntegrationPlatformConnector
 import controllers.ErrorResponses.ErrorNotFound
 import controllers.auth.AuthAction
 import models.api.{EmploymentReference, LevyDeclaration, LevyDeclarations}
-import models.des._
+import models.des.*
 import utils.{ClosedDateRange, DateRange, ErrorResponseUtils}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
@@ -33,10 +33,10 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 trait LevyDeclarationController extends Logging {
-  self: DesController =>
+  self: IntegrationPlatformController =>
 
   val appContext: AppContext
-  def desConnector: DesConnector
+  def integrationPlatformConnector: IntegrationPlatformConnector
   val authAction: AuthAction
 
   // scalastyle:off
@@ -57,7 +57,7 @@ trait LevyDeclarationController extends Logging {
     }
 
   private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier): Future[Seq[LevyDeclaration]] = {
-    desConnector
+    integrationPlatformConnector
       .eps(empref, dateRange)
       .map(
         employerPayments =>
