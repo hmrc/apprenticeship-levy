@@ -55,6 +55,8 @@ object StubbingData {
     "play.ws.timeout.request" -> "500 milliseconds",
     "play.ws.timeout.connection" -> "500 milliseconds",
     "microservice.metrics.graphite.enabled" -> "false",
+    "featureFlags.hip.api-5965" -> false,
+    "featureFlags.hip.api-5967" -> false,
     "microservice.services.stub-auth.port" -> serverPort,
     "microservice.services.stub-auth.path" -> "",
     "microservice.services.stub-des.port" -> serverPort,
