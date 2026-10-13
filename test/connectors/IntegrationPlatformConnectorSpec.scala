@@ -16,10 +16,10 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{when, reset => mockReset}
-import org.mockito._
+import org.mockito.Mockito.{when, reset as mockReset}
+import org.mockito.*
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
@@ -29,15 +29,15 @@ import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
 import audit.Auditor
 import models.audit.ALAEvent
-import models.des._
-import utils._
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException, UpstreamErrorResponse}
-import uk.gov.hmrc.play.audit.EventKeys._
+import models.des.*
+import utils.*
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException, RequestId, UpstreamErrorResponse}
+import uk.gov.hmrc.play.audit.EventKeys.*
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.DataEvent
 import views.html.helper
-
 import java.time.{LocalDate, LocalDateTime}
+import java.util.UUID.randomUUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -331,8 +331,7 @@ class IntegrationPlatformConnectorSpec
     "send HIP headers when api-5965 is enabled" in {
 
       val empRef = "123AB12345"
-      val localDate = LocalDate.of(2016, 11, 3)
-      val dateRange = OpenEarlyDateRange(localDate)
+      val dateRange = OpenEarlyDateRange(LocalDate.of(2016, 11, 3))
       val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?${dateRange.toParams}"
       val expectedResponse = EmployerPaymentsSummary("123/AB12345", Seq[EmployerPaymentSummary]())
 
@@ -960,6 +959,26 @@ class IntegrationPlatformConnectorSpec
           .withHeader("X-Client-ID", equalTo("ClientId"))
           .withHeader("Environment", equalTo("Test"))
       )
+    }
+  }
+
+  "correlationId" should {
+    "be returned from header carrier" in {
+      val correlationId =  randomUUID.toString
+      val hcWithRequestId: HeaderCarrier =
+        HeaderCarrier(requestId = Some(RequestId(correlationId)))
+
+      val result = integrationPlatformConnector.correlationId(using hcWithRequestId)
+
+      result should startWith(correlationId.substring(0, 23))
+    }
+
+    "be generated when not in header carrier" in {
+      val hcWithoutRequestId: HeaderCarrier = HeaderCarrier(requestId = None)
+
+      val result = integrationPlatformConnector.correlationId(using hcWithoutRequestId)
+
+      result should fullyMatch regex """[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"""
     }
   }
 }
