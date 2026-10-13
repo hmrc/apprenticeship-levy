@@ -19,6 +19,7 @@ package models.audit
 import play.api.http.Status.{NOT_FOUND, OK}
 import utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
+import uk.gov.hmrc.play.audit.EventKeys.TransactionName
 
 class ALAEventSpec extends AppLevyUnitSpec {
 
@@ -38,7 +39,15 @@ class ALAEventSpec extends AppLevyUnitSpec {
         val event = ALAEvent("event1")
         event.toDataEvent(NOT_FOUND, exception).detail shouldBe Map("upstream_http_status" -> "404", "exception" -> "uk.gov.hmrc.http.BadRequestException: bad request")
       }
+      "convert to a DataEvent with the correct audit fields" in {
+        implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = Seq("Content-Type" -> "application/json"))
+
+        val auditEvent = ALAEvent("readEmprefDetails", "123AB12345").toDataEvent(OK)
+
+        auditEvent.auditType shouldBe "ServiceReceivedRequest"
+        auditEvent.tags(TransactionName) shouldBe "readEmprefDetails"
+        auditEvent.detail("empref") shouldBe "123AB12345"
+      }
     }
   }
-
 }
