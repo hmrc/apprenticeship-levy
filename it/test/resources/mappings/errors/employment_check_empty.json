@@ -5,10 +5,10 @@
         "url": "/apprenticeship-levy/employers/888AB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30",
         "headers": {
           "Authorization": {
-              "matches": "Bearer (.*)"
+              "matches": "Basic (.*)"
           },
-          "Environment": {
-              "matches": "(isit|clone|live|ist0)"
+          "X-Transmitting-System": {
+              "equalTo": "HIP"
           }
         }
     },

@@ -5,10 +5,10 @@
         "urlPattern": "/rti/employers/123AB99999/employer-payment-summary\\?fromDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)&toDate=(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)",
         "headers": {
           "Authorization": {
-              "matches": "Bearer (.*)"
+              "matches": "Basic (.*)"
           },
-          "Environment": {
-              "matches": "(isit|clone|live|ist0)"
+          "X-Transmitting-System": {
+              "equalTo": "HIP"
           }
         }
     },
