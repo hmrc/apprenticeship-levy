@@ -33,15 +33,19 @@ import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import views.html.helper
-
+import sttp.model.HeaderNames
 import java.net.URLDecoder
-import java.time.LocalDate
-import java.util.UUID
+import java.nio.charset.StandardCharsets
+import java.time.{Instant, LocalDate}
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.util.UUID.randomUUID
+import java.util.{Base64, UUID}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 trait EmployerDetailsEndpoint extends Timer with Logging {
-  des: DesConnector =>
+  ip: IntegrationPlatformConnector =>
 
   def designatoryDetails(empref: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] = {
     val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
@@ -54,7 +58,7 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
           throw new IllegalArgumentException(s"Empref is not valid.")
     }
 
-    val url = s"${des.baseUrl}/paye/employer/$office/$ref/designatory-details"
+    val url = s"${ip.baseUrl}/paye/employer/$office/$ref/designatory-details"
 
     // $COVERAGE-OFF$
     logger.debug(s"Calling DES at $url")
@@ -65,7 +69,7 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
 
     timer(RequestEvent(DES_EMPREF_DETAILS_REQUEST, Some(empref))) {
       audit(ALAEvent("readEmprefDetails", empref)) {
-        createDesHeaders(des.httpClient.get(url"$url"))
+        createDesHeaders(ip.httpClient.get(url"$url"))
           .execute[Either[UpstreamErrorResponse, HodDesignatoryDetailsLinks]] flatMap {
           case Right(response) =>
             response.links.map {
@@ -105,8 +109,8 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
   }
 
   private def getDetails(path: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] = {
-    val url = s"${des.baseUrl}$path"
-    createDesHeaders(des.httpClient.get(url"$url"))
+    val url = s"${ip.baseUrl}$path"
+    createDesHeaders(ip.httpClient.get(url"$url"))
       .execute[Either[UpstreamErrorResponse, DesignatoryDetailsData]] map {
       case Right(data) =>
         Some(data)
@@ -125,20 +129,20 @@ trait EmployerDetailsEndpoint extends Timer with Logging {
 }
 
 trait EmploymentCheckEndpoint extends Timer {
-  des: DesConnector =>
+  ip: IntegrationPlatformConnector =>
 
   def check(empref: String, nino: String, dateRange: ClosedDateRange)
            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmploymentCheckStatus] = {
     val dateParams = dateRange.toParams
-    val url = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?$dateParams"
-
+    val useHip = ip.useHipFor5967
+    val url = s"${ipBaseUrl(useHip)}/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?$dateParams"
     // $COVERAGE-OFF$
-    logger.debug(s"Calling DES at $url")
+    logger.debug(s"Calling ${ipPlatform(useHip)} at $url")
     // $COVERAGE-ON$
 
-    timer(RequestEvent(DES_EMP_CHECK_REQUEST, Some(empref))) {
+    timer(RequestEvent(if (useHip) HIP_EMP_CHECK_REQUEST else DES_EMP_CHECK_REQUEST, Some(empref))) {
       audit(ALAEvent("employmentCheck", empref, nino, dateParams)) {
-        createDesHeaders(des.httpClient.get(url"$url"))
+        createIpHeaders(useHip)(ip.httpClient.get(url"$url"))
           .execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]] map {
           case Right(response) =>
             response
@@ -156,7 +160,7 @@ trait EmploymentCheckEndpoint extends Timer {
 }
 
 trait FractionsEndpoint extends Timer {
-  des: DesConnector =>
+  des: IntegrationPlatformConnector =>
 
   def fractions(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Fractions] = {
     val dateParams = dateRange.toParams
@@ -210,24 +214,24 @@ trait FractionsEndpoint extends Timer {
 }
 
 trait LevyDeclarationsEndpoint extends Timer {
-  des: DesConnector =>
+  ip: IntegrationPlatformConnector =>
 
   def eps(empref: String, dateRange: DateRange)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams
-    val url = s"${desURL(empref)}?$dateParams"
-
-    timer(RequestEvent(DES_LEVIES_REQUEST, Some(empref))) {
+    val useHip = ip.useHipFor5965
+    val url = s"${ipUrl(useHip, empref)}?$dateParams"
+    timer(RequestEvent(if(useHip) HIP_LEVIES_REQUEST else DES_LEVIES_REQUEST, Some(empref))) {
       audit(ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
-        createDesHeaders(des.httpClient.get(url"$url"))
+        createIpHeaders(useHip)(ip.httpClient.get(url"$url"))
           .execute[Either[UpstreamErrorResponse, HttpResponse]] map {
           case Right(response) =>
             marshall(empref, response.body).getOrElse {
-              logger.error(s"""|DES url $url
+              logger.error(s"""|${ipPlatform(useHip)} url $url
                                |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
                                |Status: ${response.status}
                                |Headers: ${response.headers.mkString(" ")}
                                |Body: '${response.body}'""".stripMargin('|'))
-              throw new IllegalArgumentException(s"DES returned unexpected JSON on 200 response: ${response.body}")
+              throw new IllegalArgumentException(s"${ipPlatform(useHip)} returned unexpected JSON on 200 response: ${response.body}")
             }
           case Left(e: UpstreamErrorResponse) =>
             if (e.statusCode == BAD_REQUEST)
@@ -297,15 +301,11 @@ trait LevyDeclarationsEndpoint extends Timer {
     }
   }
 
-  private def isEpsOrigPathEnabled: Boolean = appContext.epsOrigPathEnabled()
-
-  private def desURL(empref: String): String = if (isEpsOrigPathEnabled)
-                                                          s"$baseUrl/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"
-                                                        else
-                                                          s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/declarations"
+  private def ipUrl(useHip: Boolean, empref: String): String =
+    s"${ipBaseUrl(useHip)}/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"
 }
 
-trait DesConnector extends FractionsEndpoint
+trait IntegrationPlatformConnector extends FractionsEndpoint
   with EmployerDetailsEndpoint
   with EmploymentCheckEndpoint
   with LevyDeclarationsEndpoint
@@ -313,6 +313,7 @@ trait DesConnector extends FractionsEndpoint
   with GraphiteMetrics {
   def httpClient: HttpClientV2
   def baseUrl: String
+  def hipBaseUrl: String
   def desAuthorization: String
   def desEnvironment: String
 
@@ -324,6 +325,30 @@ trait DesConnector extends FractionsEndpoint
       case _ => empref
     }
 
+  private lazy val clientId: String = appContext.clientId
+  private lazy val clientSecret: String = appContext.clientSecret
+
+  def ipPlatform(useHip: Boolean): String = if(useHip) "HIP" else "DES"
+
+  private lazy val authSecret: String =
+    Base64.getEncoder
+      .encodeToString(
+        s"${clientId}:${clientSecret}".getBytes(StandardCharsets.UTF_8)
+      )
+
+  private[connectors] def correlationId(implicit hc: HeaderCarrier): String = {
+    val CorrelationIdPattern = """.*([A-Za-z0-9]{8}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}).*""".r
+
+    hc.requestId match {
+      case Some(requestId) =>
+        requestId.value match {
+          case CorrelationIdPattern(prefix) => prefix + "-" + randomUUID.toString.substring(24)
+          case _ => randomUUID.toString
+        }
+      case _ => randomUUID.toString
+    }
+  }
+
   def createDesHeaders(builder: RequestBuilder)(implicit hc: HeaderCarrier): RequestBuilder = {
     builder
       .setHeader("X-Client-ID" -> getHeaderValueByKey("X-Client-ID"))
@@ -332,17 +357,36 @@ trait DesConnector extends FractionsEndpoint
       .setHeader("CorrelationId" -> UUID.randomUUID().toString)
   }
 
+  def createHipHeaders(builder: RequestBuilder)(implicit hc: HeaderCarrier): RequestBuilder = {
+    builder
+    .setHeader(HeaderNames.Authorization -> s"Basic $authSecret")
+    .setHeader("correlationid" -> correlationId(using hc))
+    .setHeader("X-Receipt-Date" -> DateTimeFormatter.ISO_INSTANT.format(Instant.now().truncatedTo(ChronoUnit.SECONDS)))
+    .setHeader("X-Transmitting-System" -> "HIP")
+
+  }
+
+  def useHipFor5965: Boolean = appContext.api5965
+  def useHipFor5967: Boolean = appContext.api5967
+
+  def ipBaseUrl(useHip: Boolean): String = if (useHip) hipBaseUrl else baseUrl
+
+  def createIpHeaders(useHip: Boolean)(builder: RequestBuilder)(implicit hc: HeaderCarrier): RequestBuilder =
+    if (useHip) createHipHeaders(builder) else createDesHeaders(builder)
+
+
   private def getHeaderValueByKey(key: String)(implicit headerCarrier: HeaderCarrier): String = {
     headerCarrier.headers(Seq(key)).toMap.getOrElse(key, "")
   }
 }
 
-class LiveDesConnector @Inject()(val httpClient: HttpClientV2,
-                                 getAuditConnector: AuditConnector,
-                                 val appContext: AppContext,
-                                 metrics: MetricRegistry) extends DesConnector{
+class LiveIntegrationPlatformConnector @Inject()(val httpClient: HttpClientV2,
+                                                 getAuditConnector: AuditConnector,
+                                                 val appContext: AppContext,
+                                                 metrics: MetricRegistry) extends IntegrationPlatformConnector{
   protected def auditConnector: Option[AuditConnector] = Some(getAuditConnector)
   def baseUrl: String = appContext.desUrl
+  def hipBaseUrl: String = appContext.hipUrl
 
   override def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(metrics)).getOrElse(None) else None
 
@@ -351,11 +395,12 @@ class LiveDesConnector @Inject()(val httpClient: HttpClientV2,
   override def desEnvironment: String = appContext.desEnvironment
 }
 
-class SandboxDesConnector @Inject()(val httpClient: HttpClientV2,
-                                    val appContext: AppContext,
-                                    metrics: MetricRegistry) extends DesConnector{
+class SandboxIntegrationPlatformConnector @Inject()(val httpClient: HttpClientV2,
+                                                    val appContext: AppContext,
+                                                    metrics: MetricRegistry) extends IntegrationPlatformConnector{
   protected def auditConnector: Option[AuditConnector] = None
   def baseUrl: String = appContext.stubDesUrl
+  def hipBaseUrl: String = appContext.stubHipUrl
 
   override def registry: Option[MetricRegistry] = if (appContext.metricsEnabled) Try (Some(metrics)).getOrElse(None) else None
 

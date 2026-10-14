@@ -26,7 +26,7 @@ import play.api.mvc.{AnyContent, BodyParser, ControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import config.AppContext
-import connectors.DesConnector
+import connectors.IntegrationPlatformConnector
 import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import models.des.FractionCalculationDate
 import utils.AppLevyUnitSpec
@@ -45,12 +45,13 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
   val mockHttp: HttpClientV2 = mock[HttpClientV2]
   val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]
 
-  def controller : FractionsCalculationDateController = new FractionsCalculationDateController with DesController {
-    def desConnector: DesConnector = new DesConnector() {
+  def controller : FractionsCalculationDateController = new FractionsCalculationDateController with IntegrationPlatformController {
+    def integrationPlatformConnector: IntegrationPlatformConnector = new IntegrationPlatformConnector() {
       override val appContext: AppContext = mockAppContext
       override protected def auditConnector: Option[AuditConnector] = None
       override def registry: Option[MetricRegistry] = None
       def baseUrl: String = "http://a.guide.to.nowhere/"
+      def hipBaseUrl: String = "http://a.guide.to.nowhere/"
       def httpClient: HttpClientV2 = mockHttp
       override def desAuthorization: String = "localBearer"
 

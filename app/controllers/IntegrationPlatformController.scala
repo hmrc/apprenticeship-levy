@@ -28,7 +28,7 @@ import java.io.IOException
 import java.net.URLDecoder
 import scala.util.matching.Regex
 
-trait DesController extends ApiController with Logging {
+trait IntegrationPlatformController extends ApiController with Logging {
 
   val appContext: AppContext
 
