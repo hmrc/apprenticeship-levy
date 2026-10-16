@@ -20,8 +20,8 @@ import play.mvc.Http.Status._
 import uk.gov.hmrc.play.bootstrap.http.ErrorResponse
 
 object ErrorResponses {
-  def DESError(statusCode: Int, code: String, msg: String): ErrorResponse = ErrorResponse(statusCode, msg, Some(s"DES_ERROR_${code}"))
-  def AuthError(statusCode: Int, code: String, msg: String): ErrorResponse = ErrorResponse(statusCode, msg, Some(s"AUTH_ERROR_${code}"))
+  def DESError(statusCode: Int, code: String, msg: String): ErrorResponse = ErrorResponse(statusCode, msg, Some(s"DES_ERROR_$code"))
+  def AuthError(statusCode: Int, code: String, msg: String): ErrorResponse = ErrorResponse(statusCode, msg, Some(s"AUTH_ERROR_$code"))
 
   object ErrorNotFound extends ErrorResponse(NOT_FOUND, "Resource was not found", Some("NOT_FOUND"))
   object ErrorFromDateAfterToDate extends ErrorResponse(BAD_REQUEST, "From date was after to date", Some("BAD_REQUEST"))

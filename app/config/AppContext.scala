@@ -40,7 +40,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
     case Success(v) => Some(v)
     case Failure(e) => {
       // $COVERAGE-OFF$
-      logger.error(s"Unable to get baseUrl for ${name}. Error: ${e.getMessage()}")
+      logger.error(s"Unable to get baseUrl for $name. Error: ${e.getMessage()}")
       // $COVERAGE-ON$
       None
     }
@@ -48,7 +48,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
 
   def mode: Mode = environment.mode
 
-  def appUrl: String = maybeString("appUrl").getOrElse{
+  def appUrl: String = maybeString("appUrl").getOrElse {
     // $COVERAGE-OFF$
     logger.error("appUrl is not configured")
     // $COVERAGE-ON$
@@ -86,38 +86,38 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
 
   def metricsEnabled: Boolean = maybeString("microservice.metrics.graphite.enabled").flatMap(flag => Try(flag.toBoolean).toOption).getOrElse(false)
 
-  def getURL(name: String) = Try {
-      val url = maybeBaseURL(name).getOrElse("")
-      val host = maybeString(s"microservice.services.${name}.host").getOrElse("")
-      val path = maybeString(s"microservice.services.${name}.path").getOrElse("")
-      val port = maybeString(s"microservice.services.${name}.port").getOrElse("")
-      val protocol = maybeString(s"microservice.services.${name}.protocol").getOrElse("")
-      if (port.isEmpty) {
-        s"${protocol}://${host}"
-      } else {
-        val baseurl = if (environment.mode == Mode.Prod && !url.contains("localhost")) appUrl else url
-        if (path == "") url else s"${baseurl}${path}"
-      }
-    }.getOrElse(maybeBaseURL(name).getOrElse(""))
+  def getURL(name: String): String = Try {
+    val url = maybeBaseURL(name).getOrElse("")
+    val host = maybeString(s"microservice.services.$name.host").getOrElse("")
+    val path = maybeString(s"microservice.services.$name.path").getOrElse("")
+    val port = maybeString(s"microservice.services.$name.port").getOrElse("")
+    val protocol = maybeString(s"microservice.services.$name.protocol").getOrElse("")
+    if (port.isEmpty) {
+      s"$protocol://$host"
+    } else {
+      val baseurl = if (environment.mode == Mode.Prod && !url.contains("localhost")) appUrl else url
+      if (path == "") url else s"$baseurl$path"
+    }
+  }.getOrElse(maybeBaseURL(name).getOrElse(""))
 
   def authUrl: String = getURL("auth")
 
   def desUrl: String = getURL("des")
 
   def stubURL(name: String) = Try {
-      val stubUrl = maybeBaseURL(s"stub-${name}").getOrElse("")
-      val path = maybeString(s"microservice.services.stub-${name}.path").getOrElse("")
-      val baseurl = if (environment.mode == Mode.Prod && !stubUrl.contains("localhost")) appUrl else stubUrl
-      s"${baseurl}${path}"
-    }.getOrElse(maybeBaseURL(s"stub-${name}").getOrElse(""))
+    val stubUrl = maybeBaseURL(s"stub-$name").getOrElse("")
+    val path = maybeString(s"microservice.services.stub-$name.path").getOrElse("")
+    val baseurl = if (environment.mode == Mode.Prod && !stubUrl.contains("localhost")) appUrl else stubUrl
+    s"$baseurl$path"
+  }.getOrElse(maybeBaseURL(s"stub-$name").getOrElse(""))
 
   def stubDesUrl: String = stubURL("des")
 
   def stubAuthUrl: String = stubURL("auth")
 
   // $COVERAGE-OFF$
-  logger.info(s"""\nStub: DES URL: ${stubDesUrl}    Stub Auth URL: ${stubAuthUrl}""")
-  logger.info(s"""\nDES URL: ${desUrl}    AUTH URL: ${authUrl}""")
+  logger.info(s"""\nStub: DES URL: $stubDesUrl    Stub Auth URL: $stubAuthUrl""")
+  logger.info(s"""\nDES URL: $desUrl    AUTH URL: $authUrl""")
   // $COVERAGE-ON$
 
   def ninoPattern(): String = maybeString("microservice.ninoRegex").getOrElse("")

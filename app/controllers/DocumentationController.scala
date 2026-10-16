@@ -50,10 +50,10 @@ class DocumentationController @Inject()
   def retrieve(rootPath: String, file: String): Option[InputStream] = {
     if (environment.mode == Mode.Prod) {
       // $COVERAGE-OFF$
-      environment.resourceAsStream(s"${rootPath}/${file}")
+      environment.resourceAsStream(s"$rootPath/$file")
       // $COVERAGE-ON$
     } else {
-      environment.getExistingFile(s"${rootPath}/${file}").map(new java.io.FileInputStream(_))
+      environment.getExistingFile(s"$rootPath/$file").map(new java.io.FileInputStream(_))
     }
   }
 
@@ -65,7 +65,7 @@ class DocumentationController @Inject()
       }
       case _ => {
         // $COVERAGE-OFF$
-        logger.error(s"Assets controller failed to serve a file: ${rootPath}/${file}.")
+        logger.error(s"Assets controller failed to serve a file: $rootPath/$file.")
         // $COVERAGE-ON$
         NotFound
       }
@@ -88,7 +88,7 @@ class DocumentationController @Inject()
         }
       case _ =>
         // $COVERAGE-OFF$
-        logger.error(s"Documentation controller failed to serve a file: public/api/definition.json as not found")
+        logger.error("Documentation controller failed to serve a file: public/api/definition.json as not found")
         // $COVERAGE-ON$
         Future.successful(NotFound)
     }
@@ -102,7 +102,7 @@ class DocumentationController @Inject()
   }
 
   def conf(version: String, file: String): Action[AnyContent] = {
-    at(s"public/api/conf/${version}", file)
+    at(s"public/api/conf/$version", file)
   }
 }
 
