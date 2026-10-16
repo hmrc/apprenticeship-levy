@@ -38,4 +38,4 @@ class DataTransformerSpec extends AnyWordSpec with Matchers {
 
     "produce values beginning with 9" in { result.forall(_.head == '9') mustBe true }
   }
-} 
+}
