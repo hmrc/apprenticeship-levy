@@ -44,21 +44,21 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
         val inputEmpRef = "105EMPREF"
         val file = "/sandbox/data/apprenticeship-levy/employers/%s/employed/SC111111A?fromDate=2017-01-01&toDate=2017-12-31"
         val result = controller(true).getFileName(file.format(inputEmpRef))
-        result shouldBe file.format("840MODES17")
+        result mustBe file.format("840MODES17")
       }
 
       "file matches EmpRef regex and returnDummyResponse is true" in {
         val inputEmpRef = "EMPREF"
         val file = "/sandbox/data/apprenticeship-levy/employers/%s/employed/SC111111A?fromDate=2017-01-01&toDate=2017-12-31"
         val result = controller(true).getFileName(file.format(inputEmpRef))
-        result shouldBe file.format("840MODES17")
+        result mustBe file.format("840MODES17")
       }
 
       "file matches EmpRef regex, EmpRef has / and returnDummyResponse is true" in {
         val (empRefStart, empRefEnd) = ("EMP", "REF")
         val file = "/sandbox/data/paye/employer/%s/%s/designatory-details/communication"
         val result = controller(true).getFileName(file.format(empRefStart, empRefEnd))
-        result shouldBe file.format("840", "MODES17")
+        result mustBe file.format("840", "MODES17")
       }
     }
 
@@ -67,7 +67,7 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
         val inputEmpRef = "106EMPREF"
         val file = "/sandbox/data/apprenticeship-levy/employers/%s/employed/SC111111A?fromDate=2017-01-01&toDate=2017-12-31"
         val result = controller(true).getFileName(file.format(inputEmpRef))
-        result shouldBe file.format("840MODES18")
+        result mustBe file.format("840MODES18")
       }
     }
     "replace file EmpRef with 840/MODES19" when {
@@ -75,19 +75,19 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
         val inputEmpRef = "107EMPREF"
         val file = "/sandbox/data/apprenticeship-levy/employers/%s/employed/SC111111A?fromDate=2017-01-01&toDate=2017-12-31"
         val result = controller(true).getFileName(file.format(inputEmpRef))
-        result shouldBe file.format("840MODES19")
+        result mustBe file.format("840MODES19")
       }
     }
 
     "not replace file EmpRef" when {
       "file does not match regex" in {
         val file = "/unmatched/file/840MODES17/EMPREF"
-        controller(true).getFileName(file) shouldBe file
+        controller(true).getFileName(file) mustBe file
       }
 
       "returnDummyResponse is false" in {
         val file = "/sandbox/data/paye/employer/EMP/REF/designatory-details/communication"
-        controller(false).getFileName(file) shouldBe file
+        controller(false).getFileName(file) mustBe file
       }
     }
 
@@ -96,7 +96,7 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
         val inputNino = "AA000001A"
         val file = "/sandbox/data/apprenticeship-levy/employers/840MODES17/employed/%s?fromDate=2017-01-01&toDate=2017-12-31"
         val result = controller(true).getFileName(file.format(inputNino))
-        result shouldBe file.format("SC111111A")
+        result mustBe file.format("SC111111A")
       }
     }
 
@@ -106,7 +106,7 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
         val inputNino = "AA000001A"
         val file = "/sandbox/data/apprenticeship-levy/employers/%s/employed/%s?fromDate=2017-01-01&toDate=2017-12-31"
         val result = controller(true).getFileName(file.format(inputEmpRef, inputNino))
-        result shouldBe file.format("840MODES17", "SC111111A")
+        result mustBe file.format("840MODES17", "SC111111A")
       }
     }
   }
@@ -118,8 +118,8 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
           "Authorization" -> "Bearer dsfda9080",
           "Environment" -> "clone")))
 
-        status(result) shouldBe OK
-        contentAsString(result) shouldBe ""
+        status(result) mustBe OK
+        contentAsString(result) mustBe ""
       }
 
     }
@@ -131,8 +131,8 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
           "Environment"->"clone",
           "OVERRIDE_EMPREF" -> "true")))
 
-        status(result) shouldBe NOT_FOUND
-        contentAsJson(result) shouldBe Json.parse(s"""{"reason": "Received request req but no file 'req' found in 'public/sandbox-data' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")
+        status(result) mustBe NOT_FOUND
+        contentAsJson(result) mustBe Json.parse(s"""{"reason": "Received request req but no file 'req' found in 'public/sandbox-data' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")
       }
     }
   }

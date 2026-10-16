@@ -19,7 +19,7 @@ package journeys
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.http.Fault
 import org.scalacheck.Gen
-import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -52,7 +52,7 @@ class DocumentationEndpointISpec
       .configure(wireMockConfiguration(server.port()))
       .build()
 
-  "API Documentation Endpoint" should {
+  "API Documentation Endpoint" must {
     "provide YAML documentation" when {
       Seq("1.0").foreach { version =>
         s"/api/conf/$version/application.yaml is defined" in {
@@ -63,8 +63,8 @@ class DocumentationEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe OK
-          contentAsString(result).startsWith("openapi: 3.0.3") shouldBe true
+          status(result) mustBe OK
+          contentAsString(result).startsWith("openapi: 3.0.3") mustBe true
         }
 
         val definitionFile = new File(s"./public/api/conf/$version/application.yaml")
@@ -84,13 +84,13 @@ class DocumentationEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe OK
+            status(result) mustBe OK
           }
         }
       }
     }
 
-    "should when calling /api/definition" should {
+    "should when calling /api/definition" must {
       "have correct definitions configured" in {
         // set up
         val request = FakeRequest(GET, s"/api/definition")
@@ -99,11 +99,11 @@ class DocumentationEndpointISpec
         val result = route(app, request).get
 
         // check
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
     }
 
-    "with invalid parameters" should {
+    "with invalid parameters" must {
       "return 404 when documentation version doesn't exist" in {
         // set up
         val urls = for {version <- Gen.choose(Int.MinValue, Int.MaxValue)} yield s"/api/documentation/$version/empref"
@@ -116,7 +116,7 @@ class DocumentationEndpointISpec
           val httpStatus = status(documentationResult)
 
           // check
-          httpStatus shouldBe NOT_FOUND
+          httpStatus mustBe NOT_FOUND
         }
       }
 
@@ -134,7 +134,7 @@ class DocumentationEndpointISpec
             val httpStatus = status(documentationResult)
 
             // check
-            httpStatus shouldBe NOT_FOUND
+            httpStatus mustBe NOT_FOUND
           }
         }
       }

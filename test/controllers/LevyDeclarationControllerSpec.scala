@@ -65,11 +65,11 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
 
   val liveFractionsController: LiveLevyDeclarationController = inject[LiveLevyDeclarationController]
 
-  "getting the levy declarations" should {
+  "getting the levy declarations" must {
     "return a Not Acceptable response" when {
       "the accept header is not correct" in {
         val response = liveFractionsController.declarations(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
-        response.header.status shouldBe NOT_ACCEPTABLE
+        response.header.status mustBe NOT_ACCEPTABLE
       }
     }
     "return a fromDateAfterToDate error" when {
@@ -79,7 +79,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")).futureValue
 
-        response.header.status shouldBe BAD_REQUEST
+        response.header.status mustBe BAD_REQUEST
       }
     }
 
@@ -102,7 +102,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")).futureValue
 
-        response.header.status shouldBe OK
+        response.header.status mustBe OK
       }
 
       "None of the dates are supplied" in {
@@ -123,7 +123,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")).futureValue
 
-        response.header.status shouldBe OK
+        response.header.status mustBe OK
       }
 
       "only the fromDate is supplied" in {
@@ -144,7 +144,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")).futureValue
 
-        response.header.status shouldBe OK
+        response.header.status mustBe OK
       }
 
       "only the toDate is supplied" in {
@@ -165,7 +165,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")).futureValue
 
-        response.header.status shouldBe OK
+        response.header.status mustBe OK
       }
     }
 
@@ -186,7 +186,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")).futureValue
 
-        response.header.status shouldBe NOT_FOUND
+        response.header.status mustBe NOT_FOUND
       }
 
       "the desConnector returns a 404" in {
@@ -199,7 +199,7 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")).futureValue
 
-        response.header.status shouldBe NOT_FOUND
+        response.header.status mustBe NOT_FOUND
       }
     }
   }

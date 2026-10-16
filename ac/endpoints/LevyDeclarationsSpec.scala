@@ -3,7 +3,7 @@ package endpoints
 import java.io.File
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
-import org.scalatest.matchers.should.Matchers._
+import org.scalatest.matchers.must.Matchers._
 import play.api.libs.json.Json
 import scalaj.http.Http
 
@@ -37,9 +37,9 @@ class LevyDeclarationsSpec extends FunctionalSpec with Eventually with Integrati
           }
 
           // check
-          result.code shouldBe 200
-          result.contentType shouldBe Some("application/json")
-          Json.parse(result.body) shouldBe (expectedJson \ "response").get
+          result.code mustBe 200
+          result.contentType mustBe Some("application/json")
+          Json.parse(result.body) mustBe (expectedJson \ "response").get
         }
       }
     }

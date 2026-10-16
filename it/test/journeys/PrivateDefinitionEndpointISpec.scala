@@ -18,7 +18,7 @@ package journeys
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -53,7 +53,7 @@ class PrivateDefinitionEndpointISpec
 
   "API Definition Endpoint (Public Mode)" when {
     "calling /api/definition" +
-    "\nand definition file exists and private-mode is set to true" should {
+    "\nand definition file exists and private-mode is set to true" must {
       "return OK" in {
         // set up
         val request = FakeRequest(GET, "/api/definition")
@@ -62,7 +62,7 @@ class PrivateDefinitionEndpointISpec
         val result = route(app, request).get
 
         // check
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
     }
   }

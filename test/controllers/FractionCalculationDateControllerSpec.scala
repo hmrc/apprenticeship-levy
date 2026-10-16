@@ -78,7 +78,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
     reset(mockHttp)
   }
 
-  "getting fraction calculation date" should {
+  "getting fraction calculation date" must {
     "propagate environment but not authorization headers on to connector" in {
       // set up
 
@@ -96,9 +96,9 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
-      actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders shouldBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
-      status(response) shouldBe OK
+      actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
+      actualHeaderCarrier.extraHeaders mustBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      status(response) mustBe OK
     }
 
     "not fail if environment header not supplied" in {
@@ -118,8 +118,8 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
-      actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders shouldBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
+      actualHeaderCarrier.extraHeaders mustBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
     }
 
     "recover from exceptions" in {
@@ -135,8 +135,8 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
                                                                                                     "Authorization"->"Bearer dsfda9080"))
 
       // check
-      status(response) shouldBe SERVICE_UNAVAILABLE
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+      status(response) mustBe SERVICE_UNAVAILABLE
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
     }
   }
 }

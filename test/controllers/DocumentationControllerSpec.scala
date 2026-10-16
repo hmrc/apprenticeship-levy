@@ -53,9 +53,9 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
 
   val documentationController: DocumentationController = inject[DocumentationController]
 
-  "DocumentationController" should {
+  "DocumentationController" must {
     "return a Failure if unable to transform definition.json" in {
-      documentationController.enrichDefinition(new java.io.FileInputStream(invalidDefinition)) should matchPattern { case Failure(_) => }
+      documentationController.enrichDefinition(new java.io.FileInputStream(invalidDefinition)) must matchPattern { case Failure(_) => }
     }
 
     "return a success" when {
@@ -63,20 +63,20 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
         when(mockAppContext.mocked.environment).thenReturn(Environment(new File(".").getCanonicalFile, this.getClass.getClassLoader, Mode.Dev))
         val result = await(documentationController.documentation("1.0", "employment check")(FakeRequest()))
 
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
 
       "the definition is able to be found" in {
         val result = await(documentationController.definition()(FakeRequest()))
 
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
 
       "the definition is able to be found with private mode enabled" in {
         when(mockAppContext.mocked.privateModeEnabled).thenReturn(true)
         val result = await(documentationController.definition()(FakeRequest()))
 
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
     }
 
@@ -85,12 +85,12 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
         when(mockAppContext.mocked.environment).thenReturn(Environment(new File(".").getCanonicalFile, this.getClass.getClassLoader, Mode.Dev))
         val result = await(documentationController.documentation("1.0", "test file")(FakeRequest()))
 
-        status(result) shouldBe NOT_FOUND
+        status(result) mustBe NOT_FOUND
       }
       "the definition cannot be found" in {
         val result = await(documentationController.definition("TestFile.json")(FakeRequest()))
 
-        status(result) shouldBe NOT_FOUND
+        status(result) mustBe NOT_FOUND
       }
     }
   }
