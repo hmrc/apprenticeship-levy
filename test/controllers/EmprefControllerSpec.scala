@@ -57,16 +57,16 @@ class EmprefControllerSpec extends AppLevyUnitSpec with OptionValues {
     override val authAction: EmploymentReference => AuthAction = _ => new FakePrivilegedAuthAction
   }
 
-  "prepareLinks" should {
+  "prepareLinks" must {
     "correctly prepare HAL for an empref" in {
       val empref = "123/AB12345"
       val hal = testController.prepareLinks(EmploymentReference(empref))
 
-      hal.links.links should have size 4
-      hal.links.links.find(_.rel == "self").value.href shouldBe testController.emprefUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "declarations").value.href shouldBe testController.declarationsUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "fractions").value.href shouldBe testController.fractionsUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "employment-check").value.href shouldBe testController.employmentCheckUrl(EmploymentReference(empref))
+      hal.links.links must have size 4
+      hal.links.links.find(_.rel == "self").value.href mustBe testController.emprefUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "declarations").value.href mustBe testController.declarationsUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "fractions").value.href mustBe testController.fractionsUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "employment-check").value.href mustBe testController.employmentCheckUrl(EmploymentReference(empref))
     }
   }
 }

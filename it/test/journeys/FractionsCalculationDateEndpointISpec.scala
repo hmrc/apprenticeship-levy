@@ -18,7 +18,7 @@ package journeys
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.http.Fault
-import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -47,7 +47,7 @@ class FractionsCalculationDateEndpointISpec
   "Fractions Calculation Date Endpoint" when {
     Seq("/sandbox", "").foreach { context =>
       s"calling $context/fraction-calculation-date" when {
-        "no backend systems failing" should {
+        "no backend systems failing" must {
           "return date" in {
             // set up
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
@@ -56,13 +56,13 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe OK
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse(""""2016-03-15"""")
+            status(result) mustBe OK
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse(""""2016-03-15"""")
           }
         }
 
-        "backend systems failing" should {
+        "backend systems failing" must {
           "return http status 503 when connection closed" in {
             // set up
             stubGetServerWithId(aResponse()
@@ -74,9 +74,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           "return http status 408 when timed out" in {
@@ -91,9 +91,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe REQUEST_TIMEOUT
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error"}""")
+            status(result) mustBe REQUEST_TIMEOUT
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error"}""")
           }
 
           "return http status 503 when empty response" in {
@@ -107,9 +107,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           "return http status 404 when DES HTTP 404" in {
@@ -124,9 +124,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe NOT_FOUND
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
+            status(result) mustBe NOT_FOUND
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
           }
 
           "return http status 503 when DES HTTP 500" in {
@@ -141,9 +141,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
           "return http status 503 when DES HTTP 503" in {
@@ -158,9 +158,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
           }
 
           "return http status 401 when DES HTTP 401" in {
@@ -175,9 +175,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe 401
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
+            status(result) mustBe 401
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
           }
 
           "return http status 403 when DES HTTP 403" in {
@@ -192,9 +192,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe FORBIDDEN
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
+            status(result) mustBe FORBIDDEN
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
           }
 
           "return http status 429 when DES HTTP 429" in {
@@ -209,9 +209,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe TOO_MANY_REQUESTS
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_TOO_MANY_REQUESTS","message":"DES too many requests"}""")
+            status(result) mustBe TOO_MANY_REQUESTS
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_TOO_MANY_REQUESTS","message":"DES too many requests"}""")
           }
 
           "return http status 408 when DES HTTP 408" in {
@@ -226,9 +226,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe REQUEST_TIMEOUT
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_TIMEOUT","message":"DES not responding error"}""")
+            status(result) mustBe REQUEST_TIMEOUT
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_TIMEOUT","message":"DES not responding error"}""")
           }
 
           "return http status 503 when DES HTTP 409" in {
@@ -243,9 +243,9 @@ class FractionsCalculationDateEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_OTHER","message":"DES 4xx error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_OTHER","message":"DES 4xx error"}""")
           }
         }
       }

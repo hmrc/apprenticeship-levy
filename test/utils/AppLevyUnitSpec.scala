@@ -20,7 +20,7 @@ import org.apache.pekko.stream.Materializer
 import org.apache.pekko.util.ByteString
 import org.mockito.Mockito
 import org.mockito.stubbing.Answer
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result

@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.http.Fault
 import models.api.{LevyDeclaration, PayrollPeriod}
 import org.scalacheck.Gen
-import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -58,7 +58,7 @@ class DeclarationsEndpointISpec
   "Declarations Endpoint" when {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { context =>
-      s"calling $context/epaye/<empref>/declarations with valid paramters" should {
+      s"calling $context/epaye/<empref>/declarations with valid paramters" must {
         "return levy declarations" in {
           // set up
           val request =
@@ -69,12 +69,12 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          contentType(result) shouldBe Some("application/json")
+          contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
-          (json \ "empref").as[String] shouldBe "123/AB12341"
+          (json \ "empref").as[String] mustBe "123/AB12341"
           val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-          declarations.length shouldBe 9
+          declarations.length mustBe 9
           info(declarations.mkString("\n"))
         }
 
@@ -88,12 +88,12 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          contentType(result) shouldBe Some("application/json")
+          contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
-          (json \ "empref").as[String] shouldBe "123/AB12342"
+          (json \ "empref").as[String] mustBe "123/AB12342"
           val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-          declarations.length shouldBe 2
+          declarations.length mustBe 2
         }
 
         "return levy declarations where only toDate specified" in {
@@ -106,12 +106,12 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          contentType(result) shouldBe Some("application/json")
+          contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
-          (json \ "empref").as[String] shouldBe "123/AB12343"
+          (json \ "empref").as[String] mustBe "123/AB12343"
           val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-          declarations.length shouldBe 5
+          declarations.length mustBe 5
         }
 
         "return levy declarations where fromDate and toDate are specified" in {
@@ -124,12 +124,12 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          contentType(result) shouldBe Some("application/json")
+          contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
-          (json \ "empref").as[String] shouldBe "123/AB12344"
+          (json \ "empref").as[String] mustBe "123/AB12344"
           val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-          declarations.length shouldBe 1
+          declarations.length mustBe 1
         }
 
 
@@ -143,12 +143,12 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          contentType(result) shouldBe Some("application/json")
+          contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
-          (json \ "empref").as[String] shouldBe "123/AB12341"
+          (json \ "empref").as[String] mustBe "123/AB12341"
           val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-          declarations(2) shouldBe LevyDeclaration(567742487410L,
+          declarations(2) mustBe LevyDeclaration(567742487410L,
             LocalDateTime.parse("2016-04-20T14:25:32.000"),
             None,
             None,
@@ -170,12 +170,12 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          contentType(result) shouldBe Some("application/json")
+          contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
-          (json \ "empref").as[String] shouldBe "123/AB12341"
+          (json \ "empref").as[String] mustBe "123/AB12341"
           val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-          declarations(7) shouldBe LevyDeclaration(65732154551L,
+          declarations(7) mustBe LevyDeclaration(65732154551L,
             LocalDateTime.parse("2016-04-20T14:25:32.000"),
             None,
             Some(LocalDate.parse("2016-08-06")),
@@ -197,12 +197,12 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          contentType(result) shouldBe Some("application/json")
+          contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
-          (json \ "empref").as[String] shouldBe "123/AB12341"
+          (json \ "empref").as[String] mustBe "123/AB12341"
           val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-          declarations(6) shouldBe LevyDeclaration(567742487423L,
+          declarations(6) mustBe LevyDeclaration(567742487423L,
             LocalDateTime.parse("2016-04-20T14:25:32.000"),
             Some(LocalDate.parse("2016-06-06")),
             None,
@@ -223,12 +223,12 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          contentType(result) shouldBe Some("application/json")
+          contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
-          (json \ "empref").as[String] shouldBe "123/AB12341"
+          (json \ "empref").as[String] mustBe "123/AB12341"
           val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-          declarations(0) shouldBe LevyDeclaration(567742487432L,
+          declarations(0) mustBe LevyDeclaration(567742487432L,
             LocalDateTime.parse("2016-05-20T14:25:32.000"),
             None,
             None,
@@ -238,7 +238,7 @@ class DeclarationsEndpointISpec
             Some(15000),
             None,
             56774248743L)
-          declarations(3) shouldBe LevyDeclaration(567742487412L,
+          declarations(3) mustBe LevyDeclaration(567742487412L,
             LocalDateTime.parse("2016-04-20T14:25:32.000"),
             None,
             None,
@@ -248,7 +248,7 @@ class DeclarationsEndpointISpec
             Some(15000),
             None,
             56774248741L)
-          declarations(5) shouldBe LevyDeclaration(567742487422L,
+          declarations(5) mustBe LevyDeclaration(567742487422L,
             LocalDateTime.parse("2016-04-20T14:25:32.000"),
             None,
             None,
@@ -258,7 +258,7 @@ class DeclarationsEndpointISpec
             Some(15000),
             None,
             56774248742L)
-          declarations(8) shouldBe LevyDeclaration(65732154552L,
+          declarations(8) mustBe LevyDeclaration(65732154552L,
             LocalDateTime.parse("2016-04-20T14:25:32.000"),
             None,
             None,
@@ -280,12 +280,12 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          contentType(result) shouldBe Some("application/json")
+          contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
-          (json \ "empref").as[String] shouldBe "123/AB88888"
+          (json \ "empref").as[String] mustBe "123/AB88888"
           val declarations = (json \ "declarations").as[Array[LevyDeclaration]]
-          declarations(0) shouldBe LevyDeclaration(567742487410L,
+          declarations(0) mustBe LevyDeclaration(567742487410L,
             LocalDateTime.parse("2013-04-17T09:00:55"),
             None,
             None,
@@ -298,7 +298,7 @@ class DeclarationsEndpointISpec
         }
       }
 
-      s"calling $context/epaye/<empref>/declarations with invalid paramters" should {
+      s"calling $context/epaye/<empref>/declarations with invalid paramters" must {
         Seq("fromDate", "toDate").foreach { param =>
           s"return 400 when $param param is invalid" in {
             // set up
@@ -317,9 +317,9 @@ class DeclarationsEndpointISpec
                 val httpStatus = status(result)
 
                 // check
-                httpStatus shouldBe BAD_REQUEST
-                contentType(result) shouldBe Some("application/json")
-                contentAsString(result) should include (""" date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later.""")
+                httpStatus mustBe BAD_REQUEST
+                contentType(result) mustBe Some("application/json")
+                contentAsString(result) must include (""" date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later.""")
               }
             }
           }
@@ -340,9 +340,9 @@ class DeclarationsEndpointISpec
               val httpStatus = status(result)
 
               // check
-              httpStatus shouldBe BAD_REQUEST
-              contentType(result) shouldBe Some("application/json")
-              contentAsString(result) should include("""is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."""")
+              httpStatus mustBe BAD_REQUEST
+              contentType(result) mustBe Some("application/json")
+              contentAsString(result) must include("""is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."""")
             }
           }
         }
@@ -357,9 +357,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe BAD_REQUEST
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
+          status(result) mustBe BAD_REQUEST
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
         }
 
         "return http status 401 when DES returns 401" in {
@@ -373,8 +373,8 @@ class DeclarationsEndpointISpec
 
           // check
           status(result)
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
         }
 
         "return http status 403 when DES returns 403" in {
@@ -387,9 +387,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe FORBIDDEN
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
+          status(result) mustBe FORBIDDEN
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
         }
 
         "return 404 when DES returns 404" in {
@@ -402,7 +402,7 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe NOT_FOUND
+          status(result) mustBe NOT_FOUND
         }
 
         "return 400 when to date is before from date" in {
@@ -416,14 +416,14 @@ class DeclarationsEndpointISpec
           val httpStatus = status(result)
 
           // check
-          httpStatus shouldBe BAD_REQUEST
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"BAD_REQUEST","message":"From date was after to date"}""")
+          httpStatus mustBe BAD_REQUEST
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"BAD_REQUEST","message":"From date was after to date"}""")
         }
       }
 
       s"calling $context/epaye/<empref>/declarations when backend systems failing" +
-        "\nbut not as per specification dated 07/11/2016" should {
+        "\nbut not as per specification dated 07/11/2016" must {
 
         "return http status 404 when empty json returned" in {
           // set up
@@ -435,9 +435,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe NOT_FOUND
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
+          status(result) mustBe NOT_FOUND
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
         }
 
         "return http status 500 when error json object returned on Http Status 200" in {
@@ -450,9 +450,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe INTERNAL_SERVER_ERROR
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES backend error"}""")
+          status(result) mustBe INTERNAL_SERVER_ERROR
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES backend error"}""")
         }
 
         "return http status 404 when just empref field in Json object is returned" in {
@@ -465,9 +465,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe NOT_FOUND
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
+          status(result) mustBe NOT_FOUND
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
         }
 
         "return eps if using old fieldname of 'declarations'" in {
@@ -480,9 +480,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe OK
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse(
+          status(result) mustBe OK
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse(
             """{"empref":"999/AB999996","declarations":[
               |{"id":65732154551,"submissionTime":"2016-10-20T14:25:32.000",
               |"inactiveFrom":"2016-08-06",
@@ -497,7 +497,7 @@ class DeclarationsEndpointISpec
         }
       }
 
-      s"calling $context/epaye/<empref>/declarations when backend systems failing" should {
+      s"calling $context/epaye/<empref>/declarations when backend systems failing" must {
 
         "return 503 when connection closed" in {
           // set up
@@ -509,9 +509,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe SERVICE_UNAVAILABLE
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
+          status(result) mustBe SERVICE_UNAVAILABLE
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
         }
 
         "return http status 503 when empty response" in {
@@ -524,9 +524,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe SERVICE_UNAVAILABLE
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
+          status(result) mustBe SERVICE_UNAVAILABLE
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
         }
 
         "should return http status 408 when timed out" in {
@@ -537,9 +537,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe 408
-          contentType(result) shouldBe Some("application/json")
-          contentAsString(result) should include("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error""")
+          status(result) mustBe 408
+          contentType(result) mustBe Some("application/json")
+          contentAsString(result) must include("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error""")
         }
 
         "return http status 503 when DES HTTP 500" in {
@@ -552,9 +552,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe SERVICE_UNAVAILABLE
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+          status(result) mustBe SERVICE_UNAVAILABLE
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
         }
 
         "return http status 503 when DES HTTP 503" in {
@@ -567,9 +567,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe SERVICE_UNAVAILABLE
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+          status(result) mustBe SERVICE_UNAVAILABLE
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
         }
 
         "return http status 404 when empty json returned" in {
@@ -582,9 +582,9 @@ class DeclarationsEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe NOT_FOUND
-          contentType(result) shouldBe Some("application/json")
-          contentAsJson(result) shouldBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
+          status(result) mustBe NOT_FOUND
+          contentType(result) mustBe Some("application/json")
+          contentAsJson(result) mustBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
         }
       }
     }

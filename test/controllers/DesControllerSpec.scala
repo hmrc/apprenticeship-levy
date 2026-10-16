@@ -21,7 +21,7 @@ import com.codahale.metrics.MetricRegistry
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_TIMEOUT, SERVICE_UNAVAILABLE, TOO_MANY_REQUESTS, UNAUTHORIZED}
 import play.api.libs.json.Json
@@ -77,7 +77,7 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
     override def parser: BodyParser[AnyContent] = controllerComponents.parsers.default
   }
 
-  "DesController" should {
+  "DesController" must {
     "return a internal server error when upstream returns JsValidationException" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
@@ -86,8 +86,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe INTERNAL_SERVER_ERROR
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_JSON_FAILURE","message":"DES and/or BACKEND server returned bad json."}""")
+      status(response) mustBe INTERNAL_SERVER_ERROR
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_JSON_FAILURE","message":"DES and/or BACKEND server returned bad json."}""")
     }
     "return a internal server error when upstream returns IllegalArgumentException" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -97,8 +97,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe INTERNAL_SERVER_ERROR
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_JSON_FAILURE","message":"DES and/or BACKEND server returned bad json."}""")
+      status(response) mustBe INTERNAL_SERVER_ERROR
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_JSON_FAILURE","message":"DES and/or BACKEND server returned bad json."}""")
     }
     "return an internal server error when upstream returns BadRequestException" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -108,8 +108,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe BAD_REQUEST
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
+      status(response) mustBe BAD_REQUEST
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
     }
     "return a service unavailable error when upstream returns IOException" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -119,8 +119,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe SERVICE_UNAVAILABLE
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
+      status(response) mustBe SERVICE_UNAVAILABLE
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
     }
     "return a request timeout error when upstream returns GatewayTimeoutException" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -130,8 +130,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe REQUEST_TIMEOUT
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error"}""")
+      status(response) mustBe REQUEST_TIMEOUT
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error"}""")
     }
     "return a not found error when upstream returns NotFoundException" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -141,8 +141,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe NOT_FOUND
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
+      status(response) mustBe NOT_FOUND
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
     }
     "return an internal server error when upstream returns a 412" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -152,8 +152,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe INTERNAL_SERVER_ERROR
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES backend error"}""")
+      status(response) mustBe INTERNAL_SERVER_ERROR
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES backend error"}""")
     }
     "return a forbidden error when upstream returns a 403" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -163,8 +163,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe FORBIDDEN
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
+      status(response) mustBe FORBIDDEN
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
     }
     "return an unauthorised error when upstream returns a 401" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -174,8 +174,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe UNAUTHORIZED
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
+      status(response) mustBe UNAUTHORIZED
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
     }
     "return a too many requests error when upstream returns a 429" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -185,8 +185,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe TOO_MANY_REQUESTS
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_TOO_MANY_REQUESTS","message":"DES too many requests"}""")
+      status(response) mustBe TOO_MANY_REQUESTS
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_TOO_MANY_REQUESTS","message":"DES too many requests"}""")
     }
     "return a request timeout error when upstream returns a 408" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -196,8 +196,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe REQUEST_TIMEOUT
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_TIMEOUT","message":"DES not responding error"}""")
+      status(response) mustBe REQUEST_TIMEOUT
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_TIMEOUT","message":"DES not responding error"}""")
     }
     "return an other DES Error when upstream returns an upstream 4xx error" in {
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -207,8 +207,8 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080"))
 
-      status(response) shouldBe SERVICE_UNAVAILABLE
-      contentAsJson(response) shouldBe Json.parse("""{"code":"DES_ERROR_OTHER","message":"DES 4xx error"}""")
+      status(response) mustBe SERVICE_UNAVAILABLE
+      contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_OTHER","message":"DES 4xx error"}""")
     }
   }
 }

@@ -16,44 +16,44 @@
 
 package utils
 
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 abstract class HeaderValidatorSpec extends AnyWordSpec with Matchers with HeaderValidator {
 
-  "acceptHeaderValidationRules" should {
+  "acceptHeaderValidationRules" must {
     "return false when the header value is missing" in {
-      acceptHeaderValidationRules(None) shouldBe false
+      acceptHeaderValidationRules(None) mustBe false
     }
   }
 
-  "acceptHeaderValidationRules" should {
+  "acceptHeaderValidationRules" must {
     "return true when the version and the content type in header value is well formatted" in {
-      acceptHeaderValidationRules(Some("application/vnd.hmrc.1.0+json")) shouldBe true
+      acceptHeaderValidationRules(Some("application/vnd.hmrc.1.0+json")) mustBe true
     }
   }
 
-  "acceptHeaderValidationRules" should {
+  "acceptHeaderValidationRules" must {
     "return false when the content type in header value is missing" in {
-      acceptHeaderValidationRules(Some("application/vnd.hmrc.1.0")) shouldBe false
+      acceptHeaderValidationRules(Some("application/vnd.hmrc.1.0")) mustBe false
     }
   }
 
-  "acceptHeaderValidationRules" should {
+  "acceptHeaderValidationRules" must {
     "return false when the content type in header value is not well formatted" in {
-      acceptHeaderValidationRules(Some("application/vnd.hmrc.v1+json")) shouldBe false
+      acceptHeaderValidationRules(Some("application/vnd.hmrc.v1+json")) mustBe false
     }
   }
 
-  "acceptHeaderValidationRules" should {
+  "acceptHeaderValidationRules" must {
     "return false when the content type in header value is not valid" in {
-      acceptHeaderValidationRules(Some("application/vnd.hmrc.notvalid+XML")) shouldBe false
+      acceptHeaderValidationRules(Some("application/vnd.hmrc.notvalid+XML")) mustBe false
     }
   }
 
-  "acceptHeaderValidationRules" should {
+  "acceptHeaderValidationRules" must {
     "return false when the version in header value is not valid" in {
-      acceptHeaderValidationRules(Some("application/vnd.hmrc.notvalid+json")) shouldBe false
+      acceptHeaderValidationRules(Some("application/vnd.hmrc.notvalid+json")) mustBe false
     }
   }
 }

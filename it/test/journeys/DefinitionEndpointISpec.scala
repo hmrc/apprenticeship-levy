@@ -18,7 +18,7 @@ package journeys
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.http.Fault
-import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -50,7 +50,7 @@ class DefinitionEndpointISpec
 
   "API Definition Endpoint (Private Mode)" when {
     "calling /api/definition" +
-    "\nand definition file exists and private-mode is set to true" should {
+    "\nand definition file exists and private-mode is set to true" must {
       "return OK" in {
         // set up
         val request = FakeRequest(GET, "/api/definition")
@@ -59,7 +59,7 @@ class DefinitionEndpointISpec
         val result = route(app, request).get
 
         // check
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
 
       "return expected JSON API definition" in {
@@ -70,8 +70,8 @@ class DefinitionEndpointISpec
         val result = route(app, request).get
 
         // check
-        contentType(result) shouldBe Some("application/json")
-        contentAsJson(result) shouldBe Json.parse(asString("definition.json"))
+        contentType(result) mustBe Some("application/json")
+        contentAsJson(result) mustBe Json.parse(asString("definition.json"))
       }
 
       "return definition configuration as PRIVATE" in {
@@ -82,10 +82,10 @@ class DefinitionEndpointISpec
         val result = route(app, request).get
 
         // check
-        contentType(result) shouldBe Some("application/json")
+        contentType(result) mustBe Some("application/json")
         val json = contentAsJson(result)
         val version1 = (json \ "api" \ "versions")(0)
-        (version1 \ "access" ).as[String] shouldBe "INTERNAL"
+        (version1 \ "access" ).as[String] mustBe "INTERNAL"
       }
     }
   }

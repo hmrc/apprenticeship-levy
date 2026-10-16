@@ -69,7 +69,7 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
 
   }
 
-  "getting the fractions" should {
+  "getting the fractions" must {
     "return a success if the submitted request is valid" in {
       val fromDate: LocalDate = LocalDate.parse("2020-07-22")
       val toDate: LocalDate = LocalDate.parse("2021-07-22")
@@ -83,12 +83,12 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
         "Authorization"->"Bearer dsfda9080",
         "Environment"->"clone"))
 
-      response.header.status shouldBe OK
+      response.header.status mustBe OK
     }
 
     "return a Not Acceptable response if the Accept header is not correctly set" in {
       val response = liveFractionsController.fractions(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
-      response.header.status shouldBe NOT_ACCEPTABLE
+      response.header.status mustBe NOT_ACCEPTABLE
     }
     "return a fromDateAfterToDate error if the submitted fromDate is after the toDate" in {
       val fromDate: LocalDate = LocalDate.parse("2021-07-22")
@@ -99,27 +99,27 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
         "Authorization"->"Bearer dsfda9080",
         "Environment"->"clone")).futureValue
 
-      response.header.status shouldBe BAD_REQUEST
+      response.header.status mustBe BAD_REQUEST
     }
   }
 
-  "validating fromDate" should {
+  "validating fromDate" must {
     "should use default value if fromDate is omitted" in {
-      liveFractionsController.validateFromDate(None) shouldBe LocalDate.now().minusMonths(liveFractionsController.defaultPriorMonthsForFromDate)
+      liveFractionsController.validateFromDate(None) mustBe LocalDate.now().minusMonths(liveFractionsController.defaultPriorMonthsForFromDate)
     }
     "use date if supplied" in {
       val date: LocalDate = LocalDate.parse("2013-07-22")
-      liveFractionsController.validateToDate(Some(date)) shouldBe date
+      liveFractionsController.validateToDate(Some(date)) mustBe date
     }
   }
 
-  "validating toDate" should {
+  "validating toDate" must {
     "should use default value if toDate is omitted" in {
-      liveFractionsController.validateToDate(None) shouldBe LocalDate.now()
+      liveFractionsController.validateToDate(None) mustBe LocalDate.now()
     }
     "use date if supplied" in {
       val date: LocalDate = LocalDate.parse("2010-08-03")
-      liveFractionsController.validateToDate(Some(date)) shouldBe date
+      liveFractionsController.validateToDate(Some(date)) mustBe date
     }
   }
 }

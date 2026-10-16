@@ -16,20 +16,20 @@
 
 package utils
 
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 
 class DecodePathSpec extends AnyWordSpec with Matchers {
 
-  "DecodePath" should {
+  "DecodePath" must {
     "decode a double encoded path" in {
 
       val doubleEncodedPath = "/epaye/123%252FAB12345"
       val expectedPath = "/epaye/123%2FAB12345"
       val result = DecodePath.decodeAnyDoubleEncoding(doubleEncodedPath)
 
-      result shouldBe expectedPath
+      result mustBe expectedPath
     }
 
     "not change a single encoded path" in {
@@ -37,7 +37,7 @@ class DecodePathSpec extends AnyWordSpec with Matchers {
       val expectedPath = "/epaye/123%2FAB12345"
       val result = DecodePath.decodeAnyDoubleEncoding(singleEncodedPath)
 
-      result shouldBe expectedPath
+      result mustBe expectedPath
     }
 
     "manage to decode a url with braces" in {
@@ -45,7 +45,7 @@ class DecodePathSpec extends AnyWordSpec with Matchers {
       val expectedPath = "/epaye/123%2FAB12345/employed/{nino}"
       val result = DecodePath.decodeAnyDoubleEncoding(singleEncodedPath)
 
-      result shouldBe expectedPath
+      result mustBe expectedPath
     }
   }
 

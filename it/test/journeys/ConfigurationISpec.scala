@@ -17,7 +17,7 @@
 package journeys
 
 import config.PathBinders
-import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -39,9 +39,9 @@ class ConfigurationISpec
       .build()
   }
 
-  "Application Configuration" should {
+  "Application Configuration" must {
     "support NINO's with 'KC' prefix" in {
-      PathBinders.isValidNino("KC745625A", "ERRORCODE").getOrElse(None) shouldBe "KC745625A"
+      PathBinders.isValidNino("KC745625A", "ERRORCODE").getOrElse(None) mustBe "KC745625A"
     }
   }
 }

@@ -39,7 +39,7 @@ class ExternalTestEnvironmentSpec extends AppLevyUnitSpec with GuiceOneAppPerSui
 
       // check
       TestRouter.routes === mockExternalTestRoutes.routes
-      result shouldBe None
+      result mustBe None
     }
 
     "have production API endpoints" in {

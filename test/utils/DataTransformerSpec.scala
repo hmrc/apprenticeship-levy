@@ -16,26 +16,26 @@
 
 package utils
 
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class DataTransformerSpec extends AnyWordSpec with Matchers {
 
   val sut = new DataTransformer()
 
-  "transform" should {
+  "transform" must {
 
     val input = "{randomSubmissionId}," * 100
     val result = sut.transform(input).split(',')
 
-    "produce 100 results" in { result.length shouldBe 100 }
+    "produce 100 results" in { result.length mustBe 100 }
 
-    "produce 11 characters per result" in { result.forall(_.length == 11) shouldBe true }
+    "produce 11 characters per result" in { result.forall(_.length == 11) mustBe true }
 
-    "produce numbers" in { result.forall(_.toList.forall(_.isDigit)) shouldBe true }
+    "produce numbers" in { result.forall(_.toList.forall(_.isDigit)) mustBe true }
 
-    "produce distinct values" in { result.distinct.length shouldBe 100 }
+    "produce distinct values" in { result.distinct.length mustBe 100 }
 
-    "produce values beginning with 9" in { result.forall(_.head == '9') shouldBe true }
+    "produce values beginning with 9" in { result.forall(_.head == '9') mustBe true }
   }
 } 

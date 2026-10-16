@@ -40,23 +40,23 @@ import models.des.DesignatoryDetailsData._
 
 class DesignatoryDetailsSpec extends AppLevyUnitSpec {
 
-  "Designatory Details" should {
+  "Designatory Details" must {
     "Parse HodName json correctly" in {
       val json = Json.parse("""{"nameLine1":"nameLine1","nameLine2":"nameLine2"}""")
-      json.validate[HodName].isSuccess shouldBe true
-      json.as[HodName] shouldBe HodName(Some("nameLine1"), Some("nameLine2"))
+      json.validate[HodName].isSuccess mustBe true
+      json.as[HodName] mustBe HodName(Some("nameLine1"), Some("nameLine2"))
     }
 
     "Parse HodAddress json correctly" in {
       val json = Json.parse("""{"addressLine1":"hodAddressLine1","addressLine2":"hodAddressLine2"}""")
-      json.validate[HodAddress].isSuccess shouldBe true
-      json.as[HodAddress] shouldBe HodAddress(Some("hodAddressLine1"), Some("hodAddressLine2"))
+      json.validate[HodAddress].isSuccess mustBe true
+      json.as[HodAddress] mustBe HodAddress(Some("hodAddressLine1"), Some("hodAddressLine2"))
     }
 
     "Parse HodContact json correctly" in {
       val json = Json.parse("""{"telephone":{"telephoneNumber":"hodTelephone"},"email":{"primary":"hodEmail"}}""")
-      json.validate[HodContact].isSuccess shouldBe true
-      json.as[HodContact] shouldBe HodContact(Some(HodTelephone(Some("hodTelephone"))), Some(HodEmail(Some("hodEmail"))))
+      json.validate[HodContact].isSuccess mustBe true
+      json.as[HodContact] mustBe HodContact(Some(HodTelephone(Some("hodTelephone"))), Some(HodEmail(Some("hodEmail"))))
     }
   }
 }

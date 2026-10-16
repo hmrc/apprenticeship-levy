@@ -18,7 +18,7 @@ package journeys
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.http.Fault
-import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -45,7 +45,7 @@ class RootEndpointISpec
   }
 
   "Root Endpoint" when {
-    "accessed via sandbox url" should {
+    "accessed via sandbox url" must {
       "return valid json" in {
         val request = FakeRequest(GET, "/sandbox/").withHeaders(standardDesHeaders()*)
 
@@ -53,16 +53,16 @@ class RootEndpointISpec
         val result = route(app, request).get
 
         // check
-        status(result) shouldBe OK
-        contentType(result) shouldBe Some("application/json")
+        status(result) mustBe OK
+        contentType(result) mustBe Some("application/json")
 
         val json = contentAsJson(result)
-        (json \ "_links" \ "self" \ "href").as[String] shouldBe "/"
-        (json \ "_links" \ "840/MODES17" \ "href").as[String] shouldBe "/epaye/840%2FMODES17"
+        (json \ "_links" \ "self" \ "href").as[String] mustBe "/"
+        (json \ "_links" \ "840/MODES17" \ "href").as[String] mustBe "/epaye/840%2FMODES17"
       }
 
       "when calling /" when {
-        "backend systems not failing" should {
+        "backend systems not failing" must {
           "return links for each empref" in {
             // set up
             val response = """{"allEnrolments": [{
@@ -81,15 +81,15 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe OK
-            contentType(result) shouldBe Some("application/json")
+            status(result) mustBe OK
+            contentType(result) mustBe Some("application/json")
             val json = contentAsJson(result)
-            (json \ "_links" \ "self" \ "href").as[String] shouldBe "/"
-            (json \ "_links" \ "123/AB12345" \ "href").as[String] shouldBe "/epaye/123%2FAB12345"
+            (json \ "_links" \ "self" \ "href").as[String] mustBe "/"
+            (json \ "_links" \ "123/AB12345" \ "href").as[String] mustBe "/epaye/123%2FAB12345"
           }
         }
 
-        "errors occur" should {
+        "errors occur" must {
           "return 401 when Auth returns 401" in {
             // set up
             stubPostServerWithId(aResponse()
@@ -103,9 +103,9 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe UNAUTHORIZED
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_UNAUTHORIZED","message":"No active session error"}""")
+            status(result) mustBe UNAUTHORIZED
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_UNAUTHORIZED","message":"No active session error"}""")
           }
 
           "return 403 when Auth returns 403" in {
@@ -120,9 +120,9 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe FORBIDDEN
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_FORBIDDEN","message":"Auth forbidden error"}""")
+            status(result) mustBe FORBIDDEN
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_FORBIDDEN","message":"Auth forbidden error"}""")
           }
 
           "return 503 when Auth returns 404" in {
@@ -137,13 +137,13 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
           }
         }
 
-        "backend systems failing" should {
+        "backend systems failing" must {
           "return http status 503 when connection closed" in {
             // set up
             stubPostServerWithId(aResponse()
@@ -155,9 +155,9 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_IO","message":"Auth connection error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_IO","message":"Auth connection error"}""")
           }
 
           "return 503 when returning empty response and connection closed" in {
@@ -171,9 +171,9 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_IO","message":"Auth connection error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_IO","message":"Auth connection error"}""")
           }
 
           "return 408 when timed out" in {
@@ -188,9 +188,9 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe REQUEST_TIMEOUT
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_GATEWAY_TIMEOUT","message":"Auth not responding error"}""")
+            status(result) mustBe REQUEST_TIMEOUT
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_GATEWAY_TIMEOUT","message":"Auth not responding error"}""")
           }
 
           "return 503 when Auth returns 503" in {
@@ -205,9 +205,9 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_BACKEND_FAILURE","message":"Auth 5xx error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_BACKEND_FAILURE","message":"Auth 5xx error"}""")
           }
 
           "return http status 429 when Auth HTTP 429" in {
@@ -222,9 +222,9 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe TOO_MANY_REQUESTS
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_TOO_MANY_REQUESTS","message":"Auth too many requests"}""")
+            status(result) mustBe TOO_MANY_REQUESTS
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_TOO_MANY_REQUESTS","message":"Auth too many requests"}""")
           }
 
           "return http status 503 when Auth HTTP 409" in {
@@ -239,9 +239,9 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
           }
 
           "return http status 408 when Auth HTTP 408" in {
@@ -256,9 +256,9 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe REQUEST_TIMEOUT
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_TIMEOUT","message":"Auth not responding error"}""")
+            status(result) mustBe REQUEST_TIMEOUT
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_TIMEOUT","message":"Auth not responding error"}""")
           }
 
           "return http status 503 when Auth HTTP 400" in {
@@ -273,9 +273,9 @@ class RootEndpointISpec
             val result = route(app, request).get
 
             // check
-            status(result) shouldBe SERVICE_UNAVAILABLE
-            contentType(result) shouldBe Some("application/json")
-            contentAsJson(result) shouldBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
+            status(result) mustBe SERVICE_UNAVAILABLE
+            contentType(result) mustBe Some("application/json")
+            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
           }
         }
       }

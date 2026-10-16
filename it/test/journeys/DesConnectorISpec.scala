@@ -76,7 +76,7 @@ class DesConnectorISpec
 
   lazy val desConnector: LiveDesConnector = app.injector.instanceOf[LiveDesConnector]
 
-  "DES Connector" should {
+  "DES Connector" must {
     "for Fraction Date endpoint" must {
       "when EDH not failing return local date instance of date" in {
 
@@ -90,7 +90,7 @@ class DesConnectorISpec
 
         val response = await(desConnector.fractionCalculationDate(using mockHeaderCarrier, global))
 
-        response shouldBe expectedResponse
+        response mustBe expectedResponse
 
         server.verify(
           getRequestedFor(urlEqualTo(fractionsCalculationDateUrl))
@@ -174,7 +174,7 @@ class DesConnectorISpec
 
         val response = await(desConnector.fractions(empRef, dateRange)(using mockHeaderCarrier, global))
 
-        response shouldBe expectedResponse
+        response mustBe expectedResponse
 
         server.verify(
           getRequestedFor(urlEqualTo(employersUrl))
@@ -253,7 +253,7 @@ class DesConnectorISpec
     }
   }
 
-  "have Levy Declarations endpoint and" should {
+  "have Levy Declarations endpoint and" must {
     "support original endpoint url with an empty empref" in {
 
       val empRef = " "
@@ -270,7 +270,7 @@ class DesConnectorISpec
 
       val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
-      response shouldBe expectedResponse
+      response mustBe expectedResponse
 
       server.verify(
         getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))
@@ -295,7 +295,7 @@ class DesConnectorISpec
 
       val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
-      response shouldBe expectedResponse
+      response mustBe expectedResponse
 
       server.verify(
         getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))
@@ -395,7 +395,7 @@ class DesConnectorISpec
       )
     }
 
-    "have Employer Details endpoint and" should {
+    "have Employer Details endpoint and" must {
       "support original endpoint url" in {
 
         val empRef = "123AB12345"
@@ -409,7 +409,7 @@ class DesConnectorISpec
 
         val response = await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
 
-        response shouldBe expectedResponse
+        response mustBe expectedResponse
 
         server.verify(
           getRequestedFor(urlEqualTo(employerDetailsUrl))
@@ -433,7 +433,7 @@ class DesConnectorISpec
 
         val response = await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
 
-        response shouldBe expectedResponse
+        response mustBe expectedResponse
 
         server.verify(
           getRequestedFor(urlEqualTo(employerDetailsUrl))
@@ -461,7 +461,7 @@ class DesConnectorISpec
 
         val response = await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
 
-        response shouldBe expectedResponse
+        response mustBe expectedResponse
 
         server.verify(
           getRequestedFor(urlEqualTo(employerDetailsUrl))
@@ -485,7 +485,7 @@ class DesConnectorISpec
 
         val response = await(desConnector.designatoryDetails(empRef)(using mockHeaderCarrier, global))
 
-        response shouldBe expectedResponse
+        response mustBe expectedResponse
 
         server.verify(
           getRequestedFor(urlEqualTo(employerDetailsUrl))
@@ -580,7 +580,7 @@ class DesConnectorISpec
     }
   }
 
-  "have Employment Check endpoint and" should {
+  "have Employment Check endpoint and" must {
     "throw a bad request error when a 400 is thrown" in {
 
       val empRef = "123AB12345"
@@ -619,7 +619,7 @@ class DesConnectorISpec
 
       val response = await(desConnector.check(empRef, "AA122345A", dateRange)(using mockHeaderCarrier, global))
 
-      response shouldBe Unknown
+      response mustBe Unknown
 
       server.verify(
         getRequestedFor(urlEqualTo(employerDetailsUrl))
@@ -669,7 +669,7 @@ class DesConnectorISpec
 
     val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
-    response shouldBe expectedResponse
+    response mustBe expectedResponse
 
     server.verify(
       getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))
@@ -696,7 +696,7 @@ class DesConnectorISpec
 
       val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
-      response shouldBe expectedResponse
+      response mustBe expectedResponse
 
       server.verify(
         getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))
@@ -752,7 +752,7 @@ class DesConnectorISpec
 
       val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
-      response shouldBe expectedResponse
+      response mustBe expectedResponse
 
       server.verify(
         getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))
@@ -871,7 +871,7 @@ class DesConnectorISpec
 
       val response = await(desConnector.eps(empRef, dateRange)(using mockHeaderCarrier, global))
 
-      response shouldBe expectedResponse
+      response mustBe expectedResponse
 
       server.verify(
         getRequestedFor(urlEqualTo(employerPaymentsSummaryUrl))

@@ -62,27 +62,27 @@ class CustomErrorHandlerSpec extends AppLevyUnitSpec {
 
   def versionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"
 
-  "onClientError" should {
+  "onClientError" must {
     "return the appropriate status code" when {
       "a NOT_FOUND error is flagged" in {
 
         val result = handler.onClientError(requestHeader, NOT_FOUND, "Not Found")
 
-        status(result) shouldBe NOT_FOUND
-        contentAsJson(result) shouldBe Json.parse("""{"statusCode":404,"message":"URI not found","requested":"/"}""")
+        status(result) mustBe NOT_FOUND
+        contentAsJson(result) mustBe Json.parse("""{"statusCode":404,"message":"URI not found","requested":"/"}""")
       }
       "a BAD_REQUEST error is flagged" in {
 
         val result = handler.onClientError(requestHeader, BAD_REQUEST, "Bad Request")
 
-        status(result) shouldBe BAD_REQUEST
-        contentAsJson(result) shouldBe Json.parse("""{"statusCode":400,"message":"Bad Request"}""")
+        status(result) mustBe BAD_REQUEST
+        contentAsJson(result) mustBe Json.parse("""{"statusCode":400,"message":"Bad Request"}""")
       }
       "another error is flagged" in {
         val result = handler.onClientError(requestHeader, INTERNAL_SERVER_ERROR, "Other Error")
 
-        status(result) shouldBe INTERNAL_SERVER_ERROR
-        contentAsJson(result) shouldBe Json.parse("""{"statusCode":500,"message":"Other Error"}""")
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        contentAsJson(result) mustBe Json.parse("""{"statusCode":500,"message":"Other Error"}""")
       }
     }
   }

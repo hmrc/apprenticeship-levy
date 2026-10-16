@@ -23,13 +23,13 @@ import uk.gov.hmrc.play.audit.EventKeys.TransactionName
 
 class ALAEventSpec extends AppLevyUnitSpec {
 
-  "toDataEvent" should {
+  "toDataEvent" must {
     "return a dataEvent" when {
       "a http status is supplied" in {
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = Seq("Content-Type" -> "application/json"))
 
         val event = ALAEvent("event1")
-        event.toDataEvent(OK).detail shouldBe Map("upstream_http_status" -> "200")
+        event.toDataEvent(OK).detail mustBe Map("upstream_http_status" -> "200")
 
       }
       "a http status and exception is supplied" in {
@@ -37,16 +37,16 @@ class ALAEventSpec extends AppLevyUnitSpec {
         val exception = new BadRequestException("bad request")
 
         val event = ALAEvent("event1")
-        event.toDataEvent(NOT_FOUND, exception).detail shouldBe Map("upstream_http_status" -> "404", "exception" -> "uk.gov.hmrc.http.BadRequestException: bad request")
+        event.toDataEvent(NOT_FOUND, exception).detail mustBe Map("upstream_http_status" -> "404", "exception" -> "uk.gov.hmrc.http.BadRequestException: bad request")
       }
       "convert to a DataEvent with the correct audit fields" in {
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = Seq("Content-Type" -> "application/json"))
 
         val auditEvent = ALAEvent("readEmprefDetails", "123AB12345").toDataEvent(OK)
 
-        auditEvent.auditType shouldBe "ServiceReceivedRequest"
-        auditEvent.tags(TransactionName) shouldBe "readEmprefDetails"
-        auditEvent.detail("empref") shouldBe "123AB12345"
+        auditEvent.auditType mustBe "ServiceReceivedRequest"
+        auditEvent.tags(TransactionName) mustBe "readEmprefDetails"
+        auditEvent.detail("empref") mustBe "123AB12345"
       }
     }
   }

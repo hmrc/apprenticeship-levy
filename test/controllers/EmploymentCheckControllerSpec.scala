@@ -74,7 +74,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
     reset(mockHttp)
   }
 
-  "checking employment" should {
+  "checking employment" must {
     "return a success response" when {
       "the user is employed" in {
         val fromDate: LocalDate = LocalDate.parse("2020-07-22")
@@ -90,7 +90,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")))
 
-        status(response) shouldBe OK
+        status(response) mustBe OK
       }
       "the user is not employed" in {
         val fromDate: LocalDate = LocalDate.parse("2020-07-22")
@@ -106,7 +106,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")))
 
-        status(response) shouldBe OK
+        status(response) mustBe OK
       }
     }
     "return an error" when {
@@ -124,7 +124,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")))
 
-        status(response) shouldBe NOT_FOUND
+        status(response) mustBe NOT_FOUND
 
       }
       "the supplied fromDate is after the toDate" in {
@@ -142,7 +142,7 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone")))
 
-        status(response) shouldBe BAD_REQUEST
+        status(response) mustBe BAD_REQUEST
 
       }
     }
