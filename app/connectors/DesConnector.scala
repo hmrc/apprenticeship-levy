@@ -289,7 +289,7 @@ trait LevyDeclarationsEndpoint extends Timer {
       case Some(EmployerPaymentsSummary(empref, eps)) =>
         Some(EmployerPaymentsSummary(empref, eps))
       case Some(_) =>
-        logger.error(s"Got Some(_) unknown type - unclear how to handle")
+        logger.error("Got Some(_) unknown type - unclear how to handle")
         None
       case None =>
         val isEmpty = "^\\s*(\\{\\s*})\\s*$".r

@@ -146,7 +146,7 @@ private object ErrorHandler extends Logging {
         BadRequest(ErrorResponseUtils.convertToJson(AuthError(SERVICE_UNAVAILABLE, "BAD_REQUEST", "Bad request error")))
       case e: IOException =>
         logWarningAboutException(e, SERVICE_UNAVAILABLE, "ServiceUnavailable with code")
-        ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(SERVICE_UNAVAILABLE, "IO", s"Auth connection error")))
+        ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(SERVICE_UNAVAILABLE, "IO", "Auth connection error")))
       case e: GatewayTimeoutException =>
         val message = s"Client ${
           MDC.get("X-Client-ID")
@@ -171,14 +171,14 @@ private object ErrorHandler extends Logging {
         }"
         logger.warn(message)
         e.statusCode match {
-          case FORBIDDEN => Forbidden(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "FORBIDDEN", s"Auth forbidden error")))
-          case TOO_MANY_REQUESTS => TooManyRequests(ErrorResponseUtils.convertToJson(AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", s"Auth too many requests")))
-          case REQUEST_TIMEOUT => RequestTimeout(ErrorResponseUtils.convertToJson(AuthError(REQUEST_TIMEOUT, "TIMEOUT", s"Auth not responding error")))
+          case FORBIDDEN => Forbidden(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "FORBIDDEN", "Auth forbidden error")))
+          case TOO_MANY_REQUESTS => TooManyRequests(ErrorResponseUtils.convertToJson(AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", "Auth too many requests")))
+          case REQUEST_TIMEOUT => RequestTimeout(ErrorResponseUtils.convertToJson(AuthError(REQUEST_TIMEOUT, "TIMEOUT", "Auth not responding error")))
           case _ =>
             if (e.statusCode >= BAD_REQUEST && e.statusCode < INTERNAL_SERVER_ERROR) {
-              ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "OTHER", s"Auth 4xx error")))
+              ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "OTHER", "Auth 4xx error")))
             } else {
-              ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "BACKEND_FAILURE", s"Auth 5xx error")))
+              ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "BACKEND_FAILURE", "Auth 5xx error")))
             }
         }
 
@@ -189,7 +189,7 @@ private object ErrorHandler extends Logging {
           e.getMessage
         }, API returning code $INTERNAL_SERVER_ERROR"
         logger.error(message, e)
-        InternalServerError(ErrorResponseUtils.convertToJson(AuthError(INTERNAL_SERVER_ERROR, "API", s"API or Auth internal server error")))
+        InternalServerError(ErrorResponseUtils.convertToJson(AuthError(INTERNAL_SERVER_ERROR, "API", "API or Auth internal server error")))
     }
   }
 }

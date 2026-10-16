@@ -28,7 +28,7 @@ sealed trait MetricEvent {
 }
 
 case class RequestEvent(name: String, maybeEmpref: Option[String]) extends MetricEvent {
-  def metric: String = s"""${name}${maybeEmpref.map("." + _).getOrElse("")}"""
+  def metric: String = s"""$name${maybeEmpref.map("." + _).getOrElse("")}"""
 }
 
 case class TimerEvent(name: String, delta: Long, timeUnit: TimeUnit) extends MetricEvent {
@@ -54,19 +54,19 @@ trait GraphiteMetrics extends Logging {
     meter(name) match {
       case Some(mtr) => {
         // $COVERAGE-OFF$
-        logger.trace(s"[Metrics][${name}] ${mtr.getCount}")
+        logger.trace(s"[Metrics][$name] ${mtr.getCount}")
         // $COVERAGE-ON$
         mtr.mark()
       }
       case _ =>
         // $COVERAGE-OFF$
-        logger.trace(s"[Metrics][${name}] Not enabled")
+        logger.trace(s"[Metrics][$name] Not enabled")
         // $COVERAGE-ON$
     }
   }
 
   def failedRequest(event: MetricEvent): Unit = event match {
-    case RequestEvent(name, Some(_)) => mark(s"ala.failed.${name}")
+    case RequestEvent(name, Some(_)) => mark(s"ala.failed.$name")
     case _ => mark(s"ala.failed.${event.name}")
   }
 

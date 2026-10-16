@@ -78,7 +78,7 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
             case _ => updatedFile
           }
         case _ =>
-          logger.debug(s"Could not find an empref to replace in: $file")
+          logger.debug("Could not find an empref to replace in: $file")
           file
       }
     } else {
@@ -111,7 +111,7 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
     MDC.put("X-Client-ID",request.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller"))
 
     // $COVERAGE-OFF$
-    logger.debug(s"Request was received for path ${req}")
+    logger.debug(s"Request was received for path $req")
     // $COVERAGE-ON$
     val path = URLDecoder.decode(req, "UTF-8")
     val Empref = "(.*/)([a-zA-Z0-9]{3}/[a-zA-Z0-9]+)(/.*)".r
@@ -119,15 +119,15 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
       case Some(empref) => {
         path match {
           case Empref(path1, _, path2) => {
-            val newpath = s"${path1}${empref}${path2}"
-            logger.info(s"Resource path overridden by OVERRIDE_EMPREF header. Now looking for ${newpath}")
+            val newpath = s"$path1$empref$path2"
+            logger.info(s"Resource path overridden by OVERRIDE_EMPREF header. Now looking for $newpath")
             readJson(SANDBOX_DATA_DIR, newpath)
             .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), newpath))
-            .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request ${req} with OVERRIDE_EMPREF header of ${empref} but no file '${newpath}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
+            .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request $req with OVERRIDE_EMPREF header of $empref but no file '${newpath}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
           }
           case _ => {
-            logger.warn(s"Resource path overridden by OVERRIDE_EMPREF header but unable to get new empref from ${path}.")
-            Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file '${path}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}"""))
+            logger.warn(s"Resource path overridden by OVERRIDE_EMPREF header but unable to get new empref from $path.")
+            Future.successful(NotFound(s"""{"reason": "Received request $req but no file '$path' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}"""))
           }
         }
       }
@@ -138,27 +138,27 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
           logger.info(s"""No override header found. Headers: ${request.headers.toSimpleMap.mkString(" ")}""")
           readJson(SANDBOX_DATA_DIR, path)
             .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), path))
-            .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request ${req} but no file '${path}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
+            .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request $req but no file '$path' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
         }
       }
     }
   }
 
   protected def readJson(dir: String, path: String)(implicit request: Request[?]): Option[Future[Result]] = {
-    val filename = s"${dir}/${path}.json"
+    val filename = s"$dir/$path.json"
     // $COVERAGE-OFF$
-    logger.debug(s"Looking for file ${filename}")
+    logger.debug(s"Looking for file $filename")
     // $COVERAGE-ON$
     getData(filename).map(json=>filterByDate(path, json))
   }
 
   protected def getData(filename: String): Option[JsValue] = retrieve(filename).flatMap { is =>
     // $COVERAGE-OFF$
-    logger.debug(s"Found file ${filename} trying to read")
+    logger.debug(s"Found file $filename trying to read")
     // $COVERAGE-ON$
     val jsonStr = Source.fromInputStream(is).getLines().mkString("\n")
     // $COVERAGE-OFF$
-    logger.debug(s"Parsing to json")
+    logger.debug("Parsing to json")
     // $COVERAGE-ON$
     Some(Json.parse(jsonDataTransformer.transform(jsonStr)))
   }
@@ -194,7 +194,7 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
       case Some(jsonOutStr) => {
         (request.getQueryString("fromDate"), request.getQueryString("toDate")) match {
           case (maybeFrom,maybeTo) if maybeFrom.isDefined && maybeTo.isDefined  => {
-            logger.debug(s"Filtering results to: ${maybeFrom} ${maybeTo}")
+            logger.debug(s"Filtering results to: $maybeFrom ${maybeTo}")
             val queryInterval = Interval(maybeFrom.map(toInstant(_)).get,
                                              maybeTo.map(toInstant(_, 1)).get)
             val EmployedCheck = "([A-Za-z\\-/0-9]*)(employed)([A-Za-z\\-/0-9]*)".r
