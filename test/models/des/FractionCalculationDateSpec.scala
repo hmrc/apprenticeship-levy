@@ -22,7 +22,7 @@ import utils.AppLevyUnitSpec
 import java.time.LocalDate
 
 class FractionCalculationDateSpec extends AppLevyUnitSpec {
-  "FractionCalculationDate" should {
+  "FractionCalculationDate" must {
     "With Json" must {
       "read" in {
         // set up
@@ -33,7 +33,7 @@ class FractionCalculationDateSpec extends AppLevyUnitSpec {
          val fractionCalculationDateOption : Option[FractionCalculationDate] = json.validate[FractionCalculationDate].fold(invalid = { _ => None }, valid = { fcd => Some(fcd) })
 
         // check
-        fractionCalculationDateOption shouldBe Some(FractionCalculationDate(LocalDate.of(2016,11,19)))
+        fractionCalculationDateOption mustBe Some(FractionCalculationDate(LocalDate.of(2016,11,19)))
       }
 
       "write" in {
@@ -45,7 +45,7 @@ class FractionCalculationDateSpec extends AppLevyUnitSpec {
 
         // check
         val date = result \ "date"
-        date.as[String] shouldBe "2015-03-06"
+        date.as[String] mustBe "2015-03-06"
       }
     }
   }

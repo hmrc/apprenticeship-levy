@@ -16,7 +16,7 @@
 
 package journeys
 
-import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -42,7 +42,7 @@ class TestDataEndpointISpec
   }
 
   "Sandbox Test Data Endpoint" when {
-    "authorise/read" should {
+    "authorise/read" must {
       "return Ok" in {
         // set up
         val request = FakeRequest(GET, "/sandbox/data/authorise/read")
@@ -52,11 +52,11 @@ class TestDataEndpointISpec
         val result = route(app, request).get
 
         // check
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
     }
 
-    "/sandbox/data/..." should {
+    "/sandbox/data/..." must {
       "return Ok where json file exists" in {
         // set up
         val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
@@ -66,8 +66,8 @@ class TestDataEndpointISpec
         val result = route(app, request).get
 
         // check
-        status(result) shouldBe OK
-        contentAsString(result) should include ("/paye/employer/840/MODES17/designatory-details/employer")
+        status(result) mustBe OK
+        contentAsString(result) must include ("/paye/employer/840/MODES17/designatory-details/employer")
       }
 
       "return NotFound where json file does not exists" in {
@@ -79,7 +79,7 @@ class TestDataEndpointISpec
         val result = route(app, request).get
 
         // check
-        status(result) shouldBe NOT_FOUND
+        status(result) mustBe NOT_FOUND
       }
 
       "return Ok where json file does not have json body" in {
@@ -91,10 +91,10 @@ class TestDataEndpointISpec
         val result = route(app, request).get
 
         // check
-        status(result) shouldBe OK
+        status(result) mustBe OK
       }
 
-      "return support OVERRIDE_EMPREF" should {
+      "return support OVERRIDE_EMPREF" must {
         "return json file where it exists" in {
           // set up
           val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF"->"840/MODES17"
@@ -105,8 +105,8 @@ class TestDataEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe OK
-          contentAsString(result) should include ("/paye/employer/840/MODES17/designatory-details/employer")
+          status(result) mustBe OK
+          contentAsString(result) must include ("/paye/employer/840/MODES17/designatory-details/employer")
         }
 
         "return NotFound where json file does not exist" in {
@@ -119,7 +119,7 @@ class TestDataEndpointISpec
           val result = route(app, request).get
 
           // check
-          status(result) shouldBe NOT_FOUND
+          status(result) mustBe NOT_FOUND
         }
       }
     }

@@ -19,7 +19,7 @@ package controllers
 import org.scalatest.wordspec.AnyWordSpecLike
 import java.net.URLEncoder
 
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.http.Status.OK
 import play.api.mvc.BodyParsers.Default
@@ -50,24 +50,24 @@ class RootControllerSpec extends AnyWordSpecLike with Matchers with OptionValues
     override val authAction: AuthAction = new FakeAuthAction(new Default(stubComponents.parsers), stubComponents.executionContext)
   }
 
-  "transformEmprefs" should {
+  "transformEmprefs" must {
     "correctly generate HAL for emprefs" in {
       val hal = testController.transformEmpRefs(Seq("123/AB12345", "321/XY54321"))
 
-      hal.links.links.length shouldBe 3
-      hal.links.links.find(_.rel == "self").value.href shouldBe "/"
-      hal.links.links.find(_.rel == "123/AB12345").value.href shouldBe "/epaye/123%2FAB12345"
-      hal.links.links.find(_.rel == "321/XY54321").value.href shouldBe "/epaye/321%2FXY54321"
+      hal.links.links.length mustBe 3
+      hal.links.links.find(_.rel == "self").value.href mustBe "/"
+      hal.links.links.find(_.rel == "123/AB12345").value.href mustBe "/epaye/123%2FAB12345"
+      hal.links.links.find(_.rel == "321/XY54321").value.href mustBe "/epaye/321%2FXY54321"
     }
   }
 
-  "root" should {
+  "root" must {
     "return a success which transforms the empref when hit" in {
       val result = await(testController.root(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080",
         "Environment"->"clone")))
 
-      status(result) shouldBe OK
+      status(result) mustBe OK
     }
   }
 }

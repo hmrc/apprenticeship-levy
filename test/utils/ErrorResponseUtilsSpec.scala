@@ -28,7 +28,7 @@ import scala.concurrent.Future
 
 class ErrorResponseUtilsSpec extends AnyWordSpec with Matchers {
 
-  "convertToJson" should {
+  "convertToJson" must {
     "return a JSON object with correct structure" in {
       val errorResponse = ErrorResponse(NOT_FOUND, "Error not found", Some("NOT_FOUND"))
       val json: JsValue = convertToJson(errorResponse)
@@ -50,7 +50,7 @@ class ErrorResponseUtilsSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  "errorResponseToResult" should {
+  "errorResponseToResult" must {
     "return a Result with the correct status code and json body" in {
       val errorResponse = ErrorResponse(NOT_FOUND, "Error not found", Some("NOT_FOUND"))
       val result: Future[Result] = Future.successful(errorResponseToResult(errorResponse))

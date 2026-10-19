@@ -20,17 +20,17 @@ import utils.AppLevyUnitSpec
 
 class EmploymentCheckStatusSpec extends AppLevyUnitSpec {
 
-  "apply" should {
+  "apply" must {
     "return Employed" when {
       "isEmployed is true" in {
         val employed = EmploymentCheckStatus.apply(true)
 
-        employed shouldBe Employed
+        employed mustBe Employed
       }
       "isEmployed is false" in {
         val employed = EmploymentCheckStatus.apply(false)
 
-        employed shouldBe NotEmployed
+        employed mustBe NotEmployed
       }
     }
   }

@@ -84,18 +84,18 @@ class AuthActionSpec
   val emptyGGRetrieval: Enrolments ~ LegacyCredentials =
     enrolments() ~ GGCredId("")
 
-  "A user with no active session" should {
+  "A user with no active session" must {
     "return UNAUTHORIZED" in {
       when(mockAuthConnector.authorise(any(), any())(using any(), any()))
         .thenReturn(Future.failed(new SessionRecordNotFound))
       val authAction = new AuthActionImpl(mockAuthConnector, new Default(stubComponents.parsers))
       val controller = new Harness(authAction)
       val result = controller.onPageLoad()(FakeRequest("", ""))
-      status(result) shouldBe UNAUTHORIZED
+      status(result) mustBe UNAUTHORIZED
     }
   }
 
-  "An unauthorized user" should {
+  "An unauthorized user" must {
     def authError(testTitle: String, error: Exception, statusCode: Int): Unit =
       s"return $testTitle" in {
         when(mockAuthConnector.authorise(any(), any())(using any(), any()))
@@ -103,7 +103,7 @@ class AuthActionSpec
         val authAction = new AuthActionImpl(mockAuthConnector, new Default(stubComponents.parsers))
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
-        status(result) shouldBe statusCode
+        status(result) mustBe statusCode
       }
 
     val input = Seq(
@@ -141,8 +141,8 @@ class AuthActionSpec
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(FakeRequest())
-      status(result) shouldBe OK
-      contentAsString(result) should include("someOffice/someRef")
+      status(result) mustBe OK
+      contentAsString(result) must include("someOffice/someRef")
     }
   }
 
@@ -164,8 +164,8 @@ class AuthActionSpec
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(FakeRequest())
-      status(result) shouldBe OK
-      contentAsString(result) should include("None found")
+      status(result) mustBe OK
+      contentAsString(result) must include("None found")
     }
   }
 
@@ -182,8 +182,8 @@ class AuthActionSpec
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(FakeRequest())
-      status(result) shouldBe OK
-      contentAsString(result) should include("None found")
+      status(result) mustBe OK
+      contentAsString(result) must include("None found")
     }
   }
 
@@ -197,15 +197,15 @@ class AuthActionSpec
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(FakeRequest())
-      status(result) shouldBe OK
-      contentAsString(result) should include("None found")
+      status(result) mustBe OK
+      contentAsString(result) must include("None found")
     }
   }
 
   "AllProviderAuthAction" must {
     "return an instance of auth action" in {
       new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference(""))
-        .isInstanceOf[AuthAction] shouldBe true
+        .isInstanceOf[AuthAction] mustBe true
     }
 
     "authenticate a privileged application" in {
@@ -216,8 +216,8 @@ class AuthActionSpec
       val controller = new Harness(authAction)
 
       val result = controller.onPageLoad()(FakeRequest())
-      status(result) shouldBe OK
-      contentAsString(result) should include("None found")
+      status(result) mustBe OK
+      contentAsString(result) must include("None found")
     }
 
     "authenticate an IR-PAYE enrolled user" when {
@@ -229,8 +229,8 @@ class AuthActionSpec
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())
-        status(result) shouldBe OK
-        contentAsString(result) should include("123/ABCDEF")
+        status(result) mustBe OK
+        contentAsString(result) must include("123/ABCDEF")
       }
     }
 
@@ -243,7 +243,7 @@ class AuthActionSpec
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())
-        status(result) shouldBe UNAUTHORIZED
+        status(result) mustBe UNAUTHORIZED
       }
 
       "their is no emp ref returned" in {
@@ -254,7 +254,7 @@ class AuthActionSpec
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())
-        status(result) shouldBe UNAUTHORIZED
+        status(result) mustBe UNAUTHORIZED
       }
     }
   }

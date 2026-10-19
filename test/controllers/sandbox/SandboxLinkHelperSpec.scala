@@ -28,34 +28,34 @@ class SandboxLinkHelperSpec extends AppLevyUnitSpec {
     override def env: String = "Prod"
   }
 
-  "stripSandboxForNonDev" should {
+  "stripSandboxForNonDev" must {
     "leave '/sandbox' on the front of a url if env is Dev" in {
-      devHelper.stripSandboxForNonDev("/sandbox/test") shouldBe "/sandbox/test"
+      devHelper.stripSandboxForNonDev("/sandbox/test") mustBe "/sandbox/test"
     }
 
     "strip '/sandbox' from the front of a url if env is Prod" in {
-      prodHelper.stripSandboxForNonDev("/sandbox/test") shouldBe "/test"
+      prodHelper.stripSandboxForNonDev("/sandbox/test") mustBe "/test"
     }
 
     "not strip sandbox from anywhere else in the url" in {
-      prodHelper.stripSandboxForNonDev("/foo/sandbox") shouldBe "/foo/sandbox"
+      prodHelper.stripSandboxForNonDev("/foo/sandbox") mustBe "/foo/sandbox"
     }
 
     "turn '/sandbox' into '/'" in {
-      prodHelper.stripSandboxForNonDev("/sandbox") shouldBe "/"
+      prodHelper.stripSandboxForNonDev("/sandbox") mustBe "/"
     }
 
     "turn '/sandbox/' into '/'" in {
-      prodHelper.stripSandboxForNonDev("/sandbox/") shouldBe "/"
+      prodHelper.stripSandboxForNonDev("/sandbox/") mustBe "/"
     }
 
     "turn '/sandbox/foo/' into '/foo/'" in {
-      prodHelper.stripSandboxForNonDev("/sandbox/foo/") shouldBe "/foo/"
+      prodHelper.stripSandboxForNonDev("/sandbox/foo/") mustBe "/foo/"
     }
 
     "return a HalLink with the converted and supplied arguments" in {
       val halLink = HalLink("rel", "link")
-      prodHelper.stripSandboxForNonDev(halLink) shouldBe HalLink("rel", "link")
+      prodHelper.stripSandboxForNonDev(halLink) mustBe HalLink("rel", "link")
     }
   }
 

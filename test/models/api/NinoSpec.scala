@@ -20,17 +20,17 @@ import utils.AppLevyUnitSpec
 
 class NinoSpec extends AppLevyUnitSpec {
 
-  "isValid" should {
+  "isValid" must {
     "return true" when {
       "the NINO is the correct format" in {
         val validNino = "AA123456A"
 
-        Nino.isValid(validNino) shouldBe true
+        Nino.isValid(validNino) mustBe true
       }
       "the NINO is an incorrect format" in {
         val invalidNino = "invalidNino"
 
-        Nino.isValid(invalidNino) shouldBe false
+        Nino.isValid(invalidNino) mustBe false
       }
     }
   }

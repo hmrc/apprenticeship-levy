@@ -26,7 +26,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
   val APRIL = 4
   val MAY = 5
 
-  "convertToDeclaration" should {
+  "convertToDeclaration" must {
     val id = 123456L
     val submissionTime = LocalDateTime.now()
     val rtiSubmissionTime = LocalDateTime.now()
@@ -45,7 +45,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        Some(ClosedDateRange(startNoPayment, endNoPayment)))
 
       val l1 = EmployerPaymentSummary.toDeclarations(eps).head
-      l1 shouldBe LevyDeclaration(1234560L, submissionTime,
+      l1 mustBe LevyDeclaration(1234560L, submissionTime,
         noPaymentForPeriod = Some(true),
         payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)),
         submissionId = id)
@@ -60,7 +60,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, allowance, taxMonth.toString())))
 
       val l2 = EmployerPaymentSummary.toDeclarations(eps2).head
-      l2 shouldBe LevyDeclaration(1234562L, submissionTime,
+      l2 mustBe LevyDeclaration(1234562L, submissionTime,
         payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
         levyDueYTD = Some(levyDueYTD),
         levyAllowanceForFullYear = Some(allowance),
@@ -75,7 +75,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        relatedTaxYear,
                                        finalSubmission = Some(SchemeCeased(true, schemeCeasedDate, None)))
 
-      EmployerPaymentSummary.toDeclarations(eps).head shouldBe LevyDeclaration(1234563L, submissionTime, Some(schemeCeasedDate), submissionId = id)
+      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(1234563L, submissionTime, Some(schemeCeasedDate), submissionId = id)
     }
 
     "convert an inactive submission" in {
@@ -87,7 +87,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        relatedTaxYear,
                                        inactivePeriod = Some(ClosedDateRange(from = inactiveFrom, to = inactiveTo)))
 
-      EmployerPaymentSummary.toDeclarations(eps).head shouldBe LevyDeclaration(1234561L, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo), submissionId = id)
+      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(1234561L, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo), submissionId = id)
     }
 
     "convert a submission" in {
@@ -100,7 +100,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        relatedTaxYear,
                                        apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, allowance, taxMonth.toString())))
 
-      EmployerPaymentSummary.toDeclarations(eps).head shouldBe LevyDeclaration(1234562L, submissionTime,
+      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(1234562L, submissionTime,
         payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
         levyDueYTD = Some(levyDueYTD),
         levyAllowanceForFullYear = Some(allowance),
@@ -119,28 +119,28 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
                                        relatedTaxYear,
                                        Some(ClosedDateRange(startNoPayment, endNoPayment)))
 
-      EmployerPaymentSummary.toDeclarations(eps).head shouldBe LevyDeclaration(1234560L, submissionTime,
+      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(1234560L, submissionTime,
         noPaymentForPeriod = Some(true),
         payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)),
         submissionId = id)
     }
   }
 
-  "calculate tax month" should {
+  "calculate tax month" must {
     "calculate month 1 for 6 Apr" in {
-      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, APRIL, 6)) shouldBe 1
+      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, APRIL, 6)) mustBe 1
     }
 
     "calculate month 1 for 5 May" in {
-      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, MAY, 5)) shouldBe 1
+      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, MAY, 5)) mustBe 1
     }
 
     "calculate month 2 for 6 May" in {
-      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, MAY, 5)) shouldBe 1
+      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, MAY, 5)) mustBe 1
     }
 
     "calculate month 12 for 5 Apr" in {
-      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, APRIL, 5)) shouldBe 12
+      EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, APRIL, 5)) mustBe 12
     }
   }
 }

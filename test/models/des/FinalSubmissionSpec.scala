@@ -71,32 +71,32 @@ class FinalSubmissionSpec extends AppLevyUnitSpec {
       |}
       |""".stripMargin)
 
-  "FinalSubmission" should {
+  "FinalSubmission" must {
     "read the json and return a combinedFinalSubmission model" when {
       "inputting a combinedFinalSubmission json" in {
-        combinedFinalSubmissionJsonReads.as[FinalSubmission] shouldBe combinedFinalSubmissionModel
+        combinedFinalSubmissionJsonReads.as[FinalSubmission] mustBe combinedFinalSubmissionModel
       }
     }
     "read the json and return a schemeCeased model" when {
       "inputting a combinedFinalSubmission json" in {
-        schemeCeasedJson.as[FinalSubmission] shouldBe schemeCeasedModel
+        schemeCeasedJson.as[FinalSubmission] mustBe schemeCeasedModel
       }
     }
     "read the json and return a lastSubmission model" when {
       "inputting a combinedFinalSubmission json" in {
-        lastSubmissionJson.as[FinalSubmission] shouldBe lastSubmissionModel
+        lastSubmissionJson.as[FinalSubmission] mustBe lastSubmissionModel
       }
     }
 
     "write to a json" when {
       "inputting a combinedFinalSubmission model" in {
-        Json.toJson[FinalSubmission](combinedFinalSubmissionModel) shouldBe combinedFinalSubmissionJson
+        Json.toJson[FinalSubmission](combinedFinalSubmissionModel) mustBe combinedFinalSubmissionJson
       }
       "inputting a schemeCeasedModel model" in {
-        Json.toJson[FinalSubmission](schemeCeasedModel) shouldBe schemeCeasedJson
+        Json.toJson[FinalSubmission](schemeCeasedModel) mustBe schemeCeasedJson
       }
       "inputting a lastSubmissionModel model" in {
-        Json.toJson[FinalSubmission](lastSubmissionModel) shouldBe lastSubmissionJsonNull
+        Json.toJson[FinalSubmission](lastSubmissionModel) mustBe lastSubmissionJsonNull
       }
     }
   }

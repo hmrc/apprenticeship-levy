@@ -20,17 +20,17 @@ import utils.AppLevyUnitSpec
 import java.time.LocalDateTime
 
 class LevyDeclarationSpec extends AppLevyUnitSpec {
-  "LevyDeclaration" should {
+  "LevyDeclaration" must {
     "have a rti submission field" in {
       val rtiId = 123L
       val levyDeclaration = LevyDeclaration(id = 456L, submissionTime = LocalDateTime.now(), submissionId = rtiId)
-      levyDeclaration.submissionId shouldBe rtiId
+      levyDeclaration.submissionId mustBe rtiId
     }
 
     "have a unique id field" in {
       val id = 456L
       val levyDeclaration = LevyDeclaration(id = id, submissionTime = LocalDateTime.now(), submissionId = 123534L)
-      levyDeclaration.id shouldBe id
+      levyDeclaration.id mustBe id
     }
   }
 }

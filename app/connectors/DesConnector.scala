@@ -268,7 +268,7 @@ trait LevyDeclarationsEndpoint extends Timer {
       }
 
     def maybeEPSResponse(className: String, jsonStr: String): Option[EPSResponse] = {
-      // As noted above this feels likes generics and ClassTag should be used but hotfix required
+      // As noted above this feels likes generics and ClassTag must be used but hotfix required
       className match {
         case "EmptyEmployerPayments" => Try(Json.parse(jsonStr).validate[EmptyEmployerPayments]).toOption.flatMap(toEPSResponse(_))
         case "EmployerPaymentsSummary" => Try(Json.parse(jsonStr).validate[EmployerPaymentsSummary]).toOption.flatMap(toEPSResponse(_))

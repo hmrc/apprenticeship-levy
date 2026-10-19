@@ -79,7 +79,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
     reset(mockHttp)
   }
 
-  "getting fraction calculations" should {
+  "getting fraction calculations" must {
     "propogate environment but not authorization headers on to connector" in {
       // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
@@ -101,8 +101,8 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
-      actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders shouldBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
+      actualHeaderCarrier.extraHeaders mustBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
     }
 
     "not fail if environment header not supplied" in {
@@ -126,8 +126,8 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       // check
       val actualHeaderCarrier = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
-      actualHeaderCarrier.authorization shouldBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders shouldBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
+      actualHeaderCarrier.extraHeaders mustBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
     }
   }
 }
