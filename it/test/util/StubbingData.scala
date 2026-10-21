@@ -54,7 +54,6 @@ object StubbingData {
   def wireMockConfiguration(serverPort: Int): Map[String, Any] = Map(
     "play.ws.timeout.request" -> "500 milliseconds",
     "play.ws.timeout.connection" -> "500 milliseconds",
-    "microservice.metrics.graphite.enabled" -> "false",
     "microservice.services.stub-auth.port" -> serverPort,
     "microservice.services.stub-auth.path" -> "",
     "microservice.services.stub-des.port" -> serverPort,

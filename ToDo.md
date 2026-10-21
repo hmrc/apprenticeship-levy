@@ -47,7 +47,4 @@
 - [x] XSLT to produce RAML files (mostly complete)
 - [x] XSLT to produce MD files
 
-## Metrics
-- [x] Add tests for audit events
-- [x] Add tests for metric events
 

@@ -17,7 +17,6 @@
 package controllers
 
 import java.io.IOException
-import com.codahale.metrics.MetricRegistry
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues
@@ -50,8 +49,6 @@ class DesControllerSpec extends AnyWordSpecLike with Matchers with OptionValues 
       override val appContext: AppContext = mockAppContext
 
       override protected def auditConnector: Option[AuditConnector] = None
-
-      override def registry: Option[MetricRegistry] = None
 
       def baseUrl: String = "http://a.guide.to.nowhere/"
 

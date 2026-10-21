@@ -61,8 +61,7 @@ class DesConnectorISpec
       "microservice.services.stub-des.port" -> server.port(),
       "microservice.services.stub-auth.host" -> "localhost",
       "microservice.services.stub-auth.port" -> server.port(),
-      "microservice.services.des.env" -> "Test",
-      "metrics.enabled" -> false
+      "microservice.services.des.env" -> "Test"
     )
     .overrides(
       bind[Auditor].toInstance(mockAuditor)
