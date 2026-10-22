@@ -19,7 +19,7 @@ package controllers.live
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import config.AppContext
-import connectors.LiveDesConnector
+import connectors.LiveIntegrationPlatformConnector
 import controllers.EmprefController
 import controllers.auth.{AllProviderAuthActionImpl, AuthAction}
 import models.api.{EmploymentReference, Nino}
@@ -27,7 +27,7 @@ import models.api.{EmploymentReference, Nino}
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
-class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
+class LiveEmprefController @Inject()(val integrationPlatformConnector: LiveIntegrationPlatformConnector,
                                      val auth: AllProviderAuthActionImpl,
                                      val executionContext: ExecutionContext,
                                      val parser: BodyParsers.Default,

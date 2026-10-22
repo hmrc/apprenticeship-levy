@@ -33,7 +33,7 @@ import util.StubbingData.*
 import util.WireMockHelper
 import views.html.helper
 
-class EmploymentCheckEndpointISpec
+abstract class EmploymentCheckEndpointISpecBase
   extends AnyWordSpec
     with GuiceOneAppPerSuite
     with WireMockHelper
@@ -45,9 +45,11 @@ class EmploymentCheckEndpointISpec
   stubGetServerWithId(aResponse().withStatus(OK), invalidReadURL1, auuid4)
   stubGetServerWithId(aResponse().withStatus(OK), validRead, auuid5)
 
+  def wireMockConfig(port: Int): Map[String, Any]
+
   override def fakeApplication(): Application =
     GuiceApplicationBuilder()
-      .configure(wireMockConfiguration(server.port()))
+      .configure(wireMockConfig(server.port()))
       .build()
 
   "Employment Check Endpoint" when {

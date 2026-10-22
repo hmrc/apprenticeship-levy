@@ -19,14 +19,14 @@ package controllers
 import play.api.hal.{Hal, HalLink, HalResource}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{Action, AnyContent}
-import connectors.DesConnector
+import connectors.IntegrationPlatformConnector
 import controllers.auth.AuthAction
 import models.api.EmploymentReference
 import utils.DecodePath._
 
-trait EmprefController extends DesController {
+trait EmprefController extends IntegrationPlatformController {
 
-  def desConnector: DesConnector
+  def integrationPlatformConnector: IntegrationPlatformConnector
 
   val authAction: EmploymentReference => AuthAction
 
@@ -46,7 +46,7 @@ trait EmprefController extends DesController {
     (withValidAcceptHeader andThen authAction(ref)).async {
       implicit request =>
         // scalastyle:on
-        desConnector.designatoryDetails(ref.empref) map {
+        integrationPlatformConnector.designatoryDetails(ref.empref) map {
           details =>
             ok(prepareLinks(ref).copy(state = Json.toJson(details).as[JsObject]))
         } recover desErrorHandler

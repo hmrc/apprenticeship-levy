@@ -54,6 +54,9 @@ object StubbingData {
   def wireMockConfiguration(serverPort: Int): Map[String, Any] = Map(
     "play.ws.timeout.request" -> "500 milliseconds",
     "play.ws.timeout.connection" -> "500 milliseconds",
+    "microservice.metrics.graphite.enabled" -> "false",
+    "featureFlags.hip.api-5965" -> false,
+    "featureFlags.hip.api-5967" -> false,
     "microservice.services.stub-auth.port" -> serverPort,
     "microservice.services.stub-auth.path" -> "",
     "microservice.services.stub-des.port" -> serverPort,
@@ -65,6 +68,16 @@ object StubbingData {
     "microservice.private-mode" -> "true",
     "microservice.allowlisted-applications" -> "myappid1,myappid2"
   )
+
+  def wireMockConfigurationHip(serverPort: Int): Map[String, Any] =
+    wireMockConfiguration(serverPort) ++ Map(
+      "featureFlags.hip.api-5965" -> true,
+      "featureFlags.hip.api-5967" -> true,
+      "microservice.services.stub-hip.port" -> serverPort,
+      "microservice.services.stub-hip.path" -> "",
+      "microservice.services.hip.port" -> serverPort,
+      "microservice.services.hip.path" -> ""
+    )
 
   def genEmpref: Gen[String] = (for {
     c <- Gen.alphaLowerChar

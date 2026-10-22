@@ -19,15 +19,15 @@ package controllers.live
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import config.AppContext
-import connectors.LiveDesConnector
+import connectors.LiveIntegrationPlatformConnector
 import controllers.auth.PrivilegedAuthActionImpl
-import controllers.{DesController, LevyDeclarationController}
+import controllers.{IntegrationPlatformController, LevyDeclarationController}
 
 import scala.concurrent.ExecutionContext
 
-class LiveLevyDeclarationController @Inject()(val desConnector: LiveDesConnector,
+class LiveLevyDeclarationController @Inject()(val integrationPlatformConnector: LiveIntegrationPlatformConnector,
                                               val authAction: PrivilegedAuthActionImpl,
                                               val executionContext: ExecutionContext,
                                               val parser: BodyParsers.Default,
                                               val appContext: AppContext,
-                                              val controllerComponents: ControllerComponents) extends DesController with LevyDeclarationController
+                                              val controllerComponents: ControllerComponents) extends IntegrationPlatformController with LevyDeclarationController
