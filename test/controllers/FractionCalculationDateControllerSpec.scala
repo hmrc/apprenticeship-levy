@@ -16,7 +16,10 @@
 
 package controllers
 
-import com.codahale.metrics.MetricRegistry
+import config.AppContext
+import connectors.DesConnector
+import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
+import models.des.FractionCalculationDate
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -24,15 +27,11 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import config.AppContext
-import connectors.DesConnector
-import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
-import models.des.FractionCalculationDate
-import utils.AppLevyUnitSpec
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.http.{Authorization, HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import utils.AppLevyUnitSpec
 
 import java.net.URL
 import java.time.LocalDate
@@ -49,7 +48,6 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
     def desConnector: DesConnector = new DesConnector() {
       override val appContext: AppContext = mockAppContext
       override protected def auditConnector: Option[AuditConnector] = None
-      override def registry: Option[MetricRegistry] = None
       def baseUrl: String = "http://a.guide.to.nowhere/"
       def httpClient: HttpClientV2 = mockHttp
       override def desAuthorization: String = "localBearer"

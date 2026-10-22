@@ -16,23 +16,22 @@
 
 package controllers
 
-import com.codahale.metrics.MetricRegistry
+import config.AppContext
+import connectors.DesConnector
+import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
+import models.api.*
+import models.des.Fractions
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Injecting}
-import config.AppContext
-import connectors.DesConnector
-import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
-import models.api._
-import models.des.Fractions
-import utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import utils.AppLevyUnitSpec
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,7 +53,6 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
       override def desEnvironment: String = "localEnv"
       override protected def auditConnector: Option[AuditConnector] = None
       override val appContext: AppContext = mockAppContext
-      override def registry: Option[MetricRegistry] = None
     }
 
     override val authAction: AuthAction = new FakePrivilegedAuthAction

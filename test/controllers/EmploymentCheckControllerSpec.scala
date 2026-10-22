@@ -16,7 +16,11 @@
 
 package controllers
 
-import com.codahale.metrics.MetricRegistry
+import config.AppContext
+import connectors.DesConnector
+import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
+import models.api.{EmploymentReference, Nino}
+import models.des.{EmploymentCheckStatus, Unknown}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -26,15 +30,10 @@ import play.api.http.Status.{BAD_REQUEST, NOT_FOUND, OK}
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, Injecting}
-import config.AppContext
-import connectors.DesConnector
-import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
-import models.api.{EmploymentReference, Nino}
-import models.des.{EmploymentCheckStatus, Unknown}
-import utils.AppLevyUnitSpec
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import utils.AppLevyUnitSpec
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,7 +51,6 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
     def desConnector: DesConnector = new DesConnector() {
       override val appContext: AppContext = mockAppContext
       override protected def auditConnector: Option[AuditConnector] = None
-      override def registry: Option[MetricRegistry] = None
       def baseUrl: String = "http://a.guide.to.nowhere/"
       def httpClient: HttpClientV2 = mockHttp
       override def desAuthorization: String = "localBearer"

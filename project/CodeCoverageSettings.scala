@@ -10,7 +10,6 @@ object CodeCoverageSettings {
     "views.*",
     "prod.*",
     ".*assets.*",
-    "metrics.*",
     "config.*",
     "controllers.live.*",
     "controllers.sandbox.*",

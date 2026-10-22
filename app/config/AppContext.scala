@@ -84,8 +84,6 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
 
   def desToken: String = maybeString("microservice.services.des.token").getOrElse("")
 
-  def metricsEnabled: Boolean = maybeString("microservice.metrics.graphite.enabled").flatMap(flag => Try(flag.toBoolean).toOption).getOrElse(false)
-
   def getURL(name: String): String = Try {
     val url = maybeBaseURL(name).getOrElse("")
     val host = maybeString(s"microservice.services.$name.host").getOrElse("")
