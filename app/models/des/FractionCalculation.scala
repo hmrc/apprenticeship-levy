@@ -16,7 +16,7 @@
 
 package models.des
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import java.time.LocalDate
 

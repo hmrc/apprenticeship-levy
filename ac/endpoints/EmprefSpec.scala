@@ -23,18 +23,15 @@ class EmprefSpec extends FunctionalSpec with Eventually with IntegrationPatience
         val emprefParts = name.splitAt(3)
         val empref = s"${emprefParts._1}%2F${emprefParts._2}"
         it(s"should when calling ${url}$context/epaye/$empref return employer details (${environment})") {
-          // set up
           val expected = fileToStr(file)
           val expectedJson = Json.parse(expected)
 
-          // test
           val result = eventually {
             Http(s"$url$context/epaye/$empref")
               .headers(standardHeaders())
               .asString
           }
 
-          // check
           result.code mustBe 200
           result.contentType mustBe Some("application/json")
           Json.parse(result.body) mustBe expectedJson

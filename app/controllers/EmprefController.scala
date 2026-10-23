@@ -22,7 +22,7 @@ import play.api.mvc.{Action, AnyContent}
 import connectors.DesConnector
 import controllers.auth.AuthAction
 import models.api.EmploymentReference
-import utils.DecodePath._
+import utils.DecodePath.*
 
 trait EmprefController extends DesController {
 

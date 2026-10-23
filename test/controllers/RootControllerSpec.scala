@@ -16,23 +16,19 @@
 
 package controllers
 
-import org.scalatest.wordspec.AnyWordSpecLike
 import java.net.URLEncoder
-
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.OptionValues
 import play.api.http.Status.OK
 import play.api.mvc.BodyParsers.Default
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, defaultAwaitTimeout, stubControllerComponents}
+import play.api.test.Helpers.*
 import controllers.auth.{AuthAction, FakeAuthAction}
 import models.api.EmploymentReference
-import utils.MockAppContext.status
+import utils.SpecBase
 
 import scala.concurrent.ExecutionContext
 
-class RootControllerSpec extends AnyWordSpecLike with Matchers with OptionValues{
+class RootControllerSpec extends SpecBase {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
 
@@ -63,9 +59,9 @@ class RootControllerSpec extends AnyWordSpecLike with Matchers with OptionValues
 
   "root" must {
     "return a success which transforms the empref when hit" in {
-      val result = await(testController.root(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+      val result = testController.root(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080",
-        "Environment"->"clone")))
+        "Environment"->"clone"))
 
       status(result) mustBe OK
     }

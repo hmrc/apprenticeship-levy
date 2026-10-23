@@ -20,14 +20,14 @@ import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Json
 import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsJson, contentAsString, defaultAwaitTimeout, stubControllerComponents}
+import play.api.test.Helpers.*
 import play.api.{Configuration, Environment}
 import config.AppContext
 import controllers.sandbox.data.SandboxTestDataController
-import utils.{AppLevyUnitSpec, DataTransformer}
+import utils.{SpecBase, DataTransformer}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
+class SandboxTestDataControllerSpec extends SpecBase {
 
   def controller(dummyResponse: Boolean) = {
     val stubComponents: ControllerComponents = stubControllerComponents()
@@ -114,9 +114,9 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
     "return a success" when {
       "the request is an authorise/read" in {
 
-        val result = await(controller(true).serve("authorise/read")(FakeRequest().withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json",
+        val result = controller(true).serve("authorise/read")(FakeRequest().withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json",
           "Authorization" -> "Bearer dsfda9080",
-          "Environment" -> "clone")))
+          "Environment" -> "clone"))
 
         status(result) mustBe OK
         contentAsString(result) mustBe ""
@@ -126,10 +126,10 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
     "return an error" when {
       "the request header has OVERRIDE_EMPREF but no empref is found from path" in {
 
-        val result = await(controller(true).serve("req")(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
+        val result = controller(true).serve("req")(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
           "Authorization"->"Bearer dsfda9080",
           "Environment"->"clone",
-          "OVERRIDE_EMPREF" -> "true")))
+          "OVERRIDE_EMPREF" -> "true"))
 
         status(result) mustBe NOT_FOUND
         contentAsJson(result) mustBe Json.parse(s"""{"reason": "Received request req but no file 'req' found in 'public/sandbox-data' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")

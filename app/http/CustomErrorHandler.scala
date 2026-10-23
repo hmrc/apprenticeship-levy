@@ -17,11 +17,11 @@
 package http
 
 import play.api.Configuration
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json.toJson
-import play.api.mvc.Results._
+import play.api.mvc.Results.*
 import play.api.mvc.{RequestHeader, Result}
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.backend.http.JsonErrorHandler
 import uk.gov.hmrc.play.bootstrap.http.ErrorResponse

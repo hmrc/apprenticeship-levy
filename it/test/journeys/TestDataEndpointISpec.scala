@@ -16,109 +16,76 @@
 
 package journeys
 
-import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.Application
-import play.api.http.Status.{NOT_FOUND, OK}
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
+import play.api.http.Status.{NOT_FOUND, OK}
 import util.StubbingData.*
-import util.WireMockHelper
+import util.ISpecBase
 
 class TestDataEndpointISpec
-  extends AnyWordSpec
-    with GuiceOneAppPerSuite
-    with WireMockHelper
-    with ScalaCheckPropertyChecks {
-
-  override def fakeApplication(): Application = {
-    val conf = wireMockConfiguration(server.port())
-    GuiceApplicationBuilder()
-      .configure(conf)
-      .build()
-  }
-
+  extends ISpecBase {
+  
   "Sandbox Test Data Endpoint" when {
     "authorise/read" must {
       "return Ok" in {
-        // set up
         val request = FakeRequest(GET, "/sandbox/data/authorise/read")
           .withHeaders(standardDesHeaders()*)
 
-        // test
         val result = route(app, request).get
 
-        // check
         status(result) mustBe OK
       }
     }
 
     "/sandbox/data/..." must {
       "return Ok where json file exists" in {
-        // set up
         val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
           .withHeaders(standardDesHeaders()*)
 
-        // test
         val result = route(app, request).get
 
-        // check
         status(result) mustBe OK
         contentAsString(result) must include ("/paye/employer/840/MODES17/designatory-details/employer")
       }
 
       "return NotFound where json file does not exists" in {
-        // set up
         val request = FakeRequest(GET, "/sandbox/data/zxy")
           .withHeaders(standardDesHeaders()*)
 
-        // test
         val result = route(app, request).get
 
-        // check
         status(result) mustBe NOT_FOUND
       }
 
       "return Ok where json file does not have json body" in {
-        // set up
         val request = FakeRequest(GET, "/sandbox/data/empty")
           .withHeaders(standardDesHeaders()*)
 
-        // test
         val result = route(app, request).get
 
-        // check
         status(result) mustBe OK
       }
 
       "return support OVERRIDE_EMPREF" must {
         "return json file where it exists" in {
-          // set up
           val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF"->"840/MODES17"
           val request = FakeRequest(GET, "/sandbox/data/paye/employer/000/ABC/designatory-details")
             .withHeaders(headers*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe OK
           contentAsString(result) must include ("/paye/employer/840/MODES17/designatory-details/employer")
         }
 
         "return NotFound where json file does not exist" in {
-          // set up
           val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF"->"ZZZ%2FJKLJLJL"
           val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
             .withHeaders(headers*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe NOT_FOUND
         }
       }

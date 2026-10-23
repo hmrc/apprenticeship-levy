@@ -17,8 +17,8 @@
 package utils
 
 import play.api.mvc.Results.Status
-import play.api.mvc._
-import controllers.ErrorResponses._
+import play.api.mvc.*
+import controllers.ErrorResponses.*
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.matching.Regex

@@ -2,8 +2,8 @@ package endpoints
 
 import java.io.File
 
-import org.scalatest.matchers.must.Matchers._
-import org.scalatest._
+import org.scalatest.matchers.must.Matchers.*
+import org.scalatest.*
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import play.api.libs.json.Json
 import scalaj.http.Http
@@ -28,16 +28,12 @@ class EmploymentCheckSpec extends FunctionalSpec with Eventually with Integratio
         val expectedJson = Json.parse(expected)
         val params = (expectedJson \ "params").as[String]
         it (s"should when calling ${url}$context/epaye/$empref/employed/$nino$params return employment details (${environment})") {
-          // set up
-
-          // test
           val result = eventually {
             Http(s"$url$context/epaye/$empref/employed/$nino$params")
               .headers(standardHeaders())
               .asString
           }
 
-          // check
           info(result.body)
           result.code mustBe 200
           result.contentType mustBe Some("application/json")

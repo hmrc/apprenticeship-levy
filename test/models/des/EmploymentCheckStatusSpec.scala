@@ -16,9 +16,9 @@
 
 package models.des
 
-import utils.AppLevyUnitSpec
+import utils.SpecBase
 
-class EmploymentCheckStatusSpec extends AppLevyUnitSpec {
+class EmploymentCheckStatusSpec extends SpecBase {
 
   "apply" must {
     "return Employed" when {

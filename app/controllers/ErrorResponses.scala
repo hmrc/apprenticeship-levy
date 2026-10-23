@@ -16,7 +16,7 @@
 
 package controllers
 
-import play.mvc.Http.Status._
+import play.mvc.Http.Status.*
 import uk.gov.hmrc.play.bootstrap.http.ErrorResponse
 
 object ErrorResponses {

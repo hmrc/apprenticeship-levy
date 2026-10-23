@@ -16,11 +16,6 @@
 
 package controllers
 
-import config.AppContext
-import connectors.DesConnector
-import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
-import models.api.{EmploymentReference, Nino}
-import models.des.{EmploymentCheckStatus, Unknown}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
@@ -28,17 +23,22 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status.{BAD_REQUEST, NOT_FOUND, OK}
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
-import play.api.test.Helpers.stubControllerComponents
+import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Injecting}
+import config.AppContext
+import connectors.DesConnector
+import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
+import models.api.{EmploymentReference, Nino}
+import models.des.{EmploymentCheckStatus, Unknown}
+import utils.SpecBase
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import utils.AppLevyUnitSpec
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite with Injecting with BeforeAndAfterEach {
+class EmploymentCheckControllerSpec extends SpecBase with ScalaFutures with GuiceOneAppPerSuite with Injecting with BeforeAndAfterEach {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockHttp: HttpClientV2 = mock[HttpClientV2]
@@ -83,10 +83,10 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
 
-        val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
+        val response = testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",
           "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")))
+          "Environment"->"clone"))
 
         status(response) mustBe OK
       }
@@ -99,10 +99,10 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(false))))
 
-        val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
+        val response = testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",
           "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")))
+          "Environment"->"clone"))
 
         status(response) mustBe OK
       }
@@ -117,10 +117,10 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(Unknown)))
 
-        val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
+        val response = testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",
           "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")))
+          "Environment"->"clone"))
 
         status(response) mustBe NOT_FOUND
 
@@ -135,10 +135,10 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
 
-        val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
+        val response = testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
           "ACCEPT"->"application/vnd.hmrc.1.0+json",
           "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")))
+          "Environment"->"clone"))
 
         status(response) mustBe BAD_REQUEST
 

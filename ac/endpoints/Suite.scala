@@ -1,6 +1,6 @@
 package endpoints
 
-import org.scalatest._
+import org.scalatest.*
 
 class EndpointSuite extends Suites(new RootSpec,
                                    new EmprefSpec,

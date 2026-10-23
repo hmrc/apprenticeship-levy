@@ -20,7 +20,7 @@ import config.AppContext
 import org.mockito.Mockito.when
 import play.api.Mode
 
-object MockAppContext extends AppLevyUnitSpec {
+object MockAppContext extends SpecBase {
   val mocked = mock[AppContext]
 
   when(mocked.mode).thenReturn(Mode.Test)

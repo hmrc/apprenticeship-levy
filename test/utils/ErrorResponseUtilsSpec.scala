@@ -20,8 +20,8 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import play.api.test.Helpers._
-import utils.ErrorResponseUtils._
+import play.api.test.Helpers.*
+import utils.ErrorResponseUtils.*
 import uk.gov.hmrc.play.bootstrap.http.ErrorResponse
 
 import scala.concurrent.Future

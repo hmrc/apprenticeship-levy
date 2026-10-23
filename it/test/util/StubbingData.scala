@@ -38,12 +38,12 @@ object StubbingData {
     }.get
   }
 
-  lazy val auuid1: UUID = randomUUID()
-  lazy val auuid2: UUID = randomUUID()
-  lazy val auuid3: UUID = randomUUID()
-  lazy val auuid4: UUID = randomUUID()
-  lazy val auuid5: UUID = randomUUID()
-  lazy val auuid6: UUID = randomUUID()
+  val auuid1: UUID = randomUUID()
+  val auuid2: UUID = randomUUID()
+  val auuid3: UUID = randomUUID()
+  val auuid4: UUID = randomUUID()
+  val auuid5: UUID = randomUUID()
+  val auuid6: UUID = randomUUID()
 
   val validReadURL1 = "/authorise/read/epaye/AB12345?privilegedAccess=read:apprenticeship-levy"
   val validReadURL2 = "/authorise/read/epaye/123%2FAB12345?privilegedAccess=read:apprenticeship-levy"

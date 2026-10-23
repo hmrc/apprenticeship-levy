@@ -17,9 +17,9 @@
 package controllers.sandbox
 
 import play.api.hal.HalLink
-import utils.AppLevyUnitSpec
+import utils.SpecBase
 
-class SandboxLinkHelperSpec extends AppLevyUnitSpec {
+class SandboxLinkHelperSpec extends SpecBase {
   val devHelper = new SandboxLinkHelper {
     override def env: String = "Dev"
   }

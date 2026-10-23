@@ -25,11 +25,11 @@ import config.AppContext
 import connectors.DesConnector
 import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import models.api.EmploymentReference
-import utils.AppLevyUnitSpec
+import utils.SpecBase
 
 import scala.concurrent.ExecutionContext
 
-class EmprefControllerSpec extends AppLevyUnitSpec with OptionValues {
+class EmprefControllerSpec extends SpecBase with OptionValues {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockAppContext: AppContext = mock[AppContext]

@@ -16,9 +16,9 @@
 
 package models.api
 
-import utils.AppLevyUnitSpec
+import utils.SpecBase
 
-class NinoSpec extends AppLevyUnitSpec {
+class NinoSpec extends SpecBase {
 
   "isValid" must {
     "return true" when {

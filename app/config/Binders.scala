@@ -18,7 +18,7 @@ package config
 
 import java.net.{URLDecoder, URLEncoder}
 import play.api.mvc.{PathBindable, QueryStringBindable}
-import models.api._
+import models.api.*
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

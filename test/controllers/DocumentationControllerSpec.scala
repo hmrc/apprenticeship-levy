@@ -23,16 +23,16 @@ import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.ControllerComponents
-import play.api.test.Helpers.stubControllerComponents
+import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Injecting}
 import play.api.{Application, Environment, Mode}
 import config.AppContext
-import utils.{AppLevyUnitSpec, MockAppContext}
+import utils.{SpecBase, MockAppContext}
 
 import java.io.File
 import scala.util.Failure
 
-class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with GuiceOneAppPerSuite with Injecting with BeforeAndAfterEach {
+class DocumentationControllerSpec extends SpecBase with Inside with GuiceOneAppPerSuite with Injecting with BeforeAndAfterEach {
 
   val validDefinition = new File(getClass.getResource("/validDefinition.json").toURI)
   val invalidDefinition = new File(getClass.getResource("/invalidDefinition.json").toURI)
@@ -61,20 +61,20 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
     "return a success" when {
       "the documentation is able to be found" in {
         when(mockAppContext.mocked.environment).thenReturn(Environment(new File(".").getCanonicalFile, this.getClass.getClassLoader, Mode.Dev))
-        val result = await(documentationController.documentation("1.0", "employment check")(FakeRequest()))
+        val result = documentationController.documentation("1.0", "employment check")(FakeRequest())
 
         status(result) mustBe OK
       }
 
       "the definition is able to be found" in {
-        val result = await(documentationController.definition()(FakeRequest()))
+        val result = documentationController.definition()(FakeRequest())
 
         status(result) mustBe OK
       }
 
       "the definition is able to be found with private mode enabled" in {
         when(mockAppContext.mocked.privateModeEnabled).thenReturn(true)
-        val result = await(documentationController.definition()(FakeRequest()))
+        val result = documentationController.definition()(FakeRequest())
 
         status(result) mustBe OK
       }
@@ -83,12 +83,12 @@ class DocumentationControllerSpec extends AppLevyUnitSpec with Inside with Guice
     "return an error" when {
       "the documentation cannot be found" in {
         when(mockAppContext.mocked.environment).thenReturn(Environment(new File(".").getCanonicalFile, this.getClass.getClassLoader, Mode.Dev))
-        val result = await(documentationController.documentation("1.0", "test file")(FakeRequest()))
+        val result = documentationController.documentation("1.0", "test file")(FakeRequest())
 
         status(result) mustBe NOT_FOUND
       }
       "the definition cannot be found" in {
-        val result = await(documentationController.definition("TestFile.json")(FakeRequest()))
+        val result = documentationController.definition("TestFile.json")(FakeRequest())
 
         status(result) mustBe NOT_FOUND
       }

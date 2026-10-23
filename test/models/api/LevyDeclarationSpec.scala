@@ -16,10 +16,10 @@
 
 package models.api
 
-import utils.AppLevyUnitSpec
+import utils.SpecBase
 import java.time.LocalDateTime
 
-class LevyDeclarationSpec extends AppLevyUnitSpec {
+class LevyDeclarationSpec extends SpecBase {
   "LevyDeclaration" must {
     "have a rti submission field" in {
       val rtiId = 123L

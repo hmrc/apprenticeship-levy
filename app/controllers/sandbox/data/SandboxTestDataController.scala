@@ -18,8 +18,8 @@ package controllers.sandbox.data
 
 import com.google.inject.{Inject, Singleton}
 import org.slf4j.MDC
-import play.api.libs.json._
-import play.api.mvc._
+import play.api.libs.json.*
+import play.api.mvc.*
 import play.api.{Logger, Mode}
 import config.AppContext
 import utils.DateFormats.localDateReads
@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.controller.Utf8MimeTypes
 
 import java.io.{File, FileInputStream, InputStream}
 import java.net.URLDecoder
-import java.time._
+import java.time.*
 import scala.concurrent.Future
 import scala.io.Source
 import scala.util.Try

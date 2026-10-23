@@ -16,41 +16,23 @@
 
 package journeys
 
-import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.Application
 import play.api.http.Status.OK
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
-import util.StubbingData.*
-import util.WireMockHelper
+import util.ISpecBase
 
 class PublicDefinitionEndpointISpec
-  extends AnyWordSpec
-    with GuiceOneAppPerSuite
-    with WireMockHelper
-    with ScalaCheckPropertyChecks {
-
-  override def fakeApplication(): Application =
-    GuiceApplicationBuilder()
-      .configure(wireMockConfiguration(server.port())
-      )
-      .build()
+  extends ISpecBase {
 
   "API Definition Endpoint (Public Mode)" when {
     "calling /api/definition" +
     "\nand definition file exists and private-mode is set to true" must {
       "return OK" in {
-        // set up
         val request = FakeRequest(GET, "/api/definition")
 
-        // test
         val result = route(app, request).get
 
-        // check
         status(result) mustBe OK
       }
     }

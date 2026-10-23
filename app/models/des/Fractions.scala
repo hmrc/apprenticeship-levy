@@ -16,7 +16,7 @@
 
 package models.des
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class Fractions(empref: String, fractionCalculations: Seq[FractionCalculation])
 

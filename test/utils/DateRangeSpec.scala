@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 
 import java.time.LocalDate
 
-class DateRangeSpec extends AppLevyUnitSpec {
+class DateRangeSpec extends SpecBase {
 
   "Date Range" must {
 

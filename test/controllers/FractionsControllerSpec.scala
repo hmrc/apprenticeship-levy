@@ -16,11 +16,6 @@
 
 package controllers
 
-import config.AppContext
-import connectors.DesConnector
-import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
-import models.api.*
-import models.des.Fractions
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -28,15 +23,20 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents}
 import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Injecting}
+import config.AppContext
+import connectors.DesConnector
+import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
+import models.api.*
+import models.des.Fractions
+import utils.SpecBase
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import utils.AppLevyUnitSpec
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite with Injecting {
+class FractionsControllerSpec extends SpecBase with ScalaFutures with GuiceOneAppPerSuite with Injecting {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
   val mockHttp: HttpClientV2 = mock[HttpClientV2]
@@ -76,10 +76,10 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, Fractions]](using any(), any())).thenReturn(Future.successful(Right(Fractions("empref", Seq()))))
 
-      val response = liveFractionsController.fractions(EmploymentReference("empref"), Some(fromDate), Some(toDate))(FakeRequest().withHeaders(
+      val response = await(liveFractionsController.fractions(EmploymentReference("empref"), Some(fromDate), Some(toDate))(FakeRequest().withHeaders(
         "ACCEPT"->"application/vnd.hmrc.1.0+json",
         "Authorization"->"Bearer dsfda9080",
-        "Environment"->"clone"))
+        "Environment"->"clone")))
 
       response.header.status mustBe OK
     }
