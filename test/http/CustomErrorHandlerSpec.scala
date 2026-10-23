@@ -21,8 +21,8 @@ import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{ACCEPT, contentAsJson, defaultAwaitTimeout}
-import utils.AppLevyUnitSpec
+import play.api.test.Helpers.*
+import utils.SpecBase
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{DataEvent, TruncationLog}
 import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CustomErrorHandlerSpec extends AppLevyUnitSpec {
+class CustomErrorHandlerSpec extends SpecBase {
 
   val mockAuditConnector: AuditConnector = mock[AuditConnector]
   val mockHttpAuditEvent: HttpAuditEvent = mock[HttpAuditEvent]

@@ -19,14 +19,14 @@ package controllers.auth
 import com.google.inject.{ImplementedBy, Inject}
 import org.slf4j.MDC
 import play.api.Logging
-import play.api.http.Status._
-import play.api.mvc.Results._
-import play.api.mvc._
+import play.api.http.Status.*
+import play.api.mvc.Results.*
+import play.api.mvc.*
 import controllers.ErrorResponses.AuthError
 import models.api.EmploymentReference
 import utils.ErrorResponseUtils
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{PAClientId, ~}
 import uk.gov.hmrc.domain.EmpRef

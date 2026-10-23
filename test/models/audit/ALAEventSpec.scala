@@ -17,11 +17,11 @@
 package models.audit
 
 import play.api.http.Status.{NOT_FOUND, OK}
-import utils.AppLevyUnitSpec
+import utils.SpecBase
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import uk.gov.hmrc.play.audit.EventKeys.TransactionName
 
-class ALAEventSpec extends AppLevyUnitSpec {
+class ALAEventSpec extends SpecBase {
 
   "toDataEvent" must {
     "return a dataEvent" when {

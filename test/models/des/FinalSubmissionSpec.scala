@@ -19,9 +19,9 @@ package models.des
 import java.time.LocalDate
 
 import play.api.libs.json.{JsValue, Json}
-import utils.AppLevyUnitSpec
+import utils.SpecBase
 
-class FinalSubmissionSpec extends AppLevyUnitSpec {
+class FinalSubmissionSpec extends SpecBase {
 
   val ceaseDate: LocalDate = LocalDate.parse("2020-01-01")
 

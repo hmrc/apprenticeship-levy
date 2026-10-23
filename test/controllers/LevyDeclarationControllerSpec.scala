@@ -25,7 +25,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.test.{FakeRequest, Injecting}
 import controllers.live.LiveLevyDeclarationController
 import models.api.EmploymentReference
@@ -36,12 +36,12 @@ import controllers.auth.{FakePrivilegedAuthAction, PrivilegedAuthActionImpl}
 import play.api.test.Helpers.stubControllerComponents
 import config.AppContext
 import models.des.{ApprenticeshipLevy, EmployerPaymentSummary, EmployerPaymentsSummary}
-import utils.{AppLevyUnitSpec, MockAppContext}
+import utils.{SpecBase, MockAppContext}
 import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
 
-class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite
+class LevyDeclarationControllerSpec extends SpecBase with ScalaFutures with GuiceOneAppPerSuite
   with Injecting with BeforeAndAfterEach{
 
   val mockDesConnector: LiveDesConnector = mock[LiveDesConnector]

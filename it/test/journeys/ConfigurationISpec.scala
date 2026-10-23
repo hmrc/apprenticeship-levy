@@ -17,27 +17,10 @@
 package journeys
 
 import config.PathBinders
-import org.scalatest.matchers.must.Matchers.*
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
-import util.StubbingData.*
-import util.WireMockHelper
+import util.ISpecBase
 
 class ConfigurationISpec
-  extends AnyWordSpec
-    with GuiceOneAppPerSuite
-    with WireMockHelper
-    with ScalaCheckPropertyChecks {
-
-  override def fakeApplication(): Application = {
-    val conf = wireMockConfiguration(server.port())
-    GuiceApplicationBuilder()
-      .configure(conf)
-      .build()
-  }
+  extends ISpecBase {
 
   "Application Configuration" must {
     "support NINO's with 'KC' prefix" in {

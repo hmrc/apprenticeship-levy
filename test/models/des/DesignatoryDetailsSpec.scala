@@ -34,11 +34,11 @@ package models.des
 
 
 import play.api.libs.json.Json
-import utils.AppLevyUnitSpec
-import models.des.DesignatoryDetailsData._
+import utils.SpecBase
+import models.des.DesignatoryDetailsData.*
 
 
-class DesignatoryDetailsSpec extends AppLevyUnitSpec {
+class DesignatoryDetailsSpec extends SpecBase {
 
   "Designatory Details" must {
     "Parse HodName json correctly" in {

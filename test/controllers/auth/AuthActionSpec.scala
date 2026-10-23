@@ -23,10 +23,10 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.BodyParsers.Default
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import models.api.EmploymentReference
-import utils.{AppLevyUnitSpec, RetrievalOps}
-import uk.gov.hmrc.auth.core._
+import utils.{SpecBase, RetrievalOps}
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.{GGCredId, LegacyCredentials, PAClientId, ~}
 import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, MethodNotAllowedException, NotFoundException, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AuthActionSpec
-  extends AppLevyUnitSpec
+  extends SpecBase
     with GuiceOneAppPerSuite
     with RetrievalOps
     with BeforeAndAfterEach {

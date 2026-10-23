@@ -20,34 +20,29 @@ import audit.Auditor
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import connectors.LiveDesConnector
 import models.des.*
-import org.mockito.Mockito.{reset as mockReset}
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.mockito.Mockito.reset as mockReset
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.Json
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException, UpstreamErrorResponse}
-import util.WireMockHelper
+import util.ISpecBase
 import utils.*
 import views.html.helper
+
 import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class DesConnectorISpec
-  extends AppLevyUnitSpec
-    with GuiceOneAppPerSuite
-    with ScalaFutures
-    with WireMockHelper {
+  extends ISpecBase {
 
   val baseUrl = "/sandbox/data"
   val mockAuditor: Auditor = mock[Auditor]
   val mockHeaderCarrier: HeaderCarrier = HeaderCarrier(
     otherHeaders = Seq(
-      "X-Client-ID" -> "ClientId",
-      "Authorization" -> "Bearer ABC",
-      "Environment" -> "Test"
+      "X-Client-ID" -> "ClientId"
     ))
 
   override def fakeApplication(): Application = GuiceApplicationBuilder()
@@ -78,7 +73,6 @@ class DesConnectorISpec
   "DES Connector" must {
     "for Fraction Date endpoint" must {
       "when EDH not failing return local date instance of date" in {
-
         val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
         val fractionCalculationDate = FractionCalculationDate(LocalDate.of(2016, 11, 3))
         val json = Json.toJson[FractionCalculationDate](fractionCalculationDate)
@@ -100,7 +94,6 @@ class DesConnectorISpec
       }
 
       "throw an error when upstream returns a 404" in {
-
         val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
         val stubResponse = notFound()
 
@@ -119,7 +112,6 @@ class DesConnectorISpec
       }
 
       "throw an error when upstream returns a 400" in {
-
         val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
         val stubResponse = badRequest()
 
@@ -138,7 +130,6 @@ class DesConnectorISpec
       }
 
       "throw an error when upstream returns neither a 404 nor 400" in {
-
         val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
         val stubResponse = forbidden()
 
@@ -159,7 +150,6 @@ class DesConnectorISpec
 
     "for Fractions endpoint" must {
       "when EDH not failing return fractions" in {
-
         val localDate = LocalDate.of(2016, 4, 22)
         val dateRange = OpenEarlyDateRange(localDate)
         val dateRangeParams = dateRange.toParams
@@ -184,7 +174,6 @@ class DesConnectorISpec
       }
 
       "throw an exception when upstream returns a 404" in {
-
         val localDate = LocalDate.of(2016, 4, 22)
         val dateRange = OpenEarlyDateRange(localDate)
         val dateRangeParams = dateRange.toParams
@@ -205,8 +194,8 @@ class DesConnectorISpec
             .withHeader("Environment", equalTo("Test"))
         )
       }
-      "throw an exception when upstream returns a 400" in {
 
+      "throw an exception when upstream returns a 400" in {
         val localDate = LocalDate.of(2016, 4, 22)
         val dateRange = OpenEarlyDateRange(localDate)
         val dateRangeParams = dateRange.toParams
@@ -227,8 +216,8 @@ class DesConnectorISpec
             .withHeader("Environment", equalTo("Test"))
         )
       }
-      "throw an exception when upstream returns an error that is neither 404 or 400" in {
 
+      "throw an exception when upstream returns an error that is neither 404 or 400" in {
         val localDate = LocalDate.of(2016, 4, 22)
         val dateRange = OpenEarlyDateRange(localDate)
         val dateRangeParams = dateRange.toParams
@@ -254,7 +243,6 @@ class DesConnectorISpec
 
   "have Levy Declarations endpoint and" must {
     "support original endpoint url with an empty empref" in {
-
       val empRef = " "
       val empRefWithSlash = " "
       val localDate = LocalDate.of(2016, 11, 3)
@@ -278,8 +266,8 @@ class DesConnectorISpec
           .withHeader("Environment", equalTo("Test"))
       )
     }
-    "support original endpoint url" in {
 
+    "support original endpoint url" in {
       val empRef = "123AB12345"
       val empRefWithSlash = "123/AB12345"
       val localDate = LocalDate.of(2016, 11, 3)
@@ -305,7 +293,6 @@ class DesConnectorISpec
     }
 
     "throw an IllegalArgumentException when an unexpected json is returned from upstream" in {
-
       val empRef = "123AB12345"
       val localDate = LocalDate.of(2016, 11, 3)
       val dateRange = OpenEarlyDateRange(localDate)
@@ -328,7 +315,6 @@ class DesConnectorISpec
     }
 
     "throw a bad request exception when the upstream returns a 400" in {
-
       val empRef = "123AB12345"
       val localDate = LocalDate.of(2016, 11, 3)
       val dateRange = OpenEarlyDateRange(localDate)
@@ -349,8 +335,8 @@ class DesConnectorISpec
           .withHeader("Environment", equalTo("Test"))
       )
     }
-    "throw a not found exception when the upstream returns a 404" in {
 
+    "throw a not found exception when the upstream returns a 404" in {
       val empRef = "123AB12345"
       val localDate = LocalDate.of(2016, 11, 3)
       val dateRange = OpenEarlyDateRange(localDate)
@@ -371,8 +357,8 @@ class DesConnectorISpec
           .withHeader("Environment", equalTo("Test"))
       )
     }
-    "throw another type of exception when the response is neither a 400 or 404" in {
 
+    "throw another type of exception when the response is neither a 400 or 404" in {
       val empRef = "123AB12345"
       val localDate = LocalDate.of(2016, 11, 3)
       val dateRange = OpenEarlyDateRange(localDate)
@@ -396,7 +382,6 @@ class DesConnectorISpec
 
     "have Employer Details endpoint and" must {
       "support original endpoint url" in {
-
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
         val expectedResponse = DesignatoryDetails(Some(empRef), None, None)
@@ -419,7 +404,6 @@ class DesConnectorISpec
       }
 
       "support original endpoint url with employer links" in {
-
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
         val expectedResponse = DesignatoryDetails(Some(empRef), Some(DesignatoryDetailsData(None, None, None)), None)
@@ -443,7 +427,6 @@ class DesConnectorISpec
       }
 
       "support original endpoint url with communication links" in {
-
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
         val expectedResponse = DesignatoryDetails(Some(empRef), None, Some(DesignatoryDetailsData(None, None, None)))
@@ -471,7 +454,6 @@ class DesConnectorISpec
       }
 
       "support original endpoint url when the getDetails call fails" in {
-
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
         val expectedResponse = DesignatoryDetails(Some(empRef), None, None)
@@ -493,8 +475,8 @@ class DesConnectorISpec
             .withHeader("Environment", equalTo("Test"))
         )
       }
-      "throw an error if the http call in getDetails returns a 400" in {
 
+      "throw an error if the http call in getDetails returns a 400" in {
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
         val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
@@ -515,7 +497,6 @@ class DesConnectorISpec
       }
 
       "throw an error when the upstream returns a 404" in {
-
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
         val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
@@ -536,7 +517,6 @@ class DesConnectorISpec
       }
 
       "throw an error when the upstream returns a 400" in {
-
         val empRef = "123AB12345"
         val empRefWithSlash = "123/AB12345"
         val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
@@ -558,7 +538,6 @@ class DesConnectorISpec
     }
 
     "throw an error when the upstream neither a 400 nor a 404" in {
-
       val empRef = "123AB12345"
       val empRefWithSlash = "123/AB12345"
       val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
@@ -581,7 +560,6 @@ class DesConnectorISpec
 
   "have Employment Check endpoint and" must {
     "throw a bad request error when a 400 is thrown" in {
-
       val empRef = "123AB12345"
       val nino = "AA122345A"
       val localDate = LocalDate.of(2016, 11, 3)
@@ -605,7 +583,6 @@ class DesConnectorISpec
     }
 
     "return Unknown when a 404 is thrown" in {
-
       val empRef = "123AB12345"
       val nino = "AA122345A"
       val localDate = LocalDate.of(2016, 11, 3)
@@ -629,7 +606,6 @@ class DesConnectorISpec
     }
 
     "throw an error when neither 400 nor 404 is thrown" in {
-
       val empRef = "123AB12345"
       val nino = "AA122345A"
       val localDate = LocalDate.of(2016, 11, 3)
@@ -654,7 +630,6 @@ class DesConnectorISpec
   }
 
   "supply default dates when not specified" in {
-
     val empRef = "123AB12345"
     val empRefWithSlash = "123/AB12345"
     val localDate = LocalDate.of(2016, 4, 22)
@@ -679,9 +654,7 @@ class DesConnectorISpec
   }
 
   "with valid and invalid json" must {
-
     "convert invalid empty json to valid response" in {
-
       val empRef = "123AB12345"
       val empRefWithSlash = "123/AB12345"
       val localDate = LocalDate.of(2016, 4, 22)
@@ -706,7 +679,6 @@ class DesConnectorISpec
     }
 
     "convert invalid bad date-time json values to valid date times" in {
-
       val empRef = "123AB12345"
       val empRefWithSlash = "123/AB12345"
       val dateFrom = LocalDate.of(2016, 7, 1)
@@ -762,7 +734,6 @@ class DesConnectorISpec
     }
 
     "convert valid json values to valid objects" in {
-
       val empRef = "123AB12345"
       val dateFrom = LocalDate.of(2016, 7, 1)
       val dateTo = LocalDate.of(2016, 7, 15)

@@ -30,7 +30,7 @@ import java.util.UUID
 trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach {
   this: Suite =>
 
-  protected val server: WireMockServer = new WireMockServer(wireMockConfig.usingFilesUnderDirectory(stubbedConfigPath).port(PortFinder.findFreePort(portRange = 6001 to 7000)))
+  protected lazy val server: WireMockServer = new WireMockServer(wireMockConfig.usingFilesUnderDirectory(stubbedConfigPath).port(PortFinder.findFreePort(portRange = 6001 to 7000)))
 
   override def beforeAll(): Unit = {
     server.start()

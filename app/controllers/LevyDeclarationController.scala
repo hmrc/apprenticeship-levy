@@ -25,7 +25,7 @@ import connectors.DesConnector
 import controllers.ErrorResponses.ErrorNotFound
 import controllers.auth.AuthAction
 import models.api.{EmploymentReference, LevyDeclaration, LevyDeclarations}
-import models.des._
+import models.des.*
 import utils.{ClosedDateRange, DateRange, ErrorResponseUtils}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 

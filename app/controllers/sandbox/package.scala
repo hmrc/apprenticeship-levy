@@ -18,7 +18,7 @@ package controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.mvc.Results._
+import play.api.mvc.Results.*
 import uk.gov.hmrc.play.bootstrap.http.ErrorResponse
 
 package object sandbox {

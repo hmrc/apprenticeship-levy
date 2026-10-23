@@ -17,11 +17,11 @@
 package models.des
 
 import play.api.Logging
-import play.api.libs.functional.syntax._
-import play.api.libs.json.Reads._
-import play.api.libs.json._
-import models.api._
-import models.des.FinalSubmission._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.Reads.*
+import play.api.libs.json.*
+import models.api.*
+import models.des.FinalSubmission.*
 import utils.ClosedDateRange
 
 import java.time.format.DateTimeFormatter

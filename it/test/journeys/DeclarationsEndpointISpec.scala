@@ -20,27 +20,19 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.http.Fault
 import models.api.{LevyDeclaration, PayrollPeriod}
 import org.scalacheck.Gen
-import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.Application
 import play.api.http.Status.*
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsJson, contentAsString, contentType, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
 import util.StubbingData.*
-import util.WireMockHelper
+import util.ISpecBase
 import views.html.helper
 
 import java.time.{LocalDate, LocalDateTime}
 
 class DeclarationsEndpointISpec
-  extends AnyWordSpec
-    with GuiceOneAppPerSuite
-    with WireMockHelper
-    with ScalaCheckPropertyChecks {
+  extends ISpecBase {
 
   val sixteenToSeventeen = "16-17"
 
@@ -50,25 +42,17 @@ class DeclarationsEndpointISpec
   stubGetServerWithId(aResponse().withStatus(OK), invalidReadURL1, auuid4)
   stubGetServerWithId(aResponse().withStatus(OK), validRead, auuid5)
 
-  override def fakeApplication(): Application =
-    GuiceApplicationBuilder()
-      .configure(wireMockConfiguration(server.port()))
-      .build()
-
   "Declarations Endpoint" when {
     val contexts = Seq("/sandbox", "")
     contexts.foreach { context =>
       s"calling $context/epaye/<empref>/declarations with valid paramters" must {
         "return levy declarations" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
@@ -79,15 +63,12 @@ class DeclarationsEndpointISpec
         }
 
         "return levy declarations where only fromDate specified" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB12342/declarations?fromDate=2016-10-12")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
@@ -97,15 +78,12 @@ class DeclarationsEndpointISpec
         }
 
         "return levy declarations where only toDate specified" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB12343/declarations?toDate=2016-02-21")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
@@ -115,15 +93,12 @@ class DeclarationsEndpointISpec
         }
 
         "return levy declarations where fromDate and toDate are specified" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB12344/declarations?fromDate=2016-05-19&toDate=2016-05-21")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
@@ -134,15 +109,12 @@ class DeclarationsEndpointISpec
 
 
         "handle no payment period" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
@@ -161,15 +133,12 @@ class DeclarationsEndpointISpec
         }
 
         "handle inactive period" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
@@ -188,15 +157,12 @@ class DeclarationsEndpointISpec
         }
 
         "handle ceased trading" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
@@ -214,15 +180,12 @@ class DeclarationsEndpointISpec
         }
 
         "handle levies" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB12341/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
@@ -271,15 +234,12 @@ class DeclarationsEndpointISpec
         }
 
         "handle bad timestamps returned from DES in levies" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB88888/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
 
           val json = contentAsJson(result)
@@ -301,7 +261,6 @@ class DeclarationsEndpointISpec
       s"calling $context/epaye/<empref>/declarations with invalid paramters" must {
         Seq("fromDate", "toDate").foreach { param =>
           s"return 400 when $param param is invalid" in {
-            // set up
             val dates = for {str <- Gen.listOf(Gen.alphaNumChar)} yield str.mkString
 
             forAll(dates) { (date: String) =>
@@ -312,11 +271,9 @@ class DeclarationsEndpointISpec
                 }
                 val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders()*)
 
-                // test
                 val result = route(app, request).get
                 val httpStatus = status(result)
 
-                // check
                 httpStatus mustBe BAD_REQUEST
                 contentType(result) mustBe Some("application/json")
                 contentAsString(result) must include (""" date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later.""")
@@ -326,7 +283,6 @@ class DeclarationsEndpointISpec
         }
 
         "return 400 when empref is unknown" in {
-          // set up
           val emprefs = for {empref <- genEmpref} yield empref
 
           forAll(emprefs) { (empref: String) =>
@@ -335,11 +291,9 @@ class DeclarationsEndpointISpec
                 FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/declarations")
                   .withHeaders(standardDesHeaders()*)
 
-              // test
               val result = route(app, request).get
               val httpStatus = status(result)
 
-              // check
               httpStatus mustBe BAD_REQUEST
               contentType(result) mustBe Some("application/json")
               contentAsString(result) must include("""is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."""")
@@ -348,74 +302,59 @@ class DeclarationsEndpointISpec
         }
 
         "return 400 when DES returns 400" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/400%2FAB12345/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe BAD_REQUEST
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
         }
 
         "return http status 401 when DES returns 401" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/401%2FAB12345/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result)
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
         }
 
         "return http status 403 when DES returns 403" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/403%2FAB12345/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe FORBIDDEN
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
         }
 
         "return 404 when DES returns 404" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/404%2FAB12345/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe NOT_FOUND
         }
 
         "return 400 when to date is before from date" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB12345/declarations?fromDate=2015-06-03&toDate=2015-03-30")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
           val httpStatus = status(result)
 
-          // check
           httpStatus mustBe BAD_REQUEST
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"BAD_REQUEST","message":"From date was after to date"}""")
@@ -426,60 +365,48 @@ class DeclarationsEndpointISpec
         "\nbut not as per specification dated 07/11/2016" must {
 
         "return http status 404 when empty json returned" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/999%2FAB999999/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe NOT_FOUND
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
         }
 
         "return http status 500 when error json object returned on Http Status 200" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/999%2FAB999998/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe INTERNAL_SERVER_ERROR
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES backend error"}""")
         }
 
         "return http status 404 when just empref field in Json object is returned" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/999%2FAB999997/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe NOT_FOUND
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")
         }
 
         "return eps if using old fieldname of 'declarations'" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/999%2FAB999996/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe OK
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse(
@@ -500,88 +427,70 @@ class DeclarationsEndpointISpec
       s"calling $context/epaye/<empref>/declarations when backend systems failing" must {
 
         "return 503 when connection closed" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/999%2FAB12345/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe SERVICE_UNAVAILABLE
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
         }
 
         "return http status 503 when empty response" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/888%2FAB12345/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe SERVICE_UNAVAILABLE
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
         }
 
         "should return http status 408 when timed out" in {
-          // set up
           val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/declarations").withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe 408
           contentType(result) mustBe Some("application/json")
           contentAsString(result) must include("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error""")
         }
 
         "return http status 503 when DES HTTP 500" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/500%2FAB12345/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe SERVICE_UNAVAILABLE
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
         }
 
         "return http status 503 when DES HTTP 503" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/503%2FAB12345/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe SERVICE_UNAVAILABLE
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
         }
 
         "return http status 404 when empty json returned" in {
-          // set up
           val request =
             FakeRequest(GET, s"$context/epaye/123%2FAB99999/declarations")
               .withHeaders(standardDesHeaders()*)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe NOT_FOUND
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse("""{"code":"NOT_FOUND","message":"Resource was not found"}""")

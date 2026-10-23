@@ -16,12 +16,12 @@
 
 package models.des
 
-import models.api._
-import utils.{AppLevyUnitSpec, ClosedDateRange}
+import models.api.*
+import utils.{SpecBase, ClosedDateRange}
 
 import java.time.{LocalDate, LocalDateTime}
 
-class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
+class EmployerPaymentSummarySpec extends SpecBase {
 
   val APRIL = 4
   val MAY = 5

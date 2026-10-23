@@ -16,34 +16,28 @@
 
 package models.des
 
-import play.api.libs.json._
-import utils.AppLevyUnitSpec
+import play.api.libs.json.*
+import utils.SpecBase
 
 import java.time.LocalDate
 
-class FractionCalculationDateSpec extends AppLevyUnitSpec {
+class FractionCalculationDateSpec extends SpecBase {
   "FractionCalculationDate" must {
     "With Json" must {
       "read" in {
-        // set up
         val jsonStr = """{"date": "2016-11-19"}"""
         val json = Json.parse(jsonStr)
 
-        // test
          val fractionCalculationDateOption : Option[FractionCalculationDate] = json.validate[FractionCalculationDate].fold(invalid = { _ => None }, valid = { fcd => Some(fcd) })
 
-        // check
         fractionCalculationDateOption mustBe Some(FractionCalculationDate(LocalDate.of(2016,11,19)))
       }
 
       "write" in {
-        // set up
         val obj = FractionCalculationDate(LocalDate.of(2015,3,6))
 
-        // test
         val result = Json.toJson(obj)
 
-        // check
         val date = result \ "date"
         date.as[String] mustBe "2015-03-06"
       }

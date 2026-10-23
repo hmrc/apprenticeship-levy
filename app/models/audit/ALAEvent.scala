@@ -17,7 +17,7 @@
 package models.audit
 
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.AuditExtensions._
+import uk.gov.hmrc.play.audit.AuditExtensions.*
 import uk.gov.hmrc.play.audit.model.DataEvent
 
 case class ALAEvent(name: String, empref: String = "", nino: String = "", dateRange: String = "") {

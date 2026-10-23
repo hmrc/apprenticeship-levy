@@ -16,8 +16,10 @@
 
 package utils
 
-import org.scalatest.wordspec.AnyWordSpecLike
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.OptionValues
+import org.scalatestplus.mockito.MockitoSugar
 
-trait BaseSpec extends AnyWordSpecLike with NinoGenerator with BeforeAndAfterEach {
-}
+trait SpecBase extends AnyWordSpec with Matchers with MockitoSugar with OptionValues with ScalaFutures with IntegrationPatience

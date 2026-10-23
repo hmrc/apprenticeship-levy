@@ -18,24 +18,16 @@ package journeys
 
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import org.scalatest.matchers.must.Matchers.*
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.Application
 import play.api.http.Status.*
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsJson, contentAsString, contentType, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
 import util.StubbingData.*
-import util.WireMockHelper
+import util.ISpecBase
 
 class EmploymentRefEndpointISpec
-  extends AnyWordSpec
-    with GuiceOneAppPerSuite
-    with WireMockHelper
-    with ScalaCheckPropertyChecks {
+  extends ISpecBase {
 
   def stubAuth: StubMapping = {
     val response =
@@ -59,11 +51,6 @@ class EmploymentRefEndpointISpec
 
     stubPostServerWithId(aResponse().withStatus(OK).withBody(response), "/auth/authorise", auuid6)
   }
-
-  override def fakeApplication(): Application =
-    GuiceApplicationBuilder()
-      .configure(wireMockConfiguration(server.port()))
-      .build()
 
   "Empref Endpoint" when {
     Seq("/sandbox", "").foreach { context =>

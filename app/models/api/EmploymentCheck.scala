@@ -16,7 +16,7 @@
 
 package models.api
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import java.time.LocalDate
 
 case class EmploymentCheck(empref: String, nino: String, fromDate: LocalDate, toDate:LocalDate, employed: Boolean)

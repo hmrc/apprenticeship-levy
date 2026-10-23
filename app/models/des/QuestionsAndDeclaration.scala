@@ -16,7 +16,7 @@
 
 package models.des
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class QuestionsAndDeclaration(freeOfTaxPaymentsMadeToEmployee: Boolean,
                                    expensesVouchersOrBenefitsFromOthers: Boolean,

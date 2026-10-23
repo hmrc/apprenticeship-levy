@@ -16,8 +16,8 @@
 
 package models.des
 
-import play.api.libs.json.Reads._
-import play.api.libs.json._
+import play.api.libs.json.Reads.*
+import play.api.libs.json.*
 
 sealed trait EmploymentCheckStatus
 
