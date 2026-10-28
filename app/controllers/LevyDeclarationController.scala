@@ -16,7 +16,6 @@
 
 package controllers
 
-import org.slf4j.MDC
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Result}
@@ -70,7 +69,7 @@ trait LevyDeclarationController extends Logging {
         * if it wants to return a 404 if all calls to `charges` return no results.
          */
         case t: NotFoundException =>
-          logger.warn(s"Client ${MDC.get("X-Client-ID")} DES error: ${t.getMessage}, API returning empty sequence")
+          logger.warn(s"DES error: ${t.getMessage}, API returning empty sequence")
           Nil
       }
   }
@@ -87,7 +86,7 @@ trait LevyDeclarationController extends Logging {
       Ok(Json.toJson(LevyDeclarations(empref, ds)))
     }
     else {
-      logger.warn(s"Client ${MDC.get("X-Client-ID")} DES returned empty list of declarations: API returning not found")
+      logger.warn("DES returned empty list of declarations: API returning not found")
       ErrorResponseUtils.errorResponseToResult(ErrorNotFound)
     }
   }
