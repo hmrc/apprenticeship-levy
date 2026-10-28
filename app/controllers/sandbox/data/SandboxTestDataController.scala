@@ -78,7 +78,7 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
             case _ => updatedFile
           }
         case _ =>
-          logger.debug("Could not find an empref to replace in: $file")
+          logger.debug(s"Could not find an empref to replace in: $file")
           file
       }
     } else {

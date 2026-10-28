@@ -84,7 +84,7 @@ trait EmployerDetailsEndpoint extends Logging {
                   }
               }.recoverWith {
                 case e: Throwable =>
-                  logger.error(s"getDetails call failed: ${e.getMessage}")
+                  logger.error(s"DES call failed: ${e.getMessage}")
                   Future.successful(details)
               }
           }.getOrElse(Future.successful(details))
