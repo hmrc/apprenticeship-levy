@@ -17,7 +17,6 @@
 package controllers.auth
 
 import com.google.inject.{ImplementedBy, Inject}
-import org.slf4j.MDC
 import play.api.Logging
 import play.api.http.Status._
 import play.api.mvc.Results._
@@ -125,11 +124,7 @@ private object EnrolmentHelper {
 
 private object ErrorHandler extends Logging {
   private def logWarningAboutException(e: Throwable, code: Int, description: String): Unit = {
-    val message = s"Client ${
-      MDC.get("X-Client-ID")
-    } API error: ${
-      e.getMessage
-    }, API returning $description $code"
+    val message = s"API error: ${e.getMessage}, API returning $description $code"
     logger.warn(message)
   }
 
@@ -148,11 +143,7 @@ private object ErrorHandler extends Logging {
         logWarningAboutException(e, SERVICE_UNAVAILABLE, "ServiceUnavailable with code")
         ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(SERVICE_UNAVAILABLE, "IO", "Auth connection error")))
       case e: GatewayTimeoutException =>
-        val message = s"Client ${
-          MDC.get("X-Client-ID")
-        } API error: ${
-          e.getMessage
-        }, API returning RequestTimeout with code $GATEWAY_TIMEOUT"
+        val message = s"API error: ${e.getMessage}, API returning RequestTimeout with code $GATEWAY_TIMEOUT"
         logger.error(message, e)
         RequestTimeout(ErrorResponseUtils.convertToJson(AuthError(REQUEST_TIMEOUT, "GATEWAY_TIMEOUT", "Auth not responding error")))
       case e: NotFoundException =>
@@ -160,15 +151,7 @@ private object ErrorHandler extends Logging {
         NotFound(ErrorResponseUtils.convertToJson(AuthError(NOT_FOUND, "NOT_FOUND", "Auth endpoint not found")))
       case e: UpstreamErrorResponse =>
         val apiMessage = if (e.statusCode >= BAD_REQUEST && e.statusCode < INTERNAL_SERVER_ERROR) "API returning code" else "API returning ServiceUnavailable with code"
-        val message = s"Client ${
-          MDC.get("X-Client-ID")
-        } API error: ${
-          e.getMessage
-        } with ${
-          e.statusCode
-        }, $apiMessage ${
-          e.reportAs
-        }"
+        val message = s"API error: ${e.getMessage} with ${e.statusCode}, $apiMessage ${e.reportAs}"
         logger.warn(message)
         e.statusCode match {
           case FORBIDDEN => Forbidden(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "FORBIDDEN", "Auth forbidden error")))
@@ -183,11 +166,7 @@ private object ErrorHandler extends Logging {
         }
 
       case e: Throwable =>
-        val message = s"Client ${
-          MDC.get("X-Client-ID")
-        } API error: ${
-          e.getMessage
-        }, API returning code $INTERNAL_SERVER_ERROR"
+        val message = s"API error: ${e.getMessage}, API returning code $INTERNAL_SERVER_ERROR"
         logger.error(message, e)
         InternalServerError(ErrorResponseUtils.convertToJson(AuthError(INTERNAL_SERVER_ERROR, "API", "API or Auth internal server error")))
     }
