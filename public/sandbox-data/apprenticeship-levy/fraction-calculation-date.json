@@ -1,4 +1,7 @@
 {
-  "status": 200,
-  "jsonBody": { "date": "2017-01-17" }
+  "status": 429,
+  "jsonBody": {
+    "code": "DES_ERROR_TOO_MANY_REQUESTS",
+    "message":"429 (Too Many Requests)"
+  }
 }
