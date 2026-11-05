@@ -132,7 +132,7 @@ trait EmploymentCheckEndpoint {
   def check(empref: String, nino: String, dateRange: ClosedDateRange)
            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmploymentCheckStatus] = {
     val dateParams = dateRange.toParams
-    val useHip = ip.useHipFor5967
+    val useHip = ip.useHipFor6017
     val url = s"${ipBaseUrl(useHip)}/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?$dateParams"
 
     // $COVERAGE-OFF$
@@ -224,6 +224,7 @@ trait LevyDeclarationsEndpoint {
       createIpHeaders(useHip)(ip.httpClient.get(url"$url"))
         .execute[Either[UpstreamErrorResponse, HttpResponse]] map {
         case Right(response) =>
+          
           marshall(empref, response.body).getOrElse {
             logger.error(
               s"""|${ipPlatform(useHip)} url $url
@@ -245,7 +246,7 @@ trait LevyDeclarationsEndpoint {
 
   }
 
-  protected[connectors] def marshall(empref: String, jsonStr: String): Option[EmployerPaymentsSummary] =
+  protected[connectors] def marshall(empref: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
     Seq(
       "EmployerPaymentsSummary",
       "EmployerPaymentsSummaryVersion0",
@@ -261,6 +262,7 @@ trait LevyDeclarationsEndpoint {
           else
             eps.copy(empref = convertEmpref(eps.empref))
       )
+  }
 
   private def toEmployerPaymentsSummary(className: String, jsonStr: String): Option[EmployerPaymentsSummary] = {
     def toEPSResponse[A <: EPSResponse](jsResult: JsResult[A]): Option[EPSResponse] =
@@ -368,7 +370,7 @@ trait IntegrationPlatformConnector extends FractionsEndpoint
       .setHeader("X-Transmitting-System" -> "HIP")
 
   def useHipFor5965: Boolean = appContext.api5965
-  def useHipFor5967: Boolean = appContext.api5967
+  def useHipFor6017: Boolean = appContext.api6017
 
   def ipBaseUrl(useHip: Boolean): String = if (useHip) hipBaseUrl else baseUrl
 

@@ -105,7 +105,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
   def hipUrl: String = getURL("hip")
 
   def api5965: Boolean = maybeBoolean("featureFlags.hip.api-5965").getOrElse(false)
-  def api5967: Boolean = maybeBoolean("featureFlags.hip.api-5967").getOrElse(false)
+  def api6017: Boolean = maybeBoolean("featureFlags.hip.api-6017").getOrElse(false)
   
   def clientId: String = maybeString("microservice.services.hip.clientId").getOrElse("")
   def clientSecret: String = maybeString("microservice.services.hip.clientSecret").getOrElse("")
