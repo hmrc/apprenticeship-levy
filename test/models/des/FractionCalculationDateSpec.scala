@@ -27,18 +27,19 @@ class FractionCalculationDateSpec extends AppLevyUnitSpec {
       "read" in {
         // set up
         val jsonStr = """{"date": "2016-11-19"}"""
-        val json = Json.parse(jsonStr)
+        val json    = Json.parse(jsonStr)
 
         // test
-         val fractionCalculationDateOption : Option[FractionCalculationDate] = json.validate[FractionCalculationDate].fold(invalid = { _ => None }, valid = { fcd => Some(fcd) })
+        val fractionCalculationDateOption: Option[FractionCalculationDate] =
+          json.validate[FractionCalculationDate].fold(invalid = { _ => None }, valid = { fcd => Some(fcd) })
 
         // check
-        fractionCalculationDateOption mustBe Some(FractionCalculationDate(LocalDate.of(2016,11,19)))
+        fractionCalculationDateOption mustBe Some(FractionCalculationDate(LocalDate.of(2016, 11, 19)))
       }
 
       "write" in {
         // set up
-        val obj = FractionCalculationDate(LocalDate.of(2015,3,6))
+        val obj = FractionCalculationDate(LocalDate.of(2015, 3, 6))
 
         // test
         val result = Json.toJson(obj)

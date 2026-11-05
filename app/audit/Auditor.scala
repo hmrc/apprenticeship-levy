@@ -29,27 +29,23 @@ import scala.util.{Failure, Success}
 trait Auditor extends Logging {
 
   protected val exceptionToMessage: PartialFunction[Throwable, Int] = {
-    case _: BadRequestException => BAD_REQUEST
-    case _: IOException => NGINX_ERROR_STATUS
+    case _: BadRequestException     => BAD_REQUEST
+    case _: IOException             => NGINX_ERROR_STATUS
     case _: GatewayTimeoutException => REQUEST_TIMEOUT
-    case _: NotFoundException => NOT_FOUND
-    case e: UpstreamErrorResponse => e.statusCode
-    case _ => INTERNAL_SERVER_ERROR
+    case _: NotFoundException       => NOT_FOUND
+    case e: UpstreamErrorResponse   => e.statusCode
+    case _                          => INTERNAL_SERVER_ERROR
   }
-  private val NGINX_ERROR_STATUS: Int = 444
+  private val NGINX_ERROR_STATUS: Int                               = 444
 
-  def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] = {
+  def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] =
     block andThen {
       case Success(_) => auditConnector.map(_.sendEvent(event.toDataEvent(200)))
-      case Failure(t) => {
+      case Failure(t) =>
         val httpStatus = exceptionToMessage(t)
         auditConnector.map(_.sendEvent(event.toDataEvent(httpStatus, t)))
-        logger.warn(s"Failed to '${event.name}' Server ${httpStatus}: ${t.getMessage()}")
-      }
+        logger.warn(s"Failed to '${event.name}' Server $httpStatus: ${t.getMessage()}")
     }
-  }
 
   protected def auditConnector: Option[AuditConnector]
 }
-
-

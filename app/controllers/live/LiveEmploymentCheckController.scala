@@ -24,9 +24,11 @@ import controllers.EmploymentCheckController
 import controllers.auth.PrivilegedAuthActionImpl
 import scala.concurrent.ExecutionContext
 
-class LiveEmploymentCheckController  @Inject()(val desConnector: LiveDesConnector,
-                                               val authAction: PrivilegedAuthActionImpl,
-                                               val executionContext: ExecutionContext,
-                                               val parser: BodyParsers.Default,
-                                               val appContext: AppContext,
-                                               val controllerComponents: ControllerComponents) extends EmploymentCheckController
+class LiveEmploymentCheckController @Inject() (
+  val desConnector: LiveDesConnector,
+  val authAction: PrivilegedAuthActionImpl,
+  val executionContext: ExecutionContext,
+  val parser: BodyParsers.Default,
+  val appContext: AppContext,
+  val controllerComponents: ControllerComponents
+) extends EmploymentCheckController

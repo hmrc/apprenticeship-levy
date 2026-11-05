@@ -35,20 +35,15 @@ import java.io.IOException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthActionSpec
-  extends AppLevyUnitSpec
-    with GuiceOneAppPerSuite
-    with RetrievalOps
-    with BeforeAndAfterEach {
+class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with RetrievalOps with BeforeAndAfterEach {
 
-  val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val mockAuthConnector: AuthConnector     = mock[AuthConnector]
   val stubComponents: ControllerComponents = stubControllerComponents()
-  val defaultParser = new Default(stubComponents.parsers)
+  val defaultParser                        = new Default(stubComponents.parsers)
 
   class Harness(authAction: AuthAction) extends BackendBaseController {
-    def onPageLoad(): Action[AnyContent] = authAction {
-      request =>
-        Ok(s"PAYE: ${request.empRef.getOrElse("None found")}")
+    def onPageLoad(): Action[AnyContent] = authAction { request =>
+      Ok(s"PAYE: ${request.empRef.getOrElse("None found")}")
     }
 
     override def controllerComponents: ControllerComponents = stubComponents
@@ -90,7 +85,7 @@ class AuthActionSpec
         .thenReturn(Future.failed(new SessionRecordNotFound))
       val authAction = new AuthActionImpl(mockAuthConnector, new Default(stubComponents.parsers))
       val controller = new Harness(authAction)
-      val result = controller.onPageLoad()(FakeRequest("", ""))
+      val result     = controller.onPageLoad()(FakeRequest("", ""))
       status(result) mustBe UNAUTHORIZED
     }
   }
@@ -102,7 +97,7 @@ class AuthActionSpec
           .thenReturn(Future.failed(error))
         val authAction = new AuthActionImpl(mockAuthConnector, new Default(stubComponents.parsers))
         val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(FakeRequest("", ""))
+        val result     = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe statusCode
       }
 
@@ -111,11 +106,27 @@ class AuthActionSpec
       ("IOException", new IOException, SERVICE_UNAVAILABLE),
       ("GatewayTimeoutException", new GatewayTimeoutException("timeout"), REQUEST_TIMEOUT),
       ("NotFoundException", new NotFoundException("not found"), NOT_FOUND),
-      ("UpstreamErrorResponse with SERVICE_UNAVAILABLE", UpstreamErrorResponse("", SERVICE_UNAVAILABLE, SERVICE_UNAVAILABLE), SERVICE_UNAVAILABLE),
+      (
+        "UpstreamErrorResponse with SERVICE_UNAVAILABLE",
+        UpstreamErrorResponse("", SERVICE_UNAVAILABLE, SERVICE_UNAVAILABLE),
+        SERVICE_UNAVAILABLE
+      ),
       ("UpstreamErrorResponse with FORBIDDEN", UpstreamErrorResponse("", FORBIDDEN, FORBIDDEN), FORBIDDEN),
-      ("UpstreamErrorResponse with TOO_MANY_REQUESTS", UpstreamErrorResponse("", TOO_MANY_REQUESTS, TOO_MANY_REQUESTS), TOO_MANY_REQUESTS),
-      ("UpstreamErrorResponse with TIMEOUT", UpstreamErrorResponse("", REQUEST_TIMEOUT, REQUEST_TIMEOUT), REQUEST_TIMEOUT),
-      ("UpstreamErrorResponse with SERVICE_UNAVAILABLE due to different 4xx error", UpstreamErrorResponse("", BAD_REQUEST, BAD_REQUEST), SERVICE_UNAVAILABLE),
+      (
+        "UpstreamErrorResponse with TOO_MANY_REQUESTS",
+        UpstreamErrorResponse("", TOO_MANY_REQUESTS, TOO_MANY_REQUESTS),
+        TOO_MANY_REQUESTS
+      ),
+      (
+        "UpstreamErrorResponse with TIMEOUT",
+        UpstreamErrorResponse("", REQUEST_TIMEOUT, REQUEST_TIMEOUT),
+        REQUEST_TIMEOUT
+      ),
+      (
+        "UpstreamErrorResponse with SERVICE_UNAVAILABLE due to different 4xx error",
+        UpstreamErrorResponse("", BAD_REQUEST, BAD_REQUEST),
+        SERVICE_UNAVAILABLE
+      ),
       ("An unknown exception", new MethodNotAllowedException("Method Not Allowed"), INTERNAL_SERVER_ERROR)
     )
 
@@ -125,11 +136,18 @@ class AuthActionSpec
   "A user that is logged in with a PAYE enrolment" must {
     "be allowed access" in {
 
-      val enrolments = Enrolments(Set(
-        Enrolment("IR-PAYE", Seq(
-          EnrolmentIdentifier("TaxOfficeNumber", "someOffice"),
-          EnrolmentIdentifier("TaxOfficeReference", "someRef")),
-          "")))
+      val enrolments = Enrolments(
+        Set(
+          Enrolment(
+            "IR-PAYE",
+            Seq(
+              EnrolmentIdentifier("TaxOfficeNumber", "someOffice"),
+              EnrolmentIdentifier("TaxOfficeReference", "someRef")
+            ),
+            ""
+          )
+        )
+      )
 
       val retrievalResult: Future[Enrolments] =
         Future.successful(enrolments)
@@ -149,10 +167,7 @@ class AuthActionSpec
   "A user that is logged in without a PAYE enrolment" must {
     "be allowed access" in {
 
-      val enrolments = Enrolments(Set(
-        Enrolment("IR-SA", Seq(
-          EnrolmentIdentifier("Utr", "someUtr")),
-          "")))
+      val enrolments = Enrolments(Set(Enrolment("IR-SA", Seq(EnrolmentIdentifier("Utr", "someUtr")), "")))
 
       val retrievalResult: Future[Enrolments] =
         Future.successful(enrolments)
@@ -171,7 +186,7 @@ class AuthActionSpec
 
   "A user that is logged in with an empty PAYE enrolment" must {
     "be allowed access" in {
-      val enrolments = Enrolments(Set(Enrolment("IR-PAYE", Nil, "")))
+      val enrolments                          = Enrolments(Set(Enrolment("IR-PAYE", Nil, "")))
       val retrievalResult: Future[Enrolments] =
         Future.successful(enrolments)
 
@@ -204,7 +219,8 @@ class AuthActionSpec
 
   "AllProviderAuthAction" must {
     "return an instance of auth action" in {
-      new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference(""))
+      new AllProviderAuthActionImpl(mockAuthConnector, defaultParser)
+        .apply(EmploymentReference(""))
         .isInstanceOf[AuthAction] mustBe true
     }
 
@@ -225,7 +241,8 @@ class AuthActionSpec
         when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(using any(), any()))
           .thenReturn(Future.successful(ggRetrieval))
 
-        val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
+        val authAction =
+          new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())
@@ -239,7 +256,8 @@ class AuthActionSpec
         when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(using any(), any()))
           .thenReturn(Future.successful(ggRetrieval))
 
-        val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123%2FABCDE"))
+        val authAction =
+          new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123%2FABCDE"))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())
@@ -250,7 +268,8 @@ class AuthActionSpec
         when(mockAuthConnector.authorise[Enrolments ~ LegacyCredentials](any(), any())(using any(), any()))
           .thenReturn(Future.successful(emptyGGRetrieval))
 
-        val authAction = new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
+        val authAction =
+          new AllProviderAuthActionImpl(mockAuthConnector, defaultParser).apply(EmploymentReference("123/ABCDEF"))
         val controller = new Harness(authAction)
 
         val result = controller.onPageLoad()(FakeRequest())

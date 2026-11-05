@@ -35,9 +35,12 @@ import scala.io.Source
 import scala.util.Try
 
 @Singleton
-class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
-                                          appContext: AppContext,
-                                          cc: ControllerComponents) extends BackendController(cc) with Utf8MimeTypes {
+class SandboxTestDataController @Inject() (
+  jsonDataTransformer: DataTransformer,
+  appContext: AppContext,
+  cc: ControllerComponents
+) extends BackendController(cc)
+    with Utf8MimeTypes {
 
   private val logger = Logger(this.getClass)
 
@@ -51,14 +54,14 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
       .getOrElse(false)
 
   private[sandbox] def getFileName(file: String): String =
-    if(returnDummyResponse) {
+    if (returnDummyResponse) {
       val empRefRegex = "^.*employers?\\/([a-zA-Z0-9]{3}\\/.*?|.*?)\\/.*".r
       file match {
         case empRefRegex(empRef) =>
           logger.debug(s"Replacing empref: $empRef in requested file: $file")
           val ninoRegex = "^.*\\/employed\\/(.{8,9}).*?$".r
 
-          val emprefBreak = if(empRef.contains("/")) "/" else ""
+          val emprefBreak       = if (empRef.contains("/")) "/" else ""
           val newEmpRef: String =
             empRef.take(3) match {
               case "105" => s"840${emprefBreak}MODES17"
@@ -75,9 +78,9 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
               val newNino = "SC111111A"
 
               updatedFile.replace(nino, newNino)
-            case _ => updatedFile
+            case _               => updatedFile
           }
-        case _ =>
+        case _                   =>
           logger.debug(s"Could not find an empref to replace in: $file")
           file
       }
@@ -108,39 +111,54 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
   }
 
   def serve(req: String) = Action.async { implicit request =>
-    MDC.put("X-Client-ID",request.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller"))
+    MDC.put("X-Client-ID", request.headers.toSimpleMap.getOrElse("X-Client-ID", "Unknown caller"))
 
     // $COVERAGE-OFF$
     logger.debug(s"Request was received for path $req")
     // $COVERAGE-ON$
-    val path = URLDecoder.decode(req, "UTF-8")
+    val path   = URLDecoder.decode(req, "UTF-8")
     val Empref = "(.*/)([a-zA-Z0-9]{3}/[a-zA-Z0-9]+)(/.*)".r
     request.headers.get("OVERRIDE_EMPREF") match {
-      case Some(empref) => {
+      case Some(empref) =>
         path match {
-          case Empref(path1, _, path2) => {
+          case Empref(path1, _, path2) =>
             val newpath = s"$path1$empref$path2"
             logger.info(s"Resource path overridden by OVERRIDE_EMPREF header. Now looking for $newpath")
             readJson(SANDBOX_DATA_DIR, newpath)
-            .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), newpath))
-            .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request $req with OVERRIDE_EMPREF header of $empref but no file '${newpath}' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
-          }
-          case _ => {
+              .orElse(readJson(System.getProperty("extra.sandbox-data.dir", ""), newpath))
+              .getOrElse(
+                Future.successful(
+                  NotFound(
+                    s"""{"reason": "Received request $req with OVERRIDE_EMPREF header of $empref but no file '$newpath' found in '$SANDBOX_DATA_DIR' or '${System
+                        .getProperty("extra.sandbox-data.dir", "")}'"}"""
+                  )
+                )
+              )
+          case _                       =>
             logger.warn(s"Resource path overridden by OVERRIDE_EMPREF header but unable to get new empref from $path.")
-            Future.successful(NotFound(s"""{"reason": "Received request $req but no file '$path' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}"""))
-          }
+            Future.successful(
+              NotFound(
+                s"""{"reason": "Received request $req but no file '$path' found in '$SANDBOX_DATA_DIR' or '${System
+                    .getProperty("extra.sandbox-data.dir", "")}'"}"""
+              )
+            )
         }
-      }
-      case _ => {
+      case _            =>
         if (path.startsWith("authorise/read")) {
           Future.successful(Ok(""))
         } else {
           logger.info(s"""No override header found. Headers: ${request.headers.toSimpleMap.mkString(" ")}""")
           readJson(SANDBOX_DATA_DIR, path)
-            .orElse(readJson(System.getProperty("extra.sandbox-data.dir",""), path))
-            .getOrElse(Future.successful(NotFound(s"""{"reason": "Received request $req but no file '$path' found in '${SANDBOX_DATA_DIR}' or '${System.getProperty("extra.sandbox-data.dir","")}'"}""")))
+            .orElse(readJson(System.getProperty("extra.sandbox-data.dir", ""), path))
+            .getOrElse(
+              Future.successful(
+                NotFound(
+                  s"""{"reason": "Received request $req but no file '$path' found in '$SANDBOX_DATA_DIR' or '${System
+                      .getProperty("extra.sandbox-data.dir", "")}'"}"""
+                )
+              )
+            )
         }
-      }
     }
   }
 
@@ -149,7 +167,7 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
     // $COVERAGE-OFF$
     logger.debug(s"Looking for file $filename")
     // $COVERAGE-ON$
-    getData(filename).map(json=>filterByDate(path, json))
+    getData(filename).map(json => filterByDate(path, json))
   }
 
   protected def getData(filename: String): Option[JsValue] = retrieve(filename).flatMap { is =>
@@ -175,15 +193,15 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
 
   protected def toInstant(json: JsLookupResult): Instant = {
     val zone = ZoneId.systemDefault()
-    Try(json.as[LocalDate].atStartOfDay(zone).toInstant()).recover {
-      case _: Throwable => LocalDateTime.parse(json.as[String]).toInstant(ZoneOffset.UTC)
+    Try(json.as[LocalDate].atStartOfDay(zone).toInstant()).recover { case _: Throwable =>
+      LocalDateTime.parse(json.as[String]).toInstant(ZoneOffset.UTC)
     }.get
   }
 
   protected def toInstant(json: JsLookupResult, days: Int): Instant = {
     val zone = ZoneId.systemDefault()
-    Try(json.as[LocalDate].atStartOfDay(zone).toInstant()).recover {
-      case _: Throwable => LocalDateTime.parse(json.as[String]).plusDays(days).toInstant(ZoneOffset.UTC)
+    Try(json.as[LocalDate].atStartOfDay(zone).toInstant()).recover { case _: Throwable =>
+      LocalDateTime.parse(json.as[String]).plusDays(days).toInstant(ZoneOffset.UTC)
     }.get
   }
 
@@ -191,40 +209,47 @@ class SandboxTestDataController @Inject()(jsonDataTransformer: DataTransformer,
     val result = new Status((json \ "status").as[Int])
 
     (json \ "jsonBody").toOption match {
-      case Some(jsonOutStr) => {
+      case Some(jsonOutStr) =>
         (request.getQueryString("fromDate"), request.getQueryString("toDate")) match {
-          case (maybeFrom,maybeTo) if maybeFrom.isDefined && maybeTo.isDefined  => {
-            logger.debug(s"Filtering results to: $maybeFrom ${maybeTo}")
-            val queryInterval = Interval(maybeFrom.map(toInstant(_)).get,
-                                             maybeTo.map(toInstant(_, 1)).get)
+          case (maybeFrom, maybeTo) if maybeFrom.isDefined && maybeTo.isDefined =>
+            logger.debug(s"Filtering results to: $maybeFrom $maybeTo")
+            val queryInterval = Interval(maybeFrom.map(toInstant(_)).get, maybeTo.map(toInstant(_, 1)).get)
             val EmployedCheck = "([A-Za-z\\-/0-9]*)(employed)([A-Za-z\\-/0-9]*)".r
-            val Fractions = "([A-Za-z\\-/0-9%]*)(fractions)".r
-            val Declarations = "([A-Za-z\\-/0-9%]*)(employer-payment-summary)".r
+            val Fractions     = "([A-Za-z\\-/0-9%]*)(fractions)".r
+            val Declarations  = "([A-Za-z\\-/0-9%]*)(employer-payment-summary)".r
             path match {
-              case EmployedCheck(_,_,_) => {
-                val interval = Interval(toInstant(json \ "jsonBody" \ "fromDate"),
-                                            toInstant(json \ "jsonBody" \ "toDate", 1))
+              case EmployedCheck(_, _, _) =>
+                val interval =
+                  Interval(toInstant(json \ "jsonBody" \ "fromDate"), toInstant(json \ "jsonBody" \ "toDate", 1))
                 if (interval.overlaps(queryInterval)) {
                   Future.successful(result(jsonOutStr))
                 } else {
-                  Future.successful(result(((json \ "jsonBody").as[JsObject] - "employed") + ("employed" -> Json.toJson(false))))
+                  Future.successful(
+                    result(((json \ "jsonBody").as[JsObject] - "employed") + ("employed" -> Json.toJson(false)))
+                  )
                 }
-              }
-              case Fractions(_,_) => {
-                val arr = (json \ "jsonBody" \ "fractionCalculations").as[JsArray].value.filter(v => queryInterval.contains(toInstant(v \ "calculatedAt")))
-                Future.successful(result(((json \ "jsonBody").as[JsObject] - "fractionCalculations") + ("fractionCalculations" -> new JsArray(arr))))
-              }
-              case Declarations(_,_) => {
-                val arr = (json \ "jsonBody" \ "eps").as[JsArray].value.filter(v => queryInterval.contains(toInstant(v \ "hmrcSubmissionTime")))
+              case Fractions(_, _)        =>
+                val arr = (json \ "jsonBody" \ "fractionCalculations")
+                  .as[JsArray]
+                  .value
+                  .filter(v => queryInterval.contains(toInstant(v \ "calculatedAt")))
+                Future.successful(
+                  result(
+                    ((json \ "jsonBody")
+                      .as[JsObject] - "fractionCalculations") + ("fractionCalculations" -> new JsArray(arr))
+                  )
+                )
+              case Declarations(_, _)     =>
+                val arr = (json \ "jsonBody" \ "eps")
+                  .as[JsArray]
+                  .value
+                  .filter(v => queryInterval.contains(toInstant(v \ "hmrcSubmissionTime")))
                 Future.successful(result(((json \ "jsonBody").as[JsObject] - "eps") + ("eps" -> new JsArray(arr))))
-              }
-              case _ => Future.successful(result(jsonOutStr))
+              case _                      => Future.successful(result(jsonOutStr))
             }
-          }
-          case (_,_) => Future.successful(result(jsonOutStr))
+          case (_, _)                                                           => Future.successful(result(jsonOutStr))
         }
-      }
-      case _ => Future.successful(result("{}"))
+      case _                => Future.successful(result("{}"))
     }
   }
 }

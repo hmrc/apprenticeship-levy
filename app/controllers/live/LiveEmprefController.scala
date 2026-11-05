@@ -27,23 +27,30 @@ import models.api.{EmploymentReference, Nino}
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
-class LiveEmprefController @Inject()(val desConnector: LiveDesConnector,
-                                     val auth: AllProviderAuthActionImpl,
-                                     val executionContext: ExecutionContext,
-                                     val parser: BodyParsers.Default,
-                                     val appContext: AppContext,
-                                     val controllerComponents: ControllerComponents) extends EmprefController {
+class LiveEmprefController @Inject() (
+  val desConnector: LiveDesConnector,
+  val auth: AllProviderAuthActionImpl,
+  val executionContext: ExecutionContext,
+  val parser: BodyParsers.Default,
+  val appContext: AppContext,
+  val controllerComponents: ControllerComponents
+) extends EmprefController {
 
   override val authAction: EmploymentReference => AuthAction = auth(_)
 
   override def emprefUrl(empref: EmploymentReference): String = routes.LiveEmprefController.empref(empref).url
 
-  override def declarationsUrl(empref: EmploymentReference): String = routes.LiveLevyDeclarationController.declarations(empref, None, None).url
+  override def declarationsUrl(empref: EmploymentReference): String =
+    routes.LiveLevyDeclarationController.declarations(empref, None, None).url
 
-  override def fractionsUrl(empref: EmploymentReference): String = routes.LiveFractionsController.fractions(empref, None, None).url
+  override def fractionsUrl(empref: EmploymentReference): String =
+    routes.LiveFractionsController.fractions(empref, None, None).url
 
   override def employmentCheckUrl(empref: EmploymentReference): String =
-    routes.LiveEmploymentCheckController.check(empref, Nino("nino"), LocalDate.now(), LocalDate.now())
-      .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
+    routes.LiveEmploymentCheckController
+      .check(empref, Nino("nino"), LocalDate.now(), LocalDate.now())
+      .url
+      .replaceAll("\\?.*", "")
+      .replaceAll("nino", "{nino}")
 
 }

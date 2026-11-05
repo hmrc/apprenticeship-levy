@@ -24,10 +24,13 @@ import controllers.auth.SandboxPrivilegedAuthAction
 import controllers.{DesController, FractionsCalculationDateController, FractionsController}
 import scala.concurrent.ExecutionContext
 
-class SandboxFractionsController @Inject()(val desConnector: SandboxDesConnector,
-                                           val authAction: SandboxPrivilegedAuthAction,
-                                           val executionContext: ExecutionContext,
-                                           val parser: BodyParsers.Default,
-                                           val appContext: AppContext,
-                                           val controllerComponents: ControllerComponents
-                                           ) extends DesController with FractionsController with FractionsCalculationDateController
+class SandboxFractionsController @Inject() (
+  val desConnector: SandboxDesConnector,
+  val authAction: SandboxPrivilegedAuthAction,
+  val executionContext: ExecutionContext,
+  val parser: BodyParsers.Default,
+  val appContext: AppContext,
+  val controllerComponents: ControllerComponents
+) extends DesController
+    with FractionsController
+    with FractionsCalculationDateController

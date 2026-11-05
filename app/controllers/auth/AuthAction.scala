@@ -36,23 +36,28 @@ import java.io.IOException
 import scala.annotation.nowarn
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(val authConnector: AuthConnector, val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
-  extends AuthAction with AuthorisedFunctions {
+class AuthActionImpl @Inject() (val authConnector: AuthConnector, val parser: BodyParsers.Default)(implicit
+  val executionContext: ExecutionContext
+) extends AuthAction
+    with AuthorisedFunctions {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
-    authorised().retrieve(Retrievals.allEnrolments) {
-      case Enrolments(enrolments) =>
+    authorised()
+      .retrieve(Retrievals.allEnrolments) { case Enrolments(enrolments) =>
         val payeRef: Option[EmpRef] = EnrolmentHelper.getEmpRef(enrolments)
         Future.successful(Right(AuthenticatedRequest(request, payeRef)))
-    }.recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
+      }
+      .recover { case e: Throwable => Left(ErrorHandler.authErrorHandler(e)) }
 
   }
 }
 
-class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, bodyParser: BodyParsers.Default)(implicit ec: ExecutionContext)
-  extends AuthorisedFunctions with Logging {
+class AllProviderAuthActionImpl @Inject() (val authConnector: AuthConnector, bodyParser: BodyParsers.Default)(implicit
+  ec: ExecutionContext
+) extends AuthorisedFunctions
+    with Logging {
 
   def apply(empRef: EmploymentReference): AuthAction = new AuthAction {
 
@@ -70,18 +75,24 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
         // https://confluence.tools.tax.service.gov.uk/pages/viewpage.action?spaceKey=GG&title=Retrievals+Reference#RetrievalsReference-credentials
         Retrievals.allEnrolments and Retrievals.authProviderId
       ) {
-        case _ ~ PAClientId(_) =>
+        case _ ~ PAClientId(_)          =>
           Future.successful(Right(AuthenticatedRequest(request, None)))
         case Enrolments(enrolments) ~ _ =>
-          val payeRef: Option[EmpRef] = EnrolmentHelper.getEmpRef(enrolments)
+          val payeRef: Option[EmpRef]  = EnrolmentHelper.getEmpRef(enrolments)
           val isCorrectEmpRef: Boolean = payeRef.exists(_.value == empRef.empref)
           if (isCorrectEmpRef) {
             Future.successful(Right(AuthenticatedRequest(request, payeRef)))
           } else {
             logger.warn(s"Unauthorized request of ${empRef.empref} from $payeRef")
-            Future.successful(Left(Unauthorized(
-              ErrorResponseUtils.convertToJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"Unauthorized request of ${empRef.empref}."))
-            )))
+            Future.successful(
+              Left(
+                Unauthorized(
+                  ErrorResponseUtils.convertToJson(
+                    AuthError(UNAUTHORIZED, "UNAUTHORIZED", s"Unauthorized request of ${empRef.empref}.")
+                  )
+                )
+              )
+            )
           }
       }.recover { case e: Throwable =>
         Left(ErrorHandler.authErrorHandler(e))
@@ -90,8 +101,10 @@ class AllProviderAuthActionImpl @Inject()(val authConnector: AuthConnector, body
   }
 }
 
-class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector, val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
-  extends AuthAction with AuthorisedFunctions {
+class PrivilegedAuthActionImpl @Inject() (val authConnector: AuthConnector, val parser: BodyParsers.Default)(implicit
+  val executionContext: ExecutionContext
+) extends AuthAction
+    with AuthorisedFunctions {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
@@ -104,20 +117,23 @@ class PrivilegedAuthActionImpl @Inject()(val authConnector: AuthConnector, val p
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionRefiner[Request, AuthenticatedRequest]
+trait AuthAction
+    extends ActionBuilder[AuthenticatedRequest, AnyContent]
+    with ActionRefiner[Request, AuthenticatedRequest]
 
 private object EnrolmentHelper {
-  private val enrolmentKey: String = "IR-PAYE"
+  private val enrolmentKey: String  = "IR-PAYE"
   val enrolmentPredicate: Enrolment = Enrolment(enrolmentKey)
 
-  def getEmpRef(enrolments: Set[Enrolment]): Option[EmpRef] = enrolments.find(_.key == enrolmentKey)
+  def getEmpRef(enrolments: Set[Enrolment]): Option[EmpRef] = enrolments
+    .find(_.key == enrolmentKey)
     .flatMap { enrolment =>
-      val taxOfficeNumber = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
+      val taxOfficeNumber    = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
       val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
 
       (taxOfficeNumber, taxOfficeReference) match {
         case (Some(number), Some(reference)) => Some(EmpRef(number, reference))
-        case _ => None
+        case _                               => None
       }
     }
 }
@@ -128,47 +144,71 @@ private object ErrorHandler extends Logging {
     logger.warn(message)
   }
 
-  def authErrorHandler(exc: Throwable): Result = {
+  def authErrorHandler(exc: Throwable): Result =
     exc match {
-      case e: SessionRecordNotFound =>
+      case e: SessionRecordNotFound   =>
         logWarningAboutException(e, UNAUTHORIZED, "Unauthorized with code")
-        Unauthorized(ErrorResponseUtils.convertToJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", "No active session error")))
-      case e: AuthorisationException =>
+        Unauthorized(
+          ErrorResponseUtils.convertToJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", "No active session error"))
+        )
+      case e: AuthorisationException  =>
         logWarningAboutException(e, UNAUTHORIZED, "Unauthorized with code")
-        Unauthorized(ErrorResponseUtils.convertToJson(AuthError(UNAUTHORIZED, "UNAUTHORIZED", "The Authorization token provided wasn't valid")))
-      case e: BadRequestException =>
+        Unauthorized(
+          ErrorResponseUtils.convertToJson(
+            AuthError(UNAUTHORIZED, "UNAUTHORIZED", "The Authorization token provided wasn't valid")
+          )
+        )
+      case e: BadRequestException     =>
         logWarningAboutException(e, SERVICE_UNAVAILABLE, "BadRequest with code")
         BadRequest(ErrorResponseUtils.convertToJson(AuthError(SERVICE_UNAVAILABLE, "BAD_REQUEST", "Bad request error")))
-      case e: IOException =>
+      case e: IOException             =>
         logWarningAboutException(e, SERVICE_UNAVAILABLE, "ServiceUnavailable with code")
-        ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(SERVICE_UNAVAILABLE, "IO", "Auth connection error")))
+        ServiceUnavailable(
+          ErrorResponseUtils.convertToJson(AuthError(SERVICE_UNAVAILABLE, "IO", "Auth connection error"))
+        )
       case e: GatewayTimeoutException =>
         val message = s"API error: ${e.getMessage}, API returning RequestTimeout with code $GATEWAY_TIMEOUT"
         logger.error(message, e)
-        RequestTimeout(ErrorResponseUtils.convertToJson(AuthError(REQUEST_TIMEOUT, "GATEWAY_TIMEOUT", "Auth not responding error")))
-      case e: NotFoundException =>
+        RequestTimeout(
+          ErrorResponseUtils.convertToJson(AuthError(REQUEST_TIMEOUT, "GATEWAY_TIMEOUT", "Auth not responding error"))
+        )
+      case e: NotFoundException       =>
         logWarningAboutException(e, NOT_FOUND, "NotFound with code")
         NotFound(ErrorResponseUtils.convertToJson(AuthError(NOT_FOUND, "NOT_FOUND", "Auth endpoint not found")))
-      case e: UpstreamErrorResponse =>
-        val apiMessage = if (e.statusCode >= BAD_REQUEST && e.statusCode < INTERNAL_SERVER_ERROR) "API returning code" else "API returning ServiceUnavailable with code"
-        val message = s"API error: ${e.getMessage} with ${e.statusCode}, $apiMessage ${e.reportAs}"
+      case e: UpstreamErrorResponse   =>
+        val apiMessage =
+          if (e.statusCode >= BAD_REQUEST && e.statusCode < INTERNAL_SERVER_ERROR) "API returning code"
+          else "API returning ServiceUnavailable with code"
+        val message    = s"API error: ${e.getMessage} with ${e.statusCode}, $apiMessage ${e.reportAs}"
         logger.warn(message)
         e.statusCode match {
-          case FORBIDDEN => Forbidden(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "FORBIDDEN", "Auth forbidden error")))
-          case TOO_MANY_REQUESTS => TooManyRequests(ErrorResponseUtils.convertToJson(AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", "Auth too many requests")))
-          case REQUEST_TIMEOUT => RequestTimeout(ErrorResponseUtils.convertToJson(AuthError(REQUEST_TIMEOUT, "TIMEOUT", "Auth not responding error")))
-          case _ =>
+          case FORBIDDEN         =>
+            Forbidden(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "FORBIDDEN", "Auth forbidden error")))
+          case TOO_MANY_REQUESTS =>
+            TooManyRequests(
+              ErrorResponseUtils.convertToJson(
+                AuthError(TOO_MANY_REQUESTS, "TOO_MANY_REQUESTS", "Auth too many requests")
+              )
+            )
+          case REQUEST_TIMEOUT   =>
+            RequestTimeout(
+              ErrorResponseUtils.convertToJson(AuthError(REQUEST_TIMEOUT, "TIMEOUT", "Auth not responding error"))
+            )
+          case _                 =>
             if (e.statusCode >= BAD_REQUEST && e.statusCode < INTERNAL_SERVER_ERROR) {
               ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "OTHER", "Auth 4xx error")))
             } else {
-              ServiceUnavailable(ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "BACKEND_FAILURE", "Auth 5xx error")))
+              ServiceUnavailable(
+                ErrorResponseUtils.convertToJson(AuthError(e.reportAs, "BACKEND_FAILURE", "Auth 5xx error"))
+              )
             }
         }
 
       case e: Throwable =>
         val message = s"API error: ${e.getMessage}, API returning code $INTERNAL_SERVER_ERROR"
         logger.error(message, e)
-        InternalServerError(ErrorResponseUtils.convertToJson(AuthError(INTERNAL_SERVER_ERROR, "API", "API or Auth internal server error")))
+        InternalServerError(
+          ErrorResponseUtils.convertToJson(AuthError(INTERNAL_SERVER_ERROR, "API", "API or Auth internal server error"))
+        )
     }
-  }
 }

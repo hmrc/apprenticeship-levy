@@ -41,12 +41,16 @@ import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
 
-class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite
-  with Injecting with BeforeAndAfterEach{
+class LevyDeclarationControllerSpec
+    extends AppLevyUnitSpec
+    with ScalaFutures
+    with GuiceOneAppPerSuite
+    with Injecting
+    with BeforeAndAfterEach {
 
-  val mockDesConnector: LiveDesConnector = mock[LiveDesConnector]
+  val mockDesConnector: LiveDesConnector   = mock[LiveDesConnector]
   val stubComponents: ControllerComponents = stubControllerComponents()
-  val mockAppContext: MockAppContext.type = MockAppContext
+  val mockAppContext: MockAppContext.type  = MockAppContext
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -68,16 +72,26 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
   "getting the levy declarations" must {
     "return a Not Acceptable response" when {
       "the accept header is not correct" in {
-        val response = liveFractionsController.declarations(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
+        val response =
+          liveFractionsController.declarations(EmploymentReference("empref"), None, None)(FakeRequest()).futureValue
         response.header.status mustBe NOT_ACCEPTABLE
       }
     }
     "return a fromDateAfterToDate error" when {
       "the supplied fromDate is after the toDate" in {
-        val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2021-01-01")), Some(LocalDate.parse("2020-01-01")))(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")).futureValue
+        val response = liveFractionsController
+          .declarations(
+            EmploymentReference("empref"),
+            Some(LocalDate.parse("2021-01-01")),
+            Some(LocalDate.parse("2020-01-01"))
+          )(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+          .futureValue
 
         response.header.status mustBe BAD_REQUEST
       }
@@ -88,19 +102,32 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
 
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
-          .thenReturn(Future.successful(EmployerPaymentsSummary(
-            "empref",
-            Seq(EmployerPaymentSummary(
-              submissionId = 123456,
-              hmrcSubmissionTime = LocalDateTime.now(),
-              rtiSubmissionTime = LocalDateTime.now(),
-              taxYear = "20-21",
-              apprenticeshipLevy = Some(appLevy))))))
+          .thenReturn(
+            Future.successful(
+              EmployerPaymentsSummary(
+                "empref",
+                Seq(
+                  EmployerPaymentSummary(
+                    submissionId = 123456,
+                    hmrcSubmissionTime = LocalDateTime.now(),
+                    rtiSubmissionTime = LocalDateTime.now(),
+                    taxYear = "20-21",
+                    apprenticeshipLevy = Some(appLevy)
+                  )
+                )
+              )
+            )
+          )
 
-        val response = liveFractionsController.declarations(EmploymentReference("empref"), None, None)(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")).futureValue
+        val response = liveFractionsController
+          .declarations(EmploymentReference("empref"), None, None)(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+          .futureValue
 
         response.header.status mustBe OK
       }
@@ -109,19 +136,36 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
 
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
-          .thenReturn(Future.successful(EmployerPaymentsSummary(
-            "empref",
-            Seq(EmployerPaymentSummary(
-              submissionId = 123456,
-              hmrcSubmissionTime = LocalDateTime.now(),
-              rtiSubmissionTime = LocalDateTime.now(),
-              taxYear = "20-21",
-              apprenticeshipLevy = Some(appLevy))))))
+          .thenReturn(
+            Future.successful(
+              EmployerPaymentsSummary(
+                "empref",
+                Seq(
+                  EmployerPaymentSummary(
+                    submissionId = 123456,
+                    hmrcSubmissionTime = LocalDateTime.now(),
+                    rtiSubmissionTime = LocalDateTime.now(),
+                    taxYear = "20-21",
+                    apprenticeshipLevy = Some(appLevy)
+                  )
+                )
+              )
+            )
+          )
 
-        val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2020-01-01")), Some(LocalDate.parse("2021-01-01")))(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")).futureValue
+        val response = liveFractionsController
+          .declarations(
+            EmploymentReference("empref"),
+            Some(LocalDate.parse("2020-01-01")),
+            Some(LocalDate.parse("2021-01-01"))
+          )(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+          .futureValue
 
         response.header.status mustBe OK
       }
@@ -130,19 +174,32 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
 
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
-          .thenReturn(Future.successful(EmployerPaymentsSummary(
-            "empref",
-            Seq(EmployerPaymentSummary(
-              submissionId = 123456,
-              hmrcSubmissionTime = LocalDateTime.now(),
-              rtiSubmissionTime = LocalDateTime.now(),
-              taxYear = "20-21",
-              apprenticeshipLevy = Some(appLevy))))))
+          .thenReturn(
+            Future.successful(
+              EmployerPaymentsSummary(
+                "empref",
+                Seq(
+                  EmployerPaymentSummary(
+                    submissionId = 123456,
+                    hmrcSubmissionTime = LocalDateTime.now(),
+                    rtiSubmissionTime = LocalDateTime.now(),
+                    taxYear = "20-21",
+                    apprenticeshipLevy = Some(appLevy)
+                  )
+                )
+              )
+            )
+          )
 
-        val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2021-01-01")), None)(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")).futureValue
+        val response = liveFractionsController
+          .declarations(EmploymentReference("empref"), Some(LocalDate.parse("2021-01-01")), None)(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+          .futureValue
 
         response.header.status mustBe OK
       }
@@ -151,19 +208,32 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         val appLevy = ApprenticeshipLevy(10.10, 10.10, "4")
 
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
-          .thenReturn(Future.successful(EmployerPaymentsSummary(
-            "empref",
-            Seq(EmployerPaymentSummary(
-              submissionId = 123456,
-              hmrcSubmissionTime = LocalDateTime.now(),
-              rtiSubmissionTime = LocalDateTime.now(),
-              taxYear = "20-21",
-              apprenticeshipLevy = Some(appLevy))))))
+          .thenReturn(
+            Future.successful(
+              EmployerPaymentsSummary(
+                "empref",
+                Seq(
+                  EmployerPaymentSummary(
+                    submissionId = 123456,
+                    hmrcSubmissionTime = LocalDateTime.now(),
+                    rtiSubmissionTime = LocalDateTime.now(),
+                    taxYear = "20-21",
+                    apprenticeshipLevy = Some(appLevy)
+                  )
+                )
+              )
+            )
+          )
 
-        val response = liveFractionsController.declarations(EmploymentReference("empref"), None, Some(LocalDate.parse("2021-01-01")))(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")).futureValue
+        val response = liveFractionsController
+          .declarations(EmploymentReference("empref"), None, Some(LocalDate.parse("2021-01-01")))(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+          .futureValue
 
         response.header.status mustBe OK
       }
@@ -173,18 +243,35 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
       "no data is found" in {
 
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
-          .thenReturn(Future.successful(EmployerPaymentsSummary(
-            "empref",
-            Seq(EmployerPaymentSummary(
-              submissionId = 123456,
-              hmrcSubmissionTime = LocalDateTime.now(),
-              rtiSubmissionTime = LocalDateTime.now(),
-              taxYear = "20-21")))))
+          .thenReturn(
+            Future.successful(
+              EmployerPaymentsSummary(
+                "empref",
+                Seq(
+                  EmployerPaymentSummary(
+                    submissionId = 123456,
+                    hmrcSubmissionTime = LocalDateTime.now(),
+                    rtiSubmissionTime = LocalDateTime.now(),
+                    taxYear = "20-21"
+                  )
+                )
+              )
+            )
+          )
 
-        val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2020-01-01")), Some(LocalDate.parse("2021-01-01")))(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")).futureValue
+        val response = liveFractionsController
+          .declarations(
+            EmploymentReference("empref"),
+            Some(LocalDate.parse("2020-01-01")),
+            Some(LocalDate.parse("2021-01-01"))
+          )(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+          .futureValue
 
         response.header.status mustBe NOT_FOUND
       }
@@ -194,14 +281,22 @@ class LevyDeclarationControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
         when(mockDesConnector.eps(anyString(), any())(using any(), any()))
           .thenReturn(Future.failed(new NotFoundException("Data Not Found")))
 
-        val response = liveFractionsController.declarations(EmploymentReference("empref"), Some(LocalDate.parse("2020-01-01")), Some(LocalDate.parse("2021-01-01")))(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")).futureValue
+        val response = liveFractionsController
+          .declarations(
+            EmploymentReference("empref"),
+            Some(LocalDate.parse("2020-01-01")),
+            Some(LocalDate.parse("2021-01-01"))
+          )(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+          .futureValue
 
         response.header.status mustBe NOT_FOUND
       }
     }
   }
 }
-

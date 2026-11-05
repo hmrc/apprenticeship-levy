@@ -23,6 +23,6 @@ import java.time.LocalDate
 case class FractionCalculationDate(date: LocalDate)
 
 object FractionCalculationDate {
-  implicit val fractionCalculationDateReads: Reads[FractionCalculationDate] = Json.reads[FractionCalculationDate]
+  implicit val fractionCalculationDateReads: Reads[FractionCalculationDate]    = Json.reads[FractionCalculationDate]
   implicit val fractionCalculationDateWrites: OFormat[FractionCalculationDate] = Json.format[FractionCalculationDate]
 }

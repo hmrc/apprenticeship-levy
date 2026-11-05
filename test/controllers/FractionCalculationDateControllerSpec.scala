@@ -40,17 +40,17 @@ import scala.concurrent.{ExecutionContext, Future}
 class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeAndAfterEach {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
-  val mockAppContext: AppContext = mock[AppContext]
-  val mockHttp: HttpClientV2 = mock[HttpClientV2]
-  val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]
+  val mockAppContext: AppContext           = mock[AppContext]
+  val mockHttp: HttpClientV2               = mock[HttpClientV2]
+  val mockRequestBuilder: RequestBuilder   = mock[RequestBuilder]
 
-  def controller : FractionsCalculationDateController = new FractionsCalculationDateController with DesController {
+  def controller: FractionsCalculationDateController = new FractionsCalculationDateController with DesController {
     def desConnector: DesConnector = new DesConnector() {
-      override val appContext: AppContext = mockAppContext
+      override val appContext: AppContext                           = mockAppContext
       override protected def auditConnector: Option[AuditConnector] = None
-      def baseUrl: String = "http://a.guide.to.nowhere/"
-      def httpClient: HttpClientV2 = mockHttp
-      override def desAuthorization: String = "localBearer"
+      def baseUrl: String                                           = "http://a.guide.to.nowhere/"
+      def httpClient: HttpClientV2                                  = mockHttp
+      override def desAuthorization: String                         = "localBearer"
 
       override def desEnvironment: String = "localEnv"
     }
@@ -83,54 +83,80 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, FractionCalculationDate]](using any(), any())).thenReturn(Future.successful(Right(FractionCalculationDate(LocalDate.of(2016,11,3)))))
+      when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, FractionCalculationDate]](using any(), any()))
+        .thenReturn(Future.successful(Right(FractionCalculationDate(LocalDate.of(2016, 11, 3)))))
 
-      val response = await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                                    "Authorization"->"Bearer dsfda9080",
-                                                                                                    "Environment"->"clone")))
+      val response = await(
+        controller.fractionCalculationDate()(
+          FakeRequest().withHeaders(
+            "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+            "Authorization" -> "Bearer dsfda9080",
+            "Environment"   -> "clone"
+          )
+        )
+      )
 
       verify(mockHttp).get(any())(using headerCarrierCaptor.capture())
 
       // check
-      val actualHeaderCarrier = headerCarrierCaptor.getValue
+      val actualHeaderCarrier   = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders mustBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      actualHeaderCarrier.extraHeaders mustBe Seq(
+        ("X-Client-ID", "Unknown caller"),
+        ("X-Client-Authorization-Token", "Unknown caller"),
+        ("Environment", "clone")
+      )
       status(response) mustBe OK
     }
 
     "not fail if environment header not supplied" in {
       // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      val urlCaptor: ArgumentCaptor[URL] = ArgumentCaptor.forClass(classOf[URL])
+      val urlCaptor: ArgumentCaptor[URL]                     = ArgumentCaptor.forClass(classOf[URL])
 
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016,11,3))))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any()))
+        .thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016, 11, 3))))
 
       // test
-      await(controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                                    "Authorization"->"Bearer dsfda9080")))
+      await(
+        controller.fractionCalculationDate()(
+          FakeRequest().withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Authorization" -> "Bearer dsfda9080")
+        )
+      )
       verify(mockHttp).get(urlCaptor.capture())(using headerCarrierCaptor.capture())
 
       // check
-      val actualHeaderCarrier = headerCarrierCaptor.getValue
+      val actualHeaderCarrier   = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders mustBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      actualHeaderCarrier.extraHeaders mustBe Seq(
+        ("X-Client-ID", "Unknown caller"),
+        ("X-Client-Authorization-Token", "Unknown caller"),
+        ("Environment", "clone")
+      )
     }
 
     "recover from exceptions" in {
       // set up
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(Future.failed(UpstreamErrorResponse.apply(
-        """DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503.
-          | Response body: '{"reason" : "Backend systems not working"}'""".stripMargin,500)))
+      when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(
+        Future.failed(
+          UpstreamErrorResponse.apply(
+            """DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503.
+          | Response body: '{"reason" : "Backend systems not working"}'""".stripMargin,
+            500
+          )
+        )
+      )
 
       // test
-      val response: Future[Result] = controller.fractionCalculationDate()(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                                    "Authorization"->"Bearer dsfda9080"))
+      val response: Future[Result] = controller.fractionCalculationDate()(
+        FakeRequest().withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Authorization" -> "Bearer dsfda9080")
+      )
 
       // check
       status(response) mustBe SERVICE_UNAVAILABLE

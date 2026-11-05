@@ -20,17 +20,14 @@ import play.utils.UriEncoding.decodePath
 
 object DecodePath {
 
-  def decodeAnyDoubleEncoding(path:String):String = {
-
-    if(path.contains("%25")){
+  def decodeAnyDoubleEncoding(path: String): String =
+    if (path.contains("%25")) {
       val replacedPath = path.replace("{nino}", "replace-with-nino")
 
       decodePath(replacedPath, "utf-8")
         .replace("replace-with-nino", "{nino}")
-    }else{
+    } else {
       path
     }
-
-  }
 
 }

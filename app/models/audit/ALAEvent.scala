@@ -21,16 +21,21 @@ import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.model.DataEvent
 
 case class ALAEvent(name: String, empref: String = "", nino: String = "", dateRange: String = "") {
-  protected lazy val data: Map[String, String] = Seq(("empref",empref), ("nino",nino), ("dateRange",dateRange)).filterNot(_._2.isEmpty).toMap
+  protected lazy val data: Map[String, String] =
+    Seq(("empref", empref), ("nino", nino), ("dateRange", dateRange)).filterNot(_._2.isEmpty).toMap
 
-  def toDataEvent(httpStatus: Int)(implicit hc: HeaderCarrier): DataEvent = DataEvent("ala-api",
-     "ServiceReceivedRequest",
-     tags = hc.toAuditTags(name, ""),
-     detail = data ++ Map("upstream_http_status"->httpStatus.toString))
-
-  def toDataEvent(httpStatus: Int, exception: Throwable)(implicit hc: HeaderCarrier): DataEvent = DataEvent("ala-api",
+  def toDataEvent(httpStatus: Int)(implicit hc: HeaderCarrier): DataEvent = DataEvent(
+    "ala-api",
     "ServiceReceivedRequest",
     tags = hc.toAuditTags(name, ""),
-    detail = data ++ Map("upstream_http_status" -> httpStatus.toString) ++ Map("exception" -> exception.toString))
+    detail = data ++ Map("upstream_http_status" -> httpStatus.toString)
+  )
+
+  def toDataEvent(httpStatus: Int, exception: Throwable)(implicit hc: HeaderCarrier): DataEvent = DataEvent(
+    "ala-api",
+    "ServiceReceivedRequest",
+    tags = hc.toAuditTags(name, ""),
+    detail = data ++ Map("upstream_http_status" -> httpStatus.toString) ++ Map("exception" -> exception.toString)
+  )
 
 }

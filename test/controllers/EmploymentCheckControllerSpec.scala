@@ -38,22 +38,27 @@ import utils.AppLevyUnitSpec
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures with GuiceOneAppPerSuite with Injecting with BeforeAndAfterEach {
+class EmploymentCheckControllerSpec
+    extends AppLevyUnitSpec
+    with ScalaFutures
+    with GuiceOneAppPerSuite
+    with Injecting
+    with BeforeAndAfterEach {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
-  val mockHttp: HttpClientV2 = mock[HttpClientV2]
-  val mockAppContext: AppContext = mock[AppContext]
-  val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]
+  val mockHttp: HttpClientV2               = mock[HttpClientV2]
+  val mockAppContext: AppContext           = mock[AppContext]
+  val mockRequestBuilder: RequestBuilder   = mock[RequestBuilder]
 
   val testController: EmploymentCheckController = new EmploymentCheckController {
     override implicit val executionContext: ExecutionContext = controllerComponents.executionContext
 
     def desConnector: DesConnector = new DesConnector() {
-      override val appContext: AppContext = mockAppContext
+      override val appContext: AppContext                           = mockAppContext
       override protected def auditConnector: Option[AuditConnector] = None
-      def baseUrl: String = "http://a.guide.to.nowhere/"
-      def httpClient: HttpClientV2 = mockHttp
-      override def desAuthorization: String = "localBearer"
+      def baseUrl: String                                           = "http://a.guide.to.nowhere/"
+      def httpClient: HttpClientV2                                  = mockHttp
+      override def desAuthorization: String                         = "localBearer"
 
       override def desEnvironment: String = "localEnv"
     }
@@ -76,33 +81,45 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
     "return a success response" when {
       "the user is employed" in {
         val fromDate: LocalDate = LocalDate.parse("2020-07-22")
-        val toDate: LocalDate = LocalDate.parse("2021-07-22")
-        val nino = Nino("AA12345A")
+        val toDate: LocalDate   = LocalDate.parse("2021-07-22")
+        val nino                = Nino("AA12345A")
 
         when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any()))
+          .thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
 
-        val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")))
+        val response = await(
+          testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+        )
 
         status(response) mustBe OK
       }
       "the user is not employed" in {
         val fromDate: LocalDate = LocalDate.parse("2020-07-22")
-        val toDate: LocalDate = LocalDate.parse("2021-07-22")
-        val nino = Nino("AA12345A")
+        val toDate: LocalDate   = LocalDate.parse("2021-07-22")
+        val nino                = Nino("AA12345A")
 
         when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(false))))
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any()))
+          .thenReturn(Future.successful(Right(EmploymentCheckStatus(false))))
 
-        val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")))
+        val response = await(
+          testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+        )
 
         status(response) mustBe OK
       }
@@ -110,17 +127,23 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
     "return an error" when {
       "the user's employment is unknown" in {
         val fromDate: LocalDate = LocalDate.parse("2020-07-22")
-        val toDate: LocalDate = LocalDate.parse("2021-07-22")
-        val nino = Nino("AA12345A")
+        val toDate: LocalDate   = LocalDate.parse("2021-07-22")
+        val nino                = Nino("AA12345A")
 
         when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(Unknown)))
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any()))
+          .thenReturn(Future.successful(Right(Unknown)))
 
-        val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")))
+        val response = await(
+          testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+        )
 
         status(response) mustBe NOT_FOUND
 
@@ -128,17 +151,23 @@ class EmploymentCheckControllerSpec extends AppLevyUnitSpec with ScalaFutures wi
       "the supplied fromDate is after the toDate" in {
 
         val fromDate: LocalDate = LocalDate.parse("2021-07-22")
-        val toDate: LocalDate = LocalDate.parse("2020-07-22")
-        val nino = Nino("AA12345A")
+        val toDate: LocalDate   = LocalDate.parse("2020-07-22")
+        val nino                = Nino("AA12345A")
 
         when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
         when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any())).thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
+        when(mockRequestBuilder.execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]](using any(), any()))
+          .thenReturn(Future.successful(Right(EmploymentCheckStatus(true))))
 
-        val response = await(testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(FakeRequest().withHeaders(
-          "ACCEPT"->"application/vnd.hmrc.1.0+json",
-          "Authorization"->"Bearer dsfda9080",
-          "Environment"->"clone")))
+        val response = await(
+          testController.check(EmploymentReference("empref"), nino, fromDate, toDate)(
+            FakeRequest().withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+          )
+        )
 
         status(response) mustBe BAD_REQUEST
 

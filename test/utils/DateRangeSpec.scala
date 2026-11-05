@@ -27,13 +27,13 @@ class DateRangeSpec extends AppLevyUnitSpec {
     "Parse ClosedDateRange json correctly" in {
       val json = Json.parse("""{"from":"2000-01-01","to":"2020-01-01"}""")
       json.validate[ClosedDateRange].isSuccess mustBe true
-      json.as[ClosedDateRange] mustBe ClosedDateRange(LocalDate.of(2000,1,1), LocalDate.of(2020,1,1))
+      json.as[ClosedDateRange] mustBe ClosedDateRange(LocalDate.of(2000, 1, 1), LocalDate.of(2020, 1, 1))
     }
 
     "Serialise OpenDateRange json correctly" in {
       val json = Json.parse("""{"to":"2020-01-01"}""")
       json.validate[OpenEarlyDateRange].isSuccess mustBe true
-      json.as[OpenEarlyDateRange] mustBe OpenEarlyDateRange(LocalDate.of(2020,1,1))
+      json.as[OpenEarlyDateRange] mustBe OpenEarlyDateRange(LocalDate.of(2020, 1, 1))
     }
   }
 }

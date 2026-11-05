@@ -23,7 +23,7 @@ import uk.gov.hmrc.play.bootstrap.http.ErrorResponse
 object ErrorResponseUtils {
 
   def convertToJson(errorResponse: ErrorResponse): JsValue = {
-    val code = Json.obj("code" -> JsString(errorResponse.xStatusCode.getOrElse("No status code provided")))
+    val code    = Json.obj("code" -> JsString(errorResponse.xStatusCode.getOrElse("No status code provided")))
     val message = Json.obj("message" -> JsString(errorResponse.message))
     code ++ message
   }

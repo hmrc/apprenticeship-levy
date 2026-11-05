@@ -32,7 +32,7 @@ import util.StubbingData.*
 import util.WireMockHelper
 
 class FractionsCalculationDateEndpointISpec
-  extends AnyWordSpec
+    extends AnyWordSpec
     with GuiceOneAppPerSuite
     with WireMockHelper
     with ScalaCheckPropertyChecks {
@@ -65,9 +65,11 @@ class FractionsCalculationDateEndpointISpec
         "backend systems failing" must {
           "return http status 503 when connection closed" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withFault(Fault.MALFORMED_RESPONSE_CHUNK),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withFault(Fault.MALFORMED_RESPONSE_CHUNK),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
@@ -81,10 +83,12 @@ class FractionsCalculationDateEndpointISpec
 
           "return http status 408 when timed out" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withStatus(OK)
-              .withFixedDelay(1000 * 60),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withStatus(OK)
+                .withFixedDelay(1000 * 60),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
@@ -93,14 +97,18 @@ class FractionsCalculationDateEndpointISpec
             // check
             status(result) mustBe REQUEST_TIMEOUT
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_GATEWAY_TIMEOUT","message":"DES not responding error"}"""
+            )
           }
 
           "return http status 503 when empty response" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withFault(Fault.EMPTY_RESPONSE),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withFault(Fault.EMPTY_RESPONSE),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
@@ -114,10 +122,12 @@ class FractionsCalculationDateEndpointISpec
 
           "return http status 404 when DES HTTP 404" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withStatus(NOT_FOUND)
-              .withBody("""{"reason" : "Not found"}"""),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withStatus(NOT_FOUND)
+                .withBody("""{"reason" : "Not found"}"""),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
@@ -126,15 +136,19 @@ class FractionsCalculationDateEndpointISpec
             // check
             status(result) mustBe NOT_FOUND
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}"""
+            )
           }
 
           "return http status 503 when DES HTTP 500" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withStatus(INTERNAL_SERVER_ERROR)
-              .withBody("""{"reason" : "DES not working"}"""),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withStatus(INTERNAL_SERVER_ERROR)
+                .withBody("""{"reason" : "DES not working"}"""),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
@@ -143,15 +157,19 @@ class FractionsCalculationDateEndpointISpec
             // check
             status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}"""
+            )
           }
 
           "return http status 503 when DES HTTP 503" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withStatus(SERVICE_UNAVAILABLE)
-              .withBody("""{"reason" : "Backend systems not working"}"""),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withStatus(SERVICE_UNAVAILABLE)
+                .withBody("""{"reason" : "Backend systems not working"}"""),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
@@ -160,15 +178,19 @@ class FractionsCalculationDateEndpointISpec
             // check
             status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}"""
+            )
           }
 
           "return http status 401 when DES HTTP 401" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withStatus(UNAUTHORIZED)
-              .withBody("""{"reason" : "Not authorized"}"""),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withStatus(UNAUTHORIZED)
+                .withBody("""{"reason" : "Not authorized"}"""),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
@@ -177,15 +199,19 @@ class FractionsCalculationDateEndpointISpec
             // check
             status(result) mustBe 401
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}"""
+            )
           }
 
           "return http status 403 when DES HTTP 403" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withStatus(FORBIDDEN)
-              .withBody("""{"reason" : "Forbidden"}"""),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withStatus(FORBIDDEN)
+                .withBody("""{"reason" : "Forbidden"}"""),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
@@ -194,15 +220,19 @@ class FractionsCalculationDateEndpointISpec
             // check
             status(result) mustBe FORBIDDEN
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}"""
+            )
           }
 
           "return http status 429 when DES HTTP 429" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withStatus(TOO_MANY_REQUESTS)
-              .withBody("""{"reason" : "Drowning in requests"}"""),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withStatus(TOO_MANY_REQUESTS)
+                .withBody("""{"reason" : "Drowning in requests"}"""),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
@@ -211,15 +241,19 @@ class FractionsCalculationDateEndpointISpec
             // check
             status(result) mustBe TOO_MANY_REQUESTS
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_TOO_MANY_REQUESTS","message":"DES too many requests"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_TOO_MANY_REQUESTS","message":"DES too many requests"}"""
+            )
           }
 
           "return http status 408 when DES HTTP 408" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withStatus(REQUEST_TIMEOUT)
-              .withBody("""{"reason" : "Not responding"}"""),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withStatus(REQUEST_TIMEOUT)
+                .withBody("""{"reason" : "Not responding"}"""),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test
@@ -228,15 +262,19 @@ class FractionsCalculationDateEndpointISpec
             // check
             status(result) mustBe REQUEST_TIMEOUT
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_TIMEOUT","message":"DES not responding error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_TIMEOUT","message":"DES not responding error"}"""
+            )
           }
 
           "return http status 503 when DES HTTP 409" in {
             // set up
-            stubGetServerWithId(aResponse()
-              .withStatus(CONFLICT)
-              .withBody("""{"reason" : "Some 4xxx error"}"""),
-              "/apprenticeship-levy/fraction-calculation-date")
+            stubGetServerWithId(
+              aResponse()
+                .withStatus(CONFLICT)
+                .withBody("""{"reason" : "Some 4xxx error"}"""),
+              "/apprenticeship-levy/fraction-calculation-date"
+            )
             val request = FakeRequest(GET, s"$context/fraction-calculation-date").withHeaders(standardDesHeaders()*)
 
             // test

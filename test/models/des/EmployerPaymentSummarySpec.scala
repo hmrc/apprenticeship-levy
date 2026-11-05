@@ -24,105 +24,140 @@ import java.time.{LocalDate, LocalDateTime}
 class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
 
   val APRIL = 4
-  val MAY = 5
+  val MAY   = 5
 
   "convertToDeclaration" must {
-    val id = 123456L
-    val submissionTime = LocalDateTime.now()
+    val id                = 123456L
+    val submissionTime    = LocalDateTime.now()
     val rtiSubmissionTime = LocalDateTime.now()
-    val relatedTaxYear = "16-17"
+    val relatedTaxYear    = "16-17"
 
     "create a unique id for levy declaration object" in {
       val startNoPayment = LocalDate.parse("2016-05-06")
-      val endNoPayment = LocalDate.parse("2016-06-05")
+      val endNoPayment   = LocalDate.parse("2016-06-05")
 
       val expectedTaxMonth = 2
 
-      val eps = EmployerPaymentSummary(id,
-                                       submissionTime,
-                                       rtiSubmissionTime,
-                                       relatedTaxYear,
-                                       Some(ClosedDateRange(startNoPayment, endNoPayment)))
+      val eps = EmployerPaymentSummary(
+        id,
+        submissionTime,
+        rtiSubmissionTime,
+        relatedTaxYear,
+        Some(ClosedDateRange(startNoPayment, endNoPayment))
+      )
 
       val l1 = EmployerPaymentSummary.toDeclarations(eps).head
-      l1 mustBe LevyDeclaration(1234560L, submissionTime,
+      l1 mustBe LevyDeclaration(
+        1234560L,
+        submissionTime,
         noPaymentForPeriod = Some(true),
         payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)),
-        submissionId = id)
+        submissionId = id
+      )
 
       val levyDueYTD = BigDecimal(500)
-      val allowance = BigDecimal(10000)
-      val taxMonth = 2
-      val eps2 = EmployerPaymentSummary(id,
-                                       submissionTime,
-                                       rtiSubmissionTime,
-                                       relatedTaxYear,
-                                       apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, allowance, taxMonth.toString())))
+      val allowance  = BigDecimal(10000)
+      val taxMonth   = 2
+      val eps2       = EmployerPaymentSummary(
+        id,
+        submissionTime,
+        rtiSubmissionTime,
+        relatedTaxYear,
+        apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, allowance, taxMonth.toString()))
+      )
 
       val l2 = EmployerPaymentSummary.toDeclarations(eps2).head
-      l2 mustBe LevyDeclaration(1234562L, submissionTime,
+      l2 mustBe LevyDeclaration(
+        1234562L,
+        submissionTime,
         payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
         levyDueYTD = Some(levyDueYTD),
         levyAllowanceForFullYear = Some(allowance),
-        submissionId = id)
+        submissionId = id
+      )
     }
 
     "convert a terminated payroll scheme" in {
       val schemeCeasedDate = submissionTime.minusDays(1).toLocalDate
-      val eps = EmployerPaymentSummary(id,
-                                       submissionTime,
-                                       rtiSubmissionTime,
-                                       relatedTaxYear,
-                                       finalSubmission = Some(SchemeCeased(true, schemeCeasedDate, None)))
+      val eps              = EmployerPaymentSummary(
+        id,
+        submissionTime,
+        rtiSubmissionTime,
+        relatedTaxYear,
+        finalSubmission = Some(SchemeCeased(true, schemeCeasedDate, None))
+      )
 
-      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(1234563L, submissionTime, Some(schemeCeasedDate), submissionId = id)
+      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(
+        1234563L,
+        submissionTime,
+        Some(schemeCeasedDate),
+        submissionId = id
+      )
     }
 
     "convert an inactive submission" in {
       val inactiveFrom = submissionTime.minusMonths(2).toLocalDate
-      val inactiveTo = submissionTime.minusMonths(2).toLocalDate
-      val eps = EmployerPaymentSummary(id,
-                                       submissionTime,
-                                       rtiSubmissionTime,
-                                       relatedTaxYear,
-                                       inactivePeriod = Some(ClosedDateRange(from = inactiveFrom, to = inactiveTo)))
+      val inactiveTo   = submissionTime.minusMonths(2).toLocalDate
+      val eps          = EmployerPaymentSummary(
+        id,
+        submissionTime,
+        rtiSubmissionTime,
+        relatedTaxYear,
+        inactivePeriod = Some(ClosedDateRange(from = inactiveFrom, to = inactiveTo))
+      )
 
-      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(1234561L, submissionTime, inactiveFrom = Some(inactiveFrom), inactiveTo = Some(inactiveTo), submissionId = id)
+      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(
+        1234561L,
+        submissionTime,
+        inactiveFrom = Some(inactiveFrom),
+        inactiveTo = Some(inactiveTo),
+        submissionId = id
+      )
     }
 
     "convert a submission" in {
       val levyDueYTD = BigDecimal(500)
-      val allowance = BigDecimal(10000)
-      val taxMonth = 2
-      val eps = EmployerPaymentSummary(id,
-                                       submissionTime,
-                                       rtiSubmissionTime,
-                                       relatedTaxYear,
-                                       apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, allowance, taxMonth.toString())))
+      val allowance  = BigDecimal(10000)
+      val taxMonth   = 2
+      val eps        = EmployerPaymentSummary(
+        id,
+        submissionTime,
+        rtiSubmissionTime,
+        relatedTaxYear,
+        apprenticeshipLevy = Some(ApprenticeshipLevy(levyDueYTD, allowance, taxMonth.toString()))
+      )
 
-      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(1234562L, submissionTime,
+      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(
+        1234562L,
+        submissionTime,
         payrollPeriod = Some(PayrollPeriod(relatedTaxYear, taxMonth)),
         levyDueYTD = Some(levyDueYTD),
         levyAllowanceForFullYear = Some(allowance),
-        submissionId = id)
+        submissionId = id
+      )
     }
 
     "convert a submission with no payment for period" in {
       val startNoPayment = LocalDate.parse("2016-05-06")
-      val endNoPayment = LocalDate.parse("2016-06-05")
+      val endNoPayment   = LocalDate.parse("2016-06-05")
 
       val expectedTaxMonth = 2
 
-      val eps = EmployerPaymentSummary(id,
-                                       submissionTime,
-                                       rtiSubmissionTime,
-                                       relatedTaxYear,
-                                       Some(ClosedDateRange(startNoPayment, endNoPayment)))
+      val eps = EmployerPaymentSummary(
+        id,
+        submissionTime,
+        rtiSubmissionTime,
+        relatedTaxYear,
+        Some(ClosedDateRange(startNoPayment, endNoPayment))
+      )
 
-      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(1234560L, submissionTime,
+      EmployerPaymentSummary.toDeclarations(eps).head mustBe LevyDeclaration(
+        1234560L,
+        submissionTime,
         noPaymentForPeriod = Some(true),
         payrollPeriod = Some(PayrollPeriod(year = "16-17", month = expectedTaxMonth)),
-        submissionId = id)
+        submissionId = id
+      )
     }
   }
 

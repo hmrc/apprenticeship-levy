@@ -20,7 +20,7 @@ import audit.Auditor
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import connectors.LiveDesConnector
 import models.des.*
-import org.mockito.Mockito.{reset as mockReset}
+import org.mockito.Mockito.reset as mockReset
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
@@ -35,33 +35,30 @@ import views.html.helper
 import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class DesConnectorISpec
-  extends AppLevyUnitSpec
-    with GuiceOneAppPerSuite
-    with ScalaFutures
-    with WireMockHelper {
+class DesConnectorISpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with ScalaFutures with WireMockHelper {
 
-  val baseUrl = "/sandbox/data"
-  val mockAuditor: Auditor = mock[Auditor]
+  val baseUrl                          = "/sandbox/data"
+  val mockAuditor: Auditor             = mock[Auditor]
   val mockHeaderCarrier: HeaderCarrier = HeaderCarrier(
     otherHeaders = Seq(
-      "X-Client-ID" -> "ClientId",
+      "X-Client-ID"   -> "ClientId",
       "Authorization" -> "Bearer ABC",
-      "Environment" -> "Test"
-    ))
+      "Environment"   -> "Test"
+    )
+  )
 
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(
-      "microservice.epsOrigPathEnabled" -> true,
-      "microservice.services.auth.host" -> "localhost",
-      "microservice.services.auth.port" -> server.port(),
-      "microservice.services.des.host" -> "localhost",
-      "microservice.services.des.port" -> server.port(),
-      "microservice.services.stub-des.host" -> "localhost",
-      "microservice.services.stub-des.port" -> server.port(),
+      "microservice.epsOrigPathEnabled"      -> true,
+      "microservice.services.auth.host"      -> "localhost",
+      "microservice.services.auth.port"      -> server.port(),
+      "microservice.services.des.host"       -> "localhost",
+      "microservice.services.des.port"       -> server.port(),
+      "microservice.services.stub-des.host"  -> "localhost",
+      "microservice.services.stub-des.port"  -> server.port(),
       "microservice.services.stub-auth.host" -> "localhost",
       "microservice.services.stub-auth.port" -> server.port(),
-      "microservice.services.des.env" -> "Test"
+      "microservice.services.des.env"        -> "Test"
     )
     .overrides(
       bind[Auditor].toInstance(mockAuditor)
@@ -80,10 +77,10 @@ class DesConnectorISpec
       "when EDH not failing return local date instance of date" in {
 
         val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
-        val fractionCalculationDate = FractionCalculationDate(LocalDate.of(2016, 11, 3))
-        val json = Json.toJson[FractionCalculationDate](fractionCalculationDate)
-        val stubResponse = ok(json.toString)
-        val expectedResponse = LocalDate.of(2016, 11, 3)
+        val fractionCalculationDate     = FractionCalculationDate(LocalDate.of(2016, 11, 3))
+        val json                        = Json.toJson[FractionCalculationDate](fractionCalculationDate)
+        val stubResponse                = ok(json.toString)
+        val expectedResponse            = LocalDate.of(2016, 11, 3)
 
         stubGetServer(stubResponse, fractionsCalculationDateUrl)
 
@@ -102,7 +99,7 @@ class DesConnectorISpec
       "throw an error when upstream returns a 404" in {
 
         val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
-        val stubResponse = notFound()
+        val stubResponse                = notFound()
 
         stubGetServer(stubResponse, fractionsCalculationDateUrl)
 
@@ -121,7 +118,7 @@ class DesConnectorISpec
       "throw an error when upstream returns a 400" in {
 
         val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
-        val stubResponse = badRequest()
+        val stubResponse                = badRequest()
 
         stubGetServer(stubResponse, fractionsCalculationDateUrl)
 
@@ -140,7 +137,7 @@ class DesConnectorISpec
       "throw an error when upstream returns neither a 404 nor 400" in {
 
         val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
-        val stubResponse = forbidden()
+        val stubResponse                = forbidden()
 
         stubGetServer(stubResponse, fractionsCalculationDateUrl)
 
@@ -160,14 +157,16 @@ class DesConnectorISpec
     "for Fractions endpoint" must {
       "when EDH not failing return fractions" in {
 
-        val localDate = LocalDate.of(2016, 4, 22)
-        val dateRange = OpenEarlyDateRange(localDate)
-        val dateRangeParams = dateRange.toParams
-        val empRef = "123/AB12345"
-        val employersUrl = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/fractions?$dateRangeParams"
-        val expectedResponse = Fractions("123/AB12345", Seq(FractionCalculation(localDate, Seq(Fraction("England", BigDecimal(0.83))))))
-        val json = Json.toJson[Fractions](expectedResponse)
-        val stubResponse = ok(json.toString)
+        val localDate        = LocalDate.of(2016, 4, 22)
+        val dateRange        = OpenEarlyDateRange(localDate)
+        val dateRangeParams  = dateRange.toParams
+        val empRef           = "123/AB12345"
+        val employersUrl     =
+          s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/fractions?$dateRangeParams"
+        val expectedResponse =
+          Fractions("123/AB12345", Seq(FractionCalculation(localDate, Seq(Fraction("England", BigDecimal(0.83))))))
+        val json             = Json.toJson[Fractions](expectedResponse)
+        val stubResponse     = ok(json.toString)
 
         stubGetServer(stubResponse, employersUrl)
 
@@ -185,12 +184,13 @@ class DesConnectorISpec
 
       "throw an exception when upstream returns a 404" in {
 
-        val localDate = LocalDate.of(2016, 4, 22)
-        val dateRange = OpenEarlyDateRange(localDate)
+        val localDate       = LocalDate.of(2016, 4, 22)
+        val dateRange       = OpenEarlyDateRange(localDate)
         val dateRangeParams = dateRange.toParams
-        val empRef = "123/AB12345"
-        val employersUrl = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/fractions?$dateRangeParams"
-        val stubResponse = notFound()
+        val empRef          = "123/AB12345"
+        val employersUrl    =
+          s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/fractions?$dateRangeParams"
+        val stubResponse    = notFound()
 
         stubGetServer(stubResponse, employersUrl)
 
@@ -207,12 +207,13 @@ class DesConnectorISpec
       }
       "throw an exception when upstream returns a 400" in {
 
-        val localDate = LocalDate.of(2016, 4, 22)
-        val dateRange = OpenEarlyDateRange(localDate)
+        val localDate       = LocalDate.of(2016, 4, 22)
+        val dateRange       = OpenEarlyDateRange(localDate)
         val dateRangeParams = dateRange.toParams
-        val empRef = "123/AB12345"
-        val employersUrl = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/fractions?$dateRangeParams"
-        val stubResponse = badRequest()
+        val empRef          = "123/AB12345"
+        val employersUrl    =
+          s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/fractions?$dateRangeParams"
+        val stubResponse    = badRequest()
 
         stubGetServer(stubResponse, employersUrl)
 
@@ -229,12 +230,13 @@ class DesConnectorISpec
       }
       "throw an exception when upstream returns an error that is neither 404 or 400" in {
 
-        val localDate = LocalDate.of(2016, 4, 22)
-        val dateRange = OpenEarlyDateRange(localDate)
+        val localDate       = LocalDate.of(2016, 4, 22)
+        val dateRange       = OpenEarlyDateRange(localDate)
         val dateRangeParams = dateRange.toParams
-        val empRef = "123/AB12345"
-        val employersUrl = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/fractions?$dateRangeParams"
-        val stubResponse = forbidden()
+        val empRef          = "123/AB12345"
+        val employersUrl    =
+          s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/fractions?$dateRangeParams"
+        val stubResponse    = forbidden()
 
         stubGetServer(stubResponse, employersUrl)
 
@@ -255,15 +257,16 @@ class DesConnectorISpec
   "have Levy Declarations endpoint and" must {
     "support original endpoint url with an empty empref" in {
 
-      val empRef = " "
-      val empRefWithSlash = " "
-      val localDate = LocalDate.of(2016, 11, 3)
-      val dateRange = OpenEarlyDateRange(localDate)
-      val dateRangeParams = dateRange.toParams
-      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
-      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
-      val json = Json.toJson[EmployerPaymentsSummary](expectedResponse)
-      val stubResponse = ok(json.toString)
+      val empRef                     = " "
+      val empRefWithSlash            = " "
+      val localDate                  = LocalDate.of(2016, 11, 3)
+      val dateRange                  = OpenEarlyDateRange(localDate)
+      val dateRangeParams            = dateRange.toParams
+      val expectedResponse           = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
+      val employerPaymentsSummaryUrl =
+        s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+      val json                       = Json.toJson[EmployerPaymentsSummary](expectedResponse)
+      val stubResponse               = ok(json.toString)
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
@@ -280,15 +283,16 @@ class DesConnectorISpec
     }
     "support original endpoint url" in {
 
-      val empRef = "123AB12345"
-      val empRefWithSlash = "123/AB12345"
-      val localDate = LocalDate.of(2016, 11, 3)
-      val dateRange = OpenEarlyDateRange(localDate)
-      val dateRangeParams = dateRange.toParams
-      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
-      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
-      val json = Json.toJson[EmployerPaymentsSummary](expectedResponse)
-      val stubResponse = ok(json.toString)
+      val empRef                     = "123AB12345"
+      val empRefWithSlash            = "123/AB12345"
+      val localDate                  = LocalDate.of(2016, 11, 3)
+      val dateRange                  = OpenEarlyDateRange(localDate)
+      val dateRangeParams            = dateRange.toParams
+      val expectedResponse           = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
+      val employerPaymentsSummaryUrl =
+        s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+      val json                       = Json.toJson[EmployerPaymentsSummary](expectedResponse)
+      val stubResponse               = ok(json.toString)
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
@@ -306,12 +310,13 @@ class DesConnectorISpec
 
     "throw an IllegalArgumentException when an unexpected json is returned from upstream" in {
 
-      val empRef = "123AB12345"
-      val localDate = LocalDate.of(2016, 11, 3)
-      val dateRange = OpenEarlyDateRange(localDate)
-      val dateRangeParams = dateRange.toParams
-      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
-      val stubResponse = ok("test")
+      val empRef                     = "123AB12345"
+      val localDate                  = LocalDate.of(2016, 11, 3)
+      val dateRange                  = OpenEarlyDateRange(localDate)
+      val dateRangeParams            = dateRange.toParams
+      val employerPaymentsSummaryUrl =
+        s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+      val stubResponse               = ok("test")
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
@@ -329,12 +334,13 @@ class DesConnectorISpec
 
     "throw a bad request exception when the upstream returns a 400" in {
 
-      val empRef = "123AB12345"
-      val localDate = LocalDate.of(2016, 11, 3)
-      val dateRange = OpenEarlyDateRange(localDate)
-      val dateRangeParams = dateRange.toParams
-      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
-      val stubResponse = badRequest()
+      val empRef                     = "123AB12345"
+      val localDate                  = LocalDate.of(2016, 11, 3)
+      val dateRange                  = OpenEarlyDateRange(localDate)
+      val dateRangeParams            = dateRange.toParams
+      val employerPaymentsSummaryUrl =
+        s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+      val stubResponse               = badRequest()
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
@@ -351,12 +357,13 @@ class DesConnectorISpec
     }
     "throw a not found exception when the upstream returns a 404" in {
 
-      val empRef = "123AB12345"
-      val localDate = LocalDate.of(2016, 11, 3)
-      val dateRange = OpenEarlyDateRange(localDate)
-      val dateRangeParams = dateRange.toParams
-      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
-      val stubResponse = notFound()
+      val empRef                     = "123AB12345"
+      val localDate                  = LocalDate.of(2016, 11, 3)
+      val dateRange                  = OpenEarlyDateRange(localDate)
+      val dateRangeParams            = dateRange.toParams
+      val employerPaymentsSummaryUrl =
+        s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+      val stubResponse               = notFound()
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
@@ -373,12 +380,13 @@ class DesConnectorISpec
     }
     "throw another type of exception when the response is neither a 400 or 404" in {
 
-      val empRef = "123AB12345"
-      val localDate = LocalDate.of(2016, 11, 3)
-      val dateRange = OpenEarlyDateRange(localDate)
-      val dateRangeParams = dateRange.toParams
-      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
-      val stubResponse = forbidden()
+      val empRef                     = "123AB12345"
+      val localDate                  = LocalDate.of(2016, 11, 3)
+      val dateRange                  = OpenEarlyDateRange(localDate)
+      val dateRangeParams            = dateRange.toParams
+      val employerPaymentsSummaryUrl =
+        s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+      val stubResponse               = forbidden()
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
@@ -397,12 +405,12 @@ class DesConnectorISpec
     "have Employer Details endpoint and" must {
       "support original endpoint url" in {
 
-        val empRef = "123AB12345"
-        val empRefWithSlash = "123/AB12345"
-        val expectedResponse = DesignatoryDetails(Some(empRef), None, None)
+        val empRef             = "123AB12345"
+        val empRefWithSlash    = "123/AB12345"
+        val expectedResponse   = DesignatoryDetails(Some(empRef), None, None)
         val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
-        val json = Json.toJson[DesignatoryDetails](expectedResponse)
-        val stubResponse = ok(json.toString)
+        val json               = Json.toJson[DesignatoryDetails](expectedResponse)
+        val stubResponse       = ok(json.toString)
 
         stubGetServer(stubResponse, employerDetailsUrl)
 
@@ -420,13 +428,15 @@ class DesConnectorISpec
 
       "support original endpoint url with employer links" in {
 
-        val empRef = "123AB12345"
-        val empRefWithSlash = "123/AB12345"
-        val expectedResponse = DesignatoryDetails(Some(empRef), Some(DesignatoryDetailsData(None, None, None)), None)
-        val expectedStubResponse = HodDesignatoryDetailsLinks(Some(DesignatoryDetailsLinks(Some("/paye/employer/123/AB12345/designatory-details"), None)))
-        val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
-        val json = Json.toJson[HodDesignatoryDetailsLinks](expectedStubResponse)
-        val stubResponse = ok(json.toString)
+        val empRef               = "123AB12345"
+        val empRefWithSlash      = "123/AB12345"
+        val expectedResponse     = DesignatoryDetails(Some(empRef), Some(DesignatoryDetailsData(None, None, None)), None)
+        val expectedStubResponse = HodDesignatoryDetailsLinks(
+          Some(DesignatoryDetailsLinks(Some("/paye/employer/123/AB12345/designatory-details"), None))
+        )
+        val employerDetailsUrl   = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
+        val json                 = Json.toJson[HodDesignatoryDetailsLinks](expectedStubResponse)
+        val stubResponse         = ok(json.toString)
 
         stubGetServer(stubResponse, employerDetailsUrl)
 
@@ -444,15 +454,17 @@ class DesConnectorISpec
 
       "support original endpoint url with communication links" in {
 
-        val empRef = "123AB12345"
-        val empRefWithSlash = "123/AB12345"
-        val expectedResponse = DesignatoryDetails(Some(empRef), None, Some(DesignatoryDetailsData(None, None, None)))
-        val expectedStubResponse = HodDesignatoryDetailsLinks(Some(DesignatoryDetailsLinks(None, Some("/paye/employer/123/AB12345/designatory-details"))))
-        val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
-        val json = Json.toJson[HodDesignatoryDetailsLinks](expectedStubResponse)
-        val stubResponse = ok(json.toString)
-        val getDetailsUrl = "/sandbox/datatest"
-        val detailsStubResponse = Json.toJson[DesignatoryDetailsData](DesignatoryDetailsData(None, None, None))
+        val empRef                  = "123AB12345"
+        val empRefWithSlash         = "123/AB12345"
+        val expectedResponse        = DesignatoryDetails(Some(empRef), None, Some(DesignatoryDetailsData(None, None, None)))
+        val expectedStubResponse    = HodDesignatoryDetailsLinks(
+          Some(DesignatoryDetailsLinks(None, Some("/paye/employer/123/AB12345/designatory-details")))
+        )
+        val employerDetailsUrl      = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
+        val json                    = Json.toJson[HodDesignatoryDetailsLinks](expectedStubResponse)
+        val stubResponse            = ok(json.toString)
+        val getDetailsUrl           = "/sandbox/datatest"
+        val detailsStubResponse     = Json.toJson[DesignatoryDetailsData](DesignatoryDetailsData(None, None, None))
         val detailsStubResponseJson = ok(detailsStubResponse.toString())
 
         stubGetServer(stubResponse, employerDetailsUrl)
@@ -472,13 +484,13 @@ class DesConnectorISpec
 
       "support original endpoint url when the getDetails call fails" in {
 
-        val empRef = "123AB12345"
-        val empRefWithSlash = "123/AB12345"
-        val expectedResponse = DesignatoryDetails(Some(empRef), None, None)
+        val empRef               = "123AB12345"
+        val empRefWithSlash      = "123/AB12345"
+        val expectedResponse     = DesignatoryDetails(Some(empRef), None, None)
         val expectedStubResponse = HodDesignatoryDetailsLinks(Some(DesignatoryDetailsLinks(None, Some("test"))))
-        val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
-        val json = Json.toJson[HodDesignatoryDetailsLinks](expectedStubResponse)
-        val stubResponse = ok(json.toString)
+        val employerDetailsUrl   = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
+        val json                 = Json.toJson[HodDesignatoryDetailsLinks](expectedStubResponse)
+        val stubResponse         = ok(json.toString)
 
         stubGetServer(stubResponse, employerDetailsUrl)
 
@@ -495,10 +507,10 @@ class DesConnectorISpec
       }
       "throw an error if the http call in getDetails returns a 400" in {
 
-        val empRef = "123AB12345"
-        val empRefWithSlash = "123/AB12345"
+        val empRef             = "123AB12345"
+        val empRefWithSlash    = "123/AB12345"
         val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
-        val stubResponse = badRequest()
+        val stubResponse       = badRequest()
 
         stubGetServer(stubResponse, employerDetailsUrl)
 
@@ -516,10 +528,10 @@ class DesConnectorISpec
 
       "throw an error when the upstream returns a 404" in {
 
-        val empRef = "123AB12345"
-        val empRefWithSlash = "123/AB12345"
+        val empRef             = "123AB12345"
+        val empRefWithSlash    = "123/AB12345"
         val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
-        val stubResponse = notFound()
+        val stubResponse       = notFound()
 
         stubGetServer(stubResponse, employerDetailsUrl)
 
@@ -537,10 +549,10 @@ class DesConnectorISpec
 
       "throw an error when the upstream returns a 400" in {
 
-        val empRef = "123AB12345"
-        val empRefWithSlash = "123/AB12345"
+        val empRef             = "123AB12345"
+        val empRefWithSlash    = "123/AB12345"
         val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
-        val stubResponse = badRequest()
+        val stubResponse       = badRequest()
 
         stubGetServer(stubResponse, employerDetailsUrl)
 
@@ -559,10 +571,10 @@ class DesConnectorISpec
 
     "throw an error when the upstream neither a 400 nor a 404" in {
 
-      val empRef = "123AB12345"
-      val empRefWithSlash = "123/AB12345"
+      val empRef             = "123AB12345"
+      val empRefWithSlash    = "123/AB12345"
       val employerDetailsUrl = s"$baseUrl/paye/employer/$empRefWithSlash/designatory-details"
-      val stubResponse = forbidden()
+      val stubResponse       = forbidden()
 
       stubGetServer(stubResponse, employerDetailsUrl)
 
@@ -582,13 +594,14 @@ class DesConnectorISpec
   "have Employment Check endpoint and" must {
     "throw a bad request error when a 400 is thrown" in {
 
-      val empRef = "123AB12345"
-      val nino = "AA122345A"
-      val localDate = LocalDate.of(2016, 11, 3)
-      val dateRange = ClosedDateRange(localDate, localDate)
-      val dateRangeParams = dateRange.toParams
-      val employerDetailsUrl = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/employed/$nino?$dateRangeParams"
-      val stubResponse = badRequest()
+      val empRef             = "123AB12345"
+      val nino               = "AA122345A"
+      val localDate          = LocalDate.of(2016, 11, 3)
+      val dateRange          = ClosedDateRange(localDate, localDate)
+      val dateRangeParams    = dateRange.toParams
+      val employerDetailsUrl =
+        s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/employed/$nino?$dateRangeParams"
+      val stubResponse       = badRequest()
 
       stubGetServer(stubResponse, employerDetailsUrl)
 
@@ -606,13 +619,14 @@ class DesConnectorISpec
 
     "return Unknown when a 404 is thrown" in {
 
-      val empRef = "123AB12345"
-      val nino = "AA122345A"
-      val localDate = LocalDate.of(2016, 11, 3)
-      val dateRange = ClosedDateRange(localDate, localDate)
-      val dateRangeParams = dateRange.toParams
-      val employerDetailsUrl = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/employed/$nino?$dateRangeParams"
-      val stubResponse = notFound()
+      val empRef             = "123AB12345"
+      val nino               = "AA122345A"
+      val localDate          = LocalDate.of(2016, 11, 3)
+      val dateRange          = ClosedDateRange(localDate, localDate)
+      val dateRangeParams    = dateRange.toParams
+      val employerDetailsUrl =
+        s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/employed/$nino?$dateRangeParams"
+      val stubResponse       = notFound()
 
       stubGetServer(stubResponse, employerDetailsUrl)
 
@@ -630,13 +644,14 @@ class DesConnectorISpec
 
     "throw an error when neither 400 nor 404 is thrown" in {
 
-      val empRef = "123AB12345"
-      val nino = "AA122345A"
-      val localDate = LocalDate.of(2016, 11, 3)
-      val dateRange = ClosedDateRange(localDate, localDate)
-      val dateRangeParams = dateRange.toParams
-      val employerDetailsUrl = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/employed/$nino?$dateRangeParams"
-      val stubResponse = forbidden()
+      val empRef             = "123AB12345"
+      val nino               = "AA122345A"
+      val localDate          = LocalDate.of(2016, 11, 3)
+      val dateRange          = ClosedDateRange(localDate, localDate)
+      val dateRangeParams    = dateRange.toParams
+      val employerDetailsUrl =
+        s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/employed/$nino?$dateRangeParams"
+      val stubResponse       = forbidden()
 
       stubGetServer(stubResponse, employerDetailsUrl)
 
@@ -655,14 +670,15 @@ class DesConnectorISpec
 
   "supply default dates when not specified" in {
 
-    val empRef = "123AB12345"
-    val empRefWithSlash = "123/AB12345"
-    val localDate = LocalDate.of(2016, 4, 22)
-    val dateRange = OpenEarlyDateRange(localDate)
-    val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?toDate=${localDate.toString}"
-    val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
-    val json = Json.toJson[EmployerPaymentsSummary](expectedResponse)
-    val stubResponse = ok(json.toString)
+    val empRef                     = "123AB12345"
+    val empRefWithSlash            = "123/AB12345"
+    val localDate                  = LocalDate.of(2016, 4, 22)
+    val dateRange                  = OpenEarlyDateRange(localDate)
+    val employerPaymentsSummaryUrl =
+      s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?toDate=${localDate.toString}"
+    val expectedResponse           = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
+    val json                       = Json.toJson[EmployerPaymentsSummary](expectedResponse)
+    val stubResponse               = ok(json.toString)
 
     stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
@@ -682,14 +698,15 @@ class DesConnectorISpec
 
     "convert invalid empty json to valid response" in {
 
-      val empRef = "123AB12345"
-      val empRefWithSlash = "123/AB12345"
-      val localDate = LocalDate.of(2016, 4, 22)
-      val dateRange = OpenEarlyDateRange(localDate)
-      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?toDate=${localDate.toString}"
-      val expectedResponse = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
-      val json = Json.parse("""{"empref":"123AB12345"}""")
-      val stubResponse = ok(json.toString)
+      val empRef                     = "123AB12345"
+      val empRefWithSlash            = "123/AB12345"
+      val localDate                  = LocalDate.of(2016, 4, 22)
+      val dateRange                  = OpenEarlyDateRange(localDate)
+      val employerPaymentsSummaryUrl =
+        s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?toDate=${localDate.toString}"
+      val expectedResponse           = EmployerPaymentsSummary(empRefWithSlash, Seq[EmployerPaymentSummary]())
+      val json                       = Json.parse("""{"empref":"123AB12345"}""")
+      val stubResponse               = ok(json.toString)
 
       stubGetServer(stubResponse, employerPaymentsSummaryUrl)
 
@@ -707,13 +724,14 @@ class DesConnectorISpec
 
     "convert invalid bad date-time json values to valid date times" in {
 
-      val empRef = "123AB12345"
-      val empRefWithSlash = "123/AB12345"
-      val dateFrom = LocalDate.of(2016, 7, 1)
-      val dateTo = LocalDate.of(2016, 7, 15)
-      val dateRange = ClosedDateRange(dateFrom, dateTo)
-      val dateRangeParams = dateRange.toParams
-      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+      val empRef                     = "123AB12345"
+      val empRefWithSlash            = "123/AB12345"
+      val dateFrom                   = LocalDate.of(2016, 7, 1)
+      val dateTo                     = LocalDate.of(2016, 7, 15)
+      val dateRange                  = ClosedDateRange(dateFrom, dateTo)
+      val dateRangeParams            = dateRange.toParams
+      val employerPaymentsSummaryUrl =
+        s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
 
       val expectedResponse = EmployerPaymentsSummary(
         empRefWithSlash,
@@ -721,8 +739,10 @@ class DesConnectorISpec
           EmployerPaymentSummary(
             12345678L,
             LocalDateTime.parse("2016-07-14T16:05:44.000"),
-            LocalDateTime.parse("2016-07-14T16:05:23.000"), "16-17",
-            apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(600.00), BigDecimal(15000), "11")))
+            LocalDateTime.parse("2016-07-14T16:05:23.000"),
+            "16-17",
+            apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(600.00), BigDecimal(15000), "11"))
+          )
         )
       )
 
@@ -763,23 +783,67 @@ class DesConnectorISpec
 
     "convert valid json values to valid objects" in {
 
-      val empRef = "123AB12345"
-      val dateFrom = LocalDate.of(2016, 7, 1)
-      val dateTo = LocalDate.of(2016, 7, 15)
-      val dateRange = ClosedDateRange(dateFrom, dateTo)
-      val dateRangeParams = dateRange.toParams
-      val employerPaymentsSummaryUrl = s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
+      val empRef                     = "123AB12345"
+      val dateFrom                   = LocalDate.of(2016, 7, 1)
+      val dateTo                     = LocalDate.of(2016, 7, 15)
+      val dateRange                  = ClosedDateRange(dateFrom, dateTo)
+      val dateRangeParams            = dateRange.toParams
+      val employerPaymentsSummaryUrl =
+        s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?$dateRangeParams"
 
       val expectedResponse =
-        EmployerPaymentsSummary("123/AB12345",
+        EmployerPaymentsSummary(
+          "123/AB12345",
           Seq(
-            EmployerPaymentSummary(12345678L, LocalDateTime.parse("2016-07-14T16:05:23.000"), LocalDateTime.parse("2016-07-14T16:05:23.000"), "16-17", apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(600.00), BigDecimal(15000), "11"))),
-            EmployerPaymentSummary(12345679L, LocalDateTime.parse("2015-04-07T16:05:23.000"), LocalDateTime.parse("2015-04-07T16:05:23.000"), "15-16", Some(ClosedDateRange(LocalDate.parse("2016-12-13"), LocalDate.parse("2017-03-22")))),
-            EmployerPaymentSummary(12345680L, LocalDateTime.parse("2016-05-07T16:05:23.000"), LocalDateTime.parse("2016-05-07T16:05:23.000"), "16-17", apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(500.00), BigDecimal(15000), "1"))),
-            EmployerPaymentSummary(12345681L, LocalDateTime.parse("2016-06-07T16:05:23.000"), LocalDateTime.parse("2016-06-07T16:05:23.000"), "16-17", apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(1000.00), BigDecimal(15000), "2"))),
-            EmployerPaymentSummary(12345682L, LocalDateTime.parse("2016-06-15T16:20:23.000"), LocalDateTime.parse("2016-06-15T16:20:23.000"), "16-17", apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(200.00), BigDecimal(15000), "2"))),
-            EmployerPaymentSummary(12345683L, LocalDateTime.parse("2016-07-15T16:05:23.000"), LocalDateTime.parse("2016-07-15T16:05:23.000"), "16-17", inactivePeriod = Some(ClosedDateRange(LocalDate.parse("2016-06-06"), LocalDate.parse("2016-09-05")))),
-            EmployerPaymentSummary(12345684L, LocalDateTime.parse("2016-10-15T16:05:23.000"), LocalDateTime.parse("2016-10-15T16:05:23.000"), "16-17", finalSubmission = Some(SchemeCeased(schemeCeased = true, LocalDate.parse("2016-09-05"), None)))
+            EmployerPaymentSummary(
+              12345678L,
+              LocalDateTime.parse("2016-07-14T16:05:23.000"),
+              LocalDateTime.parse("2016-07-14T16:05:23.000"),
+              "16-17",
+              apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(600.00), BigDecimal(15000), "11"))
+            ),
+            EmployerPaymentSummary(
+              12345679L,
+              LocalDateTime.parse("2015-04-07T16:05:23.000"),
+              LocalDateTime.parse("2015-04-07T16:05:23.000"),
+              "15-16",
+              Some(ClosedDateRange(LocalDate.parse("2016-12-13"), LocalDate.parse("2017-03-22")))
+            ),
+            EmployerPaymentSummary(
+              12345680L,
+              LocalDateTime.parse("2016-05-07T16:05:23.000"),
+              LocalDateTime.parse("2016-05-07T16:05:23.000"),
+              "16-17",
+              apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(500.00), BigDecimal(15000), "1"))
+            ),
+            EmployerPaymentSummary(
+              12345681L,
+              LocalDateTime.parse("2016-06-07T16:05:23.000"),
+              LocalDateTime.parse("2016-06-07T16:05:23.000"),
+              "16-17",
+              apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(1000.00), BigDecimal(15000), "2"))
+            ),
+            EmployerPaymentSummary(
+              12345682L,
+              LocalDateTime.parse("2016-06-15T16:20:23.000"),
+              LocalDateTime.parse("2016-06-15T16:20:23.000"),
+              "16-17",
+              apprenticeshipLevy = Some(ApprenticeshipLevy(BigDecimal(200.00), BigDecimal(15000), "2"))
+            ),
+            EmployerPaymentSummary(
+              12345683L,
+              LocalDateTime.parse("2016-07-15T16:05:23.000"),
+              LocalDateTime.parse("2016-07-15T16:05:23.000"),
+              "16-17",
+              inactivePeriod = Some(ClosedDateRange(LocalDate.parse("2016-06-06"), LocalDate.parse("2016-09-05")))
+            ),
+            EmployerPaymentSummary(
+              12345684L,
+              LocalDateTime.parse("2016-10-15T16:05:23.000"),
+              LocalDateTime.parse("2016-10-15T16:05:23.000"),
+              "16-17",
+              finalSubmission = Some(SchemeCeased(schemeCeased = true, LocalDate.parse("2016-09-05"), None))
+            )
           )
         )
 

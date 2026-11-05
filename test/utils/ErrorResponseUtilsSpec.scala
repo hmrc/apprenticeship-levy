@@ -34,7 +34,7 @@ class ErrorResponseUtilsSpec extends AnyWordSpec with Matchers {
       val json: JsValue = convertToJson(errorResponse)
 
       json mustBe Json.obj(
- "code" -> "NOT_FOUND",
+        "code"    -> "NOT_FOUND",
         "message" -> "Error not found"
       )
     }
@@ -44,7 +44,7 @@ class ErrorResponseUtilsSpec extends AnyWordSpec with Matchers {
       val json: JsValue = convertToJson(errorResponse)
 
       json mustBe Json.obj(
-        "code" -> "No status code provided",
+        "code"    -> "No status code provided",
         "message" -> "Error not found"
       )
     }
@@ -52,7 +52,7 @@ class ErrorResponseUtilsSpec extends AnyWordSpec with Matchers {
 
   "errorResponseToResult" must {
     "return a Result with the correct status code and json body" in {
-      val errorResponse = ErrorResponse(NOT_FOUND, "Error not found", Some("NOT_FOUND"))
+      val errorResponse          = ErrorResponse(NOT_FOUND, "Error not found", Some("NOT_FOUND"))
       val result: Future[Result] = Future.successful(errorResponseToResult(errorResponse))
 
       status(result) mustBe NOT_FOUND
@@ -60,7 +60,7 @@ class ErrorResponseUtilsSpec extends AnyWordSpec with Matchers {
       val jsonBody = contentAsJson(result)
 
       jsonBody mustBe Json.obj(
-        "code" -> "NOT_FOUND",
+        "code"    -> "NOT_FOUND",
         "message" -> "Error not found"
       )
     }

@@ -19,6 +19,4 @@ package controllers.auth
 import play.api.mvc.{Request, WrappedRequest}
 import uk.gov.hmrc.domain.EmpRef
 
-case class AuthenticatedRequest[A](request: Request[A],
-                                   empRef: Option[EmpRef]
-                                  ) extends WrappedRequest[A](request)
+case class AuthenticatedRequest[A](request: Request[A], empRef: Option[EmpRef]) extends WrappedRequest[A](request)

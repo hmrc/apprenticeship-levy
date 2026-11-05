@@ -19,8 +19,8 @@ package utils
 import uk.gov.hmrc.domain.{Nino, NinoGenerator}
 
 trait NinoGenerator {
-  private val ninoGenerator = NinoGenerator()
-  def generateNino(): Nino = ninoGenerator.nextNino
+  private val ninoGenerator                        = NinoGenerator()
+  def generateNino(): Nino                         = ninoGenerator.nextNino
   def generateNinoWithPrefix(prefix: String): Nino = {
     require(prefix.length == 2)
     Nino(ninoGenerator.nextNino.toString().replaceFirst("[A-Z]{2}", prefix))

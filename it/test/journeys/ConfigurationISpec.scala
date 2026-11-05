@@ -27,7 +27,7 @@ import util.StubbingData.*
 import util.WireMockHelper
 
 class ConfigurationISpec
-  extends AnyWordSpec
+    extends AnyWordSpec
     with GuiceOneAppPerSuite
     with WireMockHelper
     with ScalaCheckPropertyChecks {

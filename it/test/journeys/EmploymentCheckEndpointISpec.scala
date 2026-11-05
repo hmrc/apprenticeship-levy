@@ -34,7 +34,7 @@ import util.WireMockHelper
 import views.html.helper
 
 class EmploymentCheckEndpointISpec
-  extends AnyWordSpec
+    extends AnyWordSpec
     with GuiceOneAppPerSuite
     with WireMockHelper
     with ScalaCheckPropertyChecks {
@@ -58,7 +58,7 @@ class EmploymentCheckEndpointISpec
             // set up
             val request =
               FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/AA123456A?fromDate=2016-03-03&toDate=2016-06-30")
-              .withHeaders(standardDesHeaders()*)
+                .withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -66,7 +66,9 @@ class EmploymentCheckEndpointISpec
             // check
             contentType(result) mustBe Some("application/json")
             val json = contentAsJson(result)
-            json mustBe Json.parse("""{"empref":"123/AB12345","nino":"AA123456A","fromDate":"2016-03-03","toDate":"2016-06-30","employed":true}""")
+            json mustBe Json.parse(
+              """{"empref":"123/AB12345","nino":"AA123456A","fromDate":"2016-03-03","toDate":"2016-06-30","employed":true}"""
+            )
           }
 
           "?fromDate=2016-03-03&toDate=2016-06-30: return 'not recognised'" in {
@@ -82,7 +84,9 @@ class EmploymentCheckEndpointISpec
             info(contentAsString(result))
             contentType(result) mustBe Some("application/json")
             val json = contentAsJson(result)
-            json mustBe Json.parse("""{"code":"EPAYE_UNKNOWN","message":"The provided NINO or EMPREF was not recognised"}""")
+            json mustBe Json.parse(
+              """{"code":"EPAYE_UNKNOWN","message":"The provided NINO or EMPREF was not recognised"}"""
+            )
           }
 
           "?fromDate=2015-03-03&toDate=2015-06-30: return 'not employed'" in {
@@ -97,7 +101,9 @@ class EmploymentCheckEndpointISpec
             // check
             contentType(result) mustBe Some("application/json")
             val json = contentAsJson(result)
-            json mustBe Json.parse("""{"empref":"123/AB12345","nino":"EE123456A","fromDate":"2016-03-03","toDate":"2016-06-30","employed":false}""")
+            json mustBe Json.parse(
+              """{"empref":"123/AB12345","nino":"EE123456A","fromDate":"2016-03-03","toDate":"2016-06-30","employed":false}"""
+            )
           }
         }
 
@@ -109,17 +115,22 @@ class EmploymentCheckEndpointISpec
             forAll(emprefs) { (empref: String) =>
               whenever(empref.nonEmpty) {
                 val request =
-                  FakeRequest(GET, s"$context/epaye/${helper.urlEncode(empref)}/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
+                  FakeRequest(
+                    GET,
+                    s"$context/epaye/${helper.urlEncode(empref)}/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30"
+                  )
                     .withHeaders(standardDesHeaders()*)
 
                 // test
-                val result = route(app, request).get
+                val result     = route(app, request).get
                 val httpStatus = status(result)
 
                 // check
                 httpStatus mustBe BAD_REQUEST
                 contentType(result) mustBe Some("application/json")
-                contentAsString(result) must include("""is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded."""")
+                contentAsString(result) must include(
+                  """is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded.""""
+                )
               }
             }
           }
@@ -169,17 +180,20 @@ class EmploymentCheckEndpointISpec
               "123456789", // All 9 characters are numbers
               "?<>~`@£!+", // All 9 characters are special
               "ABCDEFGHI", // All 9 characters are capital letters
-              "jklmnopqr", // All 9 characters are small letters
+              "jklmnopqr" // All 9 characters are small letters
             )
 
             for (invalidNationalInsuranceNumber <- invalidNationalInsuranceNumbers) {
               val request =
-                FakeRequest(GET, s"$context/epaye/444%2FAB12345/employed/${helper.urlEncode(invalidNationalInsuranceNumber)}" +
-                  s"?fromDate=2015-03-03&toDate=2015-06-30")
+                FakeRequest(
+                  GET,
+                  s"$context/epaye/444%2FAB12345/employed/${helper.urlEncode(invalidNationalInsuranceNumber)}" +
+                    s"?fromDate=2015-03-03&toDate=2015-06-30"
+                )
                   .withHeaders(standardDesHeaders()*)
 
               // test
-              val result = route(app, request).get
+              val result     = route(app, request).get
               val httpStatus = status(result)
 
               // check
@@ -192,24 +206,28 @@ class EmploymentCheckEndpointISpec
           Seq("fromDate", "toDate").foreach { param =>
             s"return 400 when $param param is invalid" in {
               // set up
-              val dates = for {str <- Gen.listOf(Gen.alphaNumChar)} yield str.mkString
+              val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
 
               forAll(dates) { (date: String) =>
                 whenever(date.nonEmpty) {
                   val requestUrl = param match {
-                    case "fromDate" => s"$context/epaye/123%2FAB12345/employed/RA123456C?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
-                    case _ => s"/sandbox/epaye/123%2FAB12345/employed/RA123456C?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
+                    case "fromDate" =>
+                      s"$context/epaye/123%2FAB12345/employed/RA123456C?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
+                    case _          =>
+                      s"/sandbox/epaye/123%2FAB12345/employed/RA123456C?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
                   }
-                  val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders()*)
+                  val request    = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders()*)
 
                   // test
-                  val result = route(app, request).get
+                  val result     = route(app, request).get
                   val httpStatus = status(result)
 
                   // check
                   httpStatus mustBe BAD_REQUEST
                   contentType(result) mustBe Some("application/json")
-                  contentAsString(result) must include("""date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later.""")
+                  contentAsString(result) must include(
+                    """date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later."""
+                  )
                 }
               }
             }
@@ -219,16 +237,18 @@ class EmploymentCheckEndpointISpec
             // set up
             val request =
               FakeRequest(GET, s"$context/epaye/400%2FAB12345/employed/RA123456C?fromDate=2015-06-03&toDate=2015-03-30")
-              .withHeaders(standardDesHeaders()*)
+                .withHeaders(standardDesHeaders()*)
 
             // test
-            val result = route(app, request).get
+            val result     = route(app, request).get
             val httpStatus = status(result)
 
             // check
             httpStatus mustBe BAD_REQUEST
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"BAD_REQUEST","message":"From date was after to date"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"BAD_REQUEST","message":"From date was after to date"}"""
+            )
           }
 
           "return 400 when DES returns 400" in {
@@ -244,7 +264,9 @@ class EmploymentCheckEndpointISpec
             val httpStatus = status(result)
             httpStatus mustBe BAD_REQUEST
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}"""
+            )
           }
 
           "return http status 401 when DES returns 40" in {
@@ -260,7 +282,9 @@ class EmploymentCheckEndpointISpec
             val httpStatus = status(result)
             httpStatus mustBe 401
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}"""
+            )
           }
 
           "return http status 403 when DES returns 403" in {
@@ -275,7 +299,9 @@ class EmploymentCheckEndpointISpec
             // check
             status(result) mustBe 403
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}"""
+            )
           }
         }
 
@@ -322,7 +348,7 @@ class EmploymentCheckEndpointISpec
             // check
             status(result) mustBe REQUEST_TIMEOUT
             contentType(result) mustBe Some("application/json")
-            contentAsString(result) must include ("DES not responding error")
+            contentAsString(result) must include("DES not responding error")
           }
 
           "return http status 503 when DES HTTP 500" in {
@@ -337,7 +363,9 @@ class EmploymentCheckEndpointISpec
             // check
             status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}"""
+            )
           }
 
           "return http status 503 when DES HTTP 503" in {
@@ -352,7 +380,9 @@ class EmploymentCheckEndpointISpec
             // check
             status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}"""
+            )
           }
         }
       }

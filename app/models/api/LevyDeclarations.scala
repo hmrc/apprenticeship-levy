@@ -27,17 +27,18 @@ object PayrollPeriod {
   implicit val formats: OFormat[PayrollPeriod] = Json.format[PayrollPeriod]
 }
 
-case class LevyDeclaration(id: Long,
-                           submissionTime: LocalDateTime,
-                           dateCeased: Option[LocalDate] = None,
-                           inactiveFrom: Option[LocalDate] = None,
-                           inactiveTo: Option[LocalDate] = None,
-                           payrollPeriod: Option[PayrollPeriod] = None,
-                           levyDueYTD: Option[BigDecimal] = None,
-                           levyAllowanceForFullYear: Option[BigDecimal] = None,
-                           noPaymentForPeriod: Option[Boolean] = None,
-                           submissionId: Long = 0L)
-
+case class LevyDeclaration(
+  id: Long,
+  submissionTime: LocalDateTime,
+  dateCeased: Option[LocalDate] = None,
+  inactiveFrom: Option[LocalDate] = None,
+  inactiveTo: Option[LocalDate] = None,
+  payrollPeriod: Option[PayrollPeriod] = None,
+  levyDueYTD: Option[BigDecimal] = None,
+  levyAllowanceForFullYear: Option[BigDecimal] = None,
+  noPaymentForPeriod: Option[Boolean] = None,
+  submissionId: Long = 0L
+)
 
 object LevyDeclaration {
   implicit val ldtFormats: Format[LocalDateTime] = new Format[LocalDateTime] {

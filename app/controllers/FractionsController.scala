@@ -38,40 +38,36 @@ trait FractionsController {
 
   // scalastyle:off
   def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] =
-    (withValidAcceptHeader andThen authAction).async {
-      implicit request =>
-        // scalastyle:on
-        val validatedFromDate = validateFromDate(fromDate)
-        val validatedToDate = validateToDate(toDate)
+    (withValidAcceptHeader andThen authAction).async { implicit request =>
+      // scalastyle:on
+      val validatedFromDate = validateFromDate(fromDate)
+      val validatedToDate   = validateToDate(toDate)
 
-        if (validatedFromDate.isAfter(validatedToDate)) {
-          Future.successful(ErrorResponseUtils.errorResponseToResult(ErrorResponses.ErrorFromDateAfterToDate))
-        } else {
-          desConnector.fractions(toDESFormat(ref.empref), ClosedDateRange(validatedFromDate, validatedToDate)) map { fs =>
-            Ok(Json.toJson(fs))
-          } recover desErrorHandler
-        }
-  }
+      if (validatedFromDate.isAfter(validatedToDate)) {
+        Future.successful(ErrorResponseUtils.errorResponseToResult(ErrorResponses.ErrorFromDateAfterToDate))
+      } else {
+        desConnector.fractions(toDESFormat(ref.empref), ClosedDateRange(validatedFromDate, validatedToDate)) map { fs =>
+          Ok(Json.toJson(fs))
+        } recover desErrorHandler
+      }
+    }
 
-  def validateFromDate(fromDate: Option[LocalDate]): LocalDate = {
+  def validateFromDate(fromDate: Option[LocalDate]): LocalDate =
     fromDate match {
       case Some(date) => date
-      case None => LocalDate.now().minusMonths(defaultPriorMonthsForFromDate)
+      case None       => LocalDate.now().minusMonths(defaultPriorMonthsForFromDate)
     }
-  }
 
-  def validateToDate(toDate: Option[LocalDate]): LocalDate = {
+  def validateToDate(toDate: Option[LocalDate]): LocalDate =
     toDate match {
       case Some(date) => date
-      case None => LocalDate.now()
+      case None       => LocalDate.now()
     }
-  }
 }
 
-/**
- * This needs to be a separate trait as the fractions endpoint needs to have auth enabled, but
- * the calculation date endpoint doesn't
- */
+/** This needs to be a separate trait as the fractions endpoint needs to have auth enabled, but the calculation date
+  * endpoint doesn't
+  */
 trait FractionsCalculationDateController {
   self: DesController =>
 
@@ -81,11 +77,10 @@ trait FractionsCalculationDateController {
 
   // scalastyle:off
   def fractionCalculationDate: Action[AnyContent] =
-    (withValidAcceptHeader andThen authAction).async {
-      implicit request =>
-        // scalastyle:on
-        desConnector.fractionCalculationDate map { date =>
-          Ok(Json.toJson(date))
-        } recover desErrorHandler
+    (withValidAcceptHeader andThen authAction).async { implicit request =>
+      // scalastyle:on
+      desConnector.fractionCalculationDate map { date =>
+        Ok(Json.toJson(date))
+      } recover desErrorHandler
     }
 }
