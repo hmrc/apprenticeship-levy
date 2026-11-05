@@ -36,12 +36,11 @@ class ConditionalRouter @Inject() (
   def isInExternalTest: Boolean = appContext.externalTestModeEnabled
 
   override def routes: Routes =
-    isInExternalTest match {
-      case true  =>
-        logger.debug("In External Test Environment: Using externaltest.routes")
-        externalTestRoutes.routes
-      case false =>
-        logger.debug("Not in External Test Environment: Using nonexternaltest.routes")
-        nonexternaltestRoutes.routes
+    if (isInExternalTest) {
+      logger.debug("In External Test Environment: Using externaltest.routes")
+      externalTestRoutes.routes
+    } else {
+      logger.debug("Not in External Test Environment: Using nonexternaltest.routes")
+      nonexternaltestRoutes.routes
     }
 }
