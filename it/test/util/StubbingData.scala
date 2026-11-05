@@ -55,7 +55,7 @@ object StubbingData {
     "play.ws.timeout.request"               -> "500 milliseconds",
     "play.ws.timeout.connection"            -> "500 milliseconds",
     "featureFlags.hip.api-5965"             -> false,
-    "featureFlags.hip.api-5967"             -> false,
+    "featureFlags.hip.api-6017"             -> false,
     "microservice.services.stub-auth.port"  -> serverPort,
     "microservice.services.stub-auth.path"  -> "",
     "microservice.services.stub-des.port"   -> serverPort,
@@ -71,7 +71,7 @@ object StubbingData {
   def wireMockConfigurationHip(serverPort: Int): Map[String, Any] =
     wireMockConfiguration(serverPort) ++ Map(
       "featureFlags.hip.api-5965"           -> true,
-      "featureFlags.hip.api-5967"           -> true,
+      "featureFlags.hip.api-6017"           -> true,
       "microservice.services.stub-hip.port" -> serverPort,
       "microservice.services.stub-hip.path" -> "",
       "microservice.services.hip.port"      -> serverPort,

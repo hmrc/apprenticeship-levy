@@ -136,7 +136,7 @@ trait EmploymentCheckEndpoint {
     ec: ExecutionContext
   ): Future[EmploymentCheckStatus] = {
     val dateParams = dateRange.toParams
-    val useHip     = ip.useHipFor5967
+    val useHip     = ip.useHipFor6017
     val url        =
       s"${ipBaseUrl(useHip)}/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?$dateParams"
 
@@ -385,7 +385,7 @@ trait IntegrationPlatformConnector
       .setHeader("X-Transmitting-System" -> "HIP")
 
   def useHipFor5965: Boolean = appContext.api5965
-  def useHipFor5967: Boolean = appContext.api5967
+  def useHipFor6017: Boolean = appContext.api6017
 
   def ipBaseUrl(useHip: Boolean): String = if (useHip) hipBaseUrl else baseUrl
 

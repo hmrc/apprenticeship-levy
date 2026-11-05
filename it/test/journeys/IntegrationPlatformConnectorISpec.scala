@@ -50,7 +50,7 @@ class IntegrationPlatformConnectorISpec extends AppLevyUnitSpec with GuiceOneApp
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(
       "featureFlags.hip.api-5965"            -> false,
-      "featureFlags.hip.api-5967"            -> false,
+      "featureFlags.hip.api-6017"            -> false,
       "microservice.services.auth.host"      -> "localhost",
       "microservice.services.auth.port"      -> server.port(),
       "microservice.services.des.host"       -> "localhost",
@@ -83,7 +83,7 @@ class IntegrationPlatformConnectorISpec extends AppLevyUnitSpec with GuiceOneApp
         "microservice.services.hip.clientId"     -> "client",
         "microservice.services.hip.clientSecret" -> "secret",
         "featureFlags.hip.api-5965"              -> true,
-        "featureFlags.hip.api-5967"              -> true
+        "featureFlags.hip.api-6017"              -> true
       )
       .overrides(bind[Auditor].toInstance(mockAuditor))
       .build()
@@ -316,7 +316,7 @@ class IntegrationPlatformConnectorISpec extends AppLevyUnitSpec with GuiceOneApp
     "send HIP headers when api-5965 is enabled" in {
 
       val empRef                     = "123AB12345"
-      val dateRange                  = OpenEarlyDateRange(LocalDate.of(2016, 11, 3))
+      val dateRange                  = OpenEarlyDateRange(LocalDate.of(2000, 11, 3))
       val employerPaymentsSummaryUrl =
         s"$baseUrl/rti/employers/${helper.urlEncode(empRef)}/employer-payment-summary?${dateRange.toParams}"
       val expectedResponse           = EmployerPaymentsSummary("123/AB12345", Seq[EmployerPaymentSummary]())
@@ -640,7 +640,7 @@ class IntegrationPlatformConnectorISpec extends AppLevyUnitSpec with GuiceOneApp
   }
 
   "have Employment Check endpoint and" must {
-    "send HIP headers when api-5967 is enabled" in {
+    "send HIP headers when api-6017 is enabled" in {
 
       val empRef             = "123AB12345"
       val nino               = "AA122345A"
