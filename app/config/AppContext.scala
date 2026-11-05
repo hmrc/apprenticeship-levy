@@ -22,9 +22,11 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.util.{Failure, Success, Try}
 
-class AppContext @Inject()(servicesConfig: ServicesConfig,
-                           val configuration: Configuration,
-                           val environment: Environment) extends Logging {
+class AppContext @Inject() (
+  servicesConfig: ServicesConfig,
+  val configuration: Configuration,
+  val environment: Environment
+) extends Logging {
 
   import servicesConfig.baseUrl
 
@@ -38,12 +40,11 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
 
   def maybeBaseURL(name: String): Option[String] = Try(baseUrl(name)) match {
     case Success(v) => Some(v)
-    case Failure(e) => {
+    case Failure(e) =>
       // $COVERAGE-OFF$
       logger.error(s"Unable to get baseUrl for $name. Error: ${e.getMessage()}")
       // $COVERAGE-ON$
       None
-    }
   }
 
   def mode: Mode = environment.mode
@@ -68,13 +69,16 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
     .flatMap(flag => Try(flag.toBoolean).toOption)
     .getOrElse {
       // $COVERAGE-OFF$
-      logger.debug("A configuration value has not been provided for microservice.external-test-mode, defaulting to false")
+      logger.debug(
+        "A configuration value has not been provided for microservice.external-test-mode, defaulting to false"
+      )
       // $COVERAGE-ON$
       false
     }
 
   def allowlistedApplicationIds: Seq[String] = maybeString("microservice.allowlisted-applications")
-    .map { applicationIds => applicationIds.split(",").toSeq }.getOrElse(Nil)
+    .map(applicationIds => applicationIds.split(",").toSeq)
+    .getOrElse(Nil)
 
   // $COVERAGE-OFF$
   logger.info(s"""\n${"*" * 80}\nAllow list:\n${allowlistedApplicationIds.mkString(", ")}\n${"*" * 80}\n""")
@@ -85,10 +89,10 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
   def desToken: String = maybeString("microservice.services.des.token").getOrElse("")
 
   def getURL(name: String): String = Try {
-    val url = maybeBaseURL(name).getOrElse("")
-    val host = maybeString(s"microservice.services.$name.host").getOrElse("")
-    val path = maybeString(s"microservice.services.$name.path").getOrElse("")
-    val port = maybeString(s"microservice.services.$name.port").getOrElse("")
+    val url      = maybeBaseURL(name).getOrElse("")
+    val host     = maybeString(s"microservice.services.$name.host").getOrElse("")
+    val path     = maybeString(s"microservice.services.$name.path").getOrElse("")
+    val port     = maybeString(s"microservice.services.$name.port").getOrElse("")
     val protocol = maybeString(s"microservice.services.$name.protocol").getOrElse("")
     if (port.isEmpty) {
       s"$protocol://$host"
@@ -104,7 +108,7 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
 
   def stubURL(name: String) = Try {
     val stubUrl = maybeBaseURL(s"stub-$name").getOrElse("")
-    val path = maybeString(s"microservice.services.stub-$name.path").getOrElse("")
+    val path    = maybeString(s"microservice.services.stub-$name.path").getOrElse("")
     val baseurl = if (environment.mode == Mode.Prod && !stubUrl.contains("localhost")) appUrl else stubUrl
     s"$baseurl$path"
   }.getOrElse(maybeBaseURL(s"stub-$name").getOrElse(""))
@@ -127,7 +131,8 @@ class AppContext @Inject()(servicesConfig: ServicesConfig,
   // $COVERAGE-ON$
 
   // scalastyle:off
-  def defaultNumberOfDeclarationYears: Int = maybeString("microservice.defaultNumberOfDeclarationYears").map(_.toInt).getOrElse(6)
+  def defaultNumberOfDeclarationYears: Int =
+    maybeString("microservice.defaultNumberOfDeclarationYears").map(_.toInt).getOrElse(6)
   // scalastyle:on
 
   // $COVERAGE-OFF$

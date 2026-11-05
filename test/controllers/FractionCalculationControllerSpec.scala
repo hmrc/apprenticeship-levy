@@ -40,16 +40,16 @@ import scala.concurrent.{ExecutionContext, Future}
 class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAfterEach {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
-  val mockAppContext: AppContext = mock[AppContext]
-  val mockHttp = mock[HttpClientV2]
-  val mockRequestBuilder = mock[RequestBuilder]
+  val mockAppContext: AppContext           = mock[AppContext]
+  val mockHttp                             = mock[HttpClientV2]
+  val mockRequestBuilder                   = mock[RequestBuilder]
 
-  def controller : FractionsController = new FractionsController with DesController {
+  def controller: FractionsController = new FractionsController with DesController {
     def desConnector: DesConnector = new DesConnector() {
-      override val appContext: AppContext = mockAppContext
+      override val appContext: AppContext                           = mockAppContext
       override protected def auditConnector: Option[AuditConnector] = None
-      def baseUrl: String = "http://a.guide.to.nowhere/"
-      def httpClient: HttpClientV2 = mockHttp
+      def baseUrl: String                                           = "http://a.guide.to.nowhere/"
+      def httpClient: HttpClientV2                                  = mockHttp
 
       override def desAuthorization: String = "localBearer"
 
@@ -81,51 +81,81 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
     "propogate environment but not authorization headers on to connector" in {
       // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      val urlCaptor: ArgumentCaptor[URL] = ArgumentCaptor.forClass(classOf[URL])
+      val urlCaptor: ArgumentCaptor[URL]                     = ArgumentCaptor.forClass(classOf[URL])
 
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(Future.successful(Fractions("123AB12345", Seq(FractionCalculation(LocalDate.of(2016,4,22), Seq(Fraction("England", BigDecimal(0.83))))))))
+      when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(
+        Future.successful(
+          Fractions(
+            "123AB12345",
+            Seq(FractionCalculation(LocalDate.of(2016, 4, 22), Seq(Fraction("England", BigDecimal(0.83)))))
+          )
+        )
+      )
 
       // test
-      await(controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()
-                                                                       .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                    "Authorization"->"Bearer dsfda9080",
-                                                                                    "Environment"->"clone")))
+      await(
+        controller.fractions(EmploymentReference("123AB12345"), None, None)(
+          FakeRequest()
+            .withHeaders(
+              "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+              "Authorization" -> "Bearer dsfda9080",
+              "Environment"   -> "clone"
+            )
+        )
+      )
 
       verify(mockHttp).get(urlCaptor.capture())(using headerCarrierCaptor.capture())
       verify(mockRequestBuilder).execute[Fractions](using any(), any())
 
       // check
-      val actualHeaderCarrier = headerCarrierCaptor.getValue
+      val actualHeaderCarrier   = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders mustBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      actualHeaderCarrier.extraHeaders mustBe Seq(
+        ("X-Client-ID", "Unknown caller"),
+        ("X-Client-Authorization-Token", "Unknown caller"),
+        ("Environment", "clone")
+      )
     }
 
     "not fail if environment header not supplied" in {
       // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
-      val urlCaptor: ArgumentCaptor[URL] = ArgumentCaptor.forClass(classOf[URL])
+      val urlCaptor: ArgumentCaptor[URL]                     = ArgumentCaptor.forClass(classOf[URL])
 
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
-      when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(Future.successful(Fractions("123AB12345",
-        Seq(FractionCalculation(LocalDate.of(2016,4,22), Seq(Fraction("England", BigDecimal(0.83))))))))
+      when(mockRequestBuilder.execute[Fractions](using any(), any())).thenReturn(
+        Future.successful(
+          Fractions(
+            "123AB12345",
+            Seq(FractionCalculation(LocalDate.of(2016, 4, 22), Seq(Fraction("England", BigDecimal(0.83)))))
+          )
+        )
+      )
 
       // test
-      await(controller.fractions(EmploymentReference("123AB12345"), None, None)(FakeRequest()
-                                                                      .withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-                                                                                    "Authorization"->"Bearer dsfda9080")))
+      await(
+        controller.fractions(EmploymentReference("123AB12345"), None, None)(
+          FakeRequest()
+            .withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Authorization" -> "Bearer dsfda9080")
+        )
+      )
 
       verify(mockHttp).get(urlCaptor.capture())(using headerCarrierCaptor.capture())
       verify(mockRequestBuilder, times(2)).execute[Fractions](using any(), any())
 
       // check
-      val actualHeaderCarrier = headerCarrierCaptor.getValue
+      val actualHeaderCarrier   = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
-      actualHeaderCarrier.extraHeaders mustBe Seq(("X-Client-ID","Unknown caller"),("X-Client-Authorization-Token","Unknown caller"),("Environment","clone"))
+      actualHeaderCarrier.extraHeaders mustBe Seq(
+        ("X-Client-ID", "Unknown caller"),
+        ("X-Client-Authorization-Token", "Unknown caller"),
+        ("Environment", "clone")
+      )
     }
   }
 }

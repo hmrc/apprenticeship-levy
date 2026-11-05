@@ -22,9 +22,10 @@ import play.api.libs.json._
 sealed trait EmploymentCheckStatus
 
 object EmploymentCheckStatus {
-  implicit val reads: Reads[EmploymentCheckStatus] = (__ \ "employed").read[Boolean]
-                                                      .orElse((__ \ "employed").read[String].map(_.toBoolean))
-                                                      .map(isEmployed => EmploymentCheckStatus(isEmployed))
+  implicit val reads: Reads[EmploymentCheckStatus] = (__ \ "employed")
+    .read[Boolean]
+    .orElse((__ \ "employed").read[String].map(_.toBoolean))
+    .map(isEmployed => EmploymentCheckStatus(isEmployed))
 
   def apply(isEmployed: Boolean): EmploymentCheckStatus = if (isEmployed) {
     Employed
@@ -33,7 +34,7 @@ object EmploymentCheckStatus {
   }
 
   def apply(isEmployed: String): EmploymentCheckStatus = isEmployed match {
-    case "true" => Employed
+    case "true"  => Employed
     case "false" => NotEmployed
   }
 }

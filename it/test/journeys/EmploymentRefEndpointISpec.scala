@@ -32,7 +32,7 @@ import util.StubbingData.*
 import util.WireMockHelper
 
 class EmploymentRefEndpointISpec
-  extends AnyWordSpec
+    extends AnyWordSpec
     with GuiceOneAppPerSuite
     with WireMockHelper
     with ScalaCheckPropertyChecks {
@@ -95,7 +95,9 @@ class EmploymentRefEndpointISpec
 
             status(result) mustBe BAD_REQUEST
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}"""
+            )
           }
 
           "when DES returns unauthorized, return 401" in {
@@ -106,7 +108,9 @@ class EmploymentRefEndpointISpec
 
             status(result) mustBe UNAUTHORIZED
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}"""
+            )
           }
 
           "when DES returns forbidden, return 403" in {
@@ -117,7 +121,9 @@ class EmploymentRefEndpointISpec
 
             status(result) mustBe FORBIDDEN
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}"""
+            )
           }
 
           "when DES returns 404, return 404" in {
@@ -128,7 +134,9 @@ class EmploymentRefEndpointISpec
 
             status(result) mustBe NOT_FOUND
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}"""
+            )
           }
         }
 
@@ -174,7 +182,9 @@ class EmploymentRefEndpointISpec
 
             status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}"""
+            )
           }
 
           "return 503 when DES returns 503" in {
@@ -185,7 +195,9 @@ class EmploymentRefEndpointISpec
 
             status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}"""
+            )
           }
 
           "return the declarations and fractions link for each empref when employment details does not respond" in {

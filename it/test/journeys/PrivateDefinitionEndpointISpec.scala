@@ -31,39 +31,40 @@ import util.StubbingData.*
 import util.WireMockHelper
 
 class PrivateDefinitionEndpointISpec
-  extends AnyWordSpec
+    extends AnyWordSpec
     with GuiceOneAppPerSuite
     with WireMockHelper
     with ScalaCheckPropertyChecks {
 
   def stubbedConfigPath: String = sys.props.getOrElse("WIREMOCK_MAPPINGS", "./it/no-mappings")
 
-  override protected val server: WireMockServer = new WireMockServer(wireMockConfig.usingFilesUnderDirectory(stubbedConfigPath).dynamicPort())
+  override protected val server: WireMockServer = new WireMockServer(
+    wireMockConfig.usingFilesUnderDirectory(stubbedConfigPath).dynamicPort()
+  )
 
   override def fakeApplication(): Application =
     GuiceApplicationBuilder()
-      .configure(wireMockConfiguration(server.port())
-        - "microservice.private-mode"
-        - "microservice.allowlisted-applications"
-        ++ Map[String, Any](
-        "microservice.private-mode" -> "true",
-        "microservice.allowlisted-applications" -> "none")
+      .configure(
+        wireMockConfiguration(server.port())
+          - "microservice.private-mode"
+          - "microservice.allowlisted-applications"
+          ++ Map[String, Any]("microservice.private-mode" -> "true", "microservice.allowlisted-applications" -> "none")
       )
       .build()
 
   "API Definition Endpoint (Public Mode)" when {
     "calling /api/definition" +
-    "\nand definition file exists and private-mode is set to true" must {
-      "return OK" in {
-        // set up
-        val request = FakeRequest(GET, "/api/definition")
+      "\nand definition file exists and private-mode is set to true" must {
+        "return OK" in {
+          // set up
+          val request = FakeRequest(GET, "/api/definition")
 
-        // test
-        val result = route(app, request).get
+          // test
+          val result = route(app, request).get
 
-        // check
-        status(result) mustBe OK
+          // check
+          status(result) mustBe OK
+        }
       }
-    }
   }
 }

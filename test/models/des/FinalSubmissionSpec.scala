@@ -26,11 +26,10 @@ class FinalSubmissionSpec extends AppLevyUnitSpec {
   val ceaseDate: LocalDate = LocalDate.parse("2020-01-01")
 
   val combinedFinalSubmissionModel: CombinedFinalSubmission = CombinedFinalSubmission(None, Some(ceaseDate), Some(true))
-  val schemeCeasedModel: SchemeCeased = SchemeCeased(schemeCeased = true, ceaseDate, Some(true))
-  val lastSubmissionModel: LastSubmission = LastSubmission(true)
+  val schemeCeasedModel: SchemeCeased                       = SchemeCeased(schemeCeased = true, ceaseDate, Some(true))
+  val lastSubmissionModel: LastSubmission                   = LastSubmission(true)
 
-  val combinedFinalSubmissionJson: JsValue = Json.parse(
-    """
+  val combinedFinalSubmissionJson: JsValue = Json.parse("""
       |{
       |   "schemeCeased": null,
       |   "schemeCeasedDate": "2020-01-01",
@@ -38,16 +37,14 @@ class FinalSubmissionSpec extends AppLevyUnitSpec {
       |}
       |""".stripMargin)
 
-  val combinedFinalSubmissionJsonReads: JsValue = Json.parse(
-    """
+  val combinedFinalSubmissionJsonReads: JsValue = Json.parse("""
       |{
       |   "schemeCeasedDate": "2020-01-01",
       |   "forYear": true
       |}
       |""".stripMargin)
 
-  val schemeCeasedJson: JsValue = Json.parse(
-    """
+  val schemeCeasedJson: JsValue = Json.parse("""
       |{
       |   "schemeCeased": true,
       |   "schemeCeasedDate": "2020-01-01",
@@ -55,15 +52,13 @@ class FinalSubmissionSpec extends AppLevyUnitSpec {
       |}
       |""".stripMargin)
 
-  val lastSubmissionJson: JsValue = Json.parse(
-    """
+  val lastSubmissionJson: JsValue = Json.parse("""
       |{
       |   "forYear": true
       |}
       |""".stripMargin)
 
-  val lastSubmissionJsonNull: JsValue = Json.parse(
-    """
+  val lastSubmissionJsonNull: JsValue = Json.parse("""
       |{
       |   "schemeCeased": null,
       |   "schemeCeasedDate": null,

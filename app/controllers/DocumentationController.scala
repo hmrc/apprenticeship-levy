@@ -30,24 +30,22 @@ import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class DocumentationController @Inject()
-  (cc: ControllerComponents,
-   appContext: AppContext)
-  extends BackendController(cc)
+class DocumentationController @Inject() (cc: ControllerComponents, appContext: AppContext)
+    extends BackendController(cc)
     with Logging {
 
   private lazy val environment = appContext.environment
 
   private lazy val allowlist: JsObject = Json.obj(
     "access" -> "INTERNAL"
-    )
+  )
 
-  private lazy val allowlistJsonTransformer = (__ \ Symbol("api") \ Symbol("versions")).json.update(
-    __.read[JsArray].map { versions =>
+  private lazy val allowlistJsonTransformer =
+    (__ \ Symbol("api") \ Symbol("versions")).json.update(__.read[JsArray].map { versions =>
       JsArray(versions.value.updated(0, versions(0).as[JsObject] ++ allowlist))
     })
 
-  def retrieve(rootPath: String, file: String): Option[InputStream] = {
+  def retrieve(rootPath: String, file: String): Option[InputStream] =
     if (environment.mode == Mode.Prod) {
       // $COVERAGE-OFF$
       environment.resourceAsStream(s"$rootPath/$file")
@@ -55,38 +53,37 @@ class DocumentationController @Inject()
     } else {
       environment.getExistingFile(s"$rootPath/$file").map(new java.io.FileInputStream(_))
     }
-  }
 
   private def at(rootPath: String, file: String): Action[AnyContent] = Action { _ =>
     retrieve(rootPath, file) match {
-      case Some(fileToServe) => {
-        val mimeType = if (file.contains("raml")) "application/raml+yaml" else cc.fileMimeTypes.forFileName(file).getOrElse("text/plain")
+      case Some(fileToServe) =>
+        val mimeType =
+          if (file.contains("raml")) "application/raml+yaml"
+          else cc.fileMimeTypes.forFileName(file).getOrElse("text/plain")
         Ok(Source.fromInputStream(fileToServe).mkString).as(mimeType)
-      }
-      case _ => {
+      case _                 =>
         // $COVERAGE-OFF$
         logger.error(s"Assets controller failed to serve a file: $rootPath/$file.")
         // $COVERAGE-ON$
         NotFound
-      }
     }
   }
 
-  def documentation(version: String, endpoint: String): Action[AnyContent]  =
+  def documentation(version: String, endpoint: String): Action[AnyContent] =
     at(s"public/documentation/$version", s"${endpoint.replaceAll(" ", "-")}.xml")
 
-  def definition(filename: String = "definition.json"): Action[AnyContent]  = Action.async {
+  def definition(filename: String = "definition.json"): Action[AnyContent] = Action.async {
     retrieve("public/api", filename) match {
       case Some(fileToServe) =>
         if (appContext.privateModeEnabled) {
           enrichDefinition(fileToServe) match {
-            case Success(json) => Future.successful(Ok(json).withHeaders(HeaderNames.CONTENT_TYPE->MimeTypes.JSON))
-            case Failure(_) => Future.successful(InternalServerError)
+            case Success(json) => Future.successful(Ok(json).withHeaders(HeaderNames.CONTENT_TYPE -> MimeTypes.JSON))
+            case Failure(_)    => Future.successful(InternalServerError)
           }
         } else {
           Future.successful(Ok(Source.fromInputStream(fileToServe).mkString).as(MimeTypes.JSON))
         }
-      case _ =>
+      case _                 =>
         // $COVERAGE-OFF$
         logger.error("Documentation controller failed to serve a file: public/api/definition.json as not found")
         // $COVERAGE-ON$
@@ -94,15 +91,12 @@ class DocumentationController @Inject()
     }
   }
 
-  def enrichDefinition(inputStream: InputStream): Try[JsValue] = {
+  def enrichDefinition(inputStream: InputStream): Try[JsValue] =
     Json.parse(Source.fromInputStream(inputStream).mkString).transform(allowlistJsonTransformer) match {
       case JsSuccess(json, _) => Success(json)
-      case JsError(_) => Failure(new RuntimeException("Unable to transform definition.json"))
+      case JsError(_)         => Failure(new RuntimeException("Unable to transform definition.json"))
     }
-  }
 
-  def conf(version: String, file: String): Action[AnyContent] = {
+  def conf(version: String, file: String): Action[AnyContent] =
     at(s"public/api/conf/$version", file)
-  }
 }
-

@@ -34,10 +34,13 @@ class ALAEventSpec extends AppLevyUnitSpec {
       }
       "a http status and exception is supplied" in {
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = Seq("Content-Type" -> "application/json"))
-        val exception = new BadRequestException("bad request")
+        val exception                  = new BadRequestException("bad request")
 
         val event = ALAEvent("event1")
-        event.toDataEvent(NOT_FOUND, exception).detail mustBe Map("upstream_http_status" -> "404", "exception" -> "uk.gov.hmrc.http.BadRequestException: bad request")
+        event.toDataEvent(NOT_FOUND, exception).detail mustBe Map(
+          "upstream_http_status" -> "404",
+          "exception"            -> "uk.gov.hmrc.http.BadRequestException: bad request"
+        )
       }
       "convert to a DataEvent with the correct audit fields" in {
         implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = Seq("Content-Type" -> "application/json"))

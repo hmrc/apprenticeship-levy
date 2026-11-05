@@ -47,13 +47,11 @@ trait AppLevyUnitSpec extends AnyWordSpec with Matchers {
 
   def status(of: Future[Result])(implicit timeout: Duration): Int = status(Await.result(of, timeout))
 
-  def jsonBodyOf(result: Result)(implicit mat: Materializer): JsValue = {
+  def jsonBodyOf(result: Result)(implicit mat: Materializer): JsValue =
     Json.parse(bodyOf(result))
-  }
 
-  def jsonBodyOf(resultF: Future[Result])(implicit mat: Materializer): Future[JsValue] = {
+  def jsonBodyOf(resultF: Future[Result])(implicit mat: Materializer): Future[JsValue] =
     resultF.map(jsonBodyOf)
-  }
 
   def bodyOf(result: Result)(implicit mat: Materializer): String = {
     val bodyBytes: ByteString = await(result.body.consumeData)
@@ -65,9 +63,8 @@ trait AppLevyUnitSpec extends AnyWordSpec with Matchers {
     bodyBytes.decodeString(Charset.defaultCharset().name)
   }
 
-  def bodyOf(resultF: Future[Result])(implicit mat: Materializer): Future[String] = {
+  def bodyOf(resultF: Future[Result])(implicit mat: Materializer): Future[String] =
     resultF.map(bodyOf)
-  }
 
   def mock[T](implicit ev: ClassTag[T]): T =
     Mockito.mock(ev.runtimeClass.asInstanceOf[Class[T]])

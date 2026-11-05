@@ -25,16 +25,15 @@ import scala.util.Using
 
 object StubbingData {
 
-  def stubbedConfigPath: String = sys.props.getOrElse("WIREMOCK_MAPPINGS", "./it/test/resources")
-  def resourcePath: String = sys.props.getOrElse("RESOURCE_PATH", "./it/test/resources")
-  def standardDesHeaders(): Seq[(String,String)] = Seq("ACCEPT"->"application/vnd.hmrc.1.0+json",
-    "Environment"->"isit",
-    "Authorization"->"Bearer 2423324")
-  def asString(filename: String): String = {
+  def stubbedConfigPath: String                   = sys.props.getOrElse("WIREMOCK_MAPPINGS", "./it/test/resources")
+  def resourcePath: String                        = sys.props.getOrElse("RESOURCE_PATH", "./it/test/resources")
+  def standardDesHeaders(): Seq[(String, String)] =
+    Seq("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Environment" -> "isit", "Authorization" -> "Bearer 2423324")
+  def asString(filename: String): String          = {
     val fileBuffer: BufferedSource = Source.fromFile(s"$resourcePath/data/expected/$filename")
 
-    Using(fileBuffer) {
-      file => file.getLines().mkString("\n")
+    Using(fileBuffer) { file =>
+      file.getLines().mkString("\n")
     }.get
   }
 
@@ -45,31 +44,32 @@ object StubbingData {
   lazy val auuid5: UUID = randomUUID()
   lazy val auuid6: UUID = randomUUID()
 
-  val validReadURL1 = "/authorise/read/epaye/AB12345?privilegedAccess=read:apprenticeship-levy"
-  val validReadURL2 = "/authorise/read/epaye/123%2FAB12345?privilegedAccess=read:apprenticeship-levy"
-  val faultURL1 = "/authorise/read/epaye/malformed?privilegedAccess=read:apprenticeship-levy"
-  val invalidReadURL1 = "/authorise/read/epaye/(400|401|403|404|500|503|empty|malformed|timeout)%2FAB12345\\?privilegedAccess=read:apprenticeship-levy"
-  val validRead = "/authorise/read/epaye/(.*)\\?privilegedAccess=read:apprenticeship-levy"
+  val validReadURL1   = "/authorise/read/epaye/AB12345?privilegedAccess=read:apprenticeship-levy"
+  val validReadURL2   = "/authorise/read/epaye/123%2FAB12345?privilegedAccess=read:apprenticeship-levy"
+  val faultURL1       = "/authorise/read/epaye/malformed?privilegedAccess=read:apprenticeship-levy"
+  val invalidReadURL1 =
+    "/authorise/read/epaye/(400|401|403|404|500|503|empty|malformed|timeout)%2FAB12345\\?privilegedAccess=read:apprenticeship-levy"
+  val validRead       = "/authorise/read/epaye/(.*)\\?privilegedAccess=read:apprenticeship-levy"
 
   def wireMockConfiguration(serverPort: Int): Map[String, Any] = Map(
-    "play.ws.timeout.request" -> "500 milliseconds",
-    "play.ws.timeout.connection" -> "500 milliseconds",
-    "microservice.services.stub-auth.port" -> serverPort,
-    "microservice.services.stub-auth.path" -> "",
-    "microservice.services.stub-des.port" -> serverPort,
-    "microservice.services.stub-des.path" -> "",
-    "microservice.services.des.port" -> serverPort,
-    "microservice.services.des.path" -> "",
-    "microservice.services.auth.port" -> serverPort,
-    "microservice.services.auth.path" -> "",
-    "microservice.private-mode" -> "true",
+    "play.ws.timeout.request"               -> "500 milliseconds",
+    "play.ws.timeout.connection"            -> "500 milliseconds",
+    "microservice.services.stub-auth.port"  -> serverPort,
+    "microservice.services.stub-auth.path"  -> "",
+    "microservice.services.stub-des.port"   -> serverPort,
+    "microservice.services.stub-des.path"   -> "",
+    "microservice.services.des.port"        -> serverPort,
+    "microservice.services.des.path"        -> "",
+    "microservice.services.auth.port"       -> serverPort,
+    "microservice.services.auth.path"       -> "",
+    "microservice.private-mode"             -> "true",
     "microservice.allowlisted-applications" -> "myappid1,myappid2"
   )
 
   def genEmpref: Gen[String] = (for {
-    c <- Gen.alphaLowerChar
+    c  <- Gen.alphaLowerChar
     cs <- Gen.listOf(Gen.alphaNumChar)
-  } yield (c::cs).mkString).suchThat(_.forall(c => c.isLetter || c.isDigit))
+  } yield (c :: cs).mkString).suchThat(_.forall(c => c.isLetter || c.isDigit))
 
   def genNino: Gen[String] = (for {
     c1 <- Gen.alphaUpperChar

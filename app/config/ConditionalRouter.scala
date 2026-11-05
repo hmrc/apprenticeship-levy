@@ -26,21 +26,22 @@ trait IsInExternalTest {
   def isInExternalTest: Boolean
 }
 
-class ConditionalRouter @Inject() (externalTestRoutes: externaltest.Routes,
-                                   nonexternaltestRoutes: nonexternaltest.Routes,
-                                   appContext: AppContext) extends SimpleRouter with IsInExternalTest with Logging {
+class ConditionalRouter @Inject() (
+  externalTestRoutes: externaltest.Routes,
+  nonexternaltestRoutes: nonexternaltest.Routes,
+  appContext: AppContext
+) extends SimpleRouter
+    with IsInExternalTest
+    with Logging {
   def isInExternalTest: Boolean = appContext.externalTestModeEnabled
 
-  override def routes: Routes = {
+  override def routes: Routes =
     isInExternalTest match {
-      case true => {
+      case true  =>
         logger.debug("In External Test Environment: Using externaltest.routes")
         externalTestRoutes.routes
-      }
-      case false => {
+      case false =>
         logger.debug("Not in External Test Environment: Using nonexternaltest.routes")
         nonexternaltestRoutes.routes
-      }
     }
-  }
 }

@@ -32,7 +32,7 @@ import scala.concurrent.ExecutionContext
 class EmprefControllerSpec extends AppLevyUnitSpec with OptionValues {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
-  val mockAppContext: AppContext = mock[AppContext]
+  val mockAppContext: AppContext           = mock[AppContext]
 
   val testController: EmprefController = new EmprefController {
 
@@ -60,13 +60,19 @@ class EmprefControllerSpec extends AppLevyUnitSpec with OptionValues {
   "prepareLinks" must {
     "correctly prepare HAL for an empref" in {
       val empref = "123/AB12345"
-      val hal = testController.prepareLinks(EmploymentReference(empref))
+      val hal    = testController.prepareLinks(EmploymentReference(empref))
 
       hal.links.links must have size 4
       hal.links.links.find(_.rel == "self").value.href mustBe testController.emprefUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "declarations").value.href mustBe testController.declarationsUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "fractions").value.href mustBe testController.fractionsUrl(EmploymentReference(empref))
-      hal.links.links.find(_.rel == "employment-check").value.href mustBe testController.employmentCheckUrl(EmploymentReference(empref))
+      hal.links.links.find(_.rel == "declarations").value.href mustBe testController.declarationsUrl(
+        EmploymentReference(empref)
+      )
+      hal.links.links.find(_.rel == "fractions").value.href mustBe testController.fractionsUrl(
+        EmploymentReference(empref)
+      )
+      hal.links.links.find(_.rel == "employment-check").value.href mustBe testController.employmentCheckUrl(
+        EmploymentReference(empref)
+      )
     }
   }
 }

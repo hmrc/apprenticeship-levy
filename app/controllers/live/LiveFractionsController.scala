@@ -25,16 +25,22 @@ import controllers.{DesController, FractionsCalculationDateController, Fractions
 
 import scala.concurrent.ExecutionContext
 
-class LiveFractionsController @Inject()(val desConnector: LiveDesConnector,
-                                        val authAction: PrivilegedAuthActionImpl,
-                                        val executionContext: ExecutionContext,
-                                        val parser: BodyParsers.Default,
-                                        val appContext: AppContext,
-                                        val controllerComponents: ControllerComponents) extends DesController with FractionsController
+class LiveFractionsController @Inject() (
+  val desConnector: LiveDesConnector,
+  val authAction: PrivilegedAuthActionImpl,
+  val executionContext: ExecutionContext,
+  val parser: BodyParsers.Default,
+  val appContext: AppContext,
+  val controllerComponents: ControllerComponents
+) extends DesController
+    with FractionsController
 
-class LiveFractionsCalculationDateController  @Inject()(val desConnector: LiveDesConnector,
-                                                        val authAction: PrivilegedAuthActionImpl,
-                                                        val executionContext: ExecutionContext,
-                                                        val parser: BodyParsers.Default,
-                                                        val appContext: AppContext,
-                                                        val controllerComponents: ControllerComponents) extends DesController with FractionsCalculationDateController
+class LiveFractionsCalculationDateController @Inject() (
+  val desConnector: LiveDesConnector,
+  val authAction: PrivilegedAuthActionImpl,
+  val executionContext: ExecutionContext,
+  val parser: BodyParsers.Default,
+  val appContext: AppContext,
+  val controllerComponents: ControllerComponents
+) extends DesController
+    with FractionsCalculationDateController

@@ -23,10 +23,12 @@ import utils.AppLevyUnitSpec
 
 class ExternalTestEnvironmentSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite {
   "When in External Test Mode API" must {
-    val mockExternalTestRoutes = app.injector.instanceOf[externaltest.Routes]
+    val mockExternalTestRoutes    = app.injector.instanceOf[externaltest.Routes]
     val mocknonexternalTestRoutes = app.injector.instanceOf[nonexternaltest.Routes]
 
-    object TestRouter extends ConditionalRouter(mockExternalTestRoutes, mocknonexternalTestRoutes, mock[AppContext]) with IsInExternalTest {
+    object TestRouter
+        extends ConditionalRouter(mockExternalTestRoutes, mocknonexternalTestRoutes, mock[AppContext])
+        with IsInExternalTest {
       override def isInExternalTest: Boolean = true
     }
 

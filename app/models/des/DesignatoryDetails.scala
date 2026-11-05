@@ -24,43 +24,54 @@ case class HodTelephone(telephoneNumber: Option[String] = None, fax: Option[Stri
 
 case class HodEmail(primary: Option[String] = None)
 
-case class HodAddress(addressLine1: Option[String] = None,
-                      addressLine2: Option[String] = None,
-                      addressLine3: Option[String] = None,
-                      addressLine4: Option[String] = None,
-                      addressLine5: Option[String] = None,
-                      postcode: Option[String] = None,
-                      foreignCountry: Option[String] = None
-                     )
+case class HodAddress(
+  addressLine1: Option[String] = None,
+  addressLine2: Option[String] = None,
+  addressLine3: Option[String] = None,
+  addressLine4: Option[String] = None,
+  addressLine5: Option[String] = None,
+  postcode: Option[String] = None,
+  foreignCountry: Option[String] = None
+)
 
 case class HodContact(telephone: Option[HodTelephone] = None, email: Option[HodEmail] = None)
 
-case class DesignatoryDetailsData(name: Option[HodName] = None, address: Option[HodAddress] = None, contact: Option[HodContact] = None)
+case class DesignatoryDetailsData(
+  name: Option[HodName] = None,
+  address: Option[HodAddress] = None,
+  contact: Option[HodContact] = None
+)
 
-case class DesignatoryDetails(empref:Option[String], employer: Option[DesignatoryDetailsData] = None, communication: Option[DesignatoryDetailsData] = None)
+case class DesignatoryDetails(
+  empref: Option[String],
+  employer: Option[DesignatoryDetailsData] = None,
+  communication: Option[DesignatoryDetailsData] = None
+)
 
 case class DesignatoryDetailsLinks(employer: Option[String], communication: Option[String])
 
 case class HodDesignatoryDetailsLinks(links: Option[DesignatoryDetailsLinks])
 
 object DesignatoryDetails {
-  implicit val readDesignatoryDetailsFormat: Reads[DesignatoryDetails] = Json.reads[DesignatoryDetails]
+  implicit val readDesignatoryDetailsFormat: Reads[DesignatoryDetails]    = Json.reads[DesignatoryDetails]
   implicit val writeDesignatoryDetailsFormat: OWrites[DesignatoryDetails] = Json.writes[DesignatoryDetails]
 }
 
 object HodDesignatoryDetailsLinks {
   implicit val ddlformat: OFormat[DesignatoryDetailsLinks] = Json.format[DesignatoryDetailsLinks]
 
-  implicit val readDesignatoryDetailsLinksFormat: Reads[HodDesignatoryDetailsLinks] = Json.reads[HodDesignatoryDetailsLinks]
-  implicit val writeDesignatoryDetailsLinksFormat: OWrites[HodDesignatoryDetailsLinks] = Json.writes[HodDesignatoryDetailsLinks]
+  implicit val readDesignatoryDetailsLinksFormat: Reads[HodDesignatoryDetailsLinks]    =
+    Json.reads[HodDesignatoryDetailsLinks]
+  implicit val writeDesignatoryDetailsLinksFormat: OWrites[HodDesignatoryDetailsLinks] =
+    Json.writes[HodDesignatoryDetailsLinks]
 }
 
 object DesignatoryDetailsData {
-  implicit val hnformat: OFormat[HodName] = Json.format[HodName]
-  implicit val haformat: OFormat[HodAddress] = Json.format[HodAddress]
+  implicit val hnformat: OFormat[HodName]      = Json.format[HodName]
+  implicit val haformat: OFormat[HodAddress]   = Json.format[HodAddress]
   implicit val htformat: OFormat[HodTelephone] = Json.format[HodTelephone]
-  implicit val heformat: OFormat[HodEmail] = Json.format[HodEmail]
-  implicit val hcformat: OFormat[HodContact] = Json.format[HodContact]
+  implicit val heformat: OFormat[HodEmail]     = Json.format[HodEmail]
+  implicit val hcformat: OFormat[HodContact]   = Json.format[HodContact]
 
   implicit val dddformat: OFormat[DesignatoryDetailsData] = Json.format[DesignatoryDetailsData]
 }

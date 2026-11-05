@@ -24,9 +24,12 @@ import controllers.auth.SandboxPrivilegedAuthAction
 import controllers.{DesController, LevyDeclarationController}
 import scala.concurrent.ExecutionContext
 
-class SandboxLevyDeclarationController @Inject()(val desConnector: SandboxDesConnector,
-                                                 val authAction: SandboxPrivilegedAuthAction,
-                                                 val executionContext: ExecutionContext,
-                                                 val parser: BodyParsers.Default,
-                                                 val appContext: AppContext,
-                                                 val controllerComponents: ControllerComponents) extends DesController with LevyDeclarationController
+class SandboxLevyDeclarationController @Inject() (
+  val desConnector: SandboxDesConnector,
+  val authAction: SandboxPrivilegedAuthAction,
+  val executionContext: ExecutionContext,
+  val parser: BodyParsers.Default,
+  val appContext: AppContext,
+  val controllerComponents: ControllerComponents
+) extends DesController
+    with LevyDeclarationController

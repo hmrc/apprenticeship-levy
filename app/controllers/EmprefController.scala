@@ -43,13 +43,11 @@ trait EmprefController extends DesController {
 
   // scalastyle:off
   def empref(ref: EmploymentReference): Action[AnyContent] =
-    (withValidAcceptHeader andThen authAction(ref)).async {
-      implicit request =>
-        // scalastyle:on
-        desConnector.designatoryDetails(ref.empref) map {
-          details =>
-            ok(prepareLinks(ref).copy(state = Json.toJson(details).as[JsObject]))
-        } recover desErrorHandler
+    (withValidAcceptHeader andThen authAction(ref)).async { implicit request =>
+      // scalastyle:on
+      desConnector.designatoryDetails(ref.empref) map { details =>
+        ok(prepareLinks(ref).copy(state = Json.toJson(details).as[JsObject]))
+      } recover desErrorHandler
     }
 
   private[controllers] def prepareLinks(empref: EmploymentReference): HalResource =

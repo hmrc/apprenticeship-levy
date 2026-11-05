@@ -31,11 +31,7 @@ import play.api.test.Helpers.{GET, contentAsJson, contentType, defaultAwaitTimeo
 import util.StubbingData.*
 import util.WireMockHelper
 
-class RootEndpointISpec
-  extends AnyWordSpec
-    with GuiceOneAppPerSuite
-    with WireMockHelper
-    with ScalaCheckPropertyChecks {
+class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMockHelper with ScalaCheckPropertyChecks {
 
   override def fakeApplication(): Application = {
     val conf = wireMockConfiguration(server.port())
@@ -72,10 +68,12 @@ class RootEndpointISpec
                              |    "state": "Activated"
                              |  }
                              |  ]}""".stripMargin
-            stubPostServerWithId(aResponse()
-              .withBody(response),
-              "/auth/authorise")
-            val request = FakeRequest(GET, s"/").withHeaders(standardDesHeaders()*)
+            stubPostServerWithId(
+              aResponse()
+                .withBody(response),
+              "/auth/authorise"
+            )
+            val request  = FakeRequest(GET, s"/").withHeaders(standardDesHeaders()*)
 
             // test
             val result = route(app, request).get
@@ -92,11 +90,13 @@ class RootEndpointISpec
         "errors occur" must {
           "return 401 when Auth returns 401" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withStatus(UNAUTHORIZED)
-              .withStatusMessage("Not authorised.")
-              .withHeader("WWW-Authenticate", "MDTP detail=\"SessionRecordNotFound\""),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withStatus(UNAUTHORIZED)
+                .withStatusMessage("Not authorised.")
+                .withHeader("WWW-Authenticate", "MDTP detail=\"SessionRecordNotFound\""),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
@@ -105,15 +105,19 @@ class RootEndpointISpec
             // check
             status(result) mustBe UNAUTHORIZED
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_UNAUTHORIZED","message":"No active session error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"AUTH_ERROR_UNAUTHORIZED","message":"No active session error"}"""
+            )
           }
 
           "return 403 when Auth returns 403" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withStatus(FORBIDDEN)
-              .withStatusMessage("Forbidden."),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withStatus(FORBIDDEN)
+                .withStatusMessage("Forbidden."),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
@@ -122,15 +126,19 @@ class RootEndpointISpec
             // check
             status(result) mustBe FORBIDDEN
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_FORBIDDEN","message":"Auth forbidden error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"AUTH_ERROR_FORBIDDEN","message":"Auth forbidden error"}"""
+            )
           }
 
           "return 503 when Auth returns 404" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withStatus(NOT_FOUND)
-              .withStatusMessage("Not found."),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withStatus(NOT_FOUND)
+                .withStatusMessage("Not found."),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
@@ -146,9 +154,11 @@ class RootEndpointISpec
         "backend systems failing" must {
           "return http status 503 when connection closed" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withFault(Fault.MALFORMED_RESPONSE_CHUNK),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withFault(Fault.MALFORMED_RESPONSE_CHUNK),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
@@ -162,9 +172,11 @@ class RootEndpointISpec
 
           "return 503 when returning empty response and connection closed" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withFault(Fault.EMPTY_RESPONSE),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withFault(Fault.EMPTY_RESPONSE),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
@@ -178,10 +190,12 @@ class RootEndpointISpec
 
           "return 408 when timed out" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withStatus(OK)
-              .withFixedDelay(1000*60),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withStatus(OK)
+                .withFixedDelay(1000 * 60),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
@@ -190,15 +204,19 @@ class RootEndpointISpec
             // check
             status(result) mustBe REQUEST_TIMEOUT
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_GATEWAY_TIMEOUT","message":"Auth not responding error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"AUTH_ERROR_GATEWAY_TIMEOUT","message":"Auth not responding error"}"""
+            )
           }
 
           "return 503 when Auth returns 503" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withStatus(SERVICE_UNAVAILABLE)
-              .withStatusMessage("Backend systems failing"),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withStatus(SERVICE_UNAVAILABLE)
+                .withStatusMessage("Backend systems failing"),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
@@ -207,15 +225,19 @@ class RootEndpointISpec
             // check
             status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_BACKEND_FAILURE","message":"Auth 5xx error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"AUTH_ERROR_BACKEND_FAILURE","message":"Auth 5xx error"}"""
+            )
           }
 
           "return http status 429 when Auth HTTP 429" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withStatus(TOO_MANY_REQUESTS)
-              .withBody("""{"reason" : "Drowning in requests"}"""),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withStatus(TOO_MANY_REQUESTS)
+                .withBody("""{"reason" : "Drowning in requests"}"""),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
@@ -224,15 +246,19 @@ class RootEndpointISpec
             // check
             status(result) mustBe TOO_MANY_REQUESTS
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_TOO_MANY_REQUESTS","message":"Auth too many requests"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"AUTH_ERROR_TOO_MANY_REQUESTS","message":"Auth too many requests"}"""
+            )
           }
 
           "return http status 503 when Auth HTTP 409" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withStatus(LENGTH_REQUIRED)
-              .withBody("""{"reason" : "Some Auth 411 error"}"""),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withStatus(LENGTH_REQUIRED)
+                .withBody("""{"reason" : "Some Auth 411 error"}"""),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
@@ -246,10 +272,12 @@ class RootEndpointISpec
 
           "return http status 408 when Auth HTTP 408" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withStatus(REQUEST_TIMEOUT)
-              .withBody("""{"reason" : "Not responding"}"""),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withStatus(REQUEST_TIMEOUT)
+                .withBody("""{"reason" : "Not responding"}"""),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test
@@ -258,15 +286,19 @@ class RootEndpointISpec
             // check
             status(result) mustBe REQUEST_TIMEOUT
             contentType(result) mustBe Some("application/json")
-            contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_TIMEOUT","message":"Auth not responding error"}""")
+            contentAsJson(result) mustBe Json.parse(
+              """{"code":"AUTH_ERROR_TIMEOUT","message":"Auth not responding error"}"""
+            )
           }
 
           "return http status 503 when Auth HTTP 400" in {
             // set up
-            stubPostServerWithId(aResponse()
-              .withStatus(BAD_REQUEST)
-              .withBody("""{"reason" : "Not responding"}"""),
-              "/auth/authorise")
+            stubPostServerWithId(
+              aResponse()
+                .withStatus(BAD_REQUEST)
+                .withBody("""{"reason" : "Not responding"}"""),
+              "/auth/authorise"
+            )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
             // test

@@ -27,7 +27,7 @@ import scala.util.matching.Regex.Match
 trait HeaderValidator {
   outer =>
 
-  val validateVersion:     String => Boolean = _ == "1.0"
+  val validateVersion: String => Boolean     = _ == "1.0"
   val validateContentType: String => Boolean = _ == "json"
 
   val matchHeader: String => Option[Match] =
@@ -43,13 +43,15 @@ trait HeaderValidator {
   def validateAccept(rules: Option[String] => Boolean) = new ActionBuilder[Request, AnyContent] {
 
     def invokeBlock[A](
-                        request: Request[A],
-                        block:   (Request[A]) => Future[Result]
-                      ) =
+      request: Request[A],
+      block: (Request[A]) => Future[Result]
+    ) =
       if (rules(request.headers.get("Accept")))
         block(request)
       else
-        Future.successful(Status(ErrorAcceptHeaderInvalid.statusCode)(ErrorResponseUtils.convertToJson(ErrorAcceptHeaderInvalid)))
+        Future.successful(
+          Status(ErrorAcceptHeaderInvalid.statusCode)(ErrorResponseUtils.convertToJson(ErrorAcceptHeaderInvalid))
+        )
 
     override def parser: BodyParser[AnyContent] = outer.parser
 

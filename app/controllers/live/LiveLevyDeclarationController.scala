@@ -25,9 +25,12 @@ import controllers.{DesController, LevyDeclarationController}
 
 import scala.concurrent.ExecutionContext
 
-class LiveLevyDeclarationController @Inject()(val desConnector: LiveDesConnector,
-                                              val authAction: PrivilegedAuthActionImpl,
-                                              val executionContext: ExecutionContext,
-                                              val parser: BodyParsers.Default,
-                                              val appContext: AppContext,
-                                              val controllerComponents: ControllerComponents) extends DesController with LevyDeclarationController
+class LiveLevyDeclarationController @Inject() (
+  val desConnector: LiveDesConnector,
+  val authAction: PrivilegedAuthActionImpl,
+  val executionContext: ExecutionContext,
+  val parser: BodyParsers.Default,
+  val appContext: AppContext,
+  val controllerComponents: ControllerComponents
+) extends DesController
+    with LevyDeclarationController

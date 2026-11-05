@@ -32,11 +32,9 @@
 
 package models.des
 
-
 import play.api.libs.json.Json
 import utils.AppLevyUnitSpec
 import models.des.DesignatoryDetailsData._
-
 
 class DesignatoryDetailsSpec extends AppLevyUnitSpec {
 

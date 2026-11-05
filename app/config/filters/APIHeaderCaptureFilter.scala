@@ -23,9 +23,9 @@ import play.api.mvc.{Filter, RequestHeader, Result}
 
 import scala.concurrent.Future
 
-class APIHeaderCaptureFilter @Inject()(val mat: Materializer) extends Filter {
+class APIHeaderCaptureFilter @Inject() (val mat: Materializer) extends Filter {
   def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
-    MDC.put("X-Client-ID",rh.headers.toSimpleMap.getOrElse("X-Client-ID","Unknown caller"))
+    MDC.put("X-Client-ID", rh.headers.toSimpleMap.getOrElse("X-Client-ID", "Unknown caller"))
     next(rh)
   }
 }

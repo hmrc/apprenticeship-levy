@@ -1,4 +1,3 @@
-
 import sbt.internal.util.ConsoleAppender
 import uk.gov.hmrc.DefaultBuildSettings.*
 
@@ -6,47 +5,49 @@ import scala.sys.process.ProcessLogger
 
 val appName: String = "apprenticeship-levy"
 
-val XsltConfig = config("api-docs")
-val generateAPIDocs = TaskKey[Unit]("api-docs", "Generates HMRC API Documentation files")
+val XsltConfig          = config("api-docs")
+val generateAPIDocs     = TaskKey[Unit]("api-docs", "Generates HMRC API Documentation files")
 generateAPIDocs / managedClasspath := {
   // these are the types of artifacts to include
   val artifactTypes: Set[String] = (generateAPIDocs / classpathTypes).value
   Classpaths.managedJars(XsltConfig, artifactTypes, update.value)
 }
 val generateAPIDocsTask = generateAPIDocs := {
-  val artifactTypes = Set("jar")
+  val artifactTypes         = Set("jar")
   val cp: Seq[java.io.File] = Classpaths.managedJars(XsltConfig, artifactTypes, update.value).map(_.data)
-  val log = ConsoleLogger(
+  val log                   = ConsoleLogger(
     out = ConsoleOut.systemOut,
     ansiCodesSupported = true,
     useFormat = true,
     suppressedMessage = ConsoleAppender.noSuppressedMessage
   )
-  val logger = new ProcessLogger() {
-    override def buffer[T](f: => T): T = {
+  val logger                = new ProcessLogger() {
+    override def buffer[T](f: => T): T =
       f
-    }
 
     override def out(s: => String): Unit = {}
 
-    override def err(s: => String): Unit = {
+    override def err(s: => String): Unit =
       log.error(s)
-    }
   }
-  val userDir = new File(System.getProperty("user.dir"))
+  val userDir               = new File(System.getProperty("user.dir"))
   DocGeneration.generateAPIDocs(userDir, cp) ! logger
 }
 
 lazy val plugins: Seq[Plugins] = Seq(
-  play.sbt.PlayScala, SbtGitVersioning, SbtDistributablesPlugin
+  play.sbt.PlayScala,
+  SbtGitVersioning,
+  SbtDistributablesPlugin
 )
 
-lazy val playSettings: Seq[Setting[?]] = Seq(routesImport ++= Seq(
-  "config.QueryBinders._",
-  "java.time.LocalDate",
-  "config.PathBinders._",
-  "models.api.EmploymentReference",
-  "models.api.Nino")
+lazy val playSettings: Seq[Setting[?]] = Seq(
+  routesImport ++= Seq(
+    "config.QueryBinders._",
+    "java.time.LocalDate",
+    "config.PathBinders._",
+    "models.api.EmploymentReference",
+    "models.api.Nino"
+  )
 )
 
 ThisBuild / majorVersion := 3
@@ -65,7 +66,7 @@ fork := true
 
 val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
-  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     playSettings,
     scalaSettings,
@@ -87,3 +88,4 @@ val it: Project = project
 
 addCommandAlias("runAllTests", ";test;it/test;")
 addCommandAlias("runAllChecks", ";clean;coverageOn;runAllTests;coverageOff;coverageAggregate;")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt it/Test/scalafmt")

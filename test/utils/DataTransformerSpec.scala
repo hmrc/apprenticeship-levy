@@ -25,7 +25,7 @@ class DataTransformerSpec extends AnyWordSpec with Matchers {
 
   "transform" must {
 
-    val input = "{randomSubmissionId}," * 100
+    val input  = "{randomSubmissionId}," * 100
     val result = sut.transform(input).split(',')
 
     "produce 100 results" in { result.length mustBe 100 }

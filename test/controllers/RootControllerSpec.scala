@@ -32,7 +32,7 @@ import utils.MockAppContext.status
 
 import scala.concurrent.ExecutionContext
 
-class RootControllerSpec extends AnyWordSpecLike with Matchers with OptionValues{
+class RootControllerSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   val stubComponents: ControllerComponents = stubControllerComponents()
 
@@ -47,7 +47,8 @@ class RootControllerSpec extends AnyWordSpecLike with Matchers with OptionValues
 
     override def emprefUrl(ref: EmploymentReference): String = s"""/epaye/${URLEncoder.encode(ref.empref, "UTF-8")}"""
 
-    override val authAction: AuthAction = new FakeAuthAction(new Default(stubComponents.parsers), stubComponents.executionContext)
+    override val authAction: AuthAction =
+      new FakeAuthAction(new Default(stubComponents.parsers), stubComponents.executionContext)
   }
 
   "transformEmprefs" must {
@@ -63,9 +64,15 @@ class RootControllerSpec extends AnyWordSpecLike with Matchers with OptionValues
 
   "root" must {
     "return a success which transforms the empref when hit" in {
-      val result = await(testController.root(FakeRequest().withHeaders("ACCEPT"->"application/vnd.hmrc.1.0+json",
-        "Authorization"->"Bearer dsfda9080",
-        "Environment"->"clone")))
+      val result = await(
+        testController.root(
+          FakeRequest().withHeaders(
+            "ACCEPT"        -> "application/vnd.hmrc.1.0+json",
+            "Authorization" -> "Bearer dsfda9080",
+            "Environment"   -> "clone"
+          )
+        )
+      )
 
       status(result) mustBe OK
     }

@@ -29,30 +29,29 @@ import util.StubbingData.*
 import util.WireMockHelper
 
 class PublicDefinitionEndpointISpec
-  extends AnyWordSpec
+    extends AnyWordSpec
     with GuiceOneAppPerSuite
     with WireMockHelper
     with ScalaCheckPropertyChecks {
 
   override def fakeApplication(): Application =
     GuiceApplicationBuilder()
-      .configure(wireMockConfiguration(server.port())
-      )
+      .configure(wireMockConfiguration(server.port()))
       .build()
 
   "API Definition Endpoint (Public Mode)" when {
     "calling /api/definition" +
-    "\nand definition file exists and private-mode is set to true" must {
-      "return OK" in {
-        // set up
-        val request = FakeRequest(GET, "/api/definition")
+      "\nand definition file exists and private-mode is set to true" must {
+        "return OK" in {
+          // set up
+          val request = FakeRequest(GET, "/api/definition")
 
-        // test
-        val result = route(app, request).get
+          // test
+          val result = route(app, request).get
 
-        // check
-        status(result) mustBe OK
+          // check
+          status(result) mustBe OK
+        }
       }
-    }
   }
 }

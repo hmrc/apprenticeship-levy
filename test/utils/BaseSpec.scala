@@ -19,5 +19,4 @@ package utils
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.BeforeAndAfterEach
 
-trait BaseSpec extends AnyWordSpecLike with NinoGenerator with BeforeAndAfterEach {
-}
+trait BaseSpec extends AnyWordSpecLike with NinoGenerator with BeforeAndAfterEach {}

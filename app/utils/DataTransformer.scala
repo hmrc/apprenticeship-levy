@@ -24,33 +24,29 @@ import scala.util.Random
 @Singleton
 class DataTransformer() {
 
-  def transform(input: String): String = {
+  def transform(input: String): String =
     randomizeSubmissionIds(input)
-  }
 
-  private def randomizeSubmissionIds(input: String): String = {
+  private def randomizeSubmissionIds(input: String): String =
     incrementalReplace(input, "{randomSubmissionId}", randomSubmissionId)
-  }
 
   @tailrec
   private def incrementalReplace(content: String, search: String, replacement: => String): String = {
     val index = content.indexOf(search)
-    if(index >= 0) {
+    if (index >= 0) {
       incrementalReplace(content.take(index) + replacement + content.drop(index + search.length), search, replacement)
     } else {
       content
     }
   }
 
-  private def randomSubmissionId = "9" + randomDigits(10)
+  private def randomSubmissionId        = "9" + randomDigits(10)
   private def randomDigits(digits: Int) = {
     @tailrec
-    def loop(digits: Int, result: String): String = {
-      if(digits < 1) result
+    def loop(digits: Int, result: String): String =
+      if (digits < 1) result
       else loop(digits - 1, result + Random.nextInt(9))
-    }
 
     loop(digits, "")
   }
 }
-

@@ -29,7 +29,7 @@ import util.StubbingData.*
 import util.WireMockHelper
 
 class TestDataEndpointISpec
-  extends AnyWordSpec
+    extends AnyWordSpec
     with GuiceOneAppPerSuite
     with WireMockHelper
     with ScalaCheckPropertyChecks {
@@ -67,7 +67,7 @@ class TestDataEndpointISpec
 
         // check
         status(result) mustBe OK
-        contentAsString(result) must include ("/paye/employer/840/MODES17/designatory-details/employer")
+        contentAsString(result) must include("/paye/employer/840/MODES17/designatory-details/employer")
       }
 
       "return NotFound where json file does not exists" in {
@@ -97,7 +97,7 @@ class TestDataEndpointISpec
       "return support OVERRIDE_EMPREF" must {
         "return json file where it exists" in {
           // set up
-          val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF"->"840/MODES17"
+          val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF" -> "840/MODES17"
           val request = FakeRequest(GET, "/sandbox/data/paye/employer/000/ABC/designatory-details")
             .withHeaders(headers*)
 
@@ -106,12 +106,12 @@ class TestDataEndpointISpec
 
           // check
           status(result) mustBe OK
-          contentAsString(result) must include ("/paye/employer/840/MODES17/designatory-details/employer")
+          contentAsString(result) must include("/paye/employer/840/MODES17/designatory-details/employer")
         }
 
         "return NotFound where json file does not exist" in {
           // set up
-          val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF"->"ZZZ%2FJKLJLJL"
+          val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF" -> "ZZZ%2FJKLJLJL"
           val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
             .withHeaders(headers*)
 

@@ -47,7 +47,7 @@ trait RootController extends ApiController {
     val links = selfLink(decodeAnyDoubleEncoding(rootUrl)) +: empRefs.map(empref =>
       HalLink(empref, decodeAnyDoubleEncoding(emprefUrl(EmploymentReference(empref))))
     )
-    val body = Json.toJson(Map("emprefs" -> empRefs)).as[JsObject]
+    val body  = Json.toJson(Map("emprefs" -> empRefs)).as[JsObject]
 
     HalResource(HalLinks(links.map(processLink).toVector), body)
   }

@@ -28,13 +28,15 @@ import models.api.{EmploymentReference, Nino}
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
-class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
-                                        val auth: SandboxPrivilegedAuthAction,
-                                        val executionContext: ExecutionContext,
-                                        val parser: BodyParsers.Default,
-                                        val appContext: AppContext,
-                                        val controllerComponents: ControllerComponents,
-                                        ) extends EmprefController with SandboxLinkHelper {
+class SandboxEmprefController @Inject() (
+  val desConnector: SandboxDesConnector,
+  val auth: SandboxPrivilegedAuthAction,
+  val executionContext: ExecutionContext,
+  val parser: BodyParsers.Default,
+  val appContext: AppContext,
+  val controllerComponents: ControllerComponents
+) extends EmprefController
+    with SandboxLinkHelper {
 
   override val authAction: EmploymentReference => SandboxPrivilegedAuthAction = _ => auth
 
@@ -42,14 +44,18 @@ class SandboxEmprefController @Inject()(val desConnector: SandboxDesConnector,
 
   override def emprefUrl(empref: EmploymentReference): String = routes.SandboxEmprefController.empref(empref).url
 
-  override def declarationsUrl(empref: EmploymentReference): String = routes.SandboxLevyDeclarationController.declarations(empref, None, None).url
+  override def declarationsUrl(empref: EmploymentReference): String =
+    routes.SandboxLevyDeclarationController.declarations(empref, None, None).url
 
-  override def fractionsUrl(empref: EmploymentReference): String = routes.SandboxFractionsController.fractions(empref, None, None).url
+  override def fractionsUrl(empref: EmploymentReference): String =
+    routes.SandboxFractionsController.fractions(empref, None, None).url
 
-  override def employmentCheckUrl(empref: EmploymentReference): String = {
-    routes.SandboxEmploymentCheckController.check(empref, Nino("nino"), LocalDate.now(), LocalDate.now())
-      .url.replaceAll("\\?.*", "").replaceAll("nino", "{nino}")
-  }
+  override def employmentCheckUrl(empref: EmploymentReference): String =
+    routes.SandboxEmploymentCheckController
+      .check(empref, Nino("nino"), LocalDate.now(), LocalDate.now())
+      .url
+      .replaceAll("\\?.*", "")
+      .replaceAll("nino", "{nino}")
 
   override def processLink(l: HalLink): HalLink = stripSandboxForNonDev(l)
 

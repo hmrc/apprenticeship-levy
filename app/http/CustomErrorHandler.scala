@@ -30,12 +30,12 @@ import uk.gov.hmrc.play.bootstrap.config.HttpAuditEvent
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CustomErrorHandler @Inject()(
-                                  auditConnector: AuditConnector,
-                                  httpAuditEvent: HttpAuditEvent,
-                                  configuration : Configuration
-                                )(implicit ec: ExecutionContext
-                                ) extends JsonErrorHandler(auditConnector, httpAuditEvent, configuration) {
+class CustomErrorHandler @Inject() (
+  auditConnector: AuditConnector,
+  httpAuditEvent: HttpAuditEvent,
+  configuration: Configuration
+)(implicit ec: ExecutionContext)
+    extends JsonErrorHandler(auditConnector, httpAuditEvent, configuration) {
 
   import httpAuditEvent.dataEvent
 
@@ -43,33 +43,33 @@ class CustomErrorHandler @Inject()(
     Future.successful {
       implicit val headerCarrier: HeaderCarrier = hc(using request)
       statusCode match {
-        case NOT_FOUND =>
+        case NOT_FOUND   =>
           auditConnector.sendEvent(
             dataEvent(
-              eventType       = "ResourceNotFound",
+              eventType = "ResourceNotFound",
               transactionName = "Resource Endpoint Not Found",
-              request         = request,
-              detail          = Map.empty
+              request = request,
+              detail = Map.empty
             )
           )
           NotFound(toJson(ErrorResponse(NOT_FOUND, "URI not found", requested = Some(request.path))))
         case BAD_REQUEST =>
           auditConnector.sendEvent(
             dataEvent(
-              eventType       = "ServerValidationError",
+              eventType = "ServerValidationError",
               transactionName = "Request bad format exception",
-              request         = request,
-              detail          = Map.empty
+              request = request,
+              detail = Map.empty
             )
           )
           BadRequest(toJson(ErrorResponse(BAD_REQUEST, message)))
-        case _ =>
+        case _           =>
           auditConnector.sendEvent(
             dataEvent(
-              eventType       = "ClientError",
+              eventType = "ClientError",
               transactionName = s"A client error occurred, status: $statusCode",
-              request         = request,
-              detail          = Map.empty
+              request = request,
+              detail = Map.empty
             )
           )
           Status(statusCode)(toJson(ErrorResponse(statusCode, message)))

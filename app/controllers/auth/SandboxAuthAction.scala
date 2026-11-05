@@ -21,9 +21,8 @@ import play.api.mvc.{BodyParsers, Request, Result}
 import uk.gov.hmrc.domain.EmpRef
 import scala.concurrent.{ExecutionContext, Future}
 
-class SandboxAuthAction @Inject()(val parser: BodyParsers.Default,
-                                  val executionContext: ExecutionContext) extends AuthAction {
-  override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
+class SandboxAuthAction @Inject() (val parser: BodyParsers.Default, val executionContext: ExecutionContext)
+    extends AuthAction {
+  override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
     Future.successful(Right(AuthenticatedRequest(request, Some(EmpRef("840", "MODES17")))))
-  }
 }

@@ -36,11 +36,11 @@ trait ApiController extends BackendBaseController with HeaderValidator {
   }
 
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier = {
-    val hc = super.hc(using rh)
+    val hc         = super.hc(using rh)
     MDC.put("X-Client-ID", rh.headers.toSimpleMap.getOrElse("X-Client-ID", "Unknown caller"))
     val headersMap = rh.headers.toSimpleMap
-    val clientId = headersMap.getOrElse("X-Client-ID", "Unknown caller")
-    val user = headersMap.getOrElse("X-Client-Authorization-Token", "Unknown caller")
+    val clientId   = headersMap.getOrElse("X-Client-ID", "Unknown caller")
+    val user       = headersMap.getOrElse("X-Client-Authorization-Token", "Unknown caller")
 
     hc.copy(extraHeaders = Seq(("X-Client-ID", clientId), ("X-Client-Authorization-Token", user)) ++ hc.extraHeaders)
   }
