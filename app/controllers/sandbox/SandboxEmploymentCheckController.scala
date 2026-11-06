@@ -19,14 +19,14 @@ package controllers.sandbox
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import config.AppContext
-import connectors.SandboxDesConnector
+import connectors.SandboxIntegrationPlatformConnector
 import controllers.EmploymentCheckController
 import controllers.auth.SandboxPrivilegedAuthAction
 
 import scala.concurrent.ExecutionContext
 
 class SandboxEmploymentCheckController @Inject() (
-  val desConnector: SandboxDesConnector,
+  val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
   val authAction: SandboxPrivilegedAuthAction,
   val executionContext: ExecutionContext,
   val parser: BodyParsers.Default,

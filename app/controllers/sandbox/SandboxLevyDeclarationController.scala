@@ -19,17 +19,17 @@ package controllers.sandbox
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import config.AppContext
-import connectors.SandboxDesConnector
+import connectors.SandboxIntegrationPlatformConnector
 import controllers.auth.SandboxPrivilegedAuthAction
-import controllers.{DesController, LevyDeclarationController}
+import controllers.{IntegrationPlatformController, LevyDeclarationController}
 import scala.concurrent.ExecutionContext
 
 class SandboxLevyDeclarationController @Inject() (
-  val desConnector: SandboxDesConnector,
+  val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
   val authAction: SandboxPrivilegedAuthAction,
   val executionContext: ExecutionContext,
   val parser: BodyParsers.Default,
   val appContext: AppContext,
   val controllerComponents: ControllerComponents
-) extends DesController
+) extends IntegrationPlatformController
     with LevyDeclarationController

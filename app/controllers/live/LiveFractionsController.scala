@@ -19,28 +19,28 @@ package controllers.live
 import com.google.inject.Inject
 import play.api.mvc.{BodyParsers, ControllerComponents}
 import config.AppContext
-import connectors.LiveDesConnector
+import connectors.LiveIntegrationPlatformConnector
 import controllers.auth.PrivilegedAuthActionImpl
-import controllers.{DesController, FractionsCalculationDateController, FractionsController}
+import controllers.{IntegrationPlatformController, FractionsCalculationDateController, FractionsController}
 
 import scala.concurrent.ExecutionContext
 
 class LiveFractionsController @Inject() (
-  val desConnector: LiveDesConnector,
+  val integrationPlatformConnector: LiveIntegrationPlatformConnector,
   val authAction: PrivilegedAuthActionImpl,
   val executionContext: ExecutionContext,
   val parser: BodyParsers.Default,
   val appContext: AppContext,
   val controllerComponents: ControllerComponents
-) extends DesController
+) extends IntegrationPlatformController
     with FractionsController
 
 class LiveFractionsCalculationDateController @Inject() (
-  val desConnector: LiveDesConnector,
+  val integrationPlatformConnector: LiveIntegrationPlatformConnector,
   val authAction: PrivilegedAuthActionImpl,
   val executionContext: ExecutionContext,
   val parser: BodyParsers.Default,
   val appContext: AppContext,
   val controllerComponents: ControllerComponents
-) extends DesController
+) extends IntegrationPlatformController
     with FractionsCalculationDateController

@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppContext
-import connectors.DesConnector
+import connectors.IntegrationPlatformConnector
 import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import models.api.{EmploymentReference, Nino}
 import models.des.{EmploymentCheckStatus, Unknown}
@@ -53,10 +53,11 @@ class EmploymentCheckControllerSpec
   val testController: EmploymentCheckController = new EmploymentCheckController {
     override implicit val executionContext: ExecutionContext = controllerComponents.executionContext
 
-    def desConnector: DesConnector = new DesConnector() {
+    def integrationPlatformConnector: IntegrationPlatformConnector = new IntegrationPlatformConnector() {
       override val appContext: AppContext                           = mockAppContext
       override protected def auditConnector: Option[AuditConnector] = None
       def baseUrl: String                                           = "http://a.guide.to.nowhere/"
+      def hipBaseUrl: String                                        = "http://a.guide.to.nowhere/"
       def httpClient: HttpClientV2                                  = mockHttp
       override def desAuthorization: String                         = "localBearer"
 
