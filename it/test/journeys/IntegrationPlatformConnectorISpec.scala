@@ -55,6 +55,7 @@ class IntegrationPlatformConnectorISpec
     .configure(
       "featureFlags.hip.api-5965"            -> false,
       "featureFlags.hip.api-6017"            -> false,
+      "featureFlags.hip.api-6019"            -> false,
       "microservice.services.auth.host"      -> "localhost",
       "microservice.services.auth.port"      -> server.port(),
       "microservice.services.des.host"       -> "localhost",
@@ -87,7 +88,8 @@ class IntegrationPlatformConnectorISpec
         "microservice.services.hip.clientId"     -> "client",
         "microservice.services.hip.clientSecret" -> "secret",
         "featureFlags.hip.api-5965"              -> true,
-        "featureFlags.hip.api-6017"              -> true
+        "featureFlags.hip.api-6017"              -> true,
+        "featureFlags.hip.api-6019"              -> true
       )
       .overrides(bind[Auditor].toInstance(mockAuditor))
       .build()
@@ -108,8 +110,23 @@ class IntegrationPlatformConnectorISpec
         .withoutHeader("Environment")
     )
 
-  "DES Connector" must {
+  "IntegrationPlatform Connector" must {
     "for Fraction Date endpoint" must {
+      "send HIP headers when flag api-6019 is enabled" in {
+
+        val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
+        val fractionCalculationDate     = FractionCalculationDate(LocalDate.of(2016, 11, 3))
+        val stubResponse = ok(Json.toJson[FractionCalculationDate](fractionCalculationDate).toString)
+
+        stubGetServer(stubResponse, fractionsCalculationDateUrl)
+
+        withHipConnector { hipConnector =>
+          await(hipConnector.fractionCalculationDate(using mockHeaderCarrier, global)) mustBe LocalDate.of(2016, 11, 3)
+        }
+
+        verifyHipHeaders(fractionsCalculationDateUrl)
+      }
+
       "when EDH not failing return local date instance of date" in {
 
         val fractionsCalculationDateUrl = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
@@ -191,6 +208,25 @@ class IntegrationPlatformConnectorISpec
     }
 
     "for Fractions endpoint" must {
+      "send HIP headers when api-6019 is enabled" in {
+
+        val empRef           = "123AB12345"
+        val dateRange        = ClosedDateRange(LocalDate.of(2016, 11, 3), LocalDate.of(2016, 11, 3))
+        val stubResponse = ok(Json.toJson[Fractions](Fractions(empRef, Nil)).toString)
+        val employersUrl     =
+          s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empRef)}/fractions?${dateRange.toParams}"
+        val expectedResponse = Fractions("123/AB12345", Nil)
+
+
+        stubGetServer(stubResponse, employersUrl)
+
+        withHipConnector { hipConnector =>
+          await(hipConnector.fractions(empRef, dateRange)(using mockHeaderCarrier, global)) mustBe expectedResponse
+        }
+
+        verifyHipHeaders(employersUrl)
+      }
+
       "when EDH not failing return fractions" in {
 
         val localDate        = LocalDate.of(2016, 4, 22)

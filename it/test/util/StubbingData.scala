@@ -58,6 +58,7 @@ object StubbingData {
     "play.ws.timeout.connection"            -> "500 milliseconds",
     "featureFlags.hip.api-5965"             -> false,
     "featureFlags.hip.api-6017"             -> false,
+    "featureFlags.hip.api-6019"             -> false,
     "microservice.services.stub-auth.port"  -> serverPort,
     "microservice.services.stub-auth.path"  -> "",
     "microservice.services.stub-des.port"   -> serverPort,
@@ -74,6 +75,7 @@ object StubbingData {
     wireMockConfiguration(serverPort) ++ Map(
       "featureFlags.hip.api-5965"           -> true,
       "featureFlags.hip.api-6017"           -> true,
+      "featureFlags.hip.api-6019"           -> true,
       "microservice.services.stub-hip.port" -> serverPort,
       "microservice.services.stub-hip.path" -> "",
       "microservice.services.hip.port"      -> serverPort,

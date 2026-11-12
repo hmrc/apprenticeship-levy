@@ -39,14 +39,16 @@ import play.api.test.Helpers.{
 import util.StubbingData.*
 import util.WireMockHelper
 
-class FractionsCalculationDateEndpointISpec
+abstract class FractionsCalculationDateEndpointISpecBase
     extends AnyWordSpec
     with GuiceOneAppPerSuite
     with WireMockHelper
     with ScalaCheckPropertyChecks {
 
+  def wireMockConfig(port: Int): Map[String, Any]
+
   override def fakeApplication(): Application = {
-    val conf = wireMockConfiguration(server.port())
+    val conf = wireMockConfig(server.port())
     GuiceApplicationBuilder()
       .configure(conf)
       .build()

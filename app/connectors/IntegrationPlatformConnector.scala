@@ -166,62 +166,61 @@ trait EmploymentCheckEndpoint {
 }
 
 trait FractionsEndpoint {
-  des: IntegrationPlatformConnector =>
+  ip: IntegrationPlatformConnector =>
   def appContext: AppContext
 
-  def fractions(
-      empref: String,
-      dateRange: DateRange
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Fractions] = {
+  def fractions(empref: String, dateRange: DateRange)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Fractions] = {
     val dateParams = dateRange.toParams
-    val url        = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions?$dateParams"
+    val useHip     = ip.useHipFor6019
+    val url        = s"${ipBaseUrl(useHip)}/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions?$dateParams"
     // $COVERAGE-OFF$
-    logger.debug(s"Calling DES at $url")
+
+    logger.debug(s"Calling  ${ipPlatform(useHip)} at $url")
     // $COVERAGE-ON$
 
     audit(ALAEvent("readFractions", empref, "", dateParams)) {
-      createDesHeaders(des.httpClient.get(url"$url"))
-        .execute[Either[UpstreamErrorResponse, Fractions]]
-        .map {
-          case Right(fraction) =>
-            fraction.copy(empref = convertEmpref(fraction.empref))
-          case Left(e: UpstreamErrorResponse) =>
-            if (e.statusCode == BAD_REQUEST)
-              throw new BadRequestException(e.message)
-            if (e.statusCode == NOT_FOUND)
-              throw new NotFoundException(e.message)
-            else
-              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
-        }
+      createIpHeaders(useHip)(ip.httpClient.get(url"$url"))
+        .execute[Either[UpstreamErrorResponse, Fractions]] map {
+        case Right(fraction)                =>
+          fraction.copy(empref = convertEmpref(fraction.empref))
+        case Left(e: UpstreamErrorResponse) =>
+          if (e.statusCode == BAD_REQUEST)
+            throw new BadRequestException(e.message)
+          if (e.statusCode == NOT_FOUND)
+            throw new NotFoundException(e.message)
+          else
+            throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
+      }
     }
 
   }
 
   def fractionCalculationDate(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[LocalDate] = {
-    val url = s"$baseUrl/apprenticeship-levy/fraction-calculation-date"
+    val useHip     = ip.useHipFor6019
+    val url = s"${ipBaseUrl(useHip)}/apprenticeship-levy/fraction-calculation-date"
 
     // $COVERAGE-OFF$
-    logger.debug(s"Calling DES at $url")
+    logger.debug(s"Calling  ${ipPlatform(useHip)} at $url")
     // $COVERAGE-ON$
-
     audit(ALAEvent("readFractionCalculationDate")) {
-      createDesHeaders(des.httpClient.get(url"$url"))
-        .execute[Either[UpstreamErrorResponse, FractionCalculationDate]]
-        .map {
-          case Right(response) =>
-            response.date
-          case Left(e: UpstreamErrorResponse) =>
-            if (e.statusCode == BAD_REQUEST)
-              throw new BadRequestException(e.message)
-            if (e.statusCode == NOT_FOUND)
-              throw new NotFoundException(e.message)
-            else
-              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
-        }
+      createIpHeaders(useHip)(ip.httpClient.get(url"$url"))
+        .execute[Either[UpstreamErrorResponse, FractionCalculationDate]] map {
+        case Right(response)                =>
+          response.date
+        case Left(e: UpstreamErrorResponse) =>
+          if (e.statusCode == BAD_REQUEST)
+            throw new BadRequestException(e.message)
+          if (e.statusCode == NOT_FOUND)
+            throw new NotFoundException(e.message)
+          else
+            throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
+      }
     }
 
   }
-
 }
 
 trait LevyDeclarationsEndpoint {
@@ -396,6 +395,7 @@ trait IntegrationPlatformConnector
 
   def useHipFor5965: Boolean = appContext.api5965
   def useHipFor6017: Boolean = appContext.api6017
+  def useHipFor6019: Boolean = appContext.api6019
 
   def ipBaseUrl(useHip: Boolean): String = if (useHip) hipBaseUrl else baseUrl
 
