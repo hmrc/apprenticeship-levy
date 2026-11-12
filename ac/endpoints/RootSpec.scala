@@ -16,12 +16,10 @@ class RootSpec extends FunctionalSpec with Eventually with IntegrationPatience {
       implicit val environment = pair._2
       val folder = s"$dir/${pair._2}"
       it (s"should when calling ${url}$context/ return links for each empref (${environment})") {
-        // set up
         val expected = fileToStr(s"${folder}/root.json")
         val expectedJson = Json.parse(expected)
 
-        // test
-        info(standardHeaders().mkString(" "))
+         info(standardHeaders().mkString(" "))
 
         val result = eventually {
           Http(s"$url$context/")
@@ -29,8 +27,7 @@ class RootSpec extends FunctionalSpec with Eventually with IntegrationPatience {
             .asString
         }
 
-        // check
-        result.code mustBe 200
+         result.code mustBe 200
         result.contentType mustBe Some("application/json")
         Json.parse(result.body) mustBe expectedJson
       }

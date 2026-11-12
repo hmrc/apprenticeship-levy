@@ -15,19 +15,16 @@ class FractionsSpec extends FunctionalSpec with Eventually with IntegrationPatie
       implicit val environment: String = pair._2
       val baseDir = s"$dir/${pair._2}"
       it (s"should when calling ${url}$context/fraction-calculation-date return date of last fraction calculation  (${environment})") {
-        // set up
         val expected = fileToStr(s"${baseDir}/fraction-calculation-date.json")
         val expectedJson = Json.parse(expected)
 
-        // test
-        val result = eventually {
+         val result = eventually {
           Http(s"$url$context/fraction-calculation-date")
             .headers(standardHeaders())
             .asString
         }
 
-        // check
-        result.code mustBe 200
+         result.code mustBe 200
         result.contentType mustBe Some("application/json")
         Json.parse(result.body) mustBe expectedJson
       }
@@ -45,16 +42,13 @@ class FractionsSpec extends FunctionalSpec with Eventually with IntegrationPatie
         val expectedJson = Json.parse(expected)
         val params = (expectedJson \ "params").as[String]
         it (s"should when calling ${url}$context/epaye/$empref/fractions$params return fraction details (env: ${environment}, file: ${name})") {
-          // set up
 
-          // test
-          val result = eventually {
+             val result = eventually {
             Http(s"$url$context/epaye/$empref/fractions$params")
               .headers(standardHeaders())
               .asString
           }
 
-          // check
           result.code mustBe 200
           result.contentType mustBe Some("application/json")
           Json.parse(result.body) mustBe (expectedJson \ "response").get

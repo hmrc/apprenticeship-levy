@@ -33,25 +33,19 @@ class ExternalTestEnvironmentSpec extends AppLevyUnitSpec with GuiceOneAppPerSui
     }
 
     "not have sandbox API endpoints" in {
-      // set up
       val request = FakeRequest(GET, "/sandbox/epaye/123%2FAB12345/fractions")
 
-      // test
-      val result = TestRouter.handlerFor(request)
+       val result = TestRouter.handlerFor(request)
 
-      // check
       TestRouter.routes === mockExternalTestRoutes.routes
       result mustBe None
     }
 
     "have production API endpoints" in {
-      // set up
       val request = FakeRequest(GET, "/epaye/123%2FAB12345/fractions")
 
-      // test
-      val result = TestRouter.handlerFor(request)
+       val result = TestRouter.handlerFor(request)
 
-      // check
       TestRouter.routes === mocknonexternalTestRoutes.routes
       result.get === controllers.sandbox.routes.SandboxFractionsController.fractions
     }

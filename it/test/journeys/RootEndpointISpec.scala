@@ -45,11 +45,9 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
       "return valid json" in {
         val request = FakeRequest(GET, "/sandbox/").withHeaders(standardDesHeaders()*)
 
-        // test
-        val result = route(app, request).get
+         val result = route(app, request).get
 
-        // check
-        status(result) mustBe OK
+         status(result) mustBe OK
         contentType(result) mustBe Some("application/json")
 
         val json = contentAsJson(result)
@@ -60,8 +58,7 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
       "when calling /" when {
         "backend systems not failing" must {
           "return links for each empref" in {
-            // set up
-            val response = """{"allEnrolments": [{
+              val response = """{"allEnrolments": [{
                              |    "key": "IR-PAYE",
                              |    "identifiers": [{ "key": "TaxOfficeNumber", "value": "123" },
                              |    { "key": "TaxOfficeReference", "value": "AB12345" }],
@@ -75,11 +72,9 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
             )
             val request  = FakeRequest(GET, s"/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe OK
+              status(result) mustBe OK
             contentType(result) mustBe Some("application/json")
             val json = contentAsJson(result)
             (json \ "_links" \ "self" \ "href").as[String] mustBe "/"
@@ -89,8 +84,7 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
 
         "errors occur" must {
           "return 401 when Auth returns 401" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withStatus(UNAUTHORIZED)
                 .withStatusMessage("Not authorised.")
@@ -99,11 +93,9 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe UNAUTHORIZED
+              status(result) mustBe UNAUTHORIZED
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"AUTH_ERROR_UNAUTHORIZED","message":"No active session error"}"""
@@ -111,8 +103,7 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
           }
 
           "return 403 when Auth returns 403" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withStatus(FORBIDDEN)
                 .withStatusMessage("Forbidden."),
@@ -120,11 +111,9 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe FORBIDDEN
+              status(result) mustBe FORBIDDEN
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"AUTH_ERROR_FORBIDDEN","message":"Auth forbidden error"}"""
@@ -132,8 +121,7 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
           }
 
           "return 503 when Auth returns 404" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withStatus(NOT_FOUND)
                 .withStatusMessage("Not found."),
@@ -141,11 +129,9 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe SERVICE_UNAVAILABLE
+              status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
           }
@@ -153,44 +139,37 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
 
         "backend systems failing" must {
           "return http status 503 when connection closed" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withFault(Fault.MALFORMED_RESPONSE_CHUNK),
               "/auth/authorise"
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe SERVICE_UNAVAILABLE
+              status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_IO","message":"Auth connection error"}""")
           }
 
           "return 503 when returning empty response and connection closed" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withFault(Fault.EMPTY_RESPONSE),
               "/auth/authorise"
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe SERVICE_UNAVAILABLE
+              status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_IO","message":"Auth connection error"}""")
           }
 
           "return 408 when timed out" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withStatus(OK)
                 .withFixedDelay(1000 * 60),
@@ -198,11 +177,9 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe REQUEST_TIMEOUT
+              status(result) mustBe REQUEST_TIMEOUT
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"AUTH_ERROR_GATEWAY_TIMEOUT","message":"Auth not responding error"}"""
@@ -210,8 +187,7 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
           }
 
           "return 503 when Auth returns 503" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withStatus(SERVICE_UNAVAILABLE)
                 .withStatusMessage("Backend systems failing"),
@@ -219,11 +195,9 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe SERVICE_UNAVAILABLE
+              status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"AUTH_ERROR_BACKEND_FAILURE","message":"Auth 5xx error"}"""
@@ -231,8 +205,7 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
           }
 
           "return http status 429 when Auth HTTP 429" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withStatus(TOO_MANY_REQUESTS)
                 .withBody("""{"reason" : "Drowning in requests"}"""),
@@ -240,11 +213,9 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe TOO_MANY_REQUESTS
+              status(result) mustBe TOO_MANY_REQUESTS
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"AUTH_ERROR_TOO_MANY_REQUESTS","message":"Auth too many requests"}"""
@@ -252,8 +223,7 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
           }
 
           "return http status 503 when Auth HTTP 409" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withStatus(LENGTH_REQUIRED)
                 .withBody("""{"reason" : "Some Auth 411 error"}"""),
@@ -261,18 +231,15 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe SERVICE_UNAVAILABLE
+              status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
           }
 
           "return http status 408 when Auth HTTP 408" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withStatus(REQUEST_TIMEOUT)
                 .withBody("""{"reason" : "Not responding"}"""),
@@ -280,11 +247,9 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe REQUEST_TIMEOUT
+              status(result) mustBe REQUEST_TIMEOUT
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"AUTH_ERROR_TIMEOUT","message":"Auth not responding error"}"""
@@ -292,8 +257,7 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
           }
 
           "return http status 503 when Auth HTTP 400" in {
-            // set up
-            stubPostServerWithId(
+              stubPostServerWithId(
               aResponse()
                 .withStatus(BAD_REQUEST)
                 .withBody("""{"reason" : "Not responding"}"""),
@@ -301,11 +265,9 @@ class RootEndpointISpec extends AnyWordSpec with GuiceOneAppPerSuite with WireMo
             )
             val request = FakeRequest(GET, "/").withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe SERVICE_UNAVAILABLE
+              status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse("""{"code":"AUTH_ERROR_OTHER","message":"Auth 4xx error"}""")
           }

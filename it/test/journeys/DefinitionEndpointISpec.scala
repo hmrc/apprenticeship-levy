@@ -52,36 +52,27 @@ class DefinitionEndpointISpec
     "calling /api/definition" +
       "\nand definition file exists and private-mode is set to true" must {
         "return OK" in {
-          // set up
           val request = FakeRequest(GET, "/api/definition")
 
-          // test
-          val result = route(app, request).get
+             val result = route(app, request).get
 
-          // check
           status(result) mustBe OK
         }
 
         "return expected JSON API definition" in {
-          // set up
           val request = FakeRequest(GET, "/api/definition")
 
-          // test
-          val result = route(app, request).get
+             val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse(asString("definition.json"))
         }
 
         "return definition configuration as PRIVATE" in {
-          // set up
           val request = FakeRequest(GET, "/api/definition")
 
-          // test
-          val result = route(app, request).get
+             val result = route(app, request).get
 
-          // check
           contentType(result) mustBe Some("application/json")
           val json     = contentAsJson(result)
           val version1 = (json \ "api" \ "versions")(0)

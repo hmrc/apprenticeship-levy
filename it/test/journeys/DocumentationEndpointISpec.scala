@@ -56,13 +56,10 @@ class DocumentationEndpointISpec
     "provide YAML documentation" when {
       Seq("1.0").foreach { version =>
         s"/api/conf/$version/application.yaml is defined" in {
-          // set up
           val request = FakeRequest(GET, s"/api/conf/$version/application.yaml")
 
-          // test
-          val result = route(app, request).get
+             val result = route(app, request).get
 
-          // check
           status(result) mustBe OK
           contentAsString(result).startsWith("openapi: 3.0.3") mustBe true
         }
@@ -82,15 +79,12 @@ class DocumentationEndpointISpec
 
         includes.zipWithIndex.foreach { case (include, _) =>
           s"and serve file for $include" in {
-            // set up
-            val file    = include.substring(9)
+              val file    = include.substring(9)
             val request = FakeRequest(GET, s"/api/conf/$version/$file")
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe OK
+              status(result) mustBe OK
           }
         }
       }
@@ -98,36 +92,29 @@ class DocumentationEndpointISpec
 
     "should when calling /api/definition" must {
       "have correct definitions configured" in {
-        // set up
         val request = FakeRequest(GET, s"/api/definition")
 
-        // test
-        val result = route(app, request).get
+         val result = route(app, request).get
 
-        // check
-        status(result) mustBe OK
+         status(result) mustBe OK
       }
     }
 
     "with invalid parameters" must {
       "return 404 when documentation version doesn't exist" in {
-        // set up
         val urls = for { version <- Gen.choose(Int.MinValue, Int.MaxValue) } yield s"/api/documentation/$version/empref"
 
         forAll(urls) { (url: String) =>
           val request = FakeRequest(GET, url)
 
-          // test
-          val documentationResult = route(app, request).get
+             val documentationResult = route(app, request).get
           val httpStatus          = status(documentationResult)
 
-          // check
           httpStatus mustBe NOT_FOUND
         }
       }
 
       "return 404 when documentation endpoint doesn't exist" in {
-        // set
         val endpoints = for { endpoint <- Gen.alphaStr } yield endpoint
 
         forAll(endpoints) { (endpoint: String) =>
@@ -135,12 +122,10 @@ class DocumentationEndpointISpec
             val url     = s"/api/documentation/1.0/$endpoint"
             val request = FakeRequest(GET, url)
 
-            // test
-            val documentationResult = route(app, request).get
+                 val documentationResult = route(app, request).get
             val httpStatus          = status(documentationResult)
 
-            // check
-            httpStatus mustBe NOT_FOUND
+              httpStatus mustBe NOT_FOUND
           }
         }
       }

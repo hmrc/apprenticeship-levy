@@ -80,7 +80,6 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
 
   "getting fraction calculations" must {
     "propogate environment but not authorization headers on to connector" in {
-      // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       val urlCaptor: ArgumentCaptor[URL]                     = ArgumentCaptor.forClass(classOf[URL])
 
@@ -95,8 +94,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
         )
       )
 
-      // test
-      await(
+       await(
         controller.fractions(EmploymentReference("123AB12345"), None, None)(
           FakeRequest()
             .withHeaders(
@@ -110,7 +108,6 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       verify(mockHttp).get(urlCaptor.capture())(using headerCarrierCaptor.capture())
       verify(mockRequestBuilder).execute[Fractions](using any(), any())
 
-      // check
       val actualHeaderCarrier   = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
@@ -122,7 +119,6 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
     }
 
     "not fail if environment header not supplied" in {
-      // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       val urlCaptor: ArgumentCaptor[URL]                     = ArgumentCaptor.forClass(classOf[URL])
 
@@ -137,8 +133,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
         )
       )
 
-      // test
-      await(
+       await(
         controller.fractions(EmploymentReference("123AB12345"), None, None)(
           FakeRequest()
             .withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Authorization" -> "Bearer dsfda9080")
@@ -148,7 +143,6 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       verify(mockHttp).get(urlCaptor.capture())(using headerCarrierCaptor.capture())
       verify(mockRequestBuilder, times(2)).execute[Fractions](using any(), any())
 
-      // check
       val actualHeaderCarrier   = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization

@@ -57,16 +57,13 @@ abstract class EmploymentCheckEndpointISpecBase
       s"calling $context/epaye/<empref>/employed/<nino>" when {
         "with valid parameters" must {
           "?fromDate=2015-03-03&toDate=2015-06-30: return 'employed'" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/AA123456A?fromDate=2016-03-03&toDate=2016-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            contentType(result) mustBe Some("application/json")
+              contentType(result) mustBe Some("application/json")
             val json = contentAsJson(result)
             json mustBe Json.parse(
               """{"empref":"123/AB12345","nino":"AA123456A","fromDate":"2016-03-03","toDate":"2016-06-30","employed":true}"""
@@ -74,16 +71,13 @@ abstract class EmploymentCheckEndpointISpecBase
           }
 
           "?fromDate=2016-03-03&toDate=2016-06-30: return 'not recognised'" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/BB123456A?fromDate=2016-03-03&toDate=2016-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            info(contentAsString(result))
+              info(contentAsString(result))
             contentType(result) mustBe Some("application/json")
             val json = contentAsJson(result)
             json mustBe Json.parse(
@@ -92,16 +86,13 @@ abstract class EmploymentCheckEndpointISpecBase
           }
 
           "?fromDate=2015-03-03&toDate=2015-06-30: return 'not employed'" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/123%2FAB12345/employed/EE123456A?fromDate=2016-03-03&toDate=2016-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            contentType(result) mustBe Some("application/json")
+              contentType(result) mustBe Some("application/json")
             val json = contentAsJson(result)
             json mustBe Json.parse(
               """{"empref":"123/AB12345","nino":"EE123456A","fromDate":"2016-03-03","toDate":"2016-06-30","employed":false}"""
@@ -111,8 +102,7 @@ abstract class EmploymentCheckEndpointISpecBase
 
         "with invalid parameters" must {
           "return 400 when empref is badly formatted" in {
-            // set up
-            val emprefs = for { empref <- genEmpref } yield empref
+              val emprefs = for { empref <- genEmpref } yield empref
 
             forAll(emprefs) { (empref: String) =>
               whenever(empref.nonEmpty) {
@@ -123,12 +113,10 @@ abstract class EmploymentCheckEndpointISpecBase
                   )
                     .withHeaders(standardDesHeaders()*)
 
-                // test
-                val result     = route(app, request).get
+                         val result     = route(app, request).get
                 val httpStatus = status(result)
 
-                // check
-                httpStatus mustBe BAD_REQUEST
+                      httpStatus mustBe BAD_REQUEST
                 contentType(result) mustBe Some("application/json")
                 contentAsString(result) must include(
                   """is in the wrong format. Should be ^\\d{3}/[0-9A-Z]{1,10}$ and url encoded.""""
@@ -138,8 +126,7 @@ abstract class EmploymentCheckEndpointISpecBase
           }
 
           "should return 400 when nino is badly formatted" in {
-            // set up
-
+  
             // This list of inputs is based on the information obtained from: https://en.wikipedia.org/wiki/National_Insurance_number#Format
             val invalidNationalInsuranceNumbers = Seq(
               "12345", // Only 5 characters, all numbers
@@ -194,12 +181,10 @@ abstract class EmploymentCheckEndpointISpecBase
                 )
                   .withHeaders(standardDesHeaders()*)
 
-              // test
-              val result     = route(app, request).get
+                     val result     = route(app, request).get
               val httpStatus = status(result)
 
-              // check
-              httpStatus mustBe BAD_REQUEST
+                  httpStatus mustBe BAD_REQUEST
               contentType(result) mustBe Some("application/json")
               contentAsString(result) must include("""is in the wrong format. Should have a prefix (one of """)
             }
@@ -207,8 +192,7 @@ abstract class EmploymentCheckEndpointISpecBase
 
           Seq("fromDate", "toDate").foreach { param =>
             s"return 400 when $param param is invalid" in {
-              // set up
-              val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
+                  val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
 
               forAll(dates) { (date: String) =>
                 whenever(date.nonEmpty) {
@@ -220,12 +204,10 @@ abstract class EmploymentCheckEndpointISpecBase
                   }
                   val request    = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders()*)
 
-                  // test
-                  val result     = route(app, request).get
+                             val result     = route(app, request).get
                   val httpStatus = status(result)
 
-                  // check
-                  httpStatus mustBe BAD_REQUEST
+                          httpStatus mustBe BAD_REQUEST
                   contentType(result) mustBe Some("application/json")
                   contentAsString(result) must include(
                     """date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later."""
@@ -236,17 +218,14 @@ abstract class EmploymentCheckEndpointISpecBase
           }
 
           "return 400 when to date is before from date" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/400%2FAB12345/employed/RA123456C?fromDate=2015-06-03&toDate=2015-03-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result     = route(app, request).get
+                 val result     = route(app, request).get
             val httpStatus = status(result)
 
-            // check
-            httpStatus mustBe BAD_REQUEST
+              httpStatus mustBe BAD_REQUEST
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"BAD_REQUEST","message":"From date was after to date"}"""
@@ -254,16 +233,13 @@ abstract class EmploymentCheckEndpointISpecBase
           }
 
           "return 400 when DES returns 400" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/400%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            val httpStatus = status(result)
+              val httpStatus = status(result)
             httpStatus mustBe BAD_REQUEST
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
@@ -272,16 +248,13 @@ abstract class EmploymentCheckEndpointISpecBase
           }
 
           "return http status 401 when DES returns 40" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/401%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            val httpStatus = status(result)
+              val httpStatus = status(result)
             httpStatus mustBe 401
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
@@ -290,16 +263,13 @@ abstract class EmploymentCheckEndpointISpecBase
           }
 
           "return http status 403 when DES returns 403" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/403%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe 403
+              status(result) mustBe 403
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}"""
@@ -309,61 +279,49 @@ abstract class EmploymentCheckEndpointISpecBase
 
         "backend systems failing" must {
           "return 503 when connection closed" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/999%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe SERVICE_UNAVAILABLE
+              status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           "return http status 503 when empty response" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/888%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe SERVICE_UNAVAILABLE
+              status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           "return http status 408 when timed out" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/777%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe REQUEST_TIMEOUT
+              status(result) mustBe REQUEST_TIMEOUT
             contentType(result) mustBe Some("application/json")
             contentAsString(result) must include("DES not responding error")
           }
 
           "return http status 503 when DES HTTP 500" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/500%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe SERVICE_UNAVAILABLE
+              status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}"""
@@ -371,16 +329,13 @@ abstract class EmploymentCheckEndpointISpecBase
           }
 
           "return http status 503 when DES HTTP 503" in {
-            // set up
-            val request =
+              val request =
               FakeRequest(GET, s"$context/epaye/503%2FAB12345/employed/RA123456C?fromDate=2015-03-03&toDate=2015-06-30")
                 .withHeaders(standardDesHeaders()*)
 
-            // test
-            val result = route(app, request).get
+                 val result = route(app, request).get
 
-            // check
-            status(result) mustBe SERVICE_UNAVAILABLE
+              status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}"""

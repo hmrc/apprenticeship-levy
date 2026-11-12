@@ -79,7 +79,6 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
   "getting fraction calculation date" must {
     "propagate environment but not authorization headers on to connector" in {
-      // set up
 
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
@@ -99,7 +98,6 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
 
       verify(mockHttp).get(any())(using headerCarrierCaptor.capture())
 
-      // check
       val actualHeaderCarrier   = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
@@ -112,7 +110,6 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
     }
 
     "not fail if environment header not supplied" in {
-      // set up
       val headerCarrierCaptor: ArgumentCaptor[HeaderCarrier] = ArgumentCaptor.forClass(classOf[HeaderCarrier])
       val urlCaptor: ArgumentCaptor[URL]                     = ArgumentCaptor.forClass(classOf[URL])
 
@@ -121,15 +118,13 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any()))
         .thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016, 11, 3))))
 
-      // test
-      await(
+       await(
         controller.fractionCalculationDate()(
           FakeRequest().withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Authorization" -> "Bearer dsfda9080")
         )
       )
       verify(mockHttp).get(urlCaptor.capture())(using headerCarrierCaptor.capture())
 
-      // check
       val actualHeaderCarrier   = headerCarrierCaptor.getValue
       val expectedHeaderCarrier = HeaderCarrier(Some(Authorization("Bearer ABC")))
       actualHeaderCarrier.authorization mustBe expectedHeaderCarrier.authorization
@@ -141,7 +136,6 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
     }
 
     "recover from exceptions" in {
-      // set up
       when(mockHttp.get(any())(using any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.setHeader(any())).thenReturn(mockRequestBuilder)
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any())).thenReturn(
@@ -154,12 +148,10 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
         )
       )
 
-      // test
-      val response: Future[Result] = controller.fractionCalculationDate()(
+       val response: Future[Result] = controller.fractionCalculationDate()(
         FakeRequest().withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Authorization" -> "Bearer dsfda9080")
       )
 
-      // check
       status(response) mustBe SERVICE_UNAVAILABLE
       contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
     }
