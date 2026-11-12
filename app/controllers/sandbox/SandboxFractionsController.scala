@@ -21,16 +21,16 @@ import play.api.mvc.{BodyParsers, ControllerComponents}
 import config.AppContext
 import connectors.SandboxIntegrationPlatformConnector
 import controllers.auth.SandboxPrivilegedAuthAction
-import controllers.{IntegrationPlatformController, FractionsCalculationDateController, FractionsController}
+import controllers.{FractionsCalculationDateController, FractionsController, IntegrationPlatformController}
 import scala.concurrent.ExecutionContext
 
 class SandboxFractionsController @Inject() (
-  val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
-  val authAction: SandboxPrivilegedAuthAction,
-  val executionContext: ExecutionContext,
-  val parser: BodyParsers.Default,
-  val appContext: AppContext,
-  val controllerComponents: ControllerComponents
+    val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
+    val authAction: SandboxPrivilegedAuthAction,
+    val executionContext: ExecutionContext,
+    val parser: BodyParsers.Default,
+    val appContext: AppContext,
+    val controllerComponents: ControllerComponents
 ) extends IntegrationPlatformController
     with FractionsController
     with FractionsCalculationDateController

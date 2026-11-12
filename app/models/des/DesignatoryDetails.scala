@@ -25,27 +25,27 @@ case class HodTelephone(telephoneNumber: Option[String] = None, fax: Option[Stri
 case class HodEmail(primary: Option[String] = None)
 
 case class HodAddress(
-  addressLine1: Option[String] = None,
-  addressLine2: Option[String] = None,
-  addressLine3: Option[String] = None,
-  addressLine4: Option[String] = None,
-  addressLine5: Option[String] = None,
-  postcode: Option[String] = None,
-  foreignCountry: Option[String] = None
+    addressLine1: Option[String] = None,
+    addressLine2: Option[String] = None,
+    addressLine3: Option[String] = None,
+    addressLine4: Option[String] = None,
+    addressLine5: Option[String] = None,
+    postcode: Option[String] = None,
+    foreignCountry: Option[String] = None
 )
 
 case class HodContact(telephone: Option[HodTelephone] = None, email: Option[HodEmail] = None)
 
 case class DesignatoryDetailsData(
-  name: Option[HodName] = None,
-  address: Option[HodAddress] = None,
-  contact: Option[HodContact] = None
+    name: Option[HodName] = None,
+    address: Option[HodAddress] = None,
+    contact: Option[HodContact] = None
 )
 
 case class DesignatoryDetails(
-  empref: Option[String],
-  employer: Option[DesignatoryDetailsData] = None,
-  communication: Option[DesignatoryDetailsData] = None
+    empref: Option[String],
+    employer: Option[DesignatoryDetailsData] = None,
+    communication: Option[DesignatoryDetailsData] = None
 )
 
 case class DesignatoryDetailsLinks(employer: Option[String], communication: Option[String])
@@ -60,10 +60,12 @@ object DesignatoryDetails {
 object HodDesignatoryDetailsLinks {
   implicit val ddlformat: OFormat[DesignatoryDetailsLinks] = Json.format[DesignatoryDetailsLinks]
 
-  implicit val readDesignatoryDetailsLinksFormat: Reads[HodDesignatoryDetailsLinks]    =
+  implicit val readDesignatoryDetailsLinksFormat: Reads[HodDesignatoryDetailsLinks] =
     Json.reads[HodDesignatoryDetailsLinks]
+
   implicit val writeDesignatoryDetailsLinksFormat: OWrites[HodDesignatoryDetailsLinks] =
     Json.writes[HodDesignatoryDetailsLinks]
+
 }
 
 object DesignatoryDetailsData {

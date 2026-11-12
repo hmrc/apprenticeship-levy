@@ -5,23 +5,25 @@ import scala.sys.process.ProcessLogger
 
 val appName: String = "apprenticeship-levy"
 
-val XsltConfig          = config("api-docs")
-val generateAPIDocs     = TaskKey[Unit]("api-docs", "Generates HMRC API Documentation files")
+val XsltConfig      = config("api-docs")
+val generateAPIDocs = TaskKey[Unit]("api-docs", "Generates HMRC API Documentation files")
+
 generateAPIDocs / managedClasspath := {
   // these are the types of artifacts to include
   val artifactTypes: Set[String] = (generateAPIDocs / classpathTypes).value
   Classpaths.managedJars(XsltConfig, artifactTypes, update.value)
 }
+
 val generateAPIDocsTask = generateAPIDocs := {
   val artifactTypes         = Set("jar")
   val cp: Seq[java.io.File] = Classpaths.managedJars(XsltConfig, artifactTypes, update.value).map(_.data)
-  val log                   = ConsoleLogger(
+  val log = ConsoleLogger(
     out = ConsoleOut.systemOut,
     ansiCodesSupported = true,
     useFormat = true,
     suppressedMessage = ConsoleAppender.noSuppressedMessage
   )
-  val logger                = new ProcessLogger() {
+  val logger = new ProcessLogger() {
     override def buffer[T](f: => T): T =
       f
 
@@ -30,7 +32,7 @@ val generateAPIDocsTask = generateAPIDocs := {
     override def err(s: => String): Unit =
       log.error(s)
   }
-  val userDir               = new File(System.getProperty("user.dir"))
+  val userDir = new File(System.getProperty("user.dir"))
   DocGeneration.generateAPIDocs(userDir, cp) ! logger
 }
 
@@ -52,6 +54,7 @@ lazy val playSettings: Seq[Setting[?]] = Seq(
 
 ThisBuild / majorVersion := 3
 ThisBuild / scalaVersion := "3.7.3"
+
 ThisBuild / scalacOptions ++= Seq(
   "-Wconf:src=routes/.*:s,src=twirl/.*:s",
   "-Wconf:msg=Flag.*repeatedly:s",
@@ -76,7 +79,7 @@ val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies.all,
     libraryDependencies ++= AppDependencies.generateApiTask,
     Test / parallelExecution := false,
-    retrieveManaged := true,
+    retrieveManaged          := true,
     generateAPIDocsTask
   )
   .settings(Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oDF"))

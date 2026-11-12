@@ -26,4 +26,5 @@ class FakeAuthAction @Inject() (val parser: BodyParsers.Default, val executionCo
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
     Future.successful(Right(AuthenticatedRequest(request, Some(EmpRef("123", "456")))))
+
 }

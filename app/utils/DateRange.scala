@@ -15,6 +15,7 @@
  */
 
 package utils
+
 import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate

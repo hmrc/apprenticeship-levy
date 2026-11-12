@@ -29,4 +29,5 @@ object MockAppContext extends AppLevyUnitSpec {
     org.mockito.Mockito.reset(mocked)
     when(mocked.mode).thenReturn(Mode.Test)
   }
+
 }

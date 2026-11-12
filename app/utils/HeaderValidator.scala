@@ -43,8 +43,8 @@ trait HeaderValidator {
   def validateAccept(rules: Option[String] => Boolean) = new ActionBuilder[Request, AnyContent] {
 
     def invokeBlock[A](
-      request: Request[A],
-      block: (Request[A]) => Future[Result]
+        request: Request[A],
+        block: (Request[A]) => Future[Result]
     ) =
       if (rules(request.headers.get("Accept")))
         block(request)

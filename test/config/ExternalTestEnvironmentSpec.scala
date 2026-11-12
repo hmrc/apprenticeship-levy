@@ -22,6 +22,7 @@ import play.api.test.Helpers._
 import utils.AppLevyUnitSpec
 
 class ExternalTestEnvironmentSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite {
+
   "When in External Test Mode API" must {
     val mockExternalTestRoutes    = app.injector.instanceOf[externaltest.Routes]
     val mocknonexternalTestRoutes = app.injector.instanceOf[nonexternaltest.Routes]
@@ -33,27 +34,22 @@ class ExternalTestEnvironmentSpec extends AppLevyUnitSpec with GuiceOneAppPerSui
     }
 
     "not have sandbox API endpoints" in {
-      // set up
       val request = FakeRequest(GET, "/sandbox/epaye/123%2FAB12345/fractions")
 
-      // test
       val result = TestRouter.handlerFor(request)
 
-      // check
       TestRouter.routes === mockExternalTestRoutes.routes
       result mustBe None
     }
 
     "have production API endpoints" in {
-      // set up
       val request = FakeRequest(GET, "/epaye/123%2FAB12345/fractions")
 
-      // test
       val result = TestRouter.handlerFor(request)
 
-      // check
       TestRouter.routes === mocknonexternalTestRoutes.routes
       result.get === controllers.sandbox.routes.SandboxFractionsController.fractions
     }
   }
+
 }

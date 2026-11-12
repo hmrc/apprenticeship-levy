@@ -34,7 +34,8 @@ class CustomErrorHandlerSpec extends AppLevyUnitSpec {
 
   val mockAuditConnector: AuditConnector = mock[AuditConnector]
   val mockHttpAuditEvent: HttpAuditEvent = mock[HttpAuditEvent]
-  val configuration: Configuration       = Configuration(
+
+  val configuration: Configuration = Configuration(
     "appName"                                         -> "myApp",
     "bootstrap.errorHandler.warnOnly.statusCodes"     -> Nil,
     "bootstrap.errorHandler.suppress4xxErrorMessages" -> false,
@@ -53,11 +54,12 @@ class CustomErrorHandlerSpec extends AppLevyUnitSpec {
     truncationLog = TruncationLog.Empty
   )
 
-  val handler                                            = new CustomErrorHandler(
+  val handler = new CustomErrorHandler(
     auditConnector = mockAuditConnector,
     httpAuditEvent = mockHttpAuditEvent,
     configuration = configuration
   )
+
   val requestHeader: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(versionHeader)
 
   def versionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"

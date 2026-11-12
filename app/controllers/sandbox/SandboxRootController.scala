@@ -27,11 +27,11 @@ import models.api.EmploymentReference
 import scala.concurrent.ExecutionContext
 
 class SandboxRootController @Inject() (
-  val authAction: SandboxAuthAction,
-  val parser: BodyParsers.Default,
-  val executionContext: ExecutionContext,
-  val appContext: AppContext,
-  val controllerComponents: ControllerComponents
+    val authAction: SandboxAuthAction,
+    val parser: BodyParsers.Default,
+    val executionContext: ExecutionContext,
+    val appContext: AppContext,
+    val controllerComponents: ControllerComponents
 ) extends RootController
     with SandboxLinkHelper {
 

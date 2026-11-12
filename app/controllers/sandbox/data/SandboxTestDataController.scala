@@ -36,9 +36,9 @@ import scala.util.Try
 
 @Singleton
 class SandboxTestDataController @Inject() (
-  jsonDataTransformer: DataTransformer,
-  appContext: AppContext,
-  cc: ControllerComponents
+    jsonDataTransformer: DataTransformer,
+    appContext: AppContext,
+    cc: ControllerComponents
 ) extends BackendController(cc)
     with Utf8MimeTypes {
 
@@ -61,7 +61,7 @@ class SandboxTestDataController @Inject() (
           logger.debug(s"Replacing empref: $empRef in requested file: $file")
           val ninoRegex = "^.*\\/employed\\/(.{8,9}).*?$".r
 
-          val emprefBreak       = if (empRef.contains("/")) "/" else ""
+          val emprefBreak = if (empRef.contains("/")) "/" else ""
           val newEmpRef: String =
             empRef.take(3) match {
               case "105" => s"840${emprefBreak}MODES17"
@@ -78,9 +78,9 @@ class SandboxTestDataController @Inject() (
               val newNino = "SC111111A"
 
               updatedFile.replace(nino, newNino)
-            case _               => updatedFile
+            case _ => updatedFile
           }
-        case _                   =>
+        case _ =>
           logger.debug(s"Could not find an empref to replace in: $file")
           file
       }
@@ -134,7 +134,7 @@ class SandboxTestDataController @Inject() (
                   )
                 )
               )
-          case _                       =>
+          case _ =>
             logger.warn(s"Resource path overridden by OVERRIDE_EMPREF header but unable to get new empref from $path.")
             Future.successful(
               NotFound(
@@ -143,7 +143,7 @@ class SandboxTestDataController @Inject() (
               )
             )
         }
-      case _            =>
+      case _ =>
         if (path.startsWith("authorise/read")) {
           Future.successful(Ok(""))
         } else {
@@ -228,7 +228,7 @@ class SandboxTestDataController @Inject() (
                     result(((json \ "jsonBody").as[JsObject] - "employed") + ("employed" -> Json.toJson(false)))
                   )
                 }
-              case Fractions(_, _)        =>
+              case Fractions(_, _) =>
                 val arr = (json \ "jsonBody" \ "fractionCalculations")
                   .as[JsArray]
                   .value
@@ -239,17 +239,18 @@ class SandboxTestDataController @Inject() (
                       .as[JsObject] - "fractionCalculations") + ("fractionCalculations" -> new JsArray(arr))
                   )
                 )
-              case Declarations(_, _)     =>
+              case Declarations(_, _) =>
                 val arr = (json \ "jsonBody" \ "eps")
                   .as[JsArray]
                   .value
                   .filter(v => queryInterval.contains(toInstant(v \ "hmrcSubmissionTime")))
                 Future.successful(result(((json \ "jsonBody").as[JsObject] - "eps") + ("eps" -> new JsArray(arr))))
-              case _                      => Future.successful(result(jsonOutStr))
+              case _ => Future.successful(result(jsonOutStr))
             }
-          case (_, _)                                                           => Future.successful(result(jsonOutStr))
+          case (_, _) => Future.successful(result(jsonOutStr))
         }
-      case _                => Future.successful(result("{}"))
+      case _ => Future.successful(result("{}"))
     }
   }
+
 }

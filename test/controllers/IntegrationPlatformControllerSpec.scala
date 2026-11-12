@@ -22,7 +22,16 @@ import org.mockito.Mockito.when
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import play.api.http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_TIMEOUT, SERVICE_UNAVAILABLE, TOO_MANY_REQUESTS, UNAUTHORIZED}
+import play.api.http.Status.{
+  BAD_REQUEST,
+  FORBIDDEN,
+  INTERNAL_SERVER_ERROR,
+  NOT_FOUND,
+  REQUEST_TIMEOUT,
+  SERVICE_UNAVAILABLE,
+  TOO_MANY_REQUESTS,
+  UNAUTHORIZED
+}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, BodyParser, ControllerComponents, Result}
 import play.api.test.FakeRequest
@@ -33,7 +42,13 @@ import controllers.auth.{AuthAction, FakePrivilegedAuthAction}
 import models.des.FractionCalculationDate
 import utils.MockAppContext.mock
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
-import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, JsValidationException, NotFoundException, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{
+  BadRequestException,
+  GatewayTimeoutException,
+  JsValidationException,
+  NotFoundException,
+  UpstreamErrorResponse
+}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,13 +59,14 @@ class IntegrationPlatformControllerSpec extends AnyWordSpecLike with Matchers wi
   val mockHttp                             = mock[HttpClientV2]
   val mockRequestBuilder                   = mock[RequestBuilder]
 
-  val controller: FractionsCalculationDateController = new FractionsCalculationDateController with IntegrationPlatformController {
+  val controller: FractionsCalculationDateController = new FractionsCalculationDateController
+    with IntegrationPlatformController {
     def integrationPlatformConnector: IntegrationPlatformConnector = new IntegrationPlatformConnector {
       override val appContext: AppContext = mockAppContext
 
       override protected def auditConnector: Option[AuditConnector] = None
 
-      def baseUrl: String = "http://a.guide.to.nowhere/"
+      def baseUrl: String    = "http://a.guide.to.nowhere/"
       def hipBaseUrl: String = "http://a.guide.to.nowhere/"
 
       def httpClient: HttpClientV2 = mockHttp
@@ -283,4 +299,5 @@ class IntegrationPlatformControllerSpec extends AnyWordSpecLike with Matchers wi
       contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_OTHER","message":"DES 4xx error"}""")
     }
   }
+
 }

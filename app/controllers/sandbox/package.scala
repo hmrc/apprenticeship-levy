@@ -23,6 +23,7 @@ import uk.gov.hmrc.play.bootstrap.http.ErrorResponse
 
 package object sandbox {
   val NOT_FOUND_HTTP_STATUS = 404
+
   object ErrorNotVisible
       extends ErrorResponse(
         NOT_FOUND_HTTP_STATUS,
@@ -33,4 +34,5 @@ package object sandbox {
   implicit class ErrorResponseSyntax(er: ErrorResponse) {
     def toResult: Result = Status(er.statusCode)(Json.toJson(er))
   }
+
 }

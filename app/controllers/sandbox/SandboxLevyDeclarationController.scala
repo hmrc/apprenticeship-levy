@@ -25,11 +25,11 @@ import controllers.{IntegrationPlatformController, LevyDeclarationController}
 import scala.concurrent.ExecutionContext
 
 class SandboxLevyDeclarationController @Inject() (
-  val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
-  val authAction: SandboxPrivilegedAuthAction,
-  val executionContext: ExecutionContext,
-  val parser: BodyParsers.Default,
-  val appContext: AppContext,
-  val controllerComponents: ControllerComponents
+    val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
+    val authAction: SandboxPrivilegedAuthAction,
+    val executionContext: ExecutionContext,
+    val parser: BodyParsers.Default,
+    val appContext: AppContext,
+    val controllerComponents: ControllerComponents
 ) extends IntegrationPlatformController
     with LevyDeclarationController

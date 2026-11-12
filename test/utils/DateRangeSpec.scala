@@ -36,4 +36,5 @@ class DateRangeSpec extends AppLevyUnitSpec {
       json.as[OpenEarlyDateRange] mustBe OpenEarlyDateRange(LocalDate.of(2020, 1, 1))
     }
   }
+
 }

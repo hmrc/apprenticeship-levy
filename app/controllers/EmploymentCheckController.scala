@@ -38,23 +38,27 @@ trait EmploymentCheckController extends IntegrationPlatformController {
 
   // scalastyle:off
   def check(ref: EmploymentReference, ni: Nino, fromDate: LocalDate, toDate: LocalDate): Action[AnyContent] =
-    (withValidAcceptHeader andThen authAction).async { implicit request =>
+    withValidAcceptHeader.andThen(authAction).async { implicit request =>
       // scalastyle:on
       if (fromDate.isAfter(toDate)) {
         Future.successful(ErrorResponseUtils.errorResponseToResult(ErrorResponses.ErrorFromDateAfterToDate))
       } else {
-        integrationPlatformConnector.check(
-          toDESFormat(ref.empref),
-          ni.nino,
-          ClosedDateRange(fromDate, toDate)
-        ) map {
-          case Employed    =>
-            Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = true)))
-          case NotEmployed =>
-            Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = false)))
-          case Unknown     =>
-            ErrorResponseUtils.errorResponseToResult(ErrorNotVisible)
-        } recover desErrorHandler
+        integrationPlatformConnector
+          .check(
+            toDESFormat(ref.empref),
+            ni.nino,
+            ClosedDateRange(fromDate, toDate)
+          )
+          .map {
+            case Employed =>
+              Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = true)))
+            case NotEmployed =>
+              Ok(Json.toJson(EmploymentCheck(ref.empref, ni.nino, fromDate, toDate, employed = false)))
+            case Unknown =>
+              ErrorResponseUtils.errorResponseToResult(ErrorNotVisible)
+          }
+          .recover(desErrorHandler)
       }
     }
+
 }

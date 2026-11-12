@@ -19,12 +19,12 @@ package models.des
 import play.api.libs.json._
 
 case class QuestionsAndDeclaration(
-  freeOfTaxPaymentsMadeToEmployee: Boolean,
-  expensesVouchersOrBenefitsFromOthers: Boolean,
-  personEmployedOutsideUKWorkedFor30DaysOrMore: Boolean,
-  payToSomeoneElse: Boolean,
-  p11DFormsDue: Boolean,
-  serviceCompany: Boolean
+    freeOfTaxPaymentsMadeToEmployee: Boolean,
+    expensesVouchersOrBenefitsFromOthers: Boolean,
+    personEmployedOutsideUKWorkedFor30DaysOrMore: Boolean,
+    payToSomeoneElse: Boolean,
+    p11DFormsDue: Boolean,
+    serviceCompany: Boolean
 )
 
 object QuestionsAndDeclaration {

@@ -23,9 +23,9 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import scala.util.{Failure, Success, Try}
 
 class AppContext @Inject() (
-  servicesConfig: ServicesConfig,
-  val configuration: Configuration,
-  val environment: Environment
+    servicesConfig: ServicesConfig,
+    val configuration: Configuration,
+    val environment: Environment
 ) extends Logging {
 
   import servicesConfig.baseUrl

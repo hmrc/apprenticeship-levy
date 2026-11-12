@@ -25,16 +25,16 @@ import scala.util.Using
 
 object StubbingData {
 
-  def stubbedConfigPath: String                   = sys.props.getOrElse("WIREMOCK_MAPPINGS", "./it/test/resources")
-  def resourcePath: String                        = sys.props.getOrElse("RESOURCE_PATH", "./it/test/resources")
+  def stubbedConfigPath: String = sys.props.getOrElse("WIREMOCK_MAPPINGS", "./it/test/resources")
+  def resourcePath: String      = sys.props.getOrElse("RESOURCE_PATH", "./it/test/resources")
+
   def standardDesHeaders(): Seq[(String, String)] =
     Seq("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Environment" -> "isit", "Authorization" -> "Bearer 2423324")
-  def asString(filename: String): String          = {
+
+  def asString(filename: String): String = {
     val fileBuffer: BufferedSource = Source.fromFile(s"$resourcePath/data/expected/$filename")
 
-    Using(fileBuffer) { file =>
-      file.getLines().mkString("\n")
-    }.get
+    Using(fileBuffer)(file => file.getLines().mkString("\n")).get
   }
 
   lazy val auuid1: UUID = randomUUID()
@@ -44,12 +44,14 @@ object StubbingData {
   lazy val auuid5: UUID = randomUUID()
   lazy val auuid6: UUID = randomUUID()
 
-  val validReadURL1   = "/authorise/read/epaye/AB12345?privilegedAccess=read:apprenticeship-levy"
-  val validReadURL2   = "/authorise/read/epaye/123%2FAB12345?privilegedAccess=read:apprenticeship-levy"
-  val faultURL1       = "/authorise/read/epaye/malformed?privilegedAccess=read:apprenticeship-levy"
+  val validReadURL1 = "/authorise/read/epaye/AB12345?privilegedAccess=read:apprenticeship-levy"
+  val validReadURL2 = "/authorise/read/epaye/123%2FAB12345?privilegedAccess=read:apprenticeship-levy"
+  val faultURL1     = "/authorise/read/epaye/malformed?privilegedAccess=read:apprenticeship-levy"
+
   val invalidReadURL1 =
     "/authorise/read/epaye/(400|401|403|404|500|503|empty|malformed|timeout)%2FAB12345\\?privilegedAccess=read:apprenticeship-levy"
-  val validRead       = "/authorise/read/epaye/(.*)\\?privilegedAccess=read:apprenticeship-levy"
+
+  val validRead = "/authorise/read/epaye/(.*)\\?privilegedAccess=read:apprenticeship-levy"
 
   def wireMockConfiguration(serverPort: Int): Map[String, Any] = Map(
     "play.ws.timeout.request"               -> "500 milliseconds",
@@ -89,4 +91,5 @@ object StubbingData {
     cs <- Gen.listOf(Gen.numChar)
     c3 <- Gen.oneOf('A', 'B', 'C', 'D')
   } yield s"$c1$c2${cs.mkString}$c3").suchThat(_.forall(c => c.isLetter || c.isDigit))
+
 }

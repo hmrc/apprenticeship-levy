@@ -56,15 +56,13 @@ class PrivateDefinitionEndpointISpec
     "calling /api/definition" +
       "\nand definition file exists and private-mode is set to true" must {
         "return OK" in {
-          // set up
           val request = FakeRequest(GET, "/api/definition")
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe OK
         }
       }
   }
+
 }

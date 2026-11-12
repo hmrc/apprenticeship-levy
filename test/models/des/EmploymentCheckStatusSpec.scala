@@ -34,4 +34,5 @@ class EmploymentCheckStatusSpec extends AppLevyUnitSpec {
       }
     }
   }
+
 }

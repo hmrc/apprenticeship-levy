@@ -28,16 +28,13 @@ class EmploymentCheckSpec extends FunctionalSpec with Eventually with Integratio
         val expectedJson = Json.parse(expected)
         val params = (expectedJson \ "params").as[String]
         it (s"should when calling ${url}$context/epaye/$empref/employed/$nino$params return employment details (${environment})") {
-          // set up
 
-          // test
-          val result = eventually {
+             val result = eventually {
             Http(s"$url$context/epaye/$empref/employed/$nino$params")
               .headers(standardHeaders())
               .asString
           }
 
-          // check
           info(result.body)
           result.code mustBe 200
           result.contentType mustBe Some("application/json")

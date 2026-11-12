@@ -27,16 +27,13 @@ class LevyDeclarationsSpec extends FunctionalSpec with Eventually with Integrati
         val params = (expectedJson \ "params").as[String]
 
         it (s"should when calling ${url}$context/epaye/$empref/declarations$params return employer details (${environment})") {
-          // set up
 
-          // test
-          val result = eventually {
+             val result = eventually {
             Http(s"$url$context/epaye/$empref/declarations$params")
               .headers(standardHeaders())
               .asString
           }
 
-          // check
           result.code mustBe 200
           result.contentType mustBe Some("application/json")
           Json.parse(result.body) mustBe (expectedJson \ "response").get

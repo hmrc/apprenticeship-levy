@@ -58,7 +58,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
       val levyDueYTD = BigDecimal(500)
       val allowance  = BigDecimal(10000)
       val taxMonth   = 2
-      val eps2       = EmployerPaymentSummary(
+      val eps2 = EmployerPaymentSummary(
         id,
         submissionTime,
         rtiSubmissionTime,
@@ -79,7 +79,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
 
     "convert a terminated payroll scheme" in {
       val schemeCeasedDate = submissionTime.minusDays(1).toLocalDate
-      val eps              = EmployerPaymentSummary(
+      val eps = EmployerPaymentSummary(
         id,
         submissionTime,
         rtiSubmissionTime,
@@ -98,7 +98,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
     "convert an inactive submission" in {
       val inactiveFrom = submissionTime.minusMonths(2).toLocalDate
       val inactiveTo   = submissionTime.minusMonths(2).toLocalDate
-      val eps          = EmployerPaymentSummary(
+      val eps = EmployerPaymentSummary(
         id,
         submissionTime,
         rtiSubmissionTime,
@@ -119,7 +119,7 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
       val levyDueYTD = BigDecimal(500)
       val allowance  = BigDecimal(10000)
       val taxMonth   = 2
-      val eps        = EmployerPaymentSummary(
+      val eps = EmployerPaymentSummary(
         id,
         submissionTime,
         rtiSubmissionTime,
@@ -178,4 +178,5 @@ class EmployerPaymentSummarySpec extends AppLevyUnitSpec {
       EmployerPaymentSummary.calculateTaxMonth(LocalDate.of(2016, APRIL, 5)) mustBe 12
     }
   }
+
 }

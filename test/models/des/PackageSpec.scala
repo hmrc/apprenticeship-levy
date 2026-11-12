@@ -23,26 +23,24 @@ import utils.DateFormats.localDateFormat
 import java.time.LocalDate
 
 class PackageSpec extends AppLevyUnitSpec {
+
   "Data Des Package" must {
     "With Joda Local Date" must {
       "provide json read" in {
-        // test
         val result = Json.toJson("2014-02-05")
 
-        // check
         result mustBe a[JsString]
         result.as[String] mustBe "2014-02-05"
         result.as[LocalDate] mustBe LocalDate.parse("2014-02-05")
       }
       "provide json write" in {
-        // test
         val result = Json.toJson(LocalDate.parse("2014-03-05"))
 
-        // check
         result mustBe a[JsString]
         result.as[String] mustBe "2014-03-05"
         result.as[LocalDate] mustBe LocalDate.parse("2014-03-05")
       }
     }
   }
+
 }

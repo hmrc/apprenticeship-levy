@@ -44,84 +44,67 @@ class TestDataEndpointISpec
   "Sandbox Test Data Endpoint" when {
     "authorise/read" must {
       "return Ok" in {
-        // set up
         val request = FakeRequest(GET, "/sandbox/data/authorise/read")
-          .withHeaders(standardDesHeaders()*)
+          .withHeaders(standardDesHeaders() *)
 
-        // test
         val result = route(app, request).get
 
-        // check
         status(result) mustBe OK
       }
     }
 
     "/sandbox/data/..." must {
       "return Ok where json file exists" in {
-        // set up
         val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
-          .withHeaders(standardDesHeaders()*)
+          .withHeaders(standardDesHeaders() *)
 
-        // test
         val result = route(app, request).get
 
-        // check
         status(result) mustBe OK
         contentAsString(result) must include("/paye/employer/840/MODES17/designatory-details/employer")
       }
 
       "return NotFound where json file does not exists" in {
-        // set up
         val request = FakeRequest(GET, "/sandbox/data/zxy")
-          .withHeaders(standardDesHeaders()*)
+          .withHeaders(standardDesHeaders() *)
 
-        // test
         val result = route(app, request).get
 
-        // check
         status(result) mustBe NOT_FOUND
       }
 
       "return Ok where json file does not have json body" in {
-        // set up
         val request = FakeRequest(GET, "/sandbox/data/empty")
-          .withHeaders(standardDesHeaders()*)
+          .withHeaders(standardDesHeaders() *)
 
-        // test
         val result = route(app, request).get
 
-        // check
         status(result) mustBe OK
       }
 
       "return support OVERRIDE_EMPREF" must {
         "return json file where it exists" in {
-          // set up
           val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF" -> "840/MODES17"
           val request = FakeRequest(GET, "/sandbox/data/paye/employer/000/ABC/designatory-details")
-            .withHeaders(headers*)
+            .withHeaders(headers *)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe OK
           contentAsString(result) must include("/paye/employer/840/MODES17/designatory-details/employer")
         }
 
         "return NotFound where json file does not exist" in {
-          // set up
           val headers = standardDesHeaders() :+ "OVERRIDE_EMPREF" -> "ZZZ%2FJKLJLJL"
           val request = FakeRequest(GET, "/sandbox/data/paye/employer/840/MODES17/designatory-details")
-            .withHeaders(headers*)
+            .withHeaders(headers *)
 
-          // test
           val result = route(app, request).get
 
-          // check
           status(result) mustBe NOT_FOUND
         }
       }
     }
   }
+
 }

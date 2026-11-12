@@ -28,7 +28,13 @@ import models.api.EmploymentReference
 import utils.{AppLevyUnitSpec, RetrievalOps}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{GGCredId, LegacyCredentials, PAClientId, ~}
-import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, MethodNotAllowedException, NotFoundException, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{
+  BadRequestException,
+  GatewayTimeoutException,
+  MethodNotAllowedException,
+  NotFoundException,
+  UpstreamErrorResponse
+}
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendBaseController
 
 import java.io.IOException
@@ -42,9 +48,7 @@ class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with Retri
   val defaultParser                        = new Default(stubComponents.parsers)
 
   class Harness(authAction: AuthAction) extends BackendBaseController {
-    def onPageLoad(): Action[AnyContent] = authAction { request =>
-      Ok(s"PAYE: ${request.empRef.getOrElse("None found")}")
-    }
+    def onPageLoad(): Action[AnyContent] = authAction(request => Ok(s"PAYE: ${request.empRef.getOrElse("None found")}"))
 
     override def controllerComponents: ControllerComponents = stubComponents
   }
@@ -186,7 +190,7 @@ class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with Retri
 
   "A user that is logged in with an empty PAYE enrolment" must {
     "be allowed access" in {
-      val enrolments                          = Enrolments(Set(Enrolment("IR-PAYE", Nil, "")))
+      val enrolments = Enrolments(Set(Enrolment("IR-PAYE", Nil, "")))
       val retrievalResult: Future[Enrolments] =
         Future.successful(enrolments)
 
@@ -277,4 +281,5 @@ class AuthActionSpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with Retri
       }
     }
   }
+
 }

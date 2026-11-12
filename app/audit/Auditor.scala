@@ -19,7 +19,13 @@ package audit
 import play.api.Logging
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, REQUEST_TIMEOUT}
 import models.audit.ALAEvent
-import uk.gov.hmrc.http.{BadRequestException, GatewayTimeoutException, HeaderCarrier, NotFoundException, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{
+  BadRequestException,
+  GatewayTimeoutException,
+  HeaderCarrier,
+  NotFoundException,
+  UpstreamErrorResponse
+}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import java.io.IOException
@@ -36,10 +42,11 @@ trait Auditor extends Logging {
     case e: UpstreamErrorResponse   => e.statusCode
     case _                          => INTERNAL_SERVER_ERROR
   }
-  private val NGINX_ERROR_STATUS: Int                               = 444
+
+  private val NGINX_ERROR_STATUS: Int = 444
 
   def audit[T](event: ALAEvent)(block: => Future[T])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[T] =
-    block andThen {
+    block.andThen {
       case Success(_) => auditConnector.map(_.sendEvent(event.toDataEvent(200)))
       case Failure(t) =>
         val httpStatus = exceptionToMessage(t)

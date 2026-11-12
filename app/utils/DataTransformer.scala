@@ -40,7 +40,8 @@ class DataTransformer() {
     }
   }
 
-  private def randomSubmissionId        = "9" + randomDigits(10)
+  private def randomSubmissionId = "9" + randomDigits(10)
+
   private def randomDigits(digits: Int) = {
     @tailrec
     def loop(digits: Int, result: String): String =
@@ -49,4 +50,5 @@ class DataTransformer() {
 
     loop(digits, "")
   }
+
 }

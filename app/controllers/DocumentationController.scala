@@ -61,7 +61,7 @@ class DocumentationController @Inject() (cc: ControllerComponents, appContext: A
           if (file.contains("raml")) "application/raml+yaml"
           else cc.fileMimeTypes.forFileName(file).getOrElse("text/plain")
         Ok(Source.fromInputStream(fileToServe).mkString).as(mimeType)
-      case _                 =>
+      case _ =>
         // $COVERAGE-OFF$
         logger.error(s"Assets controller failed to serve a file: $rootPath/$file.")
         // $COVERAGE-ON$
@@ -83,7 +83,7 @@ class DocumentationController @Inject() (cc: ControllerComponents, appContext: A
         } else {
           Future.successful(Ok(Source.fromInputStream(fileToServe).mkString).as(MimeTypes.JSON))
         }
-      case _                 =>
+      case _ =>
         // $COVERAGE-OFF$
         logger.error("Documentation controller failed to serve a file: public/api/definition.json as not found")
         // $COVERAGE-ON$
@@ -99,4 +99,5 @@ class DocumentationController @Inject() (cc: ControllerComponents, appContext: A
 
   def conf(version: String, file: String): Action[AnyContent] =
     at(s"public/api/conf/$version", file)
+
 }

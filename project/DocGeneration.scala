@@ -6,6 +6,7 @@ import scala.sys.process.Process
   Grunt runner
  */
 object DocGeneration {
+
   def apply(base: File): PlayRunHook = {
 
     object DocGenerationProcess extends PlayRunHook {
@@ -42,8 +43,8 @@ object DocGeneration {
 
     val files = new File(base, "docs/endpoints/xml").listFiles.filter(_.getName.endsWith(".xml"))
 
-    val v1DocDir  = "/public/documentation/1.0/"
-    val tuples    = Map(
+    val v1DocDir = "/public/documentation/1.0/"
+    val tuples = Map(
       "01_root.xml"                      -> s"${base.getAbsolutePath()}${v1DocDir}root.xml",
       "04_employment-check.xml"          -> s"${base.getAbsolutePath()}${v1DocDir}employment-check.xml",
       "02_empref.xml"                    -> s"${base.getAbsolutePath()}${v1DocDir}empref.xml",
@@ -58,7 +59,7 @@ object DocGeneration {
         val xsl = s"./docs/endpoints/xml/xsl/$xslFilename"
         val out = tuples(file.getName())
         log.info(out)
-        val p   = Process(
+        val p = Process(
           "java" :: "-jar" :: s"${classpath(0)}" :: s"-s:$in" :: s"-xsl:$xsl" :: s"-o:$out" :: args.toList,
           base
         )
@@ -91,10 +92,11 @@ object DocGeneration {
       )
     )
 
-    val echo     = Process("echo" :: "'Starting API documentation generation'" :: List.empty[String], base)
+    val echo = Process("echo" :: "'Starting API documentation generation'" :: List.empty[String], base)
     val pipeline = processes.foldLeft(echo) { case (pipe, process) =>
       pipe ### process
     }
     pipeline
   }
+
 }

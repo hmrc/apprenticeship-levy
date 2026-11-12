@@ -20,6 +20,7 @@ import play.api.hal.HalLink
 import utils.AppLevyUnitSpec
 
 class SandboxLinkHelperSpec extends AppLevyUnitSpec {
+
   val devHelper = new SandboxLinkHelper {
     override def env: String = "Dev"
   }

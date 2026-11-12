@@ -30,41 +30,41 @@ class FinalSubmissionSpec extends AppLevyUnitSpec {
   val lastSubmissionModel: LastSubmission                   = LastSubmission(true)
 
   val combinedFinalSubmissionJson: JsValue = Json.parse("""
-      |{
-      |   "schemeCeased": null,
-      |   "schemeCeasedDate": "2020-01-01",
-      |   "forYear": true
-      |}
-      |""".stripMargin)
+                                                          |{
+                                                          |   "schemeCeased": null,
+                                                          |   "schemeCeasedDate": "2020-01-01",
+                                                          |   "forYear": true
+                                                          |}
+                                                          |""".stripMargin)
 
   val combinedFinalSubmissionJsonReads: JsValue = Json.parse("""
-      |{
-      |   "schemeCeasedDate": "2020-01-01",
-      |   "forYear": true
-      |}
-      |""".stripMargin)
+                                                               |{
+                                                               |   "schemeCeasedDate": "2020-01-01",
+                                                               |   "forYear": true
+                                                               |}
+                                                               |""".stripMargin)
 
   val schemeCeasedJson: JsValue = Json.parse("""
-      |{
-      |   "schemeCeased": true,
-      |   "schemeCeasedDate": "2020-01-01",
-      |   "forYear": true
-      |}
-      |""".stripMargin)
+                                               |{
+                                               |   "schemeCeased": true,
+                                               |   "schemeCeasedDate": "2020-01-01",
+                                               |   "forYear": true
+                                               |}
+                                               |""".stripMargin)
 
   val lastSubmissionJson: JsValue = Json.parse("""
-      |{
-      |   "forYear": true
-      |}
-      |""".stripMargin)
+                                                 |{
+                                                 |   "forYear": true
+                                                 |}
+                                                 |""".stripMargin)
 
   val lastSubmissionJsonNull: JsValue = Json.parse("""
-      |{
-      |   "schemeCeased": null,
-      |   "schemeCeasedDate": null,
-      |   "forYear": true
-      |}
-      |""".stripMargin)
+                                                     |{
+                                                     |   "schemeCeased": null,
+                                                     |   "schemeCeasedDate": null,
+                                                     |   "forYear": true
+                                                     |}
+                                                     |""".stripMargin)
 
   "FinalSubmission" must {
     "read the json and return a combinedFinalSubmission model" when {
@@ -95,4 +95,5 @@ class FinalSubmissionSpec extends AppLevyUnitSpec {
       }
     }
   }
+
 }

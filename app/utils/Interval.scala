@@ -26,4 +26,5 @@ case class Interval(begin: Instant, end: Instant) {
   def contains(instant: Instant): Boolean =
     (instant.isAfter(begin) || instant.equals(begin)) &&
       (instant.isBefore(end) || instant.equals(end))
+
 }

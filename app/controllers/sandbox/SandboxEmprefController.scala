@@ -29,12 +29,12 @@ import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
 class SandboxEmprefController @Inject() (
-  val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
-  val auth: SandboxPrivilegedAuthAction,
-  val executionContext: ExecutionContext,
-  val parser: BodyParsers.Default,
-  val appContext: AppContext,
-  val controllerComponents: ControllerComponents
+    val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
+    val auth: SandboxPrivilegedAuthAction,
+    val executionContext: ExecutionContext,
+    val parser: BodyParsers.Default,
+    val appContext: AppContext,
+    val controllerComponents: ControllerComponents
 ) extends EmprefController
     with SandboxLinkHelper {
 

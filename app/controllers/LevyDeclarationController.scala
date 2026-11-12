@@ -40,11 +40,11 @@ trait LevyDeclarationController extends Logging {
 
   // scalastyle:off
   def declarations(
-    ref: EmploymentReference,
-    fromDate: Option[LocalDate],
-    toDate: Option[LocalDate]
+      ref: EmploymentReference,
+      fromDate: Option[LocalDate],
+      toDate: Option[LocalDate]
   ): Action[AnyContent] =
-    (withValidAcceptHeader andThen authAction).async { implicit request =>
+    withValidAcceptHeader.andThen(authAction).async { implicit request =>
       // scalastyle:on
       if (fromDate.isDefined && toDate.isDefined && fromDate.get.isAfter(toDate.get))
         Future.successful(ErrorResponseUtils.errorResponseToResult(ErrorResponses.ErrorFromDateAfterToDate))
@@ -59,8 +59,8 @@ trait LevyDeclarationController extends Logging {
           .recover(desErrorHandler)
     }
 
-  private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(implicit
-    hc: HeaderCarrier
+  private[controllers] def retrieveDeclarations(empref: String, dateRange: DateRange)(
+      implicit hc: HeaderCarrier
   ): Future[Seq[LevyDeclaration]] =
     integrationPlatformConnector
       .eps(empref, dateRange)
@@ -78,7 +78,7 @@ trait LevyDeclarationController extends Logging {
 
   private[controllers] def toDateRange(fromDate: Option[LocalDate], toDate: Option[LocalDate]): DateRange =
     (fromDate, toDate) match {
-      case (None, None)           =>
+      case (None, None) =>
         ClosedDateRange(LocalDate.now().minusYears(appContext.defaultNumberOfDeclarationYears), LocalDate.now())
       case (Some(from), Some(to)) => ClosedDateRange(from, to)
       case (None, Some(to))       => ClosedDateRange(to.minusYears(appContext.defaultNumberOfDeclarationYears), to)
@@ -92,4 +92,5 @@ trait LevyDeclarationController extends Logging {
       logger.warn("DES returned empty list of declarations: API returning not found")
       ErrorResponseUtils.errorResponseToResult(ErrorNotFound)
     }
+
 }

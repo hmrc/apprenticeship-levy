@@ -42,7 +42,8 @@ class IntegrationPlatformConnectorSpec extends AppLevyUnitSpec {
 
       val result = connector.correlationId(using hcWithoutRequestId)
 
-      result must fullyMatch regex """[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"""
+      (result must fullyMatch).regex("""[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}""")
     }
   }
+
 }
