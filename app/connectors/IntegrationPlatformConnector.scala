@@ -48,7 +48,7 @@ trait EmployerDetailsEndpoint extends Logging {
   def appContext: AppContext
 
   def designatoryDetails(
-    empref: String
+      empref: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DesignatoryDetails] = {
     val emprefParts = "^(\\d{3})([^0-9A-Z]*)([0-9A-Z]{1,10})$".r
 
@@ -56,7 +56,7 @@ trait EmployerDetailsEndpoint extends Logging {
       URLDecoder.decode(empref, "UTF-8") match {
         case emprefParts(part1, _, part2) =>
           (part1, part2)
-        case _                            =>
+        case _ =>
           throw new IllegalArgumentException(s"Empref is not valid.")
       }
 
@@ -69,61 +69,62 @@ trait EmployerDetailsEndpoint extends Logging {
     val details: DesignatoryDetails = DesignatoryDetails(Some(empref))
     audit(ALAEvent("readEmprefDetails", empref)) {
       createDesHeaders(ip.httpClient.get(url"$url"))
-        .execute[Either[UpstreamErrorResponse, HodDesignatoryDetailsLinks]] flatMap {
-        case Right(response)                =>
-          response.links
-            .map { links =>
-              val employer: Future[Option[DesignatoryDetailsData]]      =
-                links.employer
-                  .map(getDetails(_))
-                  .getOrElse(Future.successful(None))
-              val communication: Future[Option[DesignatoryDetailsData]] =
-                links.communication
-                  .map(getDetails(_))
-                  .getOrElse(Future.successful(None))
-              employer
-                .flatMap { emp =>
-                  communication.flatMap { com =>
-                    Future.successful(details.copy(employer = emp, communication = com))
+        .execute[Either[UpstreamErrorResponse, HodDesignatoryDetailsLinks]]
+        .flatMap {
+          case Right(response) =>
+            response.links
+              .map { links =>
+                val employer: Future[Option[DesignatoryDetailsData]] =
+                  links.employer
+                    .map(getDetails(_))
+                    .getOrElse(Future.successful(None))
+                val communication: Future[Option[DesignatoryDetailsData]] =
+                  links.communication
+                    .map(getDetails(_))
+                    .getOrElse(Future.successful(None))
+                employer
+                  .flatMap { emp =>
+                    communication.flatMap(com => Future.successful(details.copy(employer = emp, communication = com)))
                   }
-                }
-                .recoverWith { case e: Throwable =>
-                  logger.error(s"DES call failed: ${e.getMessage}")
-                  Future.successful(details)
-                }
-            }
-            .getOrElse(Future.successful(details))
-        case Left(e: UpstreamErrorResponse) =>
-          if (e.statusCode == BAD_REQUEST)
-            throw new BadRequestException(e.message)
-          if (e.statusCode == NOT_FOUND)
-            throw new NotFoundException(e.message)
-          else
-            throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
-      }
+                  .recoverWith { case e: Throwable =>
+                    logger.error(s"DES call failed: ${e.getMessage}")
+                    Future.successful(details)
+                  }
+              }
+              .getOrElse(Future.successful(details))
+          case Left(e: UpstreamErrorResponse) =>
+            if (e.statusCode == BAD_REQUEST)
+              throw new BadRequestException(e.message)
+            if (e.statusCode == NOT_FOUND)
+              throw new NotFoundException(e.message)
+            else
+              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
+        }
     }
 
   }
 
   private def getDetails(
-    path: String
+      path: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[DesignatoryDetailsData]] = {
     val url = s"${ip.baseUrl}$path"
     createDesHeaders(ip.httpClient.get(url"$url"))
-      .execute[Either[UpstreamErrorResponse, DesignatoryDetailsData]] map {
-      case Right(data)                    =>
-        Some(data)
-      case Left(e: UpstreamErrorResponse) =>
-        if (e.statusCode == BAD_REQUEST)
-          throw new BadRequestException(e.message)
-        if (e.statusCode == NOT_FOUND) throw new NotFoundException(e.message)
-        else
-          // $COVERAGE-OFF$
-          logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
+      .execute[Either[UpstreamErrorResponse, DesignatoryDetailsData]]
+      .map {
+        case Right(data) =>
+          Some(data)
+        case Left(e: UpstreamErrorResponse) =>
+          if (e.statusCode == BAD_REQUEST)
+            throw new BadRequestException(e.message)
+          if (e.statusCode == NOT_FOUND) throw new NotFoundException(e.message)
+          else
+            // $COVERAGE-OFF$
+            logger.warn(s"Unable to get designatory details. HTTP STATUS ${e.getMessage}. Returning NONE", e)
           // $COVERAGE-ON$
           None
-    }
+      }
   }
+
 }
 
 trait EmploymentCheckEndpoint {
@@ -131,13 +132,13 @@ trait EmploymentCheckEndpoint {
 
   def appContext: AppContext
 
-  def check(empref: String, nino: String, dateRange: ClosedDateRange)(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
+  def check(empref: String, nino: String, dateRange: ClosedDateRange)(
+      implicit hc: HeaderCarrier,
+      ec: ExecutionContext
   ): Future[EmploymentCheckStatus] = {
     val dateParams = dateRange.toParams
     val useHip     = ip.useHipFor6017
-    val url        =
+    val url =
       s"${ipBaseUrl(useHip)}/apprenticeship-levy/employers/${helper.urlEncode(empref)}/employed/${helper.urlEncode(nino)}?$dateParams"
 
     // $COVERAGE-OFF$
@@ -146,30 +147,32 @@ trait EmploymentCheckEndpoint {
 
     audit(ALAEvent("employmentCheck", empref, nino, dateParams)) {
       createIpHeaders(useHip)(ip.httpClient.get(url"$url"))
-        .execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]] map {
-        case Right(response)                =>
-          response
-        case Left(e: UpstreamErrorResponse) =>
-          if (e.statusCode == BAD_REQUEST)
-            throw new BadRequestException(e.message)
-          if (e.statusCode == NOT_FOUND)
-            Unknown
-          else
-            throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
-      }
+        .execute[Either[UpstreamErrorResponse, EmploymentCheckStatus]]
+        .map {
+          case Right(response) =>
+            response
+          case Left(e: UpstreamErrorResponse) =>
+            if (e.statusCode == BAD_REQUEST)
+              throw new BadRequestException(e.message)
+            if (e.statusCode == NOT_FOUND)
+              Unknown
+            else
+              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
+        }
     }
 
   }
+
 }
 
 trait FractionsEndpoint {
   des: IntegrationPlatformConnector =>
   def appContext: AppContext
 
-  def fractions(empref: String, dateRange: DateRange)(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[Fractions] = {
+  def fractions(
+      empref: String,
+      dateRange: DateRange
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Fractions] = {
     val dateParams = dateRange.toParams
     val url        = s"$baseUrl/apprenticeship-levy/employers/${helper.urlEncode(empref)}/fractions?$dateParams"
     // $COVERAGE-OFF$
@@ -178,17 +181,18 @@ trait FractionsEndpoint {
 
     audit(ALAEvent("readFractions", empref, "", dateParams)) {
       createDesHeaders(des.httpClient.get(url"$url"))
-        .execute[Either[UpstreamErrorResponse, Fractions]] map {
-        case Right(fraction)                =>
-          fraction.copy(empref = convertEmpref(fraction.empref))
-        case Left(e: UpstreamErrorResponse) =>
-          if (e.statusCode == BAD_REQUEST)
-            throw new BadRequestException(e.message)
-          if (e.statusCode == NOT_FOUND)
-            throw new NotFoundException(e.message)
-          else
-            throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
-      }
+        .execute[Either[UpstreamErrorResponse, Fractions]]
+        .map {
+          case Right(fraction) =>
+            fraction.copy(empref = convertEmpref(fraction.empref))
+          case Left(e: UpstreamErrorResponse) =>
+            if (e.statusCode == BAD_REQUEST)
+              throw new BadRequestException(e.message)
+            if (e.statusCode == NOT_FOUND)
+              throw new NotFoundException(e.message)
+            else
+              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
+        }
     }
 
   }
@@ -202,20 +206,22 @@ trait FractionsEndpoint {
 
     audit(ALAEvent("readFractionCalculationDate")) {
       createDesHeaders(des.httpClient.get(url"$url"))
-        .execute[Either[UpstreamErrorResponse, FractionCalculationDate]] map {
-        case Right(response)                =>
-          response.date
-        case Left(e: UpstreamErrorResponse) =>
-          if (e.statusCode == BAD_REQUEST)
-            throw new BadRequestException(e.message)
-          if (e.statusCode == NOT_FOUND)
-            throw new NotFoundException(e.message)
-          else
-            throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
-      }
+        .execute[Either[UpstreamErrorResponse, FractionCalculationDate]]
+        .map {
+          case Right(response) =>
+            response.date
+          case Left(e: UpstreamErrorResponse) =>
+            if (e.statusCode == BAD_REQUEST)
+              throw new BadRequestException(e.message)
+            if (e.statusCode == NOT_FOUND)
+              throw new NotFoundException(e.message)
+            else
+              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
+        }
     }
 
   }
+
 }
 
 trait LevyDeclarationsEndpoint {
@@ -223,36 +229,37 @@ trait LevyDeclarationsEndpoint {
 
   def appContext: AppContext
 
-  def eps(empref: String, dateRange: DateRange)(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[EmployerPaymentsSummary] = {
+  def eps(
+      empref: String,
+      dateRange: DateRange
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmployerPaymentsSummary] = {
     val dateParams = dateRange.toParams
     val useHip     = ip.useHipFor5965
     val url        = s"${ipUrl(useHip, empref)}?$dateParams"
 
     audit(ALAEvent("readLevyDeclarations", empref, "", dateParams)) {
       createIpHeaders(useHip)(ip.httpClient.get(url"$url"))
-        .execute[Either[UpstreamErrorResponse, HttpResponse]] map {
-        case Right(response)                =>
-          marshall(empref, response.body).getOrElse {
-            logger.error(s"""|${ipPlatform(useHip)} url $url
-                  |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
-                  |Status: ${response.status}
-                  |Headers: ${response.headers.mkString(" ")}
-                  |Body: '${response.body}'""".stripMargin('|'))
-            throw new IllegalArgumentException(
-              s"${ipPlatform(useHip)} returned unexpected JSON on 200 response: ${response.body}"
-            )
-          }
-        case Left(e: UpstreamErrorResponse) =>
-          if (e.statusCode == BAD_REQUEST)
-            throw new BadRequestException(e.message)
-          if (e.statusCode == NOT_FOUND)
-            throw new NotFoundException(e.message)
-          else
-            throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
-      }
+        .execute[Either[UpstreamErrorResponse, HttpResponse]]
+        .map {
+          case Right(response) =>
+            marshall(empref, response.body).getOrElse {
+              logger.error(s"""|${ipPlatform(useHip)} url $url
+                               |HTTP status 200 returned but json was not EPS or EPS error. Actual response is:
+                               |Status: ${response.status}
+                               |Headers: ${response.headers.mkString(" ")}
+                               |Body: '${response.body}'""".stripMargin('|'))
+              throw new IllegalArgumentException(
+                s"${ipPlatform(useHip)} returned unexpected JSON on 200 response: ${response.body}"
+              )
+            }
+          case Left(e: UpstreamErrorResponse) =>
+            if (e.statusCode == BAD_REQUEST)
+              throw new BadRequestException(e.message)
+            if (e.statusCode == NOT_FOUND)
+              throw new NotFoundException(e.message)
+            else
+              throw UpstreamErrorResponse(e.message, e.statusCode, e.reportAs)
+        }
     }
 
   }
@@ -278,48 +285,49 @@ trait LevyDeclarationsEndpoint {
       jsResult match {
         case JsSuccess(response, _) =>
           Some[EPSResponse](response)
-        case JsError(_)             =>
+        case JsError(_) =>
           None
       }
 
     def maybeEPSResponse(className: String, jsonStr: String): Option[EPSResponse] =
       // As noted above this feels likes generics and ClassTag must be used but hotfix required
       className match {
-        case "EmptyEmployerPayments"           =>
+        case "EmptyEmployerPayments" =>
           Try(Json.parse(jsonStr).validate[EmptyEmployerPayments]).toOption.flatMap(toEPSResponse(_))
-        case "EmployerPaymentsSummary"         =>
+        case "EmployerPaymentsSummary" =>
           Try(Json.parse(jsonStr).validate[EmployerPaymentsSummary]).toOption.flatMap(toEPSResponse(_))
         case "EmployerPaymentsSummaryVersion0" =>
           Try(Json.parse(jsonStr).validate[EmployerPaymentsSummaryVersion0]).toOption.flatMap(toEPSResponse(_))
-        case "EmployerPaymentsError"           =>
+        case "EmployerPaymentsError" =>
           Try(Json.parse(jsonStr).validate[EmployerPaymentsError]).toOption.flatMap(toEPSResponse(_))
-        case _                                 => throw new IllegalArgumentException(("!" * 10) + " PROGRAMMING ERROR: Fix className match above")
+        case _ => throw new IllegalArgumentException(("!" * 10) + " PROGRAMMING ERROR: Fix className match above")
       }
 
     maybeEPSResponse(className, jsonStr) match {
       case Some(EmployerPaymentsSummaryVersion0(empref, eps)) =>
         Some(EmployerPaymentsSummary(empref, eps))
-      case Some(EmployerPaymentsError(reason))                =>
+      case Some(EmployerPaymentsError(reason)) =>
         logger.error(s"DES reported error reason '$reason' on HTTP 200 response.")
         throw UpstreamErrorResponse.apply(
           s"DES returned error code object on HTTP 200 response (treating as error). DES error reason: '$reason'.",
           PRECONDITION_FAILED
         )
-      case Some(EmptyEmployerPayments(empref))                =>
+      case Some(EmptyEmployerPayments(empref)) =>
         Some(EmployerPaymentsSummary(empref, Nil))
-      case Some(EmployerPaymentsSummary(empref, eps))         =>
+      case Some(EmployerPaymentsSummary(empref, eps)) =>
         Some(EmployerPaymentsSummary(empref, eps))
-      case Some(_)                                            =>
+      case Some(_) =>
         logger.error("Got Some(_) unknown type - unclear how to handle")
         None
-      case None                                               =>
+      case None =>
         val isEmpty = "^\\s*(\\{\\s*})\\s*$".r
-        isEmpty findFirstIn jsonStr map (_ => EmployerPaymentsSummary("", Nil))
+        isEmpty.findFirstIn(jsonStr).map(_ => EmployerPaymentsSummary("", Nil))
     }
   }
 
   private def ipUrl(useHip: Boolean, empref: String): String =
     s"${ipBaseUrl(useHip)}/rti/employers/${helper.urlEncode(empref)}/employer-payment-summary"
+
 }
 
 trait IntegrationPlatformConnector
@@ -366,7 +374,7 @@ trait IntegrationPlatformConnector
           case CorrelationIdPattern(prefix) => prefix + "-" + randomUUID.toString.substring(24)
           case _                            => randomUUID.toString
         }
-      case _               => randomUUID.toString
+      case _ => randomUUID.toString
     }
   }
 
@@ -381,7 +389,9 @@ trait IntegrationPlatformConnector
     builder
       .setHeader(HeaderNames.Authorization -> s"Basic $authSecret")
       .setHeader("correlationid" -> correlationId(using hc))
-      .setHeader("X-Receipt-Date" -> DateTimeFormatter.ISO_INSTANT.format(Instant.now().truncatedTo(ChronoUnit.SECONDS)))
+      .setHeader(
+        "X-Receipt-Date" -> DateTimeFormatter.ISO_INSTANT.format(Instant.now().truncatedTo(ChronoUnit.SECONDS))
+      )
       .setHeader("X-Transmitting-System" -> "HIP")
 
   def useHipFor5965: Boolean = appContext.api5965
@@ -394,12 +404,13 @@ trait IntegrationPlatformConnector
 
   private def getHeaderValueByKey(key: String)(implicit headerCarrier: HeaderCarrier): String =
     headerCarrier.headers(Seq(key)).toMap.getOrElse(key, "")
+
 }
 
 class LiveIntegrationPlatformConnector @Inject() (
-  val httpClient: HttpClientV2,
-  getAuditConnector: AuditConnector,
-  val appContext: AppContext
+    val httpClient: HttpClientV2,
+    getAuditConnector: AuditConnector,
+    val appContext: AppContext
 ) extends IntegrationPlatformConnector {
   protected def auditConnector: Option[AuditConnector] = Some(getAuditConnector)
 

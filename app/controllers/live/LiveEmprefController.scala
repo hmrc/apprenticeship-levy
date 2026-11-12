@@ -28,12 +28,12 @@ import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
 class LiveEmprefController @Inject() (
-  val integrationPlatformConnector: LiveIntegrationPlatformConnector,
-  val auth: AllProviderAuthActionImpl,
-  val executionContext: ExecutionContext,
-  val parser: BodyParsers.Default,
-  val appContext: AppContext,
-  val controllerComponents: ControllerComponents
+    val integrationPlatformConnector: LiveIntegrationPlatformConnector,
+    val auth: AllProviderAuthActionImpl,
+    val executionContext: ExecutionContext,
+    val parser: BodyParsers.Default,
+    val appContext: AppContext,
+    val controllerComponents: ControllerComponents
 ) extends EmprefController {
 
   override val authAction: EmploymentReference => AuthAction = auth(_)

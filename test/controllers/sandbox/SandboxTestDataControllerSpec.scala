@@ -42,17 +42,17 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
     "replace file EmpRef with 840/MODES17" when {
       "file matches EmpRef regex which starts at 105 and returnDummyResponse is true" in {
         val inputEmpRef = "105EMPREF"
-        val file        =
+        val file =
           "/sandbox/data/apprenticeship-levy/employers/%s/employed/SC111111A?fromDate=2017-01-01&toDate=2017-12-31"
-        val result      = controller(true).getFileName(file.format(inputEmpRef))
+        val result = controller(true).getFileName(file.format(inputEmpRef))
         result mustBe file.format("840MODES17")
       }
 
       "file matches EmpRef regex and returnDummyResponse is true" in {
         val inputEmpRef = "EMPREF"
-        val file        =
+        val file =
           "/sandbox/data/apprenticeship-levy/employers/%s/employed/SC111111A?fromDate=2017-01-01&toDate=2017-12-31"
-        val result      = controller(true).getFileName(file.format(inputEmpRef))
+        val result = controller(true).getFileName(file.format(inputEmpRef))
         result mustBe file.format("840MODES17")
       }
 
@@ -67,18 +67,18 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
     "replace file EmpRef with 840/MODES18" when {
       "file matches EmpRef regex and returnDummyResponse is true" in {
         val inputEmpRef = "106EMPREF"
-        val file        =
+        val file =
           "/sandbox/data/apprenticeship-levy/employers/%s/employed/SC111111A?fromDate=2017-01-01&toDate=2017-12-31"
-        val result      = controller(true).getFileName(file.format(inputEmpRef))
+        val result = controller(true).getFileName(file.format(inputEmpRef))
         result mustBe file.format("840MODES18")
       }
     }
     "replace file EmpRef with 840/MODES19" when {
       "file matches EmpRef regex and returnDummyResponse is true" in {
         val inputEmpRef = "107EMPREF"
-        val file        =
+        val file =
           "/sandbox/data/apprenticeship-levy/employers/%s/employed/SC111111A?fromDate=2017-01-01&toDate=2017-12-31"
-        val result      = controller(true).getFileName(file.format(inputEmpRef))
+        val result = controller(true).getFileName(file.format(inputEmpRef))
         result mustBe file.format("840MODES19")
       }
     }
@@ -98,9 +98,9 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
     "replace nino file" when {
       "file matches nino regex" in {
         val inputNino = "AA000001A"
-        val file      =
+        val file =
           "/sandbox/data/apprenticeship-levy/employers/840MODES17/employed/%s?fromDate=2017-01-01&toDate=2017-12-31"
-        val result    = controller(true).getFileName(file.format(inputNino))
+        val result = controller(true).getFileName(file.format(inputNino))
         result mustBe file.format("SC111111A")
       }
     }
@@ -109,13 +109,14 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
       "file matches both regex and returnDummyResponse is true" in {
         val inputEmpRef = "EMPREF"
         val inputNino   = "AA000001A"
-        val file        = "/sandbox/data/apprenticeship-levy/employers/%s/employed/%s?fromDate=2017-01-01&toDate=2017-12-31"
-        val result      = controller(true).getFileName(file.format(inputEmpRef, inputNino))
+        val file   = "/sandbox/data/apprenticeship-levy/employers/%s/employed/%s?fromDate=2017-01-01&toDate=2017-12-31"
+        val result = controller(true).getFileName(file.format(inputEmpRef, inputNino))
         result mustBe file.format("840MODES17", "SC111111A")
       }
     }
   }
-  "serve"       must {
+
+  "serve" must {
     "return a success" when {
       "the request is an authorise/read" in {
 
@@ -156,4 +157,5 @@ class SandboxTestDataControllerSpec extends AppLevyUnitSpec {
       }
     }
   }
+
 }

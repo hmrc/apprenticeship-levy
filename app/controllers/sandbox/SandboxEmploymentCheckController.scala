@@ -26,10 +26,10 @@ import controllers.auth.SandboxPrivilegedAuthAction
 import scala.concurrent.ExecutionContext
 
 class SandboxEmploymentCheckController @Inject() (
-  val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
-  val authAction: SandboxPrivilegedAuthAction,
-  val executionContext: ExecutionContext,
-  val parser: BodyParsers.Default,
-  val appContext: AppContext,
-  val controllerComponents: ControllerComponents
+    val integrationPlatformConnector: SandboxIntegrationPlatformConnector,
+    val authAction: SandboxPrivilegedAuthAction,
+    val executionContext: ExecutionContext,
+    val parser: BodyParsers.Default,
+    val appContext: AppContext,
+    val controllerComponents: ControllerComponents
 ) extends EmploymentCheckController

@@ -21,6 +21,7 @@ import uk.gov.hmrc.play.audit.AuditExtensions._
 import uk.gov.hmrc.play.audit.model.DataEvent
 
 case class ALAEvent(name: String, empref: String = "", nino: String = "", dateRange: String = "") {
+
   protected lazy val data: Map[String, String] =
     Seq(("empref", empref), ("nino", nino), ("dateRange", dateRange)).filterNot(_._2.isEmpty).toMap
 

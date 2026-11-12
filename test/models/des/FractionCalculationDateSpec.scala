@@ -22,26 +22,24 @@ import utils.AppLevyUnitSpec
 import java.time.LocalDate
 
 class FractionCalculationDateSpec extends AppLevyUnitSpec {
+
   "FractionCalculationDate" must {
     "With Json" must {
       "read" in {
-          val jsonStr = """{"date": "2016-11-19"}"""
+        val jsonStr = """{"date": "2016-11-19"}"""
         val json    = Json.parse(jsonStr)
-
-           val fractionCalculationDateOption: Option[FractionCalculationDate] =
+        val fractionCalculationDateOption: Option[FractionCalculationDate] =
           json.validate[FractionCalculationDate].fold(invalid = { _ => None }, valid = { fcd => Some(fcd) })
-
-          fractionCalculationDateOption mustBe Some(FractionCalculationDate(LocalDate.of(2016, 11, 19)))
+        fractionCalculationDateOption mustBe Some(FractionCalculationDate(LocalDate.of(2016, 11, 19)))
       }
 
       "write" in {
-          val obj = FractionCalculationDate(LocalDate.of(2015, 3, 6))
-
-           val result = Json.toJson(obj)
-
-          val date = result \ "date"
+        val obj    = FractionCalculationDate(LocalDate.of(2015, 3, 6))
+        val result = Json.toJson(obj)
+        val date   = result \ "date"
         date.as[String] mustBe "2015-03-06"
       }
     }
   }
+
 }

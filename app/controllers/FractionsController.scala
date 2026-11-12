@@ -38,7 +38,7 @@ trait FractionsController {
 
   // scalastyle:off
   def fractions(ref: EmploymentReference, fromDate: Option[LocalDate], toDate: Option[LocalDate]): Action[AnyContent] =
-    (withValidAcceptHeader andThen authAction).async { implicit request =>
+    withValidAcceptHeader.andThen(authAction).async { implicit request =>
       // scalastyle:on
       val validatedFromDate = validateFromDate(fromDate)
       val validatedToDate   = validateToDate(toDate)
@@ -46,9 +46,13 @@ trait FractionsController {
       if (validatedFromDate.isAfter(validatedToDate)) {
         Future.successful(ErrorResponseUtils.errorResponseToResult(ErrorResponses.ErrorFromDateAfterToDate))
       } else {
-        integrationPlatformConnector.fractions(toDESFormat(ref.empref), ClosedDateRange(validatedFromDate, validatedToDate)) map { fs =>
-          Ok(Json.toJson(fs))
-        } recover desErrorHandler
+        integrationPlatformConnector
+          .fractions(
+            toDESFormat(ref.empref),
+            ClosedDateRange(validatedFromDate, validatedToDate)
+          )
+          .map(fs => Ok(Json.toJson(fs)))
+          .recover(desErrorHandler)
       }
     }
 
@@ -63,6 +67,7 @@ trait FractionsController {
       case Some(date) => date
       case None       => LocalDate.now()
     }
+
 }
 
 /** This needs to be a separate trait as the fractions endpoint needs to have auth enabled, but the calculation date
@@ -77,10 +82,9 @@ trait FractionsCalculationDateController {
 
   // scalastyle:off
   def fractionCalculationDate: Action[AnyContent] =
-    (withValidAcceptHeader andThen authAction).async { implicit request =>
+    withValidAcceptHeader.andThen(authAction).async { implicit request =>
       // scalastyle:on
-      integrationPlatformConnector.fractionCalculationDate map { date =>
-        Ok(Json.toJson(date))
-      } recover desErrorHandler
+      integrationPlatformConnector.fractionCalculationDate.map(date => Ok(Json.toJson(date))).recover(desErrorHandler)
     }
+
 }

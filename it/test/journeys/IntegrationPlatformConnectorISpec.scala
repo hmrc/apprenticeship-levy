@@ -35,7 +35,11 @@ import views.html.helper
 import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class IntegrationPlatformConnectorISpec extends AppLevyUnitSpec with GuiceOneAppPerSuite with ScalaFutures with WireMockHelper {
+class IntegrationPlatformConnectorISpec
+    extends AppLevyUnitSpec
+    with GuiceOneAppPerSuite
+    with ScalaFutures
+    with WireMockHelper {
 
   val baseUrl                          = "/sandbox/data"
   val mockAuditor: Auditor             = mock[Auditor]
@@ -695,7 +699,8 @@ class IntegrationPlatformConnectorISpec extends AppLevyUnitSpec with GuiceOneApp
 
       stubGetServer(stubResponse, employerDetailsUrl)
 
-      val response = await(integrationPlatformConnector.check(empRef, "AA122345A", dateRange)(using mockHeaderCarrier, global))
+      val response =
+        await(integrationPlatformConnector.check(empRef, "AA122345A", dateRange)(using mockHeaderCarrier, global))
 
       response mustBe Unknown
 

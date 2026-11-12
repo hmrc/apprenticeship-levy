@@ -53,12 +53,12 @@ class DocumentationEndpointISpec
       .build()
 
   "API Documentation Endpoint" must {
-    "provide YAML documentation" when {
+    "provide YAML documentation" when
       Seq("1.0").foreach { version =>
         s"/api/conf/$version/application.yaml is defined" in {
           val request = FakeRequest(GET, s"/api/conf/$version/application.yaml")
 
-             val result = route(app, request).get
+          val result = route(app, request).get
 
           status(result) mustBe OK
           contentAsString(result).startsWith("openapi: 3.0.3") mustBe true
@@ -79,24 +79,23 @@ class DocumentationEndpointISpec
 
         includes.zipWithIndex.foreach { case (include, _) =>
           s"and serve file for $include" in {
-              val file    = include.substring(9)
+            val file    = include.substring(9)
             val request = FakeRequest(GET, s"/api/conf/$version/$file")
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              status(result) mustBe OK
+            status(result) mustBe OK
           }
         }
       }
-    }
 
     "should when calling /api/definition" must {
       "have correct definitions configured" in {
         val request = FakeRequest(GET, s"/api/definition")
 
-         val result = route(app, request).get
+        val result = route(app, request).get
 
-         status(result) mustBe OK
+        status(result) mustBe OK
       }
     }
 
@@ -107,7 +106,7 @@ class DocumentationEndpointISpec
         forAll(urls) { (url: String) =>
           val request = FakeRequest(GET, url)
 
-             val documentationResult = route(app, request).get
+          val documentationResult = route(app, request).get
           val httpStatus          = status(documentationResult)
 
           httpStatus mustBe NOT_FOUND
@@ -122,13 +121,14 @@ class DocumentationEndpointISpec
             val url     = s"/api/documentation/1.0/$endpoint"
             val request = FakeRequest(GET, url)
 
-                 val documentationResult = route(app, request).get
+            val documentationResult = route(app, request).get
             val httpStatus          = status(documentationResult)
 
-              httpStatus mustBe NOT_FOUND
+            httpStatus mustBe NOT_FOUND
           }
         }
       }
     }
   }
+
 }

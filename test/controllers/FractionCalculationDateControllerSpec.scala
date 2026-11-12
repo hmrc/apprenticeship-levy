@@ -44,7 +44,8 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
   val mockHttp: HttpClientV2               = mock[HttpClientV2]
   val mockRequestBuilder: RequestBuilder   = mock[RequestBuilder]
 
-  def controller: FractionsCalculationDateController = new FractionsCalculationDateController with IntegrationPlatformController {
+  def controller: FractionsCalculationDateController = new FractionsCalculationDateController
+    with IntegrationPlatformController {
     def integrationPlatformConnector: IntegrationPlatformConnector = new IntegrationPlatformConnector() {
       override val appContext: AppContext                           = mockAppContext
       override protected def auditConnector: Option[AuditConnector] = None
@@ -118,7 +119,7 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       when(mockRequestBuilder.execute[FractionCalculationDate](using any(), any()))
         .thenReturn(Future.successful(FractionCalculationDate(LocalDate.of(2016, 11, 3))))
 
-       await(
+      await(
         controller.fractionCalculationDate()(
           FakeRequest().withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Authorization" -> "Bearer dsfda9080")
         )
@@ -142,13 +143,13 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
         Future.failed(
           UpstreamErrorResponse.apply(
             """DES 5xx error: uk.gov.hmrc.play.http.Upstream5xxResponse: GET of 'http://localhost:8080/fraction-calculation-date' returned 503.
-          | Response body: '{"reason" : "Backend systems not working"}'""".stripMargin,
+              | Response body: '{"reason" : "Backend systems not working"}'""".stripMargin,
             500
           )
         )
       )
 
-       val response: Future[Result] = controller.fractionCalculationDate()(
+      val response: Future[Result] = controller.fractionCalculationDate()(
         FakeRequest().withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Authorization" -> "Bearer dsfda9080")
       )
 
@@ -156,4 +157,5 @@ class FractionCalculationDateControllerSpec extends AppLevyUnitSpec with BeforeA
       contentAsJson(response) mustBe Json.parse("""{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}""")
     }
   }
+
 }

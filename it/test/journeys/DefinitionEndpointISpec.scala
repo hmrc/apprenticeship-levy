@@ -27,7 +27,15 @@ import play.api.http.Status.OK
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, contentAsJson, contentType, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{
+  GET,
+  contentAsJson,
+  contentType,
+  defaultAwaitTimeout,
+  route,
+  status,
+  writeableOf_AnyContentAsEmpty
+}
 import util.StubbingData.*
 import util.WireMockHelper
 
@@ -54,7 +62,7 @@ class DefinitionEndpointISpec
         "return OK" in {
           val request = FakeRequest(GET, "/api/definition")
 
-             val result = route(app, request).get
+          val result = route(app, request).get
 
           status(result) mustBe OK
         }
@@ -62,7 +70,7 @@ class DefinitionEndpointISpec
         "return expected JSON API definition" in {
           val request = FakeRequest(GET, "/api/definition")
 
-             val result = route(app, request).get
+          val result = route(app, request).get
 
           contentType(result) mustBe Some("application/json")
           contentAsJson(result) mustBe Json.parse(asString("definition.json"))
@@ -71,7 +79,7 @@ class DefinitionEndpointISpec
         "return definition configuration as PRIVATE" in {
           val request = FakeRequest(GET, "/api/definition")
 
-             val result = route(app, request).get
+          val result = route(app, request).get
 
           contentType(result) mustBe Some("application/json")
           val json     = contentAsJson(result)
@@ -80,4 +88,5 @@ class DefinitionEndpointISpec
         }
       }
   }
+
 }

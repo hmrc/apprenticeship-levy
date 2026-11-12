@@ -21,26 +21,26 @@ import play.api.mvc.{BodyParsers, ControllerComponents}
 import config.AppContext
 import connectors.LiveIntegrationPlatformConnector
 import controllers.auth.PrivilegedAuthActionImpl
-import controllers.{IntegrationPlatformController, FractionsCalculationDateController, FractionsController}
+import controllers.{FractionsCalculationDateController, FractionsController, IntegrationPlatformController}
 
 import scala.concurrent.ExecutionContext
 
 class LiveFractionsController @Inject() (
-  val integrationPlatformConnector: LiveIntegrationPlatformConnector,
-  val authAction: PrivilegedAuthActionImpl,
-  val executionContext: ExecutionContext,
-  val parser: BodyParsers.Default,
-  val appContext: AppContext,
-  val controllerComponents: ControllerComponents
+    val integrationPlatformConnector: LiveIntegrationPlatformConnector,
+    val authAction: PrivilegedAuthActionImpl,
+    val executionContext: ExecutionContext,
+    val parser: BodyParsers.Default,
+    val appContext: AppContext,
+    val controllerComponents: ControllerComponents
 ) extends IntegrationPlatformController
     with FractionsController
 
 class LiveFractionsCalculationDateController @Inject() (
-  val integrationPlatformConnector: LiveIntegrationPlatformConnector,
-  val authAction: PrivilegedAuthActionImpl,
-  val executionContext: ExecutionContext,
-  val parser: BodyParsers.Default,
-  val appContext: AppContext,
-  val controllerComponents: ControllerComponents
+    val integrationPlatformConnector: LiveIntegrationPlatformConnector,
+    val authAction: PrivilegedAuthActionImpl,
+    val executionContext: ExecutionContext,
+    val parser: BodyParsers.Default,
+    val appContext: AppContext,
+    val controllerComponents: ControllerComponents
 ) extends IntegrationPlatformController
     with FractionsCalculationDateController

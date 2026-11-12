@@ -31,24 +31,25 @@ object QueryBinders {
   implicit def bindableLocalDate: QueryStringBindable[LocalDate] = new QueryStringBindable[LocalDate] {
     def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, LocalDate]] =
       params.get(key).flatMap(_.headOption).map { (date: String) =>
-        (Try {
+        Try {
           date match {
             case datePattern(year, _*) if year.toInt >= 2000 => Right(LocalDate.parse(date))
-            case _                                           =>
+            case _ =>
               Left(
                 s"DATE_INVALID: '$date' date parameter is in the wrong format. Should be '${datePattern.toString()}' where date format is yyyy-MM-dd and year is 2000 or later."
               )
           }
-        } recover { case _: Exception =>
+        }.recover { case _: Exception =>
           Left(
             s"DATE_INVALID: date parameter is in the wrong format. Should be '${datePattern.toString()}' where date format is yyyy-MM-dd."
           )
-        }).get
+        }.get
       }
 
     def unbind(key: String, value: LocalDate): String =
       QueryStringBindable.bindableString.unbind(key, value.format(DateTimeFormatter.ISO_LOCAL_DATE))
   }
+
 }
 
 object PathBinders {
@@ -67,10 +68,10 @@ object PathBinders {
     bindable[String, Nino](ninoValidator, str => Nino(str), b => URLEncoder.encode(b.nino, "UTF-8"), "NINO_INVALID")
 
   private[config] def bindable[A, B](
-    validator: (String, String) => Either[String, String],
-    convertToB: String => B,
-    convertToA: B => A,
-    code: String
+      validator: (String, String) => Either[String, String],
+      convertToB: String => B,
+      convertToA: B => A,
+      code: String
   )(implicit binder: PathBindable[A]): PathBindable[B] = new PathBindable[B] {
     override def bind(key: String, value: String): Either[String, B] =
       for {
@@ -94,4 +95,5 @@ object PathBinders {
       s"$code: '$value' is in the wrong format. Should have a prefix (one of ${uk.gov.hmrc.domain.Nino.validPrefixes}) and suffix (one of ${uk.gov.hmrc.domain.Nino.validSuffixes}) and url encoded."
     )
   }
+
 }

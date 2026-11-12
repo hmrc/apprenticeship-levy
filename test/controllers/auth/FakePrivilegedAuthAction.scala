@@ -25,4 +25,5 @@ class FakePrivilegedAuthAction extends PrivilegedAuthActionImpl(null, null) {
 
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
     Future.successful(Right(AuthenticatedRequest(request, None)))
+
 }

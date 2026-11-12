@@ -33,4 +33,5 @@ object ErrorResponseUtils {
     val statusCode = errorResponse.statusCode
     Results.Status(statusCode)(jsonResult)
   }
+
 }

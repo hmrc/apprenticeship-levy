@@ -20,6 +20,7 @@ import utils.AppLevyUnitSpec
 import java.time.LocalDateTime
 
 class LevyDeclarationSpec extends AppLevyUnitSpec {
+
   "LevyDeclaration" must {
     "have a rti submission field" in {
       val rtiId           = 123L
@@ -33,4 +34,5 @@ class LevyDeclarationSpec extends AppLevyUnitSpec {
       levyDeclaration.id mustBe id
     }
   }
+
 }

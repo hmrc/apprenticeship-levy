@@ -77,4 +77,5 @@ class RootControllerSpec extends AnyWordSpecLike with Matchers with OptionValues
       status(result) mustBe OK
     }
   }
+
 }

@@ -82,4 +82,5 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach {
           willReturn
         )
     )
+
 }

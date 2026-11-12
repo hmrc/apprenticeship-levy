@@ -94,7 +94,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
         )
       )
 
-       await(
+      await(
         controller.fractions(EmploymentReference("123AB12345"), None, None)(
           FakeRequest()
             .withHeaders(
@@ -133,7 +133,7 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
         )
       )
 
-       await(
+      await(
         controller.fractions(EmploymentReference("123AB12345"), None, None)(
           FakeRequest()
             .withHeaders("ACCEPT" -> "application/vnd.hmrc.1.0+json", "Authorization" -> "Bearer dsfda9080")
@@ -153,4 +153,5 @@ class FractionCalculationControllerSpec extends AppLevyUnitSpec with BeforeAndAf
       )
     }
   }
+
 }

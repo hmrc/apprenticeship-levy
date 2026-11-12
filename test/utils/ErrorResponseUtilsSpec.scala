@@ -65,4 +65,5 @@ class ErrorResponseUtilsSpec extends AnyWordSpec with Matchers {
       )
     }
   }
+
 }

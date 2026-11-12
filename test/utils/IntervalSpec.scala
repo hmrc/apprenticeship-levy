@@ -111,4 +111,5 @@ class IntervalSpec extends AnyWordSpec with Matchers {
       contains mustBe false
     }
   }
+
 }

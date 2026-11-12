@@ -27,9 +27,9 @@ trait IsInExternalTest {
 }
 
 class ConditionalRouter @Inject() (
-  externalTestRoutes: externaltest.Routes,
-  nonexternaltestRoutes: nonexternaltest.Routes,
-  appContext: AppContext
+    externalTestRoutes: externaltest.Routes,
+    nonexternaltestRoutes: nonexternaltest.Routes,
+    appContext: AppContext
 ) extends SimpleRouter
     with IsInExternalTest
     with Logging {
@@ -43,4 +43,5 @@ class ConditionalRouter @Inject() (
       logger.debug("Not in External Test Environment: Using nonexternaltest.routes")
       nonexternaltestRoutes.routes
     }
+
 }

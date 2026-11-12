@@ -30,16 +30,16 @@ import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
 case class EmployerPaymentSummary(
-  submissionId: Long,
-  hmrcSubmissionTime: LocalDateTime,
-  rtiSubmissionTime: LocalDateTime,
-  taxYear: String,
-  noPaymentPeriod: Option[ClosedDateRange] = None,
-  inactivePeriod: Option[ClosedDateRange] = None,
-  employmentAllowanceInd: Option[Boolean] = None,
-  apprenticeshipLevy: Option[ApprenticeshipLevy] = None,
-  finalSubmission: Option[FinalSubmission] = None,
-  questionsAndDeclarations: Option[QuestionsAndDeclaration] = None
+    submissionId: Long,
+    hmrcSubmissionTime: LocalDateTime,
+    rtiSubmissionTime: LocalDateTime,
+    taxYear: String,
+    noPaymentPeriod: Option[ClosedDateRange] = None,
+    inactivePeriod: Option[ClosedDateRange] = None,
+    employmentAllowanceInd: Option[Boolean] = None,
+    apprenticeshipLevy: Option[ApprenticeshipLevy] = None,
+    finalSubmission: Option[FinalSubmission] = None,
+    questionsAndDeclarations: Option[QuestionsAndDeclaration] = None
 )
 
 object EmployerPaymentSummary extends Logging {
@@ -114,42 +114,43 @@ object EmployerPaymentSummary extends Logging {
     override def reads(json: JsValue): JsResult[LocalDateTime] = implicitly[Reads[JsString]].reads(json).map { js =>
       js.value match {
         case DateTime(timestamp, _) => LocalDateTime.parse(timestamp, formatter)
-        case _                      =>
+        case _ =>
           logger.warn(s"Bad date time value of '${js.value}' returned from DES so returning new LocalDateTime(0L)")
           LocalDateTime.MIN
       }
 
     }
     // $COVERAGE-OFF$
-    override def writes(date: LocalDateTime): JsValue          = JsString(formatter.format(date))
+    override def writes(date: LocalDateTime): JsValue = JsString(formatter.format(date))
     // $COVERAGE-ON$
   }
 
-  implicit val epsWrites: Writes[EmployerPaymentSummary] = (
-    (JsPath \ "submissionId").write[Long] and
-      (JsPath \ "hmrcSubmissionTime").write[LocalDateTime] and
-      (JsPath \ "rtiSubmissionTime").write[LocalDateTime] and
-      (JsPath \ "taxYear").write[String] and
-      (JsPath \ "noPaymentPeriod").write[Option[ClosedDateRange]] and
-      (JsPath \ "inactivePeriod").write[Option[ClosedDateRange]] and
-      (JsPath \ "employmentAllowanceInd").write[Option[Boolean]] and
-      (JsPath \ "apprenticeshipLevy").write[Option[ApprenticeshipLevy]] and
-      (JsPath \ "finalSubmission").write[Option[FinalSubmission]] and
-      (JsPath \ "questionsAndDeclarations").write[Option[QuestionsAndDeclaration]]
-  )(o => Tuple.fromProductTyped(o))
+  implicit val epsWrites: Writes[EmployerPaymentSummary] =
+    (JsPath \ "submissionId")
+      .write[Long]
+      .and((JsPath \ "hmrcSubmissionTime").write[LocalDateTime])
+      .and((JsPath \ "rtiSubmissionTime").write[LocalDateTime])
+      .and((JsPath \ "taxYear").write[String])
+      .and((JsPath \ "noPaymentPeriod").write[Option[ClosedDateRange]])
+      .and((JsPath \ "inactivePeriod").write[Option[ClosedDateRange]])
+      .and((JsPath \ "employmentAllowanceInd").write[Option[Boolean]])
+      .and((JsPath \ "apprenticeshipLevy").write[Option[ApprenticeshipLevy]])
+      .and((JsPath \ "finalSubmission").write[Option[FinalSubmission]])
+      .and((JsPath \ "questionsAndDeclarations").write[Option[QuestionsAndDeclaration]])(o => Tuple.fromProductTyped(o))
 
-  implicit val epsReads: Reads[EmployerPaymentSummary] = (
-    (JsPath \ "submissionId").read[Long] and
-      (JsPath \ "hmrcSubmissionTime").read[LocalDateTime] and
-      (JsPath \ "rtiSubmissionTime").read[LocalDateTime] and
-      (JsPath \ "taxYear").read[String] and
-      (JsPath \ "noPaymentPeriod").readNullable[ClosedDateRange] and
-      (JsPath \ "inactivePeriod").readNullable[ClosedDateRange] and
-      (JsPath \ "employmentAllowanceInd").readNullable[Boolean] and
-      (JsPath \ "apprenticeshipLevy").readNullable[ApprenticeshipLevy] and
-      (JsPath \ "finalSubmission").readNullable[FinalSubmission] and
-      (JsPath \ "questionsAndDeclarations").readNullable[QuestionsAndDeclaration]
-  )(EmployerPaymentSummary.apply)
+  implicit val epsReads: Reads[EmployerPaymentSummary] =
+    (JsPath \ "submissionId")
+      .read[Long]
+      .and((JsPath \ "hmrcSubmissionTime").read[LocalDateTime])
+      .and((JsPath \ "rtiSubmissionTime").read[LocalDateTime])
+      .and((JsPath \ "taxYear").read[String])
+      .and((JsPath \ "noPaymentPeriod").readNullable[ClosedDateRange])
+      .and((JsPath \ "inactivePeriod").readNullable[ClosedDateRange])
+      .and((JsPath \ "employmentAllowanceInd").readNullable[Boolean])
+      .and((JsPath \ "apprenticeshipLevy").readNullable[ApprenticeshipLevy])
+      .and((JsPath \ "finalSubmission").readNullable[FinalSubmission])
+      .and((JsPath \ "questionsAndDeclarations").readNullable[QuestionsAndDeclaration])(EmployerPaymentSummary.apply)
+
 }
 
 abstract class EPSResponse {}

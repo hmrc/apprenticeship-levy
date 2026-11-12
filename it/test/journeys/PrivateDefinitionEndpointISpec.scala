@@ -58,10 +58,11 @@ class PrivateDefinitionEndpointISpec
         "return OK" in {
           val request = FakeRequest(GET, "/api/definition")
 
-             val result = route(app, request).get
+          val result = route(app, request).get
 
           status(result) mustBe OK
         }
       }
   }
+
 }

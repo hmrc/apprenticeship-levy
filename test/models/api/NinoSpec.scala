@@ -34,4 +34,5 @@ class NinoSpec extends AppLevyUnitSpec {
       }
     }
   }
+
 }

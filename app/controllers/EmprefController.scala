@@ -43,11 +43,12 @@ trait EmprefController extends IntegrationPlatformController {
 
   // scalastyle:off
   def empref(ref: EmploymentReference): Action[AnyContent] =
-    (withValidAcceptHeader andThen authAction(ref)).async { implicit request =>
+    withValidAcceptHeader.andThen(authAction(ref)).async { implicit request =>
       // scalastyle:on
-      integrationPlatformConnector.designatoryDetails(ref.empref) map { details =>
-        ok(prepareLinks(ref).copy(state = Json.toJson(details).as[JsObject]))
-      } recover desErrorHandler
+      integrationPlatformConnector
+        .designatoryDetails(ref.empref)
+        .map(details => ok(prepareLinks(ref).copy(state = Json.toJson(details).as[JsObject])))
+        .recover(desErrorHandler)
     }
 
   private[controllers] def prepareLinks(empref: EmploymentReference): HalResource =
@@ -59,4 +60,5 @@ trait EmprefController extends IntegrationPlatformController {
         HalLink("employment-check", decodeAnyDoubleEncoding(employmentCheckUrl(empref)))
       ).map(processLink)
     )
+
 }

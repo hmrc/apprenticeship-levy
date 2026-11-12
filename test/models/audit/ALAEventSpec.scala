@@ -53,4 +53,5 @@ class ALAEventSpec extends AppLevyUnitSpec {
       }
     }
   }
+
 }

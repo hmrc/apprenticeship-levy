@@ -23,27 +23,31 @@ import utils.DateFormats.localDateFormat
 import java.time.LocalDate
 
 sealed trait FinalSubmission
+
 case class CombinedFinalSubmission(
-  schemeCeased: Option[Boolean],
-  schemeCeasedDate: Option[LocalDate],
-  forYear: Option[Boolean]
+    schemeCeased: Option[Boolean],
+    schemeCeasedDate: Option[LocalDate],
+    forYear: Option[Boolean]
 ) extends FinalSubmission
+
 case class SchemeCeased(schemeCeased: Boolean, schemeCeasedDate: LocalDate, forYear: Option[Boolean])
     extends FinalSubmission
+
 case class LastSubmission(forYear: Boolean) extends FinalSubmission
 
 object FinalSubmission {
-  implicit val combinedFinalSubmissionReads: Reads[FinalSubmission] = (
-    (JsPath \ "schemeCeased").readNullable[Boolean] and
-      (JsPath \ "schemeCeasedDate").readNullable[LocalDate] and
-      (JsPath \ "forYear").readNullable[Boolean]
-  )(FinalSubmission.apply)
 
-  implicit val combinedFinalSubmissionWrites: Writes[FinalSubmission] = (
-    (JsPath \ "schemeCeased").write[Option[Boolean]] and
-      (JsPath \ "schemeCeasedDate").write[Option[LocalDate]] and
-      (JsPath \ "forYear").write[Option[Boolean]]
-  )(FinalSubmission.unapply)
+  implicit val combinedFinalSubmissionReads: Reads[FinalSubmission] =
+    (JsPath \ "schemeCeased")
+      .readNullable[Boolean]
+      .and((JsPath \ "schemeCeasedDate").readNullable[LocalDate])
+      .and((JsPath \ "forYear").readNullable[Boolean])(FinalSubmission.apply)
+
+  implicit val combinedFinalSubmissionWrites: Writes[FinalSubmission] =
+    (JsPath \ "schemeCeased")
+      .write[Option[Boolean]]
+      .and((JsPath \ "schemeCeasedDate").write[Option[LocalDate]])
+      .and((JsPath \ "forYear").write[Option[Boolean]])(FinalSubmission.unapply)
 
   def unapply(fs: FinalSubmission): (Option[Boolean], Option[LocalDate], Option[Boolean]) = fs match {
     case LastSubmission(fy)                   => (None, None, Some(fy))
@@ -52,13 +56,14 @@ object FinalSubmission {
   }
 
   def apply(
-    schemeCeased: Option[Boolean],
-    schemeCeasedDate: Option[LocalDate],
-    forYear: Option[Boolean]
+      schemeCeased: Option[Boolean],
+      schemeCeasedDate: Option[LocalDate],
+      forYear: Option[Boolean]
   ): FinalSubmission =
     CombinedFinalSubmission(schemeCeased, schemeCeasedDate, forYear) match {
       case CombinedFinalSubmission(None, None, Some(forYear)) => LastSubmission(forYear)
       case CombinedFinalSubmission(Some(sc), Some(scd), fy)   => SchemeCeased(sc, scd, fy)
       case CombinedFinalSubmission(sc, scd, fy)               => CombinedFinalSubmission(sc, scd, fy)
     }
+
 }

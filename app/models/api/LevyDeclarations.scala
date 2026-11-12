@@ -28,25 +28,25 @@ object PayrollPeriod {
 }
 
 case class LevyDeclaration(
-  id: Long,
-  submissionTime: LocalDateTime,
-  dateCeased: Option[LocalDate] = None,
-  inactiveFrom: Option[LocalDate] = None,
-  inactiveTo: Option[LocalDate] = None,
-  payrollPeriod: Option[PayrollPeriod] = None,
-  levyDueYTD: Option[BigDecimal] = None,
-  levyAllowanceForFullYear: Option[BigDecimal] = None,
-  noPaymentForPeriod: Option[Boolean] = None,
-  submissionId: Long = 0L
+    id: Long,
+    submissionTime: LocalDateTime,
+    dateCeased: Option[LocalDate] = None,
+    inactiveFrom: Option[LocalDate] = None,
+    inactiveTo: Option[LocalDate] = None,
+    payrollPeriod: Option[PayrollPeriod] = None,
+    levyDueYTD: Option[BigDecimal] = None,
+    levyAllowanceForFullYear: Option[BigDecimal] = None,
+    noPaymentForPeriod: Option[Boolean] = None,
+    submissionId: Long = 0L
 )
 
 object LevyDeclaration {
+
   implicit val ldtFormats: Format[LocalDateTime] = new Format[LocalDateTime] {
     val fmt: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
 
-    override def reads(json: JsValue): JsResult[LocalDateTime] = implicitly[Reads[JsString]].reads(json).map { js =>
-      LocalDateTime.parse(js.value, fmt)
-    }
+    override def reads(json: JsValue): JsResult[LocalDateTime] =
+      implicitly[Reads[JsString]].reads(json).map(js => LocalDateTime.parse(js.value, fmt))
 
     override def writes(o: LocalDateTime): JsValue = JsString(o.format(fmt))
   }

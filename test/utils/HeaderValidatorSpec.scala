@@ -56,4 +56,5 @@ abstract class HeaderValidatorSpec extends AnyWordSpec with Matchers with Header
       acceptHeaderValidationRules(Some("application/vnd.hmrc.notvalid+json")) mustBe false
     }
   }
+
 }

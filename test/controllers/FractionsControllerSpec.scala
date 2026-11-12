@@ -133,4 +133,5 @@ class FractionsControllerSpec extends AppLevyUnitSpec with ScalaFutures with Gui
       liveFractionsController.validateToDate(Some(date)) mustBe date
     }
   }
+
 }

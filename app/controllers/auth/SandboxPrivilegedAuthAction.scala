@@ -22,6 +22,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SandboxPrivilegedAuthAction @Inject() (val executionContext: ExecutionContext, val parser: BodyParsers.Default)
     extends AuthAction {
+
   override protected def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
     Future.successful(Right(AuthenticatedRequest(request, None)))
+
 }

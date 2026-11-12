@@ -48,9 +48,9 @@ class LevyDeclarationControllerSpec
     with Injecting
     with BeforeAndAfterEach {
 
-  val mockIntegrationPlatformConnector: LiveIntegrationPlatformConnector   = mock[LiveIntegrationPlatformConnector]
-  val stubComponents: ControllerComponents = stubControllerComponents()
-  val mockAppContext: MockAppContext.type  = MockAppContext
+  val mockIntegrationPlatformConnector: LiveIntegrationPlatformConnector = mock[LiveIntegrationPlatformConnector]
+  val stubComponents: ControllerComponents                               = stubControllerComponents()
+  val mockAppContext: MockAppContext.type                                = MockAppContext
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -299,4 +299,5 @@ class LevyDeclarationControllerSpec
       }
     }
   }
+
 }

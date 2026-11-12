@@ -57,4 +57,5 @@ class DesignatoryDetailsSpec extends AppLevyUnitSpec {
       json.as[HodContact] mustBe HodContact(Some(HodTelephone(Some("hodTelephone"))), Some(HodEmail(Some("hodEmail"))))
     }
   }
+
 }

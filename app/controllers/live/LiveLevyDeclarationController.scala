@@ -26,11 +26,11 @@ import controllers.{IntegrationPlatformController, LevyDeclarationController}
 import scala.concurrent.ExecutionContext
 
 class LiveLevyDeclarationController @Inject() (
-  val integrationPlatformConnector: LiveIntegrationPlatformConnector,
-  val authAction: PrivilegedAuthActionImpl,
-  val executionContext: ExecutionContext,
-  val parser: BodyParsers.Default,
-  val appContext: AppContext,
-  val controllerComponents: ControllerComponents
+    val integrationPlatformConnector: LiveIntegrationPlatformConnector,
+    val authAction: PrivilegedAuthActionImpl,
+    val executionContext: ExecutionContext,
+    val parser: BodyParsers.Default,
+    val appContext: AppContext,
+    val controllerComponents: ControllerComponents
 ) extends IntegrationPlatformController
     with LevyDeclarationController

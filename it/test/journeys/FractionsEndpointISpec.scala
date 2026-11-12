@@ -29,7 +29,16 @@ import play.api.http.Status.{BAD_REQUEST, OK, SERVICE_UNAVAILABLE}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, contentAsJson, contentAsString, contentType, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{
+  GET,
+  contentAsJson,
+  contentAsString,
+  contentType,
+  defaultAwaitTimeout,
+  route,
+  status,
+  writeableOf_AnyContentAsEmpty
+}
 import util.StubbingData.*
 import util.WireMockHelper
 import views.html.helper
@@ -60,12 +69,13 @@ class FractionsEndpointISpec
       s"calling $context/epaye/<empref>/fractions" when {
         "with no parameters" must {
           "return fractions" in {
-              val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions").withHeaders(standardDesHeaders()*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions").withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              contentType(result) mustBe Some("application/json")
-            val json      = contentAsJson(result)
+            contentType(result) mustBe Some("application/json")
+            val json = contentAsJson(result)
             (json \ "empref").as[String] mustBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1        = Seq(Fraction("England", BigDecimal(0.83)))
@@ -76,11 +86,12 @@ class FractionsEndpointISpec
           }
 
           "return fractions with correct empref values" in {
-              val request = FakeRequest(GET, s"$context/epaye/864%2FTZ00000/fractions").withHeaders(standardDesHeaders()*)
+            val request =
+              FakeRequest(GET, s"$context/epaye/864%2FTZ00000/fractions").withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              contentType(result) mustBe Some("application/json")
+            contentType(result) mustBe Some("application/json")
             val json = contentAsJson(result)
             (json \ "empref").as[String] mustBe "864/TZ123"
           }
@@ -88,13 +99,13 @@ class FractionsEndpointISpec
 
         "with valid parameters" must {
           "?fromDate=2017-09-01: return fractions" in {
-              val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2015-09-01")
-              .withHeaders(standardDesHeaders()*)
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2015-09-01")
+              .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              contentType(result) mustBe Some("application/json")
-            val json      = contentAsJson(result)
+            contentType(result) mustBe Some("application/json")
+            val json = contentAsJson(result)
             (json \ "empref").as[String] mustBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1        = Seq(Fraction("England", BigDecimal(0.83)))
@@ -105,13 +116,13 @@ class FractionsEndpointISpec
           }
 
           s"?toDate=$lastYear-09-01: return fractions" in {
-              val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=$lastYear-09-01")
-              .withHeaders(standardDesHeaders()*)
+            val request = FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?toDate=$lastYear-09-01")
+              .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              contentType(result) mustBe Some("application/json")
-            val json      = contentAsJson(result)
+            contentType(result) mustBe Some("application/json")
+            val json = contentAsJson(result)
             (json \ "empref").as[String] mustBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1        = Seq(Fraction("England", BigDecimal(0.83)))
@@ -122,14 +133,14 @@ class FractionsEndpointISpec
           }
 
           "?fromDate=2017-08-01&toDate=2017-09-01: return fractions" in {
-              val request =
+            val request =
               FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2017-08-01&toDate=2017-09-01")
-                .withHeaders(standardDesHeaders()*)
+                .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              contentType(result) mustBe Some("application/json")
-            val json      = contentAsJson(result)
+            contentType(result) mustBe Some("application/json")
+            val json = contentAsJson(result)
             (json \ "empref").as[String] mustBe "123/AB12345"
             val fractions = (json \ "fractionCalculations").as[Array[FractionCalculation]]
             val f1        = Seq(Fraction("England", BigDecimal(0.83)))
@@ -143,22 +154,22 @@ class FractionsEndpointISpec
         "with invalid paramters" must {
           Seq("fromDate", "toDate").foreach { param =>
             s"return 400 when $param param is invalid" in {
-                  val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
+              val dates = for { str <- Gen.listOf(Gen.alphaNumChar) } yield str.mkString
 
               forAll(dates) { (date: String) =>
                 whenever(date.nonEmpty) {
                   val requestUrl = param match {
                     case "fromDate" =>
                       s"$context/epaye/123%2FAB12345/fractions?fromDate=${helper.urlEncode(date)}&toDate=2015-06-30"
-                    case _          =>
+                    case _ =>
                       s"/sandbox/epaye/123%2FAB12345/fractions?fromDate=2015-06-03&toDate=${helper.urlEncode(date)}"
                   }
-                  val request    = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders()*)
+                  val request = FakeRequest(GET, requestUrl).withHeaders(standardDesHeaders() *)
 
-                             val result     = route(app, request).get
+                  val result     = route(app, request).get
                   val httpStatus = status(result)
 
-                          httpStatus mustBe 400
+                  httpStatus mustBe 400
                   contentType(result) mustBe Some("application/json")
                   contentAsString(result) must include(
                     """date parameter is in the wrong format. Should be '^(\\d{4})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$' where date format is yyyy-MM-dd and year is 2000 or later."""
@@ -169,12 +180,12 @@ class FractionsEndpointISpec
           }
 
           "return http status 400 when DES HTTP 400" in {
-              val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders()*)
+            val request = FakeRequest(GET, s"$context/epaye/400%2FAB12345/fractions")
+              .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              status(result) mustBe BAD_REQUEST
+            status(result) mustBe BAD_REQUEST
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"DES_ERROR_BAD_REQUEST","message":"Bad request error"}"""
@@ -182,12 +193,12 @@ class FractionsEndpointISpec
           }
 
           "return http status 401 when DES HTTP 401" in {
-              val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders()*)
+            val request = FakeRequest(GET, s"$context/epaye/401%2FAB12345/fractions")
+              .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              status(result) mustBe 401
+            status(result) mustBe 401
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"DES_ERROR_UNAUTHORIZED","message":"DES unauthorised error"}"""
@@ -195,12 +206,12 @@ class FractionsEndpointISpec
           }
 
           "return http status 403 when DES HTTP 403" in {
-              val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders()*)
+            val request = FakeRequest(GET, s"$context/epaye/403%2FAB12345/fractions")
+              .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              status(result) mustBe 403
+            status(result) mustBe 403
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"DES_ERROR_FORBIDDEN","message":"DES forbidden error"}"""
@@ -208,12 +219,12 @@ class FractionsEndpointISpec
           }
 
           "return http status 404 when DES HTTP 404" in {
-              val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders()*)
+            val request = FakeRequest(GET, s"$context/epaye/404%2FAB12345/fractions")
+              .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              status(result) mustBe 404
+            status(result) mustBe 404
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"DES_ERROR_NOT_FOUND","message":"DES endpoint or EmpRef not found"}"""
@@ -221,14 +232,14 @@ class FractionsEndpointISpec
           }
 
           "return 400 when to date is before from date" in {
-              val request =
+            val request =
               FakeRequest(GET, s"$context/epaye/123%2FAB12345/fractions?fromDate=2015-06-03&toDate=2015-03-30")
-                .withHeaders(standardDesHeaders()*)
+                .withHeaders(standardDesHeaders() *)
 
-                 val result     = route(app, request).get
+            val result     = route(app, request).get
             val httpStatus = status(result)
 
-              httpStatus mustBe 400
+            httpStatus mustBe 400
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"BAD_REQUEST","message":"From date was after to date"}"""
@@ -238,45 +249,45 @@ class FractionsEndpointISpec
 
         "backend systems failing" must {
           "return http status 503 when connection closed" in {
-              val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders()*)
+            val request = FakeRequest(GET, s"$context/epaye/999%2FAB12345/fractions")
+              .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              status(result) mustBe SERVICE_UNAVAILABLE
+            status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           "return http status 408 when timed out" in {
-              val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders()*)
+            val request = FakeRequest(GET, s"$context/epaye/777%2FAB12345/fractions")
+              .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              status(result) mustBe 408
+            status(result) mustBe 408
             contentType(result) mustBe Some("application/json")
             contentAsString(result) must include("DES not responding error")
           }
 
           "return http status 503 when empty response" in {
-              val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders()*)
+            val request = FakeRequest(GET, s"$context/epaye/888%2FAB12345/fractions")
+              .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              status(result) mustBe SERVICE_UNAVAILABLE
+            status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse("""{"code":"DES_ERROR_IO","message":"DES connection error"}""")
           }
 
           "return http status 503 when DES HTTP 500" in {
-              val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders()*)
+            val request = FakeRequest(GET, s"$context/epaye/500%2FAB12345/fractions")
+              .withHeaders(standardDesHeaders() *)
 
-                 val result = route(app, request).get
+            val result = route(app, request).get
 
-              status(result) mustBe SERVICE_UNAVAILABLE
+            status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}"""
@@ -284,11 +295,11 @@ class FractionsEndpointISpec
           }
 
           "return http status 503 when DES HTTP 503" in {
-              val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345/fractions")
-              .withHeaders(standardDesHeaders()*)
-                 val result  = route(app, request).get
+            val request = FakeRequest(GET, s"$context/epaye/503%2FAB12345/fractions")
+              .withHeaders(standardDesHeaders() *)
+            val result = route(app, request).get
 
-              status(result) mustBe SERVICE_UNAVAILABLE
+            status(result) mustBe SERVICE_UNAVAILABLE
             contentType(result) mustBe Some("application/json")
             contentAsJson(result) mustBe Json.parse(
               """{"code":"DES_ERROR_BACKEND_FAILURE","message":"DES 5xx error"}"""
@@ -298,4 +309,5 @@ class FractionsEndpointISpec
       }
     }
   }
+
 }
